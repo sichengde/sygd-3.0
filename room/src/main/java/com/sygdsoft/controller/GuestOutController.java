@@ -1,0 +1,772 @@
+/**
+ * Created by 舒展 on 2016-04-27.
+ */
+package com.sygdsoft.controller;
+
+import com.sygdsoft.jsonModel.CurrencyPost;
+import com.sygdsoft.jsonModel.Query;
+import com.sygdsoft.model.*;
+import com.sygdsoft.service.*;
+import com.sygdsoft.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
+import static com.sygdsoft.util.NullJudgement.nullToZero;
+
+@RestController
+public class GuestOutController {
+    @Autowired
+    SerialService serialService;
+    @Autowired
+    DebtService debtService;
+    @Autowired
+    CheckInService checkInService;
+    @Autowired
+    CheckInGuestService checkInGuestService;
+    @Autowired
+    UserLogService userLogService;
+    @Autowired
+    RoomService roomService;
+    @Autowired
+    TimeService timeService;
+    @Autowired
+    DebtPayService debtPayService;
+    @Autowired
+    CheckOutService checkOutService;
+    @Autowired
+    CheckOutRoomService checkOutRoomService;
+    @Autowired
+    CheckInGroupService checkInGroupService;
+    @Autowired
+    VipService vipService;
+    @Autowired
+    CompanyService companyService;
+    @Autowired
+    CompanyLordService companyLordService;
+    @Autowired
+    FreemanService freemanService;
+    @Autowired
+    FreeDetailService freeDetailService;
+    @Autowired
+    PointOfSaleService pointOfSaleService;
+    @Autowired
+    ReportService reportService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    VipDetailService vipDetailService;
+    @Autowired
+    CompanyDebtService companyDebtService;
+    @Autowired
+    DebtHistoryService debtHistoryService;
+    @Autowired
+    CheckInHistoryService checkInHistoryService;
+    @Autowired
+    CheckInHistoryLogService checkInHistoryLogService;
+    @Autowired
+    CurrencyService currencyService;
+    @Autowired
+    OtherParamService otherParamService;
+    @Autowired
+    Util util;
+    @Autowired
+    CheckOutGroupService checkOutGroupService;
+    @Autowired
+    ProtocolService protocolService;
+
+    /**
+     * 结算分为团队结算和单人结算
+     */
+    @RequestMapping(value = "guestOut", method = RequestMethod.POST)
+    @Transactional(rollbackFor = Exception.class)
+    public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
+        /*获取有用信息*/
+        timeService.setNow();//当前时间
+        serialService.setCheckOutSerial();//生成离店序列号
+        serialService.setPaySerial();//生成结账序列号
+        /*转换房态*/
+        this.updateRoomStateGuestOut(guestOut.getRoomIdList());
+        /*额外的加收房租*/
+        this.debtAddIn(guestOut);
+        /*离店明细单元*/
+        Double checkOutMoney = this.newCheckOut(guestOut);
+        /*检查是否有没退的预付，有的话自动退了*/
+        //this.cancelDeposit(guestOut);//先保留，以后如果没用就删了
+        /*账务明细转移到账务历史，并返回需要结算的账务*/
+        List<Debt> debtList = this.debtToHistory(guestOut);
+        /*查找中间结算，没有离店序列号的都是中间结算*/
+        this.debtPayMiddle(guestOut);
+        /*结账记录，循环分单，记录操作员挂账信息*/
+        String changeDebt = this.debtPayProcess(guestOut);
+        /*判断押金币种，如果是会员则需要把钱还回去*/
+        this.checkVipDeposit(guestOut);
+        /*如果有单位协议，将该协议记录到单位消费之中*/
+        this.checkCompany(guestOut, checkOutMoney);
+        /*户籍转换，迁移到历史表*/
+        String guestName = this.checkInProcess(guestOut);
+        /*生成离店报表*/
+        Integer reportIndex = this.reportProcess(guestOut, guestName, changeDebt, debtList);
+        /*操作员记录*/
+        this.addUserLog(guestOut, changeDebt);
+        /*删除账务，开房信息，团队开房信息，在店宾客（如果删早可能会导致后边的方法获取不到相关信息），房价协议（如果有）*/
+        this.delete(guestOut);
+        return reportIndex;
+    }
+
+    /**
+     * 转换房态
+     *
+     * @param roomList 离店房号数组
+     */
+    private void updateRoomStateGuestOut(List<String> roomList) {
+        for (String roomId : roomList) {
+            roomService.updateRoomStateGuestOut(roomId);
+        }
+    }
+
+    /**
+     * 离店明细单元，返回离店金额（在店消费金额）
+     */
+    private Double newCheckOut(GuestOut guestOut) throws Exception {
+        CheckOut checkOut = new CheckOut();
+        checkOut.setCheckOutSerial(serialService.getCheckOutSerial());
+        checkOut.setCheckOutTime(timeService.getNow());
+        checkOut.setUserId(userService.getCurrentUser());
+        checkOut.setRemark(guestOut.getRemark());
+        checkOut.setRoomId(roomService.roomListToString(guestOut.getRoomIdList()));
+        if (guestOut.getGroupAccount() == null) {
+            CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
+            checkOut.setReachTime(checkIn.getReachTime());
+            checkOut.setSelfAccount(checkIn.getSelfAccount());
+            checkOut.setCompany(checkIn.getCompany());
+            checkOut.setDeposit(checkIn.getDeposit());
+        } else {
+            CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+            checkOut.setReachTime(checkInGroup.getReachTime());
+            checkOut.setGroupAccount(guestOut.getGroupAccount());
+            checkOut.setCompany(checkInGroup.getCompany());
+            checkOut.setDeposit(checkInGroup.getDeposit());
+            checkOut.setGroupName(checkInGroup.getName());
+            /*如果是团队的话备份checkOutGroup*/
+            CheckOutGroup checkOutGroup = new CheckOutGroup(checkInGroup);
+            checkOutGroup.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkOutGroupService.add(checkOutGroup);
+        }
+        List<String> roomList = guestOut.getRoomIdList();
+        Double totalConsume = 0.0;
+        for (String s : roomList) {
+            CheckIn checkIn = checkInService.getByRoomId(s);
+            totalConsume += checkIn.getNotNullConsume();
+        }
+        checkOut.setConsume(totalConsume);
+        checkOutService.add(checkOut);
+        return totalConsume;
+    }
+
+    /**
+     * 额外的加收房租
+     */
+    private void debtAddIn(GuestOut guestOut) {
+        if (guestOut.getDebtAddList() != null) {
+            if (guestOut.getDebtAddList().size() != 0) {
+                debtService.addDebt(guestOut.getDebtAddList());
+            }
+        }
+    }
+
+    /**
+     * 检查是否有没退的预付，有的话自动退了(暂时没用)
+     */
+    private void cancelDeposit(GuestOut guestOut) throws Exception {
+        List<Debt> debtList;
+        if (guestOut.getGroupAccount() == null) {
+            debtList = debtService.getListByRoomId(guestOut.getRoomIdList().get(0));
+        } else {
+            debtList = debtService.getListByGroupAccount(guestOut.getGroupAccount());
+        }
+        for (Debt debt : debtList) {//账单显示退预付
+            if (debt.getNotNullDeposit() > 0 && !"已退".equals(debt.getRemark())) {
+                Debt debt1 = new Debt(debt);
+                debt1.setDeposit(-debt.getDeposit());
+                debt1.setDescription("结账退预付");
+                debtService.add(debt1);
+            }
+        }
+    }
+
+    /**
+     * 账务明细转移到账务历史，并返回需要结算的账务
+     */
+    private List<Debt> debtToHistory(GuestOut guestOut) throws Exception {
+        List<Debt> debtList = new ArrayList<>();
+        List<String> roomList = guestOut.getRoomIdList();
+        for (String s : roomList) {
+            debtList.addAll(debtService.getListByRoomId(s));
+        }
+        List<DebtHistory> debtHistoryList = new ArrayList<>();
+        for (Debt debt : debtList) {
+            if (debt.getPaySerial() == null) {
+                debt.setPaySerial(serialService.getPaySerial());
+            }
+            DebtHistory debtHistory = new DebtHistory(debt);
+            debtHistory.setDoneTime(timeService.getNow());
+            debtHistoryList.add(debtHistory);
+        }
+        debtHistoryService.add(debtHistoryList);
+        return debtList;
+    }
+
+    /**
+     * 更新中间结算
+     */
+    private void debtPayMiddle(GuestOut guestOut) throws Exception {
+        List<DebtPay> debtPayList = new ArrayList<>();
+        List<String> roomList = guestOut.getRoomIdList();
+        for (String s : roomList) {
+            CheckIn checkIn = checkInService.getByRoomId(s);//在店户籍
+            debtPayList.addAll(debtPayService.getListBySelfAccount(checkIn.getSelfAccount()));
+        }
+        for (DebtPay debtPay : debtPayList) {
+            debtPay.setCheckOutSerial(serialService.getCheckOutSerial());
+        }
+        debtPayService.update(debtPayList);
+    }
+
+    /**
+     * 生成结账记录，同时处理分单，返回分担信息字符串，供操作日志记录
+     */
+    private String debtPayProcess(GuestOut guestOut) throws Exception {
+        String changeDebt = "";
+        /*结账记录，循环分单*/
+        List<CurrencyPost> currencyPayList = guestOut.getCurrencyPayList();
+        for (CurrencyPost currencyPost : currencyPayList) {
+            String currency = currencyPost.getCurrency();
+            String currencyAdd = currencyPost.getCurrencyAdd();
+            Double money = currencyPost.getMoney();
+            DebtPay debtPay = new DebtPay();
+            debtPay.setPaySerial(serialService.getPaySerial());
+            debtPay.setCheckOutSerial(serialService.getCheckOutSerial());
+            debtPay.setDebtMoney(money);
+            debtPay.setCurrency(currency);
+            debtPay.setCurrencyAdd(currencyAdd);
+            debtPay.setDoneTime(timeService.getNow());
+            debtPay.setDebtCategory(debtPayService.ldjs);
+            debtPay.setRoomId(roomService.roomListToString(guestOut.getRoomIdList()));
+            if (guestOut.getGroupAccount() == null) {
+                CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
+                debtPay.setCompany(checkIn.getCompany());
+                debtPay.setSelfAccount(checkIn.getSelfAccount());
+                debtPay.setGroupAccount(checkIn.getGroupAccount());
+            } else {
+                CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+                debtPay.setCompany(checkInGroup.getCompany());
+                debtPay.setGroupAccount(checkInGroup.getGroupAccount());
+            }
+            debtPay.setDescription("离店结算结账记录");
+            debtPay.setPointOfSale(pointOfSaleService.JQ);
+            debtPay.setUserId(userService.getCurrentUser());
+            debtPayService.add(debtPay);
+            changeDebt += " 币种:" + currency + "/" + money;
+            /*通过币种判断结账类型*/
+            changeDebt+=debtPayService.parseCurrency(currency, currencyAdd, money, guestOut.getRoomIdList(),guestOut.getGroupAccount(),"退房",serialService.getPaySerial(),"接待");
+            this.checkVip(guestOut, currency, money);
+        }
+        return changeDebt;
+    }
+
+    /**
+     * 判断押金币种，如果是会员则需要把钱还回去
+     */
+    private void checkVipDeposit(GuestOut guestOut) {
+        List<Debt> debtList = debtService.getDepositListByRoomList(guestOut.getRoomIdList());
+        for (Debt debt : debtList) {
+            if (currencyService.HY.equals(debt.getCurrency())) {
+                vipService.depositByVip(debt.getVipNumber(), -debt.getDeposit());
+            }
+        }
+    }
+
+    /**
+     * 如果有单位协议，将该协议记录到单位消费之中
+     */
+    private void checkCompany(GuestOut guestOut, Double money) {
+        if (guestOut.getGroupAccount() == null) {
+            CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
+            if (checkIn.getCompany() != null) {
+                companyService.addConsume(checkIn.getCompany(), money);
+            }
+        } else {
+            CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+            if (checkInGroup.getCompany() != null) {
+                companyService.addConsume(checkInGroup.getCompany(), money);
+            }
+        }
+    }
+
+    /**
+     * 如果有会员号，并且结算的时候没有用会员余额或者积分计算的话，累计积分
+     */
+    private void checkVip(GuestOut guestOut, String currency, Double money) throws Exception {
+        if (guestOut.getGroupAccount() == null) {
+            CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
+            if (checkIn.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
+                vipService.updateVipScore(checkIn.getVipNumber(), money);
+            }
+        } else {
+            CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+            if (checkInGroup.getVipNumber() != null) {//有会员卡号并且币种是积分币种
+                List<Currency> currencyList = currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency)));
+                if (currencyList.size() > 0) {
+                    if (currencyList.get(0).getScore()) {
+                        vipService.updateVipScore(checkInGroup.getVipNumber(), money);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 户籍转换，返回宾客姓名字符串
+     */
+    private String checkInProcess(GuestOut guestOut) throws Exception {
+        List<String> roomList = guestOut.getRoomIdList();
+        String guestName = "";
+        List<CheckOutRoom> checkOutRoomList = new ArrayList<>();
+        for (String s : roomList) {
+            CheckIn checkIn = checkInService.getByRoomId(s);//在店户籍
+            List<String> checkInGuestCardIdList = new ArrayList<>();//准备添加的宾客信息去重
+            List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(checkIn.getRoomId());
+            List<CheckInHistory> checkInHistoryList = new ArrayList<>();
+            List<CheckInHistoryLog> checkInHistoryLogList = new ArrayList<>();
+            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryLogList, checkIn.getSelfAccount(), checkInGuestCardIdList);
+            checkInHistoryLogService.add(checkInHistoryLogList);
+            checkInHistoryService.add(checkInHistoryList);
+            /*离店房明细*/
+            CheckOutRoom checkOutRoom = new CheckOutRoom();
+            checkOutRoom.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkOutRoom.setRoomId(checkIn.getRoomId());
+            checkOutRoom.setSelfAccount(checkIn.getSelfAccount());
+            checkOutRoom.setSource(checkIn.getGuestSource());
+            checkOutRoom.setRoomPriceCategory(checkIn.getRoomPriceCategory());
+            checkOutRoom.setProtocol(checkIn.getProtocol());
+            checkOutRoom.setReachTime(checkIn.getReachTime());
+            checkOutRoom.setLeaveTime(timeService.getNow());
+            checkOutRoom.setName(guestName);
+            checkOutRoom.setCompany(checkIn.getCompany());
+            checkOutRoomList.add(checkOutRoom);
+        }
+        checkOutRoomService.add(checkOutRoomList);
+        return guestName;
+    }
+
+    /**
+     * 宾客户籍等转换，返回在店宾客姓名字符串
+     */
+    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistoryLog> checkInHistoryLogList, String selfAccount, List<String> checkInGuestCardIdList) throws Exception {
+        String guestName = "";
+        for (CheckInGuest checkInGuest : checkInGuestList) {
+            CheckIn checkIn = checkInService.getByRoomId(checkInGuest.getRoomId());
+            guestName += checkInGuest.getName() + ",";
+            if (checkInHistoryService.getByCardId(checkInGuest.getCardId()) == null) {//如果该宾客没来过，加一条
+                if (checkInGuestCardIdList.indexOf(checkInGuest.getCardId()) == -1) {//信息去重
+                    CheckInHistory checkInHistory = new CheckInHistory(checkInGuest);
+                    checkInHistory.setLastTime(timeService.getNow());
+                    checkInHistoryList.add(checkInHistory);
+                    checkInGuestCardIdList.add(checkInGuest.getCardId());
+                }
+            }
+            CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);//来过没来过的，都在住房记录里加一条
+            checkInHistoryLog.setCardId(checkInGuest.getCardId());
+            checkInHistoryLog.setLeaveTime(timeService.getNow());
+            checkInHistoryLog.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkInHistoryLogList.add(checkInHistoryLog);
+        }
+        this.idCardVipProcess(checkInGuestList);
+        return guestName;
+    }
+
+    /**
+     * 生成身份证会员
+     */
+    private void idCardVipProcess(List<CheckInGuest> checkInGuestList) throws Exception {
+        if (otherParamService.getValueByName("客史会员").equals("n")) {
+            return;
+        }
+        for (CheckInGuest checkInGuest : checkInGuestList) {
+            if (vipService.get(new Query("vip_number=" + util.wrapWithBrackets(checkInGuest.getCardId()))).size() == 0) {
+                Vip vip = new Vip();
+                vip.setVipNumber(checkInGuest.getCardId());
+                vip.setCardId(checkInGuest.getCardId());
+                vip.setCategory(vipService.KS);
+                vip.setName(checkInGuest.getName());
+                vip.setSex(checkInGuest.getSex());
+                vip.setAddress(checkInGuest.getAddress());
+                vip.setRace(checkInGuest.getRace());
+                vip.setBirthdayTime(checkInGuest.getBirthdayTime());
+                vip.setPhone(checkInGuest.getPhone());
+                vip.setScore(0);
+                vip.setRemain(0.0);
+                vip.setDoTime(timeService.getNow());
+                vip.setUserId(userService.getCurrentUser());
+                vipService.add(vip);
+            }
+        }
+    }
+
+    /**
+     * 生成离店报表
+     */
+    private Integer reportProcess(GuestOut guestOut, String guestName, String changeDebt, List<Debt> debtList) throws Exception {
+        /*创建报表，并返回单据号
+        * param:
+        * 1.酒店名称                          otherParamService.getValueByName("酒店名称")
+        * 2.姓名                              guestName
+        * 3.房号                              roomID
+        * 4.结账序列号(流水号)                serialService.getCheckOutSerial()
+        * 5.到达日期                          reachTime
+        * 6.离店日期                          timeService.getNowLong()
+        * 7.公司                              company
+        * 8.团队名称                          groupName
+        * 9.收款员                            userService.getCurrentUser()
+        * 10.结账时间                         timeService.getNowLong()
+        * 11.结账总金额                       ifNotNullGetString(consume)
+        * 12.结算币种信息(转账信息)           changeDebt
+        * 13.补交找回金额信息                 cancelMsg
+        * 14.主账号                           account
+        * 15.团队房结算的话显示总房数         roomIdAll
+        * 16.日租金                           finalRoomPrice
+        * 17.总预付                           ifNotNullGetString(deposit)
+        * 18.总房费                           ifNotNullGetString(totalRoomConsume)
+        * 19.总房吧消费                       ifNotNullGetString(totalRoomShopConsume)
+        * 20.其他消费                         ifNotNullGetString(otherConsume)
+        * field
+        * 1.日期
+        * 2.房号
+        * 3.摘要
+        * 4.消费
+        * 5.押金
+        * 6.币种
+        * 7.操作员
+        * */
+        String reachTime;
+        String company;
+        Double consume;
+        Double deposit;
+        String groupName = null;
+        String roomID = null;
+        String roomIdAll = null;
+        List<String> roomList = guestOut.getRoomIdList();
+        String account;
+        String finalRoomPrice = null;
+        Double totalRoomConsume;//总房费
+        Double totalRoomShopConsume;//总房吧费
+        Double otherConsume;
+        String title=otherParamService.getValueByName("酒店名称");
+        if (guestOut.getAgain() == null) {
+            if (guestOut.getGroupAccount() == null) {
+                if(debtList==null) {
+                    debtList = debtService.getListByRoomId(guestOut.getRoomIdList().get(0));
+                }
+                CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
+                reachTime = timeService.dateToStringLong(checkIn.getReachTime());
+                company = checkIn.getCompany();
+                consume = checkInService.getNeedPay(checkIn);
+                deposit = checkIn.getDeposit();
+                roomID = checkIn.getRoomId();
+                account = checkIn.getSelfAccount();
+                finalRoomPrice = ifNotNullGetString(checkIn.getFinalRoomPrice());
+                totalRoomConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房费", checkIn.getSelfAccount());
+                totalRoomShopConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkIn.getSelfAccount());
+            } else {
+                CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+                reachTime = timeService.dateToStringLong(checkInGroup.getReachTime());
+                company = checkInGroup.getCompany();
+                Double totalConsume = 0.0;
+                for (String s : roomList) {
+                    CheckIn checkIn = checkInService.getByRoomId(s);
+                    totalConsume += checkIn.getNotNullConsume();
+                }
+                consume=totalConsume;
+                deposit = checkInGroup.getDeposit();
+                account = checkInGroup.getGroupAccount();
+                groupName = checkInGroup.getName();
+                roomIdAll = roomService.roomListToString(roomList);
+                totalRoomConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房费", checkInGroup.getGroupAccount());
+                totalRoomShopConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkInGroup.getGroupAccount());
+            }
+            /*如果是查询结账单，需要把加收房租数组手动添加进去，并且在标题后标注明是查询单*/
+            if (guestOut.getDebtAddList() != null && changeDebt == null) {//明细单的判断条件
+                debtList.addAll(guestOut.getDebtAddList());
+                consume+=debtService.getTotalConsumeByList(guestOut.getDebtAddList());
+                title+="/查询单";
+            }
+        } else {//补打结账单
+            debtList = debtService.getByHistory(debtHistoryService.getListByPaySerial(guestOut.getPaySerial()));
+            CheckOut checkOut = checkOutService.get(new Query("check_out_serial=" + util.wrapWithBrackets(guestOut.getCheckOutSerial()))).get(0);
+            reachTime = timeService.dateToStringLong(checkOut.getReachTime());
+            company = checkOut.getCompany();
+            consume = checkOut.getConsume();
+            deposit = checkOut.getDeposit();
+            if (guestOut.getGroupAccount() == null) {
+                account = checkOut.getSelfAccount();
+                finalRoomPrice = checkOutRoomService.getByCheckOutSerial(guestOut.getCheckOutSerial()).get(0).getFinalRoomPrice();
+                totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getSelfAccount());
+                totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getSelfAccount());
+            } else {
+                account = checkOut.getGroupAccount();
+                groupName = checkOut.getGroupName();
+                roomIdAll = roomService.roomListToString(roomList);
+                totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getGroupAccount());
+                totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getGroupAccount());
+            }
+        }
+        otherConsume = nullToZero(consume) - nullToZero(totalRoomConsume) - nullToZero(totalRoomShopConsume);
+        debtList = debtService.mergeDebt(debtList);
+        List<FieldTemplate> templateList = new ArrayList<>();
+        String cancelMsg = "";//退预付信息,计算思路，先把结账的金额至为负，然后用押金相同币种的加，最后如果不是0，就是找回或者补交的金额
+        List<CurrencyPost> currencyPostList = guestOut.getCurrencyPayList();
+        for (CurrencyPost currencyPost : currencyPostList) {//先把所有金额置为负
+            currencyPost.setMoney(-currencyPost.getMoney());
+        }
+        for (Debt debt : debtList) {//同时更新汇总信息
+            FieldTemplate var = new FieldTemplate();
+            var.setField1(timeService.getNowLong());
+            var.setField2(debt.getRoomId());
+            var.setField3(debt.getDescription());
+            var.setField4(String.valueOf(debt.getNotNullConsume()));
+            var.setField5(String.valueOf(debt.getNotNullDeposit()));
+            var.setField6(String.valueOf(debt.getCurrency()));
+            var.setField7(debt.getUserId());
+            templateList.add(var);
+            if (debt.getNotNullDeposit() > 0 && !"已退".equals(debt.getRemark())) {//没有退的押金，准备考虑与结账币种的关系
+                boolean haveSame = false;
+                for (CurrencyPost currencyPost : currencyPostList) {
+                    if (currencyPost.getCurrency().equals(debt.getCurrency())) {//相同的币种结账方式
+                        currencyPost.setMoney(debt.getNotNullDeposit() + currencyPost.getMoney());
+                        haveSame = true;
+                    }
+                }
+                if (!haveSame) {//如果结账币种中没有押金币种
+                    cancelMsg += "找回金额：" + debt.getNotNullDeposit() + "(" + debt.getCurrency() + ") ";
+                }
+            }
+        }
+        for (CurrencyPost currencyPost : currencyPostList) {//看看还有没有剩下的补交信息
+            if (currencyPost.getMoney() >= 0) {
+                cancelMsg += "找回金额：" + currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ") ";
+            }
+            if (currencyPost.getMoney() < 0) {
+                cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
+            }
+        }
+        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, timeService.getNowLong(), company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume)};
+        return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
+    }
+
+
+    /**
+     * 操作员记录
+     */
+    private void addUserLog(GuestOut guestOut, String changeDebt) throws Exception {
+        String userAction = "离店结算:" + roomService.roomListToString(guestOut.getRoomIdList()) + changeDebt;
+        if (guestOut.getGroupAccount() == null) {
+            userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOut,serialService.getPaySerial());
+        } else {
+            userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOutGroup,serialService.getPaySerial());
+        }
+    }
+
+    /**
+     * 删除账务，开房信息，团队开房信息，在店宾客
+     */
+    private void delete(GuestOut guestOut) throws Exception {
+        List<Debt> debtList = new ArrayList<>();
+        List<String> roomList = guestOut.getRoomIdList();
+        /*是否需要删除房价协议（自定义房价时需要删除）*/
+        boolean deleteProtocol=otherParamService.getValueByName("可编辑房价").equals("y");
+        for (String s : roomList) {
+            debtList.addAll(debtService.getListByRoomId(s));
+            CheckIn checkIn = checkInService.getByRoomId(s);//在店户籍
+            List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(s);
+            checkInService.delete(checkIn);
+            checkInGuestService.delete(checkInGuestList);
+            /*删除房价协议*/
+            if(deleteProtocol) {
+                //先看看能不能查找到,团队房找不到，所以不用删
+                Protocol protocol=protocolService.getByNameTemp(checkIn.getProtocol());
+                if(protocol!=null) {
+                    protocolService.delete(protocol);
+                }
+            }
+        }
+
+        CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+        if (checkInGroup != null) {
+            if (guestOut.getRoomIdList().size() != checkInGroup.getTotalRoom()) {//说明是结的部分房间
+                for (Debt debt : debtList) {
+                    checkInGroup.setConsume(checkInGroup.getNotNullGroupConsume() - debt.getNotNullConsume());
+                    checkInGroup.setDeposit(checkInGroup.getNotNullGroupDeposit() - debt.getNotNullDeposit());
+                }
+                checkInGroup.setTotalRoom(checkInGroup.getTotalRoom() - guestOut.getRoomIdList().size());
+                checkInGroupService.update(checkInGroup);
+            } else {
+                checkInGroupService.delete(checkInGroup);
+            }
+        }
+        debtService.delete(debtList);
+    }
+
+    /**
+     * 补打结账单
+     * 只有离店结算的结账记录才会传进来
+     */
+    @RequestMapping(value = "guestOutPrintAgain")
+    public Integer guestOutPrintAgain(@RequestBody DebtPay debtPay) throws Exception {
+        timeService.setNow();
+        serialService.setPaySerial(debtPay.getPaySerial());
+        serialService.setCheckOutSerial(debtPay.getCheckOutSerial());
+        /*构造一个GuestOut*/
+        GuestOut guestOut = new GuestOut();
+        List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+        guestOut.setRoomIdList(checkOutRoomService.simpleToString(checkOutRoomList));//房间字符串数组
+        guestOut.setGroupAccount(debtPay.getGroupAccount());//公付账号，如果没有则是空
+        guestOut.setAgain("补打");//注明是补打
+        /*生成结账数组*/
+        List<DebtPay> debtPayList = debtPayService.getListByPaySerial(debtPay.getPaySerial());
+        List<CurrencyPost> currencyPostList = new ArrayList<>();
+        String changeDebt = "";//转账信息
+        for (DebtPay pay : debtPayList) {
+            currencyPostList.add(new CurrencyPost(pay));
+            changeDebt += "币种:" + pay.getCurrency() + "/" + pay.getDebtMoney();
+        }
+        guestOut.setCurrencyPayList(currencyPostList);
+        guestOut.setPaySerial(debtPay.getPaySerial());
+        guestOut.setCheckOutSerial(debtPay.getCheckOutSerial());
+        String guestName = util.listToString(checkInHistoryService.getNameList(checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial())));
+        return reportProcess(guestOut, guestName, changeDebt, null);
+    }
+
+    /**
+     * 叫回账单
+     */
+    @RequestMapping(value = "checkOutReverse")
+    @Transactional(rollbackFor = Exception.class)
+    public Integer checkOutReverse(@RequestBody DebtPay debtPay) throws Exception {
+        String groupAccount = debtPay.getGroupAccount();
+        String selfAccount = debtPay.getSelfAccount();
+        String paySerial = debtPay.getPaySerial();
+        String checkOutSerial = debtPay.getCheckOutSerial();
+        /*如果有会员标志，先获取，方便之后查看余额什么的*/
+        Vip vip = null;
+        if (debtPay.getVipNumber() != null) {
+            vip = vipService.get(new Query("vip_number=" + util.wrapWithBrackets(debtPay.getVipNumber()))).get(0);
+        }
+        List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(checkOutSerial);
+        /*当前房间状态检验，通过的话更新房态，同时生成checkIn*/
+        List<Room> roomList = roomService.getListByRoomIdString(checkOutRoomService.simpleToString(checkOutRoomList));
+        for (Room room : roomList) {
+            if (room.getState().equals(roomService.group) || room.getState().equals(roomService.guest) || room.getState().equals(roomService.repair)) {
+                return -1;//房间状态不允许
+            }
+            if (groupAccount == null) {
+                room.setState(roomService.guest);
+            } else {
+                room.setState(roomService.group);
+            }
+            room.setCheckOutTime(null);
+            CheckIn checkIn = new CheckIn();
+            checkIn.setRoomId(room.getRoomId());
+        }
+        roomService.update(roomList);
+        /*离店信息删除*/
+        CheckOut checkOutQuery = new CheckOut();
+        checkOutQuery.setCheckOutSerial(checkOutSerial);
+        checkOutService.delete(checkOutQuery);
+        /*删除加收房租*/
+        debtHistoryService.deleteAddDebt(paySerial);
+        /*账务历史迁移*/
+        List<DebtHistory> debtHistoryList = debtHistoryService.getListExcludeAddDebt(paySerial);
+        List<Debt> debtList = new ArrayList<>();
+        Double vipRemain = 0.0;
+        if (vip != null) {
+            vipRemain = vip.getNotNullVipRemain();
+        }
+        for (DebtHistory debtHistory : debtHistoryList) {
+            Debt debt = new Debt(debtHistory);
+            debt.setPaySerial(null);
+            debtList.add(debt);
+            /*判断押金币种，如果是会员还要重新冻结*/
+            if (currencyService.HY.equals(debt.getCurrency())) {
+                if (vipRemain < debt.getDeposit()) {
+                    return -2;//会员押金余额不足
+                }
+                vipRemain -= debt.getDeposit();
+                vipService.depositByVip(debt.getVipNumber(), debt.getDeposit());
+            }
+        }
+        debtService.add(debtList);
+        debtHistoryService.delete(debtHistoryList);
+        /*处理结账币种信息*/
+        List<DebtPay> debtPayList = debtPayService.getListByPaySerial(debtPay.getPaySerial());
+        for (DebtPay pay : debtPayList) {
+            String currency = pay.getCurrency();
+            String currencyAdd = pay.getCurrencyAdd();
+            Double money = pay.getDebtMoney();
+            debtPayService.cancelPay(currency, currencyAdd, money, pay.getPaySerial(),"接待");
+            if (debtPay.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
+                vipService.updateVipScore(debtPay.getVipNumber(), money);
+            }
+        }
+        debtPayService.delete(debtPayList);
+        /*判断单位协议，去掉协议消费*/
+        if (debtPay.getCompany() != null) {
+            companyService.addConsume(debtPay.getCompany(), -debtPay.getDebtMoney());
+        }
+        /*逆向户籍转换，删除宾客历史，同时生成checkIn和checkInGroup(checkInHistory可以不删，反正总是要结账的)*/
+        checkOutRoomService.delete(checkOutRoomList);
+        List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.get(new Query("check_out_serial=" + util.wrapWithBrackets(checkOutSerial)));
+        checkInHistoryLogService.delete(checkInHistoryLogList);
+        List<CheckIn> checkInList = new ArrayList<>();
+        for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
+            CheckIn checkIn = new CheckIn(checkInHistoryLog);
+            checkIn.setConsume(debtService.getTotalConsumeByRoomId(checkIn.getRoomId()));
+            checkInList.add(checkIn);
+        }
+        checkInService.add(checkInList);//生成在店户籍
+        if (debtPay.getGroupAccount() != null) {//如果是团队开房的话，生成团队信息
+            CheckInGroup checkInGroup = new CheckInGroup(checkOutGroupService.getByCheckOutSerial(checkOutSerial));
+            checkInGroup.setConsume(debtService.getTotalConsumeByGroupAccount(groupAccount));
+            checkInGroupService.add(checkInGroup);
+        }
+        List<CheckInHistory> checkInHistoryList = checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());//恢复checkInGuest
+        List<CheckInGuest> checkInGuestList = new ArrayList<>();
+        for (CheckInHistory checkInHistory : checkInHistoryList) {
+            checkInGuestList.add(new CheckInGuest(checkInHistory));
+        }
+        checkInGuestService.add(checkInGuestList);
+        /*操作员记录*/
+        userLogService.addUserLog("叫回账单:" + checkOutSerial, userLogService.reception, userLogService.guestOutReverse,checkOutSerial);
+        return 0;
+    }
+
+    /**
+     * 消费查询单
+     */
+    @RequestMapping(value = "guestOutQuery")
+    public Integer guestOutQuery(@RequestBody GuestOut guestOut) throws Exception {
+        timeService.setNow();
+        List<Debt> debtList=new ArrayList<>();
+            for (String s : guestOut.getRoomIdList()) {
+                debtList.addAll(debtService.getListByRoomId(s));
+            }
+        return this.reportProcess(guestOut, checkInGuestService.listToStringName(checkInGuestService.getListByRoomIdList(guestOut.getRoomIdList())), null, debtList);
+    }
+}

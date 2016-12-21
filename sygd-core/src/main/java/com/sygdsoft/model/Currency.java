@@ -1,0 +1,66 @@
+package com.sygdsoft.model;
+
+import com.sygdsoft.util.NullJudgement;
+
+/**
+ * Created by 舒展 on 2016-04-13.
+ * 币种
+ */
+public class Currency extends BaseEntity{
+    private String currency;//币种代码
+    private Boolean score;//参与积分
+    private Boolean checkIn;//结账币种
+    private Boolean checkOut;//押金币种
+    private Boolean payTotal;//参与结算款统计
+
+    public Currency() {
+    }
+
+    public boolean getNotNullScore(){
+        return NullJudgement.nullToZero(score);
+    }
+
+    public Currency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public Boolean getScore() {
+        return score;
+    }
+
+    public void setScore(Boolean score) {
+        this.score = score;
+    }
+
+    public Boolean getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(Boolean checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public Boolean getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(Boolean checkOut) {
+        this.checkOut = checkOut;
+    }
+
+    public Boolean getPayTotal() {
+        return payTotal;
+    }
+
+    public void setPayTotal(Boolean payTotal) {
+        this.payTotal = payTotal;
+    }
+}

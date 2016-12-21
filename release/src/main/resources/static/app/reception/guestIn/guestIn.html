@@ -1,0 +1,135 @@
+<div class="tanchuang huang" ng-controller="GuestInController" ng-if="pop" drag>
+    <dl class="tctit"><h1>入住登记表</h1></dl>
+    <div class="tcDiv">
+        <dl class="tcTopName" ng-show="roomBookList">
+            预定转入住：
+            <select style="width: 112px; float: none" ng-model="book" ng-options="x.name for x in roomBookList " ng-change="chooseBook(book)">
+            <option>选择预订名称</option>
+             </select>
+            <span ng-repeat="bookMoney in book.bookMoneyList">&nbsp;订金：￥{{bookMoney.subscription+'/'+bookMoney.currency}}</span>
+        </dl>
+        <table class="tableBordernone" style="margin-top: 5px;">
+            <tr>
+                <td>房间类别：</td>
+                <td ng-bind="room.category"></td>
+                <td>房间号码：</td>
+                <td>{{room.roomId}}</td>
+                <td>预住天数：</td>
+                <td>
+                    <input type="button" class="jia" value="-" style="margin-right: -1px;" ng-click="minusDay()">
+                    <input type="text" style="width: 50px;" id="Days" ng-model="days" ng-init="days=1">
+                    <input type="button" class="jia" value="+" style="margin-left: -1px;" ng-click="addDay()">
+                </td>
+            </tr>
+            <tr>
+                <td>协议单位：</td>
+                <td>
+                    <select style="width: 105px;" ng-model="company" ng-options="x.name for x in companyList">
+                        <option></option>
+                    </select>
+                </td>
+                <td>房价协议：</td>
+                <td style="width: 135px;">
+                    <select style="width: 130px;" ng-model="protocol" sz-not-null
+                            ng-options="x.protocol for x in protocolShowList">
+                    </select>
+                </td>
+                <td>预离时间：</td>
+                <td style="width: 330px">
+                    <input type="text" style="width: 100px;" ng-model="leave" uib-datepicker-popup/>
+                    <div class="timeSfm" ng-show="showLeaveTimeDetail">
+                        <uib-timepicker show-spinners="false" ng-model="leave" show-meridian="false"
+                                        show-seconds="true"></uib-timepicker>
+                    </div>
+                    <input type="checkbox" ng-model="showLeaveTimeDetail" style="margin-left: 10px;">精确时间
+                </td>
+            </tr>
+            <tr>
+                <td>客人来源：</td>
+                <td>
+                    <select style="width: 105px;" ng-model="guestSource" ng-options="x for x in guestSourceList">
+                    </select>
+                </td>
+                <td>房租方式：</td>
+                <td>
+                    <select style="width: 130px;" ng-model="roomPriceCategory"
+                            ng-options="x for x in roomPriceCategoryList">
+                    </select>
+                </td>
+                <td>当前时间：</td>
+                <td>
+                    <input type="text" disabled="disabled" style="width: 100px;"
+                           ng-model="now" uib-datepicker-popup>
+                </td>
+            </tr>
+            <tr>
+                <td>房价：</td>
+                <td style="text-align: left">
+                    <span ng-show="!roomPriceEditable&&protocol.roomPriceCategory=='日租房'">￥{{protocol.roomPrice}}({{protocol.breakfast}}份早餐)</span>
+                    <span ng-show="!roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
+                    <span ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'"><input type="text" ng-model="protocol.roomPrice" style="width: 92px; float: none"></span>
+                    <span ng-show="roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
+                <td ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'" style="width: 90px; text-align: right">
+                早餐：
+                </td>
+                <td ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'" style="text-align: left">
+                    <input type="text" ng-model="protocol.breakfast" style="width: 50px;">&nbsp;份
+                </td>
+                <td style="width: 100px; text-align: right">
+                    <a sz-read-key="idNumber" enter-method="readCard()" class="icon-credit-card yellow redcard">读会员卡</a>卡号：
+                </td>
+                <td style="text-align: left; width: 170px;">
+                    {{vip.vipNumber}}/{{vip.category}}
+                </td>
+            </tr>
+        </table>
+        <div class="tsRightDiv" style="width:960px">
+            <sz-table fields="checkInGuestFields" items="checkInGuestList" select-list="checkInGuestSelect"
+                      sz-not-null button="update" right-click="rightClickGuest"></sz-table>
+        </div>
+        <table class="tableBorderfff">
+            <tr>
+                <td style="width:100px;">预付款：</td>
+                <td><input type="text" name="total" class="input" ng-model="deposit"
+                           style="width: 100px;"></td>
+                <td>支付方式：</td>
+                <td style="width: 550px">
+                    <select style="width: 130px;" ng-options="x for x in currencyList" ng-model="currency">
+                    </select>
+                    <span ng-if="currency=='会员'" class="red">&nbsp;* 支付方式为会员时会先冻结该笔金额</span>
+                </td>
+
+            </tr>
+            <tr>
+                <td>特殊要求：</td>
+                <td colspan="3"><input type="text" style="width: 500px" ng-model="important"></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td colspan="5">
+                    <textarea style="width: 735px; height: 50px;" ng-model="remark"></textarea>
+                </td>
+            </tr>
+        </table>
+        <dl class="button">
+            <div class="fl">
+                <input type="button" value="读取身份证" ng-click="readIdCard()"> &nbsp;
+                <input type="checkbox" ng-model="mainGuest">是否贵宾
+            </div>
+            <div class="fr">
+                <button ng-click="guestInAction()" sz-submit sz-permission="开房">确认付款</button>
+            </div>
+        </dl>
+    </div>
+
+    <div class="closeBox" ng-click="closePop()">+</div>
+    <div class="drig" drag-handle></div>
+    <!--读身份证-->
+    <!--<object id="Control"
+            TYPE="application/xhanhan-activex"
+            ALIGN="baseline" BORDER="0"
+            WIDTH="1px" HEIGHT="1px"
+            clsid="{2FE52D49-D1E2-44C4-AE30-D35BAB691F21}">
+    </object>-->
+</div>
+<sz-pop-up name="reception/rightClickGuest/rightClickGuest.html" back="white"></sz-pop-up>

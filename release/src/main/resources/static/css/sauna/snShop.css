@@ -1,0 +1,71 @@
+.snShopTop { position: relative; text-align: center;}
+.snShopTop .snLr { width: 500px; margin: 0px auto; position: relative; background: #fff; z-index: 8}
+.snShopTop .snDiv { width: 200px; height: 30px; font-size: 16px; line-height: 30px; border: 1px solid #ddd; padding: 10px; display: inline-block; margin:10px 0px 0px 0px; text-align: left;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;}
+.snShopTop .switchNumber {  width: 350px; height: 350px; background: #fff; padding: 20px; border: 1px solid #ddd; position: absolute; left: 330px; margin-left: -125px; top:70px; z-index: 7; overflow: hidden;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+}
+.snShopTop .switchNumber ul {}
+.snShopTop .switchNumber ul li { width: 70px; height: 70px; float: left;}
+.snShopTop .switchNumber ul li button { width: 50px; height: 50px; margin: 0px auto; text-align: center; font-size: 20px;-webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;}
+.snShopTop .snDiv input[type=text] { float: none; width: 60%; display: inline-block}
+.snShopTop .switchNumber ul li input[type=button] { float: none; width: 160px; height: 50px; font-size: 20px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;}
+.snLeftBox { width: 225px; height: calc(100% - 115px); height: -webkit-calc(100% - 115px); height: -moz-calc(100% - 115px); position: fixed; top: 125px; left: 10px; z-index: 999;}
+.snShopLeft { width: 100%; background: #dce6fe; border: 1px solid #ccc; height: calc(100% - 371px); height: -webkit-calc(100% - 371px); height: -moz-calc(100% - 371px);margin-top: 10px; margin-bottom: 10px;}
+.snShopLeft .snxf { width: 90%; height: 35px; line-height: 35px; background: #c3d1f7; text-align: center; font-size:18px; color: #333; margin: 20px auto; padding: 0px;}
+.snShopLeft .snyx { width: 90%; margin: 0px auto;height: calc(100% - 80px); height: -webkit-calc(100% - 80px); height: -moz-calc(100% - 80px);  overflow-y: auto; }
+.snShopLeft .snyx li { border-bottom: 1px solid #fff; padding: 10px 0px; font-size: 16px; line-height: 24px;}
+.snShopLeft .snyx li span { float: right; color: #fe0000; padding-left: 10px;}
+.snShopLeft .snyx li:after { content: ''; height: 1px; line-height: 1px; overflow: hidden; display: block; clear: both}
+
+.snRightBox { margin-left: 250px; margin-right: 10px; position: relative; top:20px; height: calc(100% - 115px); height: -webkit-calc(100% - 115px); height: -moz-calc(100% - 115px);}
+.snShopRight { height: 100%}
+.snShopRight .jdSetting { margin: 20px auto; height: calc(100% - 120px); height: -webkit-calc(100% - 120px); height: -moz-calc(100% - 120px); overflow-y: auto;}
+.snShopRight .jdSetting .spBox { height: calc(100% - 90px);height: -webkit-calc(100% - 90px);height: -moz-calc(100% - 90px)}
+.snfl { width: 180px; height: 50px; line-height: 50px; text-align: center; font-size: 16px; background: #ddd; position: relative; z-index: 5; cursor: pointer; margin: 0px auto;}
+.snShopRight .chartBox { position: absolute; left: 15%; top:50px; width: 70%; padding: 20px 0px 20px 30px; background: #f1f1f1!important; height: auto; border: none; z-index: 4;
+    -webkit-box-shadow: 0px 0px 5px #999;
+    -moz-box-shadow: 0px 0px 5px #999;
+    box-shadow: 0px 0px 5px #999;
+}
+.snShopRight .chartBox li { min-width: 120px; padding: 0px 20px; height: 50px; margin: 0px auto; margin-right: 10px; float: left; background: #b59654; text-align: center; line-height: 50px; font-size: 16px; display: block; cursor: pointer; color: #fff;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;}
+.snShopRight .chartBox li:first-child { background: #9c7626}
+.snShopRight .chartBox li:last-child { margin-right: 0px;}
+.snShopRight .spButton { width: 120px; height: 34px; line-height: 17px; padding: 5px; border: 1px solid #fff; background: #e5e5e5; display: inline-block;  float:left; margin-right:10px;font-size:14px; -webkit-border-radius:3px; overflow: hidden; cursor: pointer; margin-bottom: 10px;
+    -moz-border-radius:3px;
+    border-radius:3px;
+    box-shadow: 1px 1px 1px #999;
+    -webkit-box-shadow: 1px 1px 1px #999;
+    -moz-box-shadow: 1px 1px 1px #999;}
+.snShopRight .spButton.hover {    background: #a14e04; color: #fff;}
+
+.skBox { width: 200px; margin: 0px auto 0px auto; padding-top: 150px;}
+.skButton { width: 200px; height: 55px; line-height: 55px;    color: #000; font-size: 24px; margin: 0px auto; word-spacing: 10px; letter-spacing: 10px;
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+    background-color: #e7d785;
+    background-image: -moz-linear-gradient(top,#fffeb8,#c49c38);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#fffeb8),to(#c49c38));
+    background-image: -webkit-linear-gradient(top,#fffeb8,#c49c38);
+    background-image: -o-linear-gradient(top,#fffeb8,#c49c38);
+    background-image: linear-gradient(to bottom,#fffeb8,#c49c38);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fffffeb8',endColorstr='#ffc49c38',GradientType=0);
+    border-color: #c49c38 #c49c38 #896d27;
+    border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);}
+
+.snShopRight .spButton span { float: right; padding-left: 10px; color: #fe0000;}
+.snShopRight .spButton.hover span { color: orange}
+.snShopRight .jdSetting .pagination a { padding: 10px 20px; font-size: 16px;}

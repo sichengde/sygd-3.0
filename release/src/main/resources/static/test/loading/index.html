@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Loading Spinner Demo</title>
+    <script src="../../angular.js"></script>
+    <script>
+        angular.module('myapp', [])
+                .service('Ser', function ($http, $q) {
+                    return {
+                        init: function () {
+                            $http.get('http://localhost:8080/test')
+                                    .then(
+                                            function (response) {
+                                                return response.data;
+                                            },
+                                            function (errResponse) {
+                                                return $q.reject(errResponse);
+                                            }
+                                    );
+                        }
+                    }
+                })
+                .controller('MyController', function ($scope, Ser) {
+                    Ser.init($scope);
+                    $scope.b = Ser.getB;
+                    $scope.a = '1';
+                })
+                .controller('Son', function ($scope, Ser) {
+                    $scope.click = function (num) {
+                        Ser.setB('b2');
+                        Ser.set(num);
+                        Ser.m();
+                    }
+                })
+    </script>
+</head>
+
+<body ng-app="myapp" ng-controller="MyController">
+{{1464479757954|date:'yyyy-MM-dd HH:mm:ss'}}
+<hr>
+<div ng-controller="Son">
+    <button ng-click="click(123)">123</button>
+</div>
+</body>
+</html>

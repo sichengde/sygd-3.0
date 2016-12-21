@@ -1,0 +1,28 @@
+<div class="tanchuang" ng-controller="userPermissionController" ng-if="pop" sz-pop-top drag>
+    <dl class="tctit"><h1>权限管理</h1></dl>
+    <div class="tcDiv">
+        <div class="chooseUser">
+            用户选择：<select ng-model="user" ng-options="x.userId for x in userList"
+                         style="width: 100px; float: none"></select>
+            <b>当前权限: {{user.permissionArray}}</b>
+        </div>
+        <div class="qxBox">
+            <h1>可用的权限：</h1>
+            <div class="tableBorderaaa" style="padding: 15px; padding-bottom: 0px; width: 930px">
+                <dl ng-repeat="(key,value) in user.moduleList">
+                    <dt>{{key}}：</dt>
+                    <dd>
+                        <span ng-repeat="r2 in value">{{r2.text}}<input type="checkbox" ng-model="r2.check"> </span>
+                    </dd>
+                </dl>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="button">
+            <button ng-click="updatePermission()" class="aButton">确定</button>
+        </div>
+    </div>
+
+    <div class="closeBox" ng-click="closePop('userPermission')">+</div>
+    <div class="drig" drag-handle></div>
+</div>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../angular.js"></script>
+    <script>
+        angular.module('app', [])
+                .controller('My', ['$scope', function ($scope) {
+                    $scope.aaa = '123';
+                }])
+                .directive('szInput', [function () {
+                    return {
+                        restrict: 'E',
+                        replace: true,
+                        template: function (ele, attr, aaa) {
+                            return '<input ng-model="aaa">' + ele.aaa;
+                        },
+                        link: function (scope, ele, attr, ctr) {
+                            ele.attr('a', '1');
+                        }
+                    }
+                }]);
+    </script>
+</head>
+<body ng-app="app" ng-controller="My">
+</body>
+</html>

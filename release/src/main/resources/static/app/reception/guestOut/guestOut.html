@@ -1,0 +1,107 @@
+<div class="tanchuang" ng-controller="GuestOutController" ng-if="pop" drag>
+    <dl class="tctit"><h1>客人账单</h1></dl>
+    <div class="tcDiv">
+        <dl class="tcTopName">主账单号：<span style="margin-right: 10px;">{{checkInGroup?checkInGroup.groupAccount:checkIn.selfAccount}}</span></dl>
+        <table class="tableBordernone" style="margin-top: 5px;">
+            <tr>
+                <td class="ppp">
+                    <p><span>{{checkInGroup?'团名：':'姓名：'}}</span>{{checkInGroup?checkInGroup.name:checkInGuestName}}</p>
+                    <p ng-show="checkInGroup"><span>领队姓名：</span><input type="text" disabled="disabled" ng-model="checkInGroup.leader" style="width: 100px;"></p>
+                    <p ng-show="checkInGroup"><span>电话：</span><input type="text" disabled="disabled" ng-model="checkInGroup.phone" style="width:120px;"></p>
+                    <!--<p><input type="checkbox" ng-checked="ifRoomPriceAdd" ng-model="ifRoomPriceAdd">加收房租</p>-->
+                    <p><span>入住时间：</span>{{(checkInGroup?checkInGroup.reachTime:checkIn.reachTime) | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                    <p><span>离店时间：</span>{{nowTime | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                    <p><span>房租方式：</span>{{checkInGroup?checkInGroup.roomPriceCategory:checkIn.roomPriceCategory}}</p>
+                    <p ng-show="enableCancelDebtAdd"><span>加收房租：</span><input type="checkbox" ng-click="calculateDebtAdd()" ng-model="ifDebtAdd"></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style=" width: 80px; text-align: right; display: block; float: left; margin-top: 15px;">占房信息：</span>
+                    <div class="checkInRoom" style="margin-left: 80px;">
+                        <a class="roomID {{r.hover}}" ng-click="toggleRoom(r)" ng-repeat="r in checkInList" sz-hover-room>
+                            {{r.roomId}}
+                            <div class="hoverDiv">
+                                {{r.remark}}
+                            </div>
+                        </a>
+                        <a style="margin-left: 10px; margin-top: 10px; color: #d20000"
+                           class="icon-credit-card fl" ng-click="readDoor()"> 读门锁卡</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <table class="tableBlueTc">
+                <thead>
+                <tr style="display: block">
+                    <th style="width: 88px">房号</th>
+                    <th style="width: 203px">项目名称</th>
+                    <th style="width: 88px">消费</th>
+                    <th style="width: 88px">押金</th>
+                    <th style="width: 106px">支付方式</th>
+                    <th style="width: 132px">入账时间</th>
+                    <th style="width: 176px">备注</th>
+                </tr>
+                </thead>
+                <tbody style=" max-height: 150px; display: block; overflow-x: hidden; overflow-y: scroll; width:calc(100% + 15px)">
+                <tr ng-repeat="r in debtShowList">
+                    <td style="width: 88px" ng-bind="r.roomId"></td>
+                    <td style="width: 203px" ng-bind="r.description"></td>
+                    <td style="width: 88px" ng-bind="r.consume|currency"></td>
+                    <td style="width: 88px" ng-bind="r.deposit|currency"></td>
+                    <td style="width: 106px" ng-bind="r.currency"></td>
+                    <td style="width: 132px" ng-bind="r.doTime | date:'yyyy-MM-dd HH:mm:ss'"></td>
+                    <td style="width: 176px" ng-bind="r.remark"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <table class="tableBorderfff">
+            <tr>
+                <td style="width: 100px;">消费金额：</td>
+                <td width="130">￥{{totalConsume}} &nbsp;&nbsp;<span class="red" ng-click="manyCurrency()" style="margin-top: 10px; cursor: pointer">+分单</span></td>
+                <td>客人预付：</td>
+                <td>￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}}</td>
+                <td>备注：</td>
+                <td style="width: 350px;" ng-show="checkInGroup"><input type="text" style="width: 300px;" ng-model="checkInGroup.remark"></td>
+                <td style="width: 350px;" ng-show="!checkInGroup"><input type="text" style="width: 300px;" ng-model="checkInList[0].remark"></td>
+            </tr>
+            <tr>
+                <td width="80">现金退款：</td>
+                <td colspan="5">{{depositMessage}}</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                  <sz-pay></sz-pay>
+              </td>
+            </tr>
+
+        </table>
+
+        <dl class="button">
+            <div class="fl" style="width:450px; text-align: left ">
+                <input type="button" class="sbe" value="房吧入账" ng-click="roomShopIn()">
+                <input type="button" class="sbe" value="消费挂账" ng-click="otherConsume()">
+                <input type="button" class="sbe" value="退押金" ng-click="cancelDeposit()">
+                <input type="button" class="sbe" value="转哑房" ng-click="guestOutLost()">
+            </div>
+            <div class="fr">
+                <button class="sbe" ng-click="guestOutAction()" sz-submit sz-permission="结账">结账</button>
+                <input type="button" class="sbe" value="明细打印" ng-click="guestOutQuery()">
+            </div>
+        </dl>
+    </div>
+    <div class="closeBox" ng-click="closePop('guestOut')">+</div>
+    <div class="drig" drag-handle></div>
+    <!--读门锁-->
+    <!--<object  id="Control"
+             TYPE="application/xhanhan-activex"
+             ALIGN="baseline" BORDER="0"
+             WIDTH="1px"HEIGHT="1px"
+             clsid="{2FE52D49-D1E2-44C4-AE30-D35BAB691F21}">
+    </object>-->
+</div>
+
+<div ng-include="'mainState/otherConsume/otherConsume.html'" ng-if="popOtherConsume"></div>

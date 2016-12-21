@@ -1,0 +1,20 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="协议单位">
+                <div style="max-width: 1200px">
+                    <sz-table fields="companyFields" select-list="companySelectList" row-click="chooseCompany(d)" head="true" title="点击查看消费明细"></sz-table>
+                </div>
+
+                <div class="clear"></div>
+                <div class="detailTable">
+                    <h1>消费明细</h1>
+                    <sz-table fields="debtPayFields" button="add update delete" head="true" search-condition="initCondition"
+                              right-click="rightClickDebt"></sz-table>
+                </div>
+
+        </sz-pane>
+    </sz-tab>
+</div>
+
+<sz-pop-up name="reception/debtDetail/debtDetail.html"></sz-pop-up>
+<sz-pop-up name="reception/rightClickDebt/rightClickDebt.html" back="white"></sz-pop-up>

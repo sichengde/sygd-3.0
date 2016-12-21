@@ -1,0 +1,16 @@
+<ion-view title="" id="roomState" class=" ">
+  <ion-content padding="true" class="has-header" ng-controller="roomDetailControllerM">
+    <div class="toptitle">房间信息</div>
+    <div class="liContent">
+      <p>姓名：{{checkInGuestName}}</p>
+      <p>来期：{{room.checkIn.reachTime|date:'yyyy-MM-dd HH:mm:ss'}}</p>
+      <p>离期：{{room.checkIn.leaveTime|date:'yyyy-MM-dd HH:mm:ss'}}</p>
+      <p>房价：<span class="assertive">￥ {{room.checkIn.finalRoomPrice}}</span></p>
+    </div>
+    <ion-list id="roomState-list2" class=" ">
+      <ion-item class="item-divider " id="roomState-list-item-divider1">账务明细</ion-item>
+      <ion-item class="item-icon-left2  " id="roomState-list-item2" ng-repeat="r in debtList">
+        <i class="icon ion-chevron-right"></i>￥{{r.consume*1+r.deposit*1}} | {{r.doTime|date:'yyyy-MM-dd HH:mm:ss'}} | {{r.description}}</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,61 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="桌台定义">
+            <div class="szSheet" style="width: 440px">
+                <sz-tab choose-item="chooseItemDesk(d)">
+                    <sz-pane ng-repeat="r in pointOfSaleList" title="{{r.firstPointOfSale}}">
+                        <div style="margin-top: 10px; margin-left: 10px; width: 400px">
+                            <sz-table fields="deskFields" search-condition="deskCondition" items-per-page="20"></sz-table>
+                        </div>
+                    </sz-pane>
+                </sz-tab>
+            </div>
+        </sz-pane>
+        <sz-pane title="菜谱定义">
+            <div class="szSheet">
+                <sz-tab choose-item="chooseItemMenu(d)">
+                    <sz-pane ng-repeat="r in pointOfSaleList" title="{{r.firstPointOfSale}}">
+                        <div style="width: 1000px">
+                            <sz-table fields="menuFields" head="true" select-list="selectListMenu" deep-search="true" search-condition="menuCondition" right-click="rightClickMenu" always-add="true"></sz-table>
+                        </div>
+                    </sz-pane>
+                </sz-tab>
+            </div>
+        </sz-pane>
+        <sz-pane title="套餐定义">
+            <div class="szSheet">
+                <sz-tab choose-item="chooseFoodSet(d)">
+                    <sz-pane ng-repeat="r in pointOfSaleList" title="{{r.firstPointOfSale}}">
+                        <div style="width: 1000px">
+                            <sz-table fields="foodSetFields" head="true" select-list="selectListFoodSet" deep-search="true" search-condition="foodSetCondition"></sz-table>
+                        </div>
+                    </sz-pane>
+                </sz-tab>
+            </div>
+        </sz-pane>
+        <sz-pane title="厨房定义">
+            <div style="width: 1000px">
+                <sz-table fields="cookRoomFields" items-per-page="20" select-list="selectListCookRoom"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="菜品备注">
+            <div class="szSheet oneTableDiv">
+                <sz-table fields="menuRemarkFields" button="update" items-per-page="50"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="折扣定义">
+            <div style="width: 500px">
+                <sz-table fields="deskDiscountFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="其他参数表">
+            <!--此处不能用szTableHead-->
+            <div style="width: 500px">
+                <sz-table head="true" fields="otherParamFields" search-condition="otherParamCondition" items-per-page="20"></sz-table>
+            </div>
+        </sz-pane>
+    </sz-tab>
+</div>
+<sz-pop-up name="restaurant/rightClickMenu/rightClickMenu.html" back="white"></sz-pop-up>
+
+

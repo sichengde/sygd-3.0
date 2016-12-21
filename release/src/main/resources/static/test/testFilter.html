@@ -1,0 +1,69 @@
+<html>
+<head>
+    <script src="../angular.js"></script>
+    <script type="text/javascript">
+        function windowScopedFilter(input) {
+            var output = [];
+            angular.forEach(input, function (v, k) {
+                if (v.phone.contains("555")) {
+                    output.push(v);
+                }
+            });
+            return output;
+        }
+        var myapp = angular.module('MyFilterApp', []);
+        myapp.filter('myfilter', function () {
+            return function (input, param1, param2) {
+                console.log("------------------------------------------------- begin dump of custom parameters");
+                console.log("input=", input);
+                console.log("param1(string)=", param1);
+                var args = Array.prototype.slice.call(arguments);
+                console.log("param2(string)=", param2);
+                console.log("arguments=", args.length);
+                if (3 <= args.length) {
+                    console.log("param2(string)=", args[2]);
+                }
+                if (4 <= args.length) {
+                    console.log("param3(bool)=", args[3]);
+                }
+                console.log("------------------------------------------------- end dump of custom parameters");
+                // filter
+                var output = [];
+                if (input[input.length - 1].name == "Mikay") {
+                    output.push(input[0]);
+                }
+
+                return output;
+            };
+        });
+        myapp.controller('MyFilterController', ['$scope', function ($scope) {
+            $scope.friends = [{name: 'John', phone: '555-1276'},
+                {name: 'Annie', phone: '800-BIG-MARY'},
+                {name: 'Mike', phone: '555-4321'},
+                {name: 'Adam', phone: '555-5678'},
+                {name: 'David', phone: '555-8765'},
+                {name: 'Mikay', phone: '555-5678'}];
+            $scope.tests = ["1", "2", "3"];
+            $scope.a = "123";
+            $scope.ab="2";
+        }]);
+    </script>
+</head>
+<body ng-app="MyFilterApp">
+<div ng-controller="MyFilterController">
+    <table id="searchTextResults">
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+        </tr>
+        <tr ng-repeat="friend in friends |myfilter:a:'p2':true:'windowScopedFilter'">
+            <td>{{friend.name}}</td>
+            <td>{{friend.phone}}</td>
+        </tr>
+        <select ng-options="x for x in tests" ng-model="ab">
+        </select>
+    </table>
+</div>
+<hr>
+</body>
+</html>

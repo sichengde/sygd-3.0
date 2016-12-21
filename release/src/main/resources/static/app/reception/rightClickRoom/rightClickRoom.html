@@ -1,0 +1,16 @@
+<div ng-if="pop" ng-controller="rightClickRoomController" class="rightClickBox">
+    <ul>
+        <li ng-show="showIn && selfAccount" ng-click="clickPop('guestOut')"><i class="icon-user"></i>客人结账</li>
+        <li ng-show="showIn && groupAccount" ng-click="clickPop('guestOut')"><i class="icon-group"></i>团队结账</li>
+        <li ng-show="showIn" ng-click="clickPop('otherConsume')"><i class="icon-exchange"></i>杂单冲账</li>
+        <li ng-show="showIn" ng-click="clickPop('depositIn')"><i class="icon-credit-card"></i>收取预付</li>
+        <li ng-show="showIn" ng-click="clickPop('debtDetail')"><i class="icon-list-alt"></i>消费明细</li>
+        <li ng-show="showIn" ng-click="clickPop('roomShopIn')"><i class="icon-edit"></i>房吧录入</li>
+        <li ng-show="showIn" ng-click="clickPop('changeRoom')"><i class="icon-random"></i>客人换房</li>
+        <li ng-show="showIn" ng-click="clickPop('checkInUpdate')"><i class="icon-book"></i>户籍维护</li>
+        <li ng-show="dirty" ng-click="clearRoom()"><i class="icon-check"></i>打扫确认</li>
+        <li ng-show="!todayLock" ng-click="clickPop('todayLock')"><i class="icon-lock" style="color: #c60000"></i>当日锁房</li>
+        <li ng-show="todayLock" ng-click="todayUnLock()"><i class="icon-unlock" style="color:#60a820"></i>当日解锁</li>
+        <div class="clear"></div>
+    </ul>
+</div>

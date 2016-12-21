@@ -1,0 +1,30 @@
+<div class="jdSetting perHelp">
+    <h1 class="jdTit" style="font-size: 18px; font-weight: normal">自助餐</h1>
+    <div class="divLine">
+        <span class="spanTitle">选择人数：</span>
+        <div class="divCon">
+            <button ng-click="num=1" class="numStyle {{num==1?'hover':null}}">1</button>
+            <button ng-click="num=2" class="numStyle {{num==2?'hover':null}}">2</button>
+            <button ng-click="num=3" class="numStyle {{num==3?'hover':null}}">3</button>
+            <button ng-click="num=4" class="numStyle {{num==4?'hover':null}}">4</button>
+            <button ng-click="num=5" class="numStyle {{num==5?'hover':null}}">5</button>
+            <button ng-click="num=6" class="numStyle {{num==6?'hover':null}}">6</button>
+            <button ng-click="num=7" class="numStyle {{num==7?'hover':null}}">7</button>
+            <button ng-click="num=8" class="numStyle {{num==8?'hover':null}}">8</button>
+            <button ng-click="num=9" class="numStyle {{num==9?'hover':null}}">9</button>
+            <button ng-click="num=10" class="numStyle {{num==10?'hover':null}}">10</button>
+        </div>
+    </div>
+    <div class="divLine"><span class="spanTitle">人数：</span><font color="#c60000"><b>{{num}}</b></font></div>
+    <div class="divLine">
+        <sz-pay></sz-pay>
+    </div>
+    <div class="divLine">
+        <span class="spanTitle">自助方式：</span>
+        <div class="divCon">
+            <button ng-repeat="r in menuList" class="spanFs" ng-click="buffetPay(r,num)" sz-auto-blur>{{r.name}}</button>
+        </div>
+    </div>
+    <div class="divLine"><span class="spanTitle">当日总计：</span><font color="#c60000"><b>{{todayTotalNum}}</b></font></div>
+    <div class="clear"></div>
+</div>

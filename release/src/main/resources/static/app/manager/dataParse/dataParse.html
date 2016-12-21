@@ -1,0 +1,85 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="客房销售统计">
+            <div class="tableDiv">
+                <li>
+                    时间：
+                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li style="margin-left: 0px;">至</li>
+                <li>
+                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="roomCategorySaleReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
+            </div>
+            <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage"></sz-table>
+        </sz-pane>
+        <sz-pane title="客源分析统计">
+            <div class="tableDiv">
+                <li>
+                    时间：
+                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li style="margin-left: 0px;">至</li>
+                <li>
+                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="guestSourceParseReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
+                <li>说明：以结账时间为 准</li>
+            </div>
+            <div style="width: 600px">
+                <sz-table fields="guestSourceParseFields" items="guestSourceParseList" button="add delete update" print="客源分析统计" ng-if="guestSourceParseList" query-message="queryMessage"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="单位预订到达率">
+            <div class="tableDiv">
+                <li>
+                    时间：
+                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li style="margin-left: 0px;">至</li>
+                <li>
+                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyBookParseReport(beginTime,endTime)" value="预览"></li>
+                <li>说明：以订单录入时间为准</li>
+            </div>
+            <div style="width: 600px">
+                <sz-table fields="companyBookParseFields" items="companyBookParseList" button="add delete update" print="单位预订到达率" ng-if="companyBookParseList" query-message="queryMessage"></sz-table>
+            </div>
+        </sz-pane>
+        <!--<sz-pane title="预订信息-餐饮"></sz-pane>
+        <sz-pane title="预订信息-餐饮"></sz-pane>-->
+        <sz-pane title="全店收入分析">
+            <div class="tableDiv">
+                <li>说明：统计的是当日发生额</li>
+            </div>
+            <sz-table fields="hotelParseFields" items="hotelParseList" button="add delete update" print="全店收入" ng-init="initHotelParse()" item-click="hotelParseItemClick(item,id)" print-now="true"></sz-table>
+        </sz-pane>
+        <sz-pane title="房扫人员工作计量">
+            <div class="tableDiv">
+                <li>
+                    时间：
+                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li style="margin-left: 0px;">至</li>
+                <li>
+                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="cleanRoomParse(beginTime,endTime)" value="预览"></li>
+            </div>
+            <div style="width: 600px">
+                <sz-table fields="cleanRoomFields" items="cleanRoomList" button="add delete update" print="房扫人员工作计量" ng-if="cleanRoomList" query-message="queryMessage"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="库存盘点">
+            <sz-table fields="storageRemainFields" head="true" deep-search="true" button="add delete update" print="库存盘点"></sz-table>
+        </sz-pane>
+    </sz-tab>
+    <div class="chartBox">
+        <div id="szChart" style="height: 700px;"></div>
+        <div class="chartButton" sz-height>收回</div>
+    </div>
+
+</div>
+<sz-pop-up name="manager/popCanvas/popCanvas.html"></sz-pop-up>

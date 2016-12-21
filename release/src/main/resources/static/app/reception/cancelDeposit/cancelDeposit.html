@@ -1,0 +1,11 @@
+<div class="tanchuang huang" style="width: 800px; z-index: 997" ng-if="pop" ng-controller="cancelDepositController" drag>
+        <dl class="tctit"><h1>退押金</h1></dl>
+        <div class="tcDiv">
+            <sz-table fields="debtFields" items="depositList" button="add update"></sz-table>
+            <dl class="button" style="margin-top:90px;">
+                <input type="button" value="提交" ng-click="confirmDelete()">
+            </dl>
+        </div>
+        <div class="closeBox" ng-click="closePop('cancelDeposit')">+</div>
+        <div class="drig" drag-handle></div>
+    </div>

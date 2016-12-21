@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../44/googleChartLoader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['timeline'],'language': 'zh_cn'});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Activity', 'Start Time', 'End Time'],
+                ['Sleep',
+                    new Date('2014-10-15T00:30:00'),
+                    new Date('2014-10-15T06:30:00')],
+                ['Eat Breakfast',
+                    new Date('2014-10-15T06:45:00'),
+                    new Date('2014-10-15T07:00:00')],
+                ['Get Ready',
+                    new Date('2014-10-15T07:04:00'),
+                    new Date('2014-10-15T07:30:00')],
+                ['Commute To Work',
+                    new Date('2014-10-15T07:30:00'),
+                    new Date('2014-10-15T08:30:00')],
+                ['Work',
+                    new Date('2014-10-15T08:30:00'),
+                    new Date('2014-10-15T17:00:00')],
+                ['Commute Home',
+                    new Date('2014-10-15T17:00:00'),
+                    new Date('2014-10-15T18:00:00')],
+                ['Gym',
+                    new Date('2014-10-15T18:00:00'),
+                    new Date('2014-10-15T18:45:00')],
+                ['Eat Dinner',
+                    new Date('2014-10-15T19:00:00'),
+                    new Date('2014-10-15T20:00:00')],
+                ['Get Ready For Bed',
+                    new Date('2014-10-15T21:00:00'),
+                    new Date('2014-10-15T22:00:00')],
+            ]);
+
+            var options = {
+                height: 450,
+                hAxis: {
+                    format: 'M/d/yy',
+                },
+            };
+
+            var chart = new google.visualization.Timeline(document.getElementById('timeline'));
+
+            chart.draw(data, options);
+        }
+    </script>
+
+</head>
+<body>
+<div id="timeline" style="height: 180px"></div>
+</body>
+</html>

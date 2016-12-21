@@ -1,0 +1,16 @@
+<div ng-if="pop" ng-controller="refundController">
+    <div class="littlePop" drag>
+        <div class="littlePopBox">
+            <h1>会员退款</h1>
+            <p class="tagp"><span>会员卡号：</span>{{vipNumber}}</p>
+            <p class="tagp"><span>退款金额：</span><input type="text" placeholder="请输入金额" style="float: none; width: 150px;" ng-model="money"></p>
+            <p class="tagp"><span>退款抵用金额：</span><input type="text" placeholder="请输入金额" style="float: none; width: 150px;" ng-model="deserve"></p>
+            <p class="tagp"><span>退款币种：</span><select style="width: 162px; float:none" ng-options="x for x in currencyList" ng-model="currency">
+            </select></p>
+            <div class="clear"></div>
+            <button style="margin-top: 20px;" ng-click="refund()">确认退款</button>
+        </div>
+        <div class="closeBox" ng-click="closePop('refund')">+</div>
+        <div class="drig" drag-handle></div>
+    </div>
+</div>

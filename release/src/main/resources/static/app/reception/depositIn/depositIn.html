@@ -1,0 +1,68 @@
+<div class="tanchuang" ng-if="pop" ng-controller="depositInController" style="width: 800px; left: 25%" sz-pop-top drag>
+    <dl class="tctit"><h1>收取预付</h1></dl>
+    <div class="tcDiv">
+        <table class="tableBordernone" style="width: 800px;">
+            <tr>
+                <td>房间号码：</td>
+                <td><span class="roomID">{{room.roomId}}</span></td>
+                <td style="width: 100px">已消费金额：</td>
+                <td>{{room.checkIn.consume*1}}</td>
+                <td>来店日期：</td>
+                <td>{{room.checkIn.reachTime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+            </tr>
+            <tr>
+                <td>房间价格：</td>
+                <td><span class="price">{{room.checkIn.finalRoomPrice}}</span>元</td>
+                <td>当前预付：</td>
+                <td>{{room.checkIn.deposit*1}}</td>
+                <td>预离日期：</td>
+                <td style="width: 250px;"><input type="text" style="width: 100px;" ng-model="room.checkIn.leaveTime" uib-datepicker-popup/>
+                    <div class="timeSfm">
+                        <uib-timepicker show-spinners="false" ng-model="room.checkIn.leaveTime" show-meridian="false"
+                                        show-seconds="true"></uib-timepicker>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>客人姓名：</td>
+                <td>{{nameString}}</td>
+                <td>欠款：</td>
+                <td colspan="2">{{room.checkIn.consume-room.checkIn.deposit-room.checkIn.pay*1}}</td>
+            </tr>
+
+        </table>
+
+        <table class="tableBorderfff" style="width: 800px;">
+            <tr>
+                <td style="width: 100px">预付款金额：</td>
+                <td><input type="text" ng-model="money" id="total" class="input" style="width: 80px"></td>
+                <td>币种：</td>
+                <td style="width: 320px;">
+                    <select ng-options="x for x in currencyList" ng-model="currency" style="width: 100px;"></select>
+                </td>
+                <td>指定客人：</td>
+                <td>
+                    <select ng-options="x.name for x in room.checkInGuestList" ng-model="checkInGuest" style="width: 80px"></select>
+                </td>
+            </tr>
+        </table>
+
+        <dl class="button">
+            <input type="button" class="sbe" value="确认付款" ng-click="depositIn()">
+            <input class="sbe" type="button" value="单退预付" ng-click="cancelDeposit()">
+        </dl>
+    </div>
+
+    <div class="closeBox" ng-click="closePop('depositIn')">+</div>
+    <div class="drig" drag-handle></div>
+
+    <!--active控件-->
+    <!--<object  id="Control"
+             TYPE="application/xhanhan-activex"
+             ALIGN="baseline" BORDER="0"
+             WIDTH="1px"HEIGHT="1px"
+             clsid="{2FE52D49-D1E2-44C4-AE30-D35BAB691F21}">
+    </object>-->
+</div>
+
+

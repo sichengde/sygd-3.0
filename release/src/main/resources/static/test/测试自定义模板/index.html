@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../angular.js"></script>
+    <script>
+        var app=angular.module('app',[]);
+        app.template('template1',function () {
+            return '<div>aaa</div>'
+        });
+        app.directive('my',function () {
+            return{
+                template:template1
+            }
+        })
+
+    </script>
+</head>
+<body>
+<my></my>
+</body>
+</html>

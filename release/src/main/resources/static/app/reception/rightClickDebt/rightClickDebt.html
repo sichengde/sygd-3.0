@@ -1,0 +1,9 @@
+<div ng-if="pop" ng-controller="rightClickDebtController" class="rightClickBox">
+    <ul>
+        <li ng-click="debtDetail()" ng-show="debtPay.paySerial || debtPay.checkOutSerial"><i class="icon-file-alt"></i>消费明细</li>
+        <li ng-click="lostRoom()" ng-show="debtPay.currency=='转哑房'"><i class="icon-ok-sign"></i>哑房结算</li>
+        <li ng-click="guestOutPrintAgain()" ng-show="debtPay.paySerial && debtPay.checkOutSerial"><i class="icon-print"></i>补打结账单</li>
+        <li ng-click="checkOutReverse()" ng-show="userPermission && debtTool"><i class="icon-reply"></i>叫回结账单</li>
+        <div class="clear"></div>
+    </ul>
+</div>

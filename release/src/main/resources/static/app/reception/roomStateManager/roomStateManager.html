@@ -1,0 +1,46 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="房态管理">
+            <div style="width: 1160px;" ng-controller="roomStateManagerController">
+                <div class="jdSetting">
+                    <h1 class="jdTit">房间列表</h1>
+                    <div>
+                        <select ng-model="action" ng-init="action='房态转换'" style="width: 200px; float: left; margin: 15px 0px 0px 18px">
+                            <option>房态转换</option>
+                            <option>打扫确认</option>
+                        </select>
+                        <select ng-show="action=='房态转换'" ng-model="roomState" ng-options="x for x in roomStateList" style="width: 200px; float: left; margin: 15px 0px 0px 18px">
+                        </select>
+                        <div class="tswz" style="float: left; margin-top: 20px; margin-left: 10px;">*注：单击选择房间，再次单击取消选择</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="checkInRoom" style=" max-height: 500px;" sz-alert>
+                        <a ng-repeat="r in roomShowList" ng-click="addOrDeleteRoom(r,$event.shiftKey)" class="roomIdBox {{r.hover}}"><b>{{r.roomId}}</b><br>{{r.state}}-{{r.dirty | dirtyRoom}}</a>
+                    </div>
+                    <div class="chooseRoom"><b>已选房间：</b><a ng-repeat="r in roomChooseList">{{r.roomId}}</a></div>
+                    <div>
+                        <div ng-show="action=='房态转换'" style="float: left; margin-left: 18px;">转换为
+                            <select ng-model="targetState" ng-options="x for x in roomStateList " style="float: none; width: 200px;">
+                                <option></option>
+                            </select>
+                            <span style="margin-left: 10px;" ng-show="targetState=='维修房'">
+                   维修原因 <input ng-model="repairReason" type="text" style="width: 150px; float: none">
+                   预计期限 <input ng-model="repairTime" type="text" style="width: 150px; float: none" uib-datepicker-popup>
+                </span>
+                        </div>
+                        <div class="button chooseRoom" style="float: left; margin:0px 0px 0px 10px;padding:0px; border: 0;">
+                            <input type="button" ng-click="clearList()" value="清空选择" class="fr"><input type="button" ng-click="commit()" value="确定">
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </sz-pane>
+        <sz-pane title="清扫记录">
+            <div ng-controller="cleanRoomDetailController">
+                <sz-table fields="cleanRoomFields" head="true" deep-search="true" button="add update delete" items-per-page="20"></sz-table>
+            </div>
+        </sz-pane>
+    </sz-tab>
+</div>
+<sz-pop-up refresh="refresh()" name="reception/cleanRoom/cleanRoom.html"></sz-pop-up>

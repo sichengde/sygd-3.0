@@ -1,0 +1,7 @@
+<div ng-if="pop" ng-controller="rightClickMenuController" class="rightClickBox">
+    <ul>
+        <li ng-click="sellOut()" ng-show="!menu.sellOut"><i class="icon-minus-sign"></i>沽清</li>
+        <li ng-click="enough()" ng-show="menu.sellOut"><i class="icon-plus-sign"></i>可售</li>
+        <div class="clear"></div>
+    </ul>
+</div>

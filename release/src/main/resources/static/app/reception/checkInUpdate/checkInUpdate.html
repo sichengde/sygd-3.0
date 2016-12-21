@@ -1,0 +1,86 @@
+<div class="tanchuang" ng-controller="checkInUpdateController" ng-if="pop" drag>
+    <dl class="tctit"><h1>户籍维护</h1></dl>
+    <div class="tcDiv">
+        <dl class="tcTopName">开房操作员：<span ng-bind="checkIn.userId"></span></dl>
+        <div class="szSheet">
+            <sz-tab>
+                <sz-pane title="入住信息">
+                    <table class="tableBordernone" style="margin-top: 0px">
+                        <tr>
+                            <td>房号：</td>
+                            <td>{{room.roomId}}</td>
+                            <td>开房房价：</td>
+                            <td ng-show="!editableRoomPrice">{{checkIn.finalRoomPrice}}</td>
+                            <td ng-show="editableRoomPrice"><input type="text" ng-model="checkIn.finalRoomPrice"></td>
+                            <td style="text-align: right">早餐：</td>
+                            <td style="text-align: left; width: 110px"><input type="text" ng-model="checkIn.breakfast" style="width: 30px;">&nbsp;份</td>
+                            <td>会员卡号：</td>
+                            <td>{{checkIn.vipNumber}}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right">客源：</td>
+                            <td><select style="width: 85px;" ng-model="checkIn.guestSource" ng-options="x for x in guestSourceList"></select></td>
+                            <td>房租方式：</td>
+                            <td style="text-align: left">{{checkIn.roomPriceCategory}}</td>
+                            <td>来期：</td>
+                            <td colspan="3">{{checkIn.reachTime|date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        </tr>
+                        <tr>
+                            <td>协议单位：</td>
+                            <td>{{checkIn.company}}</td>
+                            <td>房价协议：</td>
+                            <td style="width: 180px;">{{checkIn.protocol}}</td>
+                            <td>离期：</td>
+                            <td colspan="3" style="width: 380px"><input type="text" style="width: 100px;" ng-model="checkIn.leaveTime" uib-datepicker-popup/>
+                                <div class="timeSfm">
+                                    <uib-timepicker show-spinners="false" ng-model="checkIn.leaveTime" show-meridian="false"
+                                                    show-seconds="true"></uib-timepicker>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>特殊要求：</td>
+                            <td colspan="7"><input type="text" ng-model="checkIn.important"> &nbsp; <input type="checkbox" ng-model="checkIn.vip"> 贵宾</td>
+                        </tr>
+                    </table>
+                    <table class="tableBorderfff">
+                        <tr>
+                            <td>押金币种：</td>
+                            <td width="120">{{checkIn.vipNumber}}</td>
+                            <td>已交押金：</td>
+                            <td width="120">{{checkIn.deposit}}</td>
+                            <td>当前消费：</td>
+                            <td width="120">{{checkIn.consume}}</td>
+                            <td>已结金额：</td>
+                            <td width="120">{{checkIn.pay}}</td>
+                        </tr>
+                        <tr>
+                            <td>备注：</td>
+                            <td colspan="7">
+                                <textarea style="width: 735px; height: 50px;" ng-model="checkIn.remark"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="button">
+                        <button ng-click="submitCheckInUpdate()">确认修改</button>
+                        <button ng-click="writeDoorAgain()">补做房卡</button>
+                    </div>
+
+                </sz-pane>
+                <sz-pane title="入住宾客">
+                    <sz-table fields="checkInGuestFields" select-list="checkInGuestSelect" search-condition="checkInGuestCondition" right-click="rightClickGuest"></sz-table>
+                </sz-pane>
+            </sz-tab>
+        </div>
+    </div>
+    <div class="closeBox" ng-click="closePop('checkInUpdate')">+</div>
+    <div class="drig" drag-handle></div>
+    <!--active控件-->
+    <!--<object  id="Control"
+             TYPE="application/xhanhan-activex"
+             ALIGN="baseline" BORDER="0"
+             WIDTH="1px"HEIGHT="1px"
+             clsid="{2FE52D49-D1E2-44C4-AE30-D35BAB691F21}">
+    </object>-->
+</div>
+<sz-pop-up name="reception/rightClickGuest/rightClickGuest.html" back="white"></sz-pop-up>

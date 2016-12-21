@@ -1,0 +1,33 @@
+<ion-view title="" id="income" class=" ">
+    <ion-content padding="true" class="has-header">
+        <div class="tableDiv">
+            <div class="list list-inset mcss">
+                <div class="item">
+                    <span class="spanTitle">班次：</span><select class="tableSelect" ng-model="exchangeUser" ng-options="x.className for x in exchangeUserList" ng-change="chooseExchangeUser(exchangeUser)">
+                    <option value="">请选择班次</option>
+                </select></div>
+                <div class="item">
+                    <span class="spanTitle">操作员：</span><input ng-model="userId" type="text" class="inputInline" style="float: none; width: 80px;">
+                </div>
+                <div class="item">
+                    <span class="spanTitle">时间：</span>
+                    <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime inputInline" style="margin-top: 28px;">
+                    <div class="timeSfm" style="float: left">
+                        <uib-timepicker ng-model="beginTime" show-meridian="false"
+                                        show-seconds="true"></uib-timepicker>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="spanTitle">至：</span>
+                    <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime inputInline" style="margin-top: 28px;">
+                    <div class="timeSfm" style="float: left">
+                        <uib-timepicker ng-model="endTime" show-meridian="false"
+                                        show-seconds="true"></uib-timepicker>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <button class="button button-full button-positive" ng-click="exchangeUserReport(userId,beginTime,endTime,'pdf')">预览</button>
+    </ion-content>
+</ion-view>

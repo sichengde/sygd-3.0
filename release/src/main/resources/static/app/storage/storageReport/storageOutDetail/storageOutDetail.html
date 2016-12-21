@@ -1,0 +1,7 @@
+<div ng-controller="storageOutDetailController" ng-if="pop" class="tanchuang huang">
+    <dl class="tctit"><h1>出库明细</h1></dl>
+    <div class="tcDiv">
+        <sz-table fields="storageOutDetailFields" button="add delete update" head="true" search-condition="storageOutCondition"></sz-table>
+    </div>
+    <div class="closeBox" ng-click="closePop('storageOutDetail')">+</div>
+</div>

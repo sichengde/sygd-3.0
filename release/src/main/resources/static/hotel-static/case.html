@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>客户见证</title>
+    <link href="css/nei.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+           $("#bgSoftTitle").click(function(){
+               $("#bgSoftContent").css("display","block");
+               $("#msSoftContent").css("display","none");
+               $("#znSoftContent").css("display","none");
+               $("#bgSoftTitle").addClass("hover");
+               $("#msSoftTitle").removeClass("hover");
+               $("#znSoftTitle").removeClass("hover");
+           });
+            $("#msSoftTitle").click(function(){
+                $("#bgSoftContent").css("display","none");
+                $("#msSoftContent").css("display","block");
+                $("#znSoftContent").css("display","none");
+                $("#bgSoftTitle").removeClass("hover");
+                $("#msSoftTitle").addClass("hover");
+                $("#znSoftTitle").removeClass("hover");
+            });
+            $("#znSoftTitle").click(function(){
+                $("#bgSoftContent").css("display","none");
+                $("#msSoftContent").css("display","none");
+                $("#znSoftContent").css("display","block");
+                $("#bgSoftTitle").removeClass("hover");
+                $("#msSoftTitle").removeClass("hover");
+                $("#znSoftTitle").addClass("hover");
+            });
+        })
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".linkMobile").click(function () {
+                $(".menuBox").toggle()
+            })
+        })
+    </script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                        }
+                    };
+
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script>var _hmt = _hmt || [];(function() {  var hm = document.createElement("script");  hm.src = "//hm.baidu.com/hm.js?9fc3e3d51513200adab4016ec7b1f29d";  var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s);})();</script>
+</head>
+<body>
+<div class="topBlue">
+    <div class="box1200">
+        欢迎访问沈阳贵德科技开发有限公司网站，期待与您的合作！
+        <span class="tel400"><img src="http://o7rv84v9u.bkt.clouddn.com/tel138.gif"></span>
+    </div>
+</div>
+<div class="topBox">
+    <div class="menuBox">
+        <a href="index.html">网站首页</a>
+        <a href="about.html">关于我们</a>
+        <a href="product.html">产品介绍</a>
+        <a href="case.html" class="hover">客户见证</a>
+        <a href="join.html">招商加盟</a>
+        <a href="contact.html">联系我们</a>
+    </div>
+    <div class="linkMobile"><img src="images/linkmobil.png"> </div>
+    <div class="logo"><img src="http://o7rv84v9u.bkt.clouddn.com/logoab.gif"></div>
+    <div class="logom"><img src="images/logom.png"></div>
+    <a class="mfsy" href="http://101.200.171.37/app/index1.html" target="_blank">
+        免费试用
+    </a>
+</div>
+<div class="neiPicBox" style="background: url('http://o7rv84v9u.bkt.clouddn.com/case.jpg') no-repeat center"></div>
+
+<div class="alBox">
+    <ul class="alul">
+        <li id="bgSoftTitle" class="alTitle hover">宾馆软件</li>
+        <li id="msSoftTitle" class="alTitle">电子门锁</li>
+        <li id="znSoftTitle" class="alTitle">智能客控</li>
+    </ul>
+    <div id="bgSoftContent">
+        <dl>
+            <dt>鲅鱼圈金海湾酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E9%B2%85%E9%B1%BC%E5%9C%88%E9%87%91%E6%B5%B7%E6%B9%BE%E9%85%92%E5%BA%97.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>盘锦武星宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E7%9B%98%E9%94%A6%E6%AD%A6%E6%98%9F%E5%AE%BE%E9%A6%86.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>延吉洲际酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E5%BB%B6%E5%90%89%E6%B4%B2%E9%99%85%E9%85%92%E5%BA%97.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>长春教育宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E9%95%BF%E6%98%A5%E6%95%99%E8%82%B2%E5%AE%BE%E9%A6%86.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>锦州大厦</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E9%94%A6%E5%B7%9E%E5%A4%A7%E5%8E%A6.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>本溪明珠大酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E6%9C%AC%E6%BA%AA%E6%98%8E%E7%8F%A0%E5%A4%A7%E9%85%92%E5%BA%97.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>抚顺天宝大厦</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E6%8A%9A%E9%A1%BA%E5%A4%A9%E5%AE%9D%E5%A4%A7%E5%8E%A6.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>沈阳金海岸大酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E6%B2%88%E9%98%B3%E9%87%91%E6%B5%B7%E5%B2%B8%E5%A4%A7%E9%85%92%E5%BA%97.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>辽阳宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E8%BE%BD%E9%98%B3%E5%AE%BE%E9%A6%86.jpg"> </dd>
+        </dl>
+    </div>
+    <div id="msSoftContent" style="display: none">
+        <dl>
+            <dt>沈阳金辉宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/jhbg.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>沈阳市金星宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/case5.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>沈阳市老道口大厦</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/ldkds.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>辽宁省军区招待所</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/case6.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>锦州金厦国际酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/jsgj.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>盘锦华锦宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/hjbg.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>盘锦正大酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/zdjd.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>沈空一所</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/skzds.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>沈阳市亚泰大酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/ytdjd.jpg"> </dd>
+        </dl>
+    </div>
+    <div id="znSoftContent" style="display: none">
+        <dl>
+            <dt>盘古七星酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/bjpg.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>中乐六星酒店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/bjzl.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>北京会议中心</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/bjhy.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>沈阳凤凰饭店</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/case4.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>长春南湖宾馆</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/case3.jpg"> </dd>
+        </dl>
+        <dl>
+            <dt>本溪海航国际</dt>
+            <dd><img src="http://o7rv84v9u.bkt.clouddn.com/hhgj.jpg"> </dd>
+        </dl>
+
+    </div>
+
+</div>
+
+<div class="bottom">
+    <div class="box1200">
+        <div class="fr">
+            <a href="index.html">网站首页</a>|
+            <a href="product.html">产品介绍</a>|
+            <a href="join.html">招商加盟</a>|
+            <a href="contact.html">联系我们</a>
+        </div>
+        沈阳贵德科技开发有限公司 版权所有。 备案号：辽ICP备13010473
+    </div>
+
+</div>
+<div class="right-side">
+    <ul>
+        <li class="slide-left hidden-xs"><a title=""  href="#"><div class="sidebox"><img src="images/right-tel.png"><span style="position:relative;top:-8px;">400-166-2068</span></div></a></li>
+        <li class="slide-left hidden-xs"><a title="" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2651283633&site=qq&menu=yes"><div class="sidebox"><img src="images/right-qq.png"><span style="position:relative;top:-8px;">QQ客服</span></div></a></li>
+        <li class="slide-weixin hidden-xs"><a title=""  href="javascript:void(0);" ><div class="sidebox"><img src="images/right-wx.png"><span style="position:relative;top:-8px;">微信</span></div></a></li>
+        <li style="border:none;"><a title=""  href="javascript:goTop();" class="sidetop"><img src="images/right-top.png" style="padding-top:3.8px;padding-left:5px;"></a></li>
+    </ul>
+    <img class="two-dimension animated flipInX" src="http://i2.buimg.com/b5598f9f67f2ba36.jpg" width="110" alt=""/>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $(".right-side ul .slide-left").hover(function(){
+            $(this).find(".sidebox").stop().animate({"width":"150px"},100).css({"opacity":"1","filter":"Alpha(opacity=100)","background":"#ae1c1c"})
+        },function(){
+            $(this).find(".sidebox").stop().animate({"width":"40px"},100).css({"opacity":"0.8","filter":"Alpha(opacity=80)","background":"#3392FA"})
+        });
+        $(".right-side ul .slide-weixin").hover(function(){
+            //console.log("over");
+
+            $(".two-dimension").css("display","block");
+
+        },function(){
+
+            $('.two-dimension').stop().css("display","none");
+
+        });
+
+    });
+    //回到顶部
+    function goTop(){
+        $('html,body').animate({'scrollTop':0},600);
+    }
+</script>
+</body>
+</html>

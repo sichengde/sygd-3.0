@@ -1,0 +1,49 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="仓库">
+            <div style="max-width: 1100px">
+                <sz-table fields="houseFields" select-list="selectListHouse"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="货品类别">
+            <div style="max-width: 500px">
+                <sz-table fields="storageCategoryFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="货品定义">
+            <sz-table fields="cargoFields" select-list="selectListCargo"></sz-table>
+        </sz-pane>
+        <sz-pane title="领用部门">
+            说明：多个领用人用逗号分隔
+            <div style="max-width: 500px">
+                <sz-table fields="storageOutDeptFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="购买部门">
+            说明：多个采购员用逗号分隔
+            <div style="max-width: 500px">
+                <sz-table fields="storageInDeptFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="批准人">
+            <div class="oneTableDiv">
+                <sz-table fields="approverFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="供应商">
+            <div class="oneTableDiv">
+                <sz-table fields="supplierFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="入库类型">
+            <div class="oneTableDiv">
+                <sz-table fields="storageInCategoryFields"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="出库类型">
+            <div class="oneTableDiv">
+                <sz-table fields="storageOutCategoryFields"></sz-table>
+            </div>
+        </sz-pane>
+    </sz-tab>
+</div>

@@ -1,0 +1,19 @@
+<div ng-controller="saunaOutController" ng-if="pop" class="tanchuang huang" drag>
+    <dl class="tctit"><h1>手牌结算</h1></dl>
+    <dl class="tcTopName">合计：<span style="margin-right: 10px;" class="ng-binding">{{totalConsume}}元</span></dl>
+    <div class="tcDiv">
+        <sz-table fields="saunaDetailFields" button="add delete update" head="true" search-condition="saunaDetailCondition" items="saunaDetailList"></sz-table>
+        <table class="tableBorderfff" style="margin-top: 0px;">
+            <tbody>
+            <tr>
+                <!--<td><span ng-click="manyCurrency()">+分单</span></td>
+                <td>{{depositMessage}}</td>-->
+                <td><sz-pay></sz-pay></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="button"><button ng-click="saunaOut()">确定</button></div>
+    </div>
+    <div class="closeBox" ng-click="closePop('saunaOut',true)">+</div>
+    <div class="drig" drag-handle></div>
+</div>

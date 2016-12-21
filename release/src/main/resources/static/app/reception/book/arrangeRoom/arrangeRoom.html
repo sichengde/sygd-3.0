@@ -1,0 +1,69 @@
+<div class="tanchuang" style="width: 800px; left: 25%" ng-controller="arrangeRoomController" ng-if="pop" sz-pop-top drag>
+    <dl class="tctit"><h1>排房</h1></dl>
+    <div class="tcDiv">
+        <dl class="tcTopName" style="margin-bottom: 10px!important;">预订单号：<span>{{book.bookSerial}}</span></dl>
+        <table class="tableBordernone" style="width: 430px; float: left; margin-top: 0px;">
+            <tr>
+                <td>房间类别：</td>
+                <td colspan="3">
+                    <select style="width: 120px;" ng-model="roomCategory"
+                            ng-options="x for x in roomCategoryList"></select>
+                </td>
+            </tr>
+            <tr>
+                <td>房租方式：</td>
+                <td colspan="3">
+                    {{book.roomPriceCategory}}
+                </td>
+            </tr>
+            <tr>
+                <td>房价协议：</td>
+                <td>
+                    {{book.protocol}}
+                </td>
+            </tr>
+            <tr>
+                <td>已预订房：</td>
+                <td><span ng-repeat="r in book.bookRoomCategoryList"
+                          style="margin-right: 10px;">{{r.roomCategory}}：<font class="red">{{r.num}}</font></span></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="canUseRoom" style="height: 158px">
+                        <h1 class="curTit">可预订房间</h1>
+                        <div class="checkInRoom" style="height: 140px; margin: 10px;" sz-alert>
+                            <a id="bookInput{{r.roomId}}"
+                               ng-repeat="r in roomList | bookRoom:roomCategory:bookList:book.reachTime:book.leaveTime:abortTime"
+                               ng-click="addOrDeleteRoom(r,$event.shiftKey)" class="roomID">{{r.roomId}}</a>
+                        </div>
+                        <div class="button" style="border: none; float: left">
+                            <input type="button" ng-click="clearList()" value="清空选择" class="kong">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <div class="tswz" style="float: left;">*注：单击选择房间，再次单击取消选择</div>
+                    <input type="checkbox" ng-model="abortTime">忽略时间
+                </td>
+            </tr>
+        </table>
+        <div class="snackbox" style="width: 300px; float: right; height: 298px;">
+            <h1>已选房间</h1>
+            <sz-table-easy fields="bookInputFields" items="chooseRoomList" button="add delete"></sz-table-easy>
+            <div style="margin-top: 40px; margin-left:15px;">
+                <div ng-repeat="r in book.bookRoomCategoryList" style="float: left; margin-right: 10px;">
+                    {{r.roomCategory}}：<span class="red">{{categoryTotal[r.roomCategory]}}</span></div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div class="button">
+            <input type="button" value="自动安排" ng-click="arrange()">
+            <input type="button" value="确认" ng-click="submitArrangeRoom()">
+        </div>
+    </div>
+
+    <div class="closeBox" ng-click="closePop('arrangeRoom')">+</div>
+    <div class="drig" drag-handle></div>
+</div>

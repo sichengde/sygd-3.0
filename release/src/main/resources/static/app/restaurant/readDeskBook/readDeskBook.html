@@ -1,0 +1,8 @@
+<div class="tanchuang huang" ng-controller="readDeskBookController" ng-if="pop" style="top:15%" drag>
+    <dl class="tctit"><h1>订金列表</h1></dl>
+    <div class="tcDiv">
+        <sz-table fields="deskBookFields" head="true" button="add update delete" item-click="chooseBook(item,id)"></sz-table>
+    </div>
+    <div class="closeBox" ng-click="closePop('readDeskBook')">+</div>
+    <div class="drig" drag-handle></div>
+</div>

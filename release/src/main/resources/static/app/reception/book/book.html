@@ -1,0 +1,219 @@
+<div id="content" class="ddDing" style="margin-left: 0px;">
+    <sz-tab>
+        <sz-pane title="预定主页">
+            <div class="tableBox">
+                <sz-table head="true" deep-search="true" fields="bookFields" button="{{editable?'add update':'add update delete'}}" select-list="selectListBook" row-click="chooseBook(d)" title="点击查看预订详情" right-click="rightClickBook"></sz-table>
+                <div class="button" style="margin: 0px; border: none">
+                    <div class="fl">
+                        <input type="button" value="未来房态图" ng-click="futureRoomState()">
+                    </div>
+                </div>
+                <div class="detailTable" sz-easy-width style="width: 400px; padding-right: 30px; margin:110px auto"
+                     ng-if="showRoomCategory">
+                    <h1>预订详情</h1>
+                    <sz-table-easy fields="bookRoomCategoryFields" items="bookRoomCategoryList" button="add update delete"></sz-table-easy>
+                </div>
+                <div class="detailTable" sz-easy-width style="width: 400px; padding-right: 30px; margin:110px auto"
+                     ng-if="showRoom">
+                    <h1>预订详情</h1>
+                    <sz-table-easy fields="bookRoomFields" items="bookRoomList" button="add update delete"></sz-table-easy>
+                </div>
+            </div>
+        </sz-pane>
+        <sz-pane title="录入订单">
+            <div class="tcDiv" ng-controller="bookInputController" style="width: 100%; margin-top: -30px;">
+                <div class="szSheet">
+                    <div class="tableTabBox">
+                        <!-- tab 切换按钮 -->
+                        <div class="tableTabTitBox">
+                            <ul>
+                                <li ng-click="ensureRoom=true" ng-class="{hover:ensureRoom}" class="tableTabTit">锁房预定</li>
+                                <li ng-click="ensureRoom=false" ng-class="{hover:!ensureRoom}" class="tableTabTit">不锁房预定</li>
+                            </ul>
+                        </div>
+                        <div title="锁房预定" ng-show="ensureRoom">
+                            <table class="tableBordernone" style="width: 65%; float: left; margin: 0px;">
+                                <tr>
+                                    <td>房间类别：</td>
+                                    <td colspan="3">
+                                        <select style="width: 120px;" ng-model="roomCategory"
+                                                ng-options="x for x in roomCategoryList"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>房租方式：</td>
+                                    <td colspan="3">
+                                        <select style="width: 120px;" ng-model="book.roomPriceCategory"
+                                                ng-options="x for x in roomPriceCategoryList" ng-disabled="beginChoose?true:false">
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>房价协议：</td>
+                                    <td>
+                                        <select style="width: 195px;" ng-model="protocol"
+                                                ng-options="x.protocol for x in protocolShowList" ng-disabled="beginChoose?true:false">
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="canUseRoom" style="height: 158px">
+                                            <h1 class="curTit">可预订房间</h1>
+                                            <div class="checkInRoom" style="height: 140px; margin: 10px;" sz-alert>
+                                                <a id="bookInput{{r.roomId}}" ng-repeat="r in roomShowList" ng-click="addOrDeleteRoom(r,$event.shiftKey)" class="roomID {{r.hover}}">{{r.roomId}}</a>
+                                            </div>
+                                            <div class="button chooseRoom" style="border: none; margin-left: 0px; float: left">
+                                                <input type="button" ng-click="clearList()" value="清空选择">
+                                            </div>
+                                            <div class="button chooseRoom" style="border: none; margin-left: 0px; float: left">
+                                                <input type="button" ng-click="writeCard()" value="批量制卡">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="tswz" style="float: left;">*注：单击选择房间，再次单击取消选择，该房类该时间段有不锁房预定{{unsureRoomBookNum}}间，请注意</div>
+                                        <input type="checkbox" ng-model="abortTime">忽略时间
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="snackbox" style="width: 30%; height: 298px; margin-left: 10px; float: left">
+                                <h1>已选房间</h1>
+                                <sz-table fields="bookInputFields" items="chooseRoomList" button="add delete"></sz-table>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                        <div title="不锁房预定" ng-show="!ensureRoom">
+                            <table class="tableBordernone" style="width: 430px; float: left; margin-top: 0px;">
+                                <tr>
+                                    <td>房间类别：</td>
+                                    <td><select style="width: 120px;" ng-model="roomCategory"
+                                                ng-options="x for x in roomCategoryList"></select></td>
+                                </tr>
+                                <tr>
+                                    <td>房租方式：</td>
+                                    <td colspan="3">
+                                        <select style="width: 120px;" ng-model="book.roomPriceCategory"
+                                                ng-options="x for x in roomPriceCategoryList" ng-disabled="beginChoose?true:false">
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>房价协议：</td>
+                                    <td>
+                                        <select style="width: 195px;" ng-model="protocol"
+                                                ng-options="x.protocol for x in protocolShowList" ng-disabled="beginChoose?true:false">
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>预订房数：</td>
+                                    <td><input ng-model="num2" type="text" style="width: 110px"></td>
+                                </tr>
+                                <tr>
+                                    <td>可预订房：</td>
+                                    <td>
+                                        <p style="float: left; margin:0px 10px 0px 0px;">{{roomCategory}} <font color="#c60000" size="5">{{ roomShowList.length-unsureRoomBookNum*1}}</font> 间房</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <button ng-click="addOrDeleteCategory(roomCategory,num2)">确定</button>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="snackbox" style="width: 300px; height: 250px; margin-left: 50px; float: left">
+                                <h1>已选房类</h1>
+                                <sz-table fields="bookRoomCategoryFields" items="chooseCategoryList" button="add update"></sz-table>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+                <!---->
+                <table class="tableBorderaaa" style="width:100%">
+                    <tr>
+                        <td width="80">订单名称：</td>
+                        <td width="200"><input ng-model="book.name" type="text" placeholder="姓名或其他"></td>
+                        <td width="50">电话：</td>
+                        <td width="150"><input type="text" ng-model="book.phone"></td>
+                        <td>身份证号：</td>
+                        <td colspan="3" style="width: 42%"><input type="text" ng-model="book.cardId" style="width: 150px;"></td>
+                    </tr>
+                    <tr>
+                        <td>抵达时间：</td>
+                        <td colspan="3">
+                            <input type="text" ng-model="book.reachTime" uib-datepicker-popup style="width: 90px;">
+                            <div class="timeSfm">
+                                <uib-timepicker show-spinners="false" ng-model="book.reachTime" show-meridian="false"
+                                                show-seconds="true"></uib-timepicker>
+                            </div>
+                        </td>
+                        <td width="80">预离时间：</td>
+                        <td colspan="3">
+                            <input type="text" ng-model="book.leaveTime" uib-datepicker-popup style="width: 90px;">
+                            <div class="timeSfm">
+                                <uib-timepicker show-spinners="false" ng-model="book.leaveTime" show-meridian="false"
+                                                show-seconds="true"></uib-timepicker>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50">单位：</td>
+                        <td width="100">
+                            <select style="width: 110px;" ng-model="company"
+                                    ng-options="x.name for x in companyList" ng-disabled="beginChoose?true:false">
+                                <option></option>
+                            </select>
+                        </td>
+                        <td width="50">客源：</td>
+                        <td>
+                            <select style="width: 110px;" ng-model="book.guestSource"
+                                    ng-options="x for x in guestSourceList">
+                            </select>
+                        </td>
+                        <td>订金：</td>
+                        <td><input type="text" ng-model="book.subscription" ng-disabled="mode=='修改'?true:false"></td>
+                        <td width="50">币种：</td>
+                        <td>
+                            <select style="width: 130px;" ng-options="x for x in currencyList" ng-model="book.currency" ng-disabled="mode=='修改'?true:false" ></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td>
+                        <td colspan="3"><input type="text" ng-model="book.mark"></td>
+                        <td width="80">保留时间：</td>
+                        <td colspan="3">
+                            <input type="text" ng-model="book.remainTime" uib-datepicker-popup style="width: 90px;">
+                            <div class="timeSfm">
+                                <uib-timepicker show-spinners="false" ng-model="book.remainTime" show-meridian="false"
+                                                show-seconds="true"></uib-timepicker>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <dl class="button" style="border-top:0px;">
+                    <input type="button" class="sbe" ng-click="confirm()" value="确认">
+                </dl>
+            </div>
+        </sz-pane>
+        <sz-pane title="预定历史">
+            <sz-table fields="bookHistoryFields" button="add update delete" print="预定历史" ></sz-table>
+        </sz-pane>
+    </sz-tab>
+    <!--读身份证-->
+    <!--<object id="Control"
+            TYPE="application/xhanhan-activex"
+            ALIGN="baseline" BORDER="0"
+            WIDTH="1px" HEIGHT="1px"
+            clsid="{2FE52D49-D1E2-44C4-AE30-D35BAB691F21}">
+    </object>-->
+</div>
+<sz-pop-up refresh="refresh()" name="reception/book/bookInput/bookInput.html"></sz-pop-up>
+<sz-pop-up refresh="refresh()" name="reception/book/addSubscription/addSubscription.html"></sz-pop-up>
+<sz-pop-up refresh="refresh()" name="reception/book/arrangeRoom/arrangeRoom.html"></sz-pop-up>
+<sz-pop-up refresh="refresh()" name="reception/book/futureRoomState/futureRoomState.html"></sz-pop-up>
+<sz-pop-up name="reception/book/rightClickBook/rightClickBook.html" back="white"></sz-pop-up>

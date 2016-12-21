@@ -1,0 +1,11 @@
+<div id="content" style="padding: 10px;">
+    <div class="saixuanbox" style="margin: 20px;">
+        <ul class="saixuanul">
+            <li class="sxtit">日期：</li>
+            <li class="sxli2"><input type="text" uib-datepicker-popup ng-model="beginTime" style="width: 110px; float: none"> 至 <input type="text" uib-datepicker-popup ng-model="endTime" style="width: 110px; float: none"></li>
+            <li class="sxli2 littleButton"><input type="button" ng-click="query()" value="营业额查询"></li>
+            <li class="sxli2 littleButton"><input type="button" ng-click="show()" value="营业总览"></li>
+        </ul>
+    </div>
+    <div style="width: 800px; height: 500px;"><canvas id="canvas"></canvas></div>
+</div>

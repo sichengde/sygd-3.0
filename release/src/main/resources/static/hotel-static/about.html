@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>关于我们</title>
+    <link href="css/nei.css" type="text/css" rel="stylesheet">
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".linkMobile").click(function () {
+                $(".menuBox").toggle()
+            })
+        })
+    </script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                        }
+                    };
+
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script>var _hmt = _hmt || [];(function() {  var hm = document.createElement("script");  hm.src = "//hm.baidu.com/hm.js?9fc3e3d51513200adab4016ec7b1f29d";  var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s);})();</script>
+</head>
+<body>
+<div class="topBlue">
+    <div class="box1200">
+        欢迎访问沈阳贵德科技开发有限公司网站，期待与您的合作！
+        <span class="tel400"><img src="http://o7rv84v9u.bkt.clouddn.com/tel138.gif"></span>
+    </div>
+</div>
+<div class="topBox">
+    <div class="menuBox">
+        <a href="index.html">网站首页</a>
+        <a href="about.html" class="hover">关于我们</a>
+        <a href="product.html">产品介绍</a>
+        <a href="case.html">客户见证</a>
+        <a href="join.html">招商加盟</a>
+        <a href="contact.html">联系我们</a>
+    </div>
+    <div class="linkMobile"><img src="images/linkmobil.png"> </div>
+    <div class="logo"><img src="http://o7rv84v9u.bkt.clouddn.com/logoab.gif"></div>
+    <div class="logom"><img src="images/logom.png"></div>
+    <a class="mfsy" href="http://101.200.171.37/app/index1.html" target="_blank">
+        免费试用
+    </a>
+</div>
+<div class="neiPicBox" style="background: url('http://o7rv84v9u.bkt.clouddn.com/about.jpg') no-repeat center"></div>
+<div class="zsTitle">
+    <h1>关于我们</h1>
+</div>
+<div class="jjBox">
+    <p>
+<!--        <img src="http://o7rv84v9u.bkt.clouddn.com/yyzz.jpg">-->
+        &numsp;&numsp;&numsp;&numsp;沈阳贵德科技开发有限公司——成立于一九九八年，位于沈阳市高新技术开发区，是沈阳市科技局种子基金支持单位，公司一直专注于星级宾馆行业计算机软件和智能产品的研究、开发、服务的专业化公司。公司以技术为推动力，以市场为先导，提供以酒店之星管理系统、餐饮管理系统、宾馆智能客控系统为主导的自主产品。向国内市场提供优质的产品及服务。<br><br>
+        &numsp;&numsp;&numsp;&numsp;公司设有市场营销部、技术培训部、产品开发部、售后服务部、财务部等部门，这些部门构成公司完整的开发、销售、维护平台，为全公司业务稳定发展提供支持。<br><br>
+        &numsp;&numsp;&numsp;&numsp;经过十几年的不懈努力，我们的用户已经覆盖全国28个省、市、自治州、直辖市。用户总数达到上千家。
+    </p>
+</div>
+<div class="bottom">
+    <div class="box1200">
+        <div class="fr">
+            <a href="index.html">网站首页</a>|
+            <a href="product.html">产品介绍</a>|
+            <a href="join.html">招商加盟</a>|
+            <a href="contact.html">联系我们</a>
+        </div>
+        沈阳贵德科技开发有限公司 版权所有。 备案号：辽ICP备13010473
+    </div>
+
+</div>
+<div class="right-side">
+    <ul>
+        <li class="slide-left hidden-xs"><a title=""  href="#"><div class="sidebox"><img src="images/right-tel.png"><span style="position:relative;top:-8px;">400-166-2068</span></div></a></li>
+        <li class="slide-left hidden-xs"><a title="" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2651283633&site=qq&menu=yes"><div class="sidebox"><img src="images/right-qq.png"><span style="position:relative;top:-8px;">QQ客服</span></div></a></li>
+        <li class="slide-weixin hidden-xs"><a title=""  href="javascript:void(0);" ><div class="sidebox"><img src="images/right-wx.png"><span style="position:relative;top:-8px;">微信</span></div></a></li>
+        <li style="border:none;"><a title=""  href="javascript:goTop();" class="sidetop"><img src="images/right-top.png" style="padding-top:3.8px;padding-left:5px;"></a></li>
+    </ul>
+    <img class="two-dimension animated flipInX" src="http://i2.buimg.com/b5598f9f67f2ba36.jpg" width="110" alt=""/>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $(".right-side ul .slide-left").hover(function(){
+            $(this).find(".sidebox").stop().animate({"width":"150px"},100).css({"opacity":"1","filter":"Alpha(opacity=100)","background":"#ae1c1c"})
+        },function(){
+            $(this).find(".sidebox").stop().animate({"width":"40px"},100).css({"opacity":"0.8","filter":"Alpha(opacity=80)","background":"#3392FA"})
+        });
+        $(".right-side ul .slide-weixin").hover(function(){
+            //console.log("over");
+
+            $(".two-dimension").css("display","block");
+
+        },function(){
+
+            $('.two-dimension').stop().css("display","none");
+
+        });
+
+    });
+    //回到顶部
+    function goTop(){
+        $('html,body').animate({'scrollTop':0},600);
+    }
+</script>
+</body>
+</html>

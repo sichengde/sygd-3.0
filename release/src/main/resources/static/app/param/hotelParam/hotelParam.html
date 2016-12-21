@@ -1,0 +1,67 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="营业部门">
+            <div style="width: 500px">
+                <sz-table fields="pointOfSaleFields" select-list="selectListPointOfSale"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="币种">
+                <sz-table fields="currencyFields" select-list="selectCurrencyList"></sz-table>
+        </sz-pane>
+        <sz-pane title="操作员">
+            <sz-table head="true" fields="userFields" button="add update" init-refresh="outRefreshUserList(f)"></sz-table>
+            <div class="button fl" style="margin: 0px; border: none">
+                <button ng-click="updateUser('userPermission')" sz-permission="权限管理">权限管理</button>
+                <input type="button" value="新增" ng-click="addUser('userAdd')" sz-permission="权限管理">
+            </div>
+            <div class="userTipsBox contentToggle">
+                <dl>
+                    提示：直接在下方的可用项目中复制到用户对应的栏目下，注意之间的空格
+                    （如果权限过多的话可以先用ctrl+a全部复制到记事本上，编辑之后再一起粘贴回去）
+                </dl>
+                <dl>
+                    <h1>可用的模块：</h1>
+                    <span ng-repeat="r in availableModuleList">{{r.name}} </span>
+                </dl>
+                <dl>
+                    <h1>可用的权限：</h1>
+                    <div ng-repeat="r in availableModuleList">
+                        <dt>{{r.name}}：</dt>
+                        <dd><span ng-repeat="r2 in r.permission">{{r2}} </span></dd>
+                    </div>
+                    <div class="clear"></div>
+                </dl>
+                <dl>
+                    <h1>可用的营业部门：</h1>
+                    <div ng-repeat="r in pointOfSaleList">
+                        <dt>{{r.firstPointOfSale}}：</dt>
+                        <dd>{{r.secondPointOfSale}}</dd>
+                    </div>
+                    <div class="clear"></div>
+                </dl>
+            </div>
+            <div class="userTips" sz-toggle><img src="../images/tishi.gif"> </div>
+        </sz-pane>
+        <sz-pane title="统计类别">
+            <!--此处不能用szTableHead-->
+            <div style="width: 1000px">
+                <sz-table fields="saleCountFields" outer-refresh="initList()" select-list="selectSaleCountList" head="true" items-per-page="20"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="账单类型">
+            <!--此处不能用szTableHead-->
+            <div class="oneTableDiv">
+                <sz-table fields="inCategoryFields" items-per-page="20"></sz-table>
+            </div>
+        </sz-pane>
+        <sz-pane title="其他参数表">
+            <!--此处不能用szTableHead-->
+            <div style="width: 500px">
+                <sz-table head="true" fields="otherParamFields"></sz-table>
+            </div>
+        </sz-pane>
+    </sz-tab>
+
+</div>
+<sz-pop-up refresh="refresh()" name="param/hotelParam/userPermission/userPermission.html"></sz-pop-up>
+<sz-pop-up refresh="refresh()" name="param/hotelParam/userAdd/userAdd.html"></sz-pop-up>

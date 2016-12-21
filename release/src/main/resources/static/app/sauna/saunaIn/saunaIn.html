@@ -1,0 +1,65 @@
+<div id="content">
+
+    <div class="snLeftBox">
+        <div class="snShopTop">
+            <div class="snDiv">当前技师：{{saunaUser}}</div>
+            <div class="snDiv" ng-click="chooseRingNumber()">手牌号：<input type="text" ng-model="ringNumber"></div>
+            <div class="snDiv" ng-click="chooseNum()">选购数量：<input type="text" style="width: 53%" ng-model="num"></div>
+            <div class="switchNumber" ng-show="ifSwitchNumber">
+                <ul>
+                    <li><button ng-click="clickNum('0')">0</button></li>
+                    <li><button ng-click="clickNum('1')">1</button></li>
+                    <li><button ng-click="clickNum('2')">2</button></li>
+                    <li><button ng-click="clickNum('3')">3</button></li>
+                    <li><button ng-click="clickNum('4')">4</button></li>
+                    <li><button ng-click="clickNum('5')">5</button></li>
+                    <li><button ng-click="clickNum('6')">6</button></li>
+                    <li><button ng-click="clickNum('7')">7</button></li>
+                    <li><button ng-click="clickNum('8')">8</button></li>
+                    <li><button ng-click="clickNum('9')">9</button></li>
+                    <li><button ng-click="clickNum('A')" ng-show="chooseMode=='ring'">A</button></li>
+                    <li><button ng-click="clickNum('B')" ng-show="chooseMode=='ring'">B</button></li>
+                    <li><button ng-click="clickNum('C')" ng-show="chooseMode=='ring'">C</button></li>
+                    <li><button ng-click="clickNum('D')" ng-show="chooseMode=='ring'">D</button></li>
+                    <li><button ng-click="clickNum('E')" ng-show="chooseMode=='ring'">E</button></li>
+                    <li><button ng-click="clickNum('F')" ng-show="chooseMode=='ring'">F</button></li>
+                    <li><button ng-click="clickNum('G')" ng-show="chooseMode=='ring'">G</button></li>
+                    <li><button ng-click="clickNum('H')" ng-show="chooseMode=='ring'">H</button></li>
+                    <li><button ng-click="clickNum('I')" ng-show="chooseMode=='ring'">I</button></li>
+                    <li><button ng-click="clickNum('J')" ng-show="chooseMode=='ring'">J</button></li>
+                    <li style="width: 160px; margin-right: 30px;">
+                        <input type="button" value="清除" style="background: #ddd" ng-click="clearInput()">
+                    </li>
+                    <li style="width: 160px;">
+                        <input type="button" value="确定" style="background: orange; color: #fff" ng-click="commitInput()">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="snShopLeft">
+            <h1 class="snxf">已选商品</h1>
+            <ul class="snyx">
+                <li ng-repeat="saunaDetail in saunaDetailList">{{saunaDetail.menuSign}}+{{saunaDetail.num}}</li>
+            </ul>
+        </div>
+        <div class="snfl" style="background: #b59654; color: #fff" ng-click="saunaDetailIn()">确定</div>
+    </div>
+    <div class="snRightBox">
+            <div ng-show="!saunaUser" class="skBox">
+                <button sz-read-key="idNumber" enter-method="readCard()" class="skButton"><i class="icon-credit-card"></i>刷卡</button>
+            </div>
+            <div class="snShopRight" ng-show="saunaUser">
+                <div ng-click="showMenuCategory=!showMenuCategory" class="snfl">查看分类</div>
+                <ul ng-show="showMenuCategory" class="chartBox">
+                    <li ng-repeat="category in categoryList" ng-click="chooseMenuCategory(category)">{{category}}</li>
+                </ul>
+                <div class="jdSetting">
+                    <ul class="spBox">
+                        <li class="spButton {{saunaMenu.hover}}" ng-repeat="saunaMenu in saunaMenuList | saunaMenu:menuCategory" ng-click="chooseMenu(saunaMenu)">{{saunaMenu.name}}<span>{{saunaMenu.price}}</span></li>
+                        <div class="clear"></div>
+                    </ul>
+                </div>
+            </div>
+    </div>
+
+</div>

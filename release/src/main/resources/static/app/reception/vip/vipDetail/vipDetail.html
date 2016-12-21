@@ -1,0 +1,7 @@
+<div ng-controller="vipDetailController" ng-if="pop" class="tanchuang huang">
+    <dl class="tctit"><h1>会员充值/退款明细</h1></dl>
+    <div class="tcDiv">
+        <sz-table fields="vipDetailFields" items="vipDetailList" button="add update delete" head="true"></sz-table>
+    </div>
+    <div class="closeBox" ng-click="closePop('vipDetail')">+</div>
+</div>

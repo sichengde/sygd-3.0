@@ -1,0 +1,15 @@
+<div ng-if="pop" ng-controller="todayLockController" drag>
+    <div class="littlePop" drag>
+        <div class="littlePopBox">
+            <h1>锁房原因</h1>
+            <p>
+                <textarea ng-model="reason" style="width: 300px;" placeholder="请输入锁房原因"></textarea>
+            </p>
+
+            <button style="margin-top: 20px;" ng-click="todayLock()">确认</button>
+        </div>
+
+    <div class="closeBox" ng-click="closePop('todayLock')">+</div>
+    <div class="drig" drag-handle></div>
+</div>
+</div>

@@ -1,0 +1,8 @@
+<div class="tanchuang" ng-controller="futureRoomStateController" ng-if="pop" style="width: 90%; left: 4%">
+    <dl class="tctit"><h1>未来房态图</h1></dl>
+    <div class="tcDiv">
+    <span style="margin-right: 10px;">未来</span><input ng-model="days" ng-change="resizeChart()" type="text" style="float:none;width: 150px; margin-right: 10px;"><span>天</span>
+            <div id="timeline"></div>
+    </div>
+            <div class="closeBox" ng-click="closePop('futureRoomState')">+</div>
+</div>

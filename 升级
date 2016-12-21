@@ -1,0 +1,455 @@
+2016-10-15: ALTER TABLE hotel.protocol ADD temp BOOLEAN NULL;
+2016-10-14:	ALTER TABLE hotel.currency ADD pay_total BOOLEAN NULL;
+2016-10-20: ALTER TABLE hotel.desk_detail ADD wait_call BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail ADD remark VARCHAR(100) NULL;
+            ALTER TABLE hotel.menu ADD sell_out BOOLEAN NULL;
+2016-10-21: CREATE TABLE hotel.menu_remark
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                remark VARCHAR(20)
+            );
+            ALTER TABLE hotel.menu_remark COMMENT = '菜品备注';
+            ALTER TABLE hotel.desk_detail ADD call_up BOOLEAN NULL;
+2016-10-23: CREATE UNIQUE INDEX sale_count_name_uindex ON hotel.sale_count (name);
+2016-10-26: ALTER TABLE hotel.menu ADD unit VARCHAR(10) NULL;
+            ALTER TABLE hotel.desk_detail ADD unit VARCHAR(10) NULL;
+            ALTER TABLE hotel.desk_detail_history ADD unit VARCHAR(10) NULL;
+2016-10-27: CREATE TABLE hotel.desk_discount
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                discount_name VARCHAR(20),
+                discount_value DOUBLE
+            );
+            ALTER TABLE hotel.desk_detail ADD if_discount BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail_history ADD if_discount BOOLEAN NULL;
+            ALTER TABLE hotel.menu MODIFY if_discount BOOLEAN;
+2016-10-28: ALTER TABLE hotel.check_in_history_log MODIFY remark VARCHAR(200);
+            ALTER TABLE hotel.desk_detail_history ADD remark VARCHAR(200) NULL;
+2016-10-29: 其他参数增加：销售流水统计退菜----y/n
+            ALTER TABLE hotel.desk_detail_history ADD after_discount DOUBLE NULL;
+2016-10-30: ALTER TABLE hotel.desk_book ADD remark VARCHAR(100) NULL;
+            ALTER TABLE hotel.desk_book CHANGE card_id guest_name VARCHAR(20);
+            ALTER TABLE hotel.desk_book_history ADD remark VARCHAR(200) NULL;
+            ALTER TABLE hotel.desk_book_history CHANGE card_id guest_name VARCHAR(200);
+2016-11-02: ALTER TABLE hotel.menu ADD food_set BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail ADD food_set BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail_history ADD food_set BOOLEAN NULL;
+            CREATE TABLE hotel.food_set
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                set_name VARCHAR(20) NOT NULL,
+                food_name VARCHAR(20),
+                food_num INT
+            );
+            ALTER TABLE hotel.food_set COMMENT = '套餐明细表';
+            ALTER TABLE hotel.food_set ADD point_of_sale VARCHAR(20) NULL;
+2016-11-04: CREATE TABLE hotel.cook_room
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                cook_name VARCHAR(50) NOT NULL,
+                printer VARCHAR(50),
+                printer_ip VARCHAR(20)
+            );
+            ALTER TABLE hotel.cook_room COMMENT = '厨房定义';
+            ALTER TABLE hotel.sale_count DROP ip_addr;
+            ALTER TABLE hotel.sale_count DROP pass_food;
+            ALTER TABLE hotel.sale_count DROP ip_addr_pf;
+            ALTER TABLE hotel.desk_detail ADD cook_room VARCHAR(200) NULL;
+            ALTER TABLE hotel.desk_detail_history ADD cook_room VARCHAR(200) NULL;
+            ALTER TABLE hotel.menu ADD cook_room VARCHAR(200) NULL;
+            ALTER TABLE hotel.cook_room ADD cut BOOLEAN NULL;
+            ALTER TABLE hotel.cook_room ADD usb_port BOOLEAN NULL;
+2016-11-09: CREATE TABLE hotel.house
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                house_name VARCHAR(20),
+                remark VARCHAR(200),
+                include_category VARCHAR(200)
+            );
+            CREATE TABLE hotel.storage_category
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                categoryRoom VARCHAR(20),
+                remark VARCHAR(200)
+            );
+            CREATE UNIQUE INDEX house_house_name_uindex ON hotel.house (house_name);
+            CREATE UNIQUE INDEX storage_category_category_uindex ON hotel.storage_category (categoryRoom);
+            CREATE TABLE hotel.cargo
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(20),
+                categoryRoom VARCHAR(20),
+                alias VARCHAR(20),
+                supplier VARCHAR(20),
+                unit VARCHAR(10),
+                specification VARCHAR(100),
+                model VARCHAR(100),
+                group_unit VARCHAR(10),
+                group_num INT,
+                upper_limit INT,
+                lower_limit INT,
+                calculate_strategy VARCHAR(10),
+                remark VARCHAR(200)
+            );
+            CREATE UNIQUE INDEX cargo_name_uindex ON hotel.cargo (name);
+            CREATE TABLE hotel.storage_out_dept
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(20),
+                save_man VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX storage_out_dept_name_uindex ON hotel.storage_out_dept (name);
+            CREATE TABLE hotel.approver
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX approver_name_uindex ON hotel.approver (name);
+            CREATE TABLE hotel.storage_in_category
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                categoryRoom VARCHAR(20)
+            );
+            CREATE TABLE hotel.storage_out_category
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                categoryRoom VARCHAR(20)
+            )
+2016-11-14: ALTER TABLE hotel.point_of_sale ADD house VARCHAR(20) NULL;
+            ALTER TABLE hotel.menu ADD cost DOUBLE NULL;
+            ALTER TABLE hotel.menu ADD cargo BOOLEAN NULL;
+            CREATE TABLE hotel.storage_in_detail
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                house VARCHAR(20),
+                cargo VARCHAR(20),
+                unit VARCHAR(10),
+                num INT,
+                price DOUBLE,
+                total DOUBLE,
+                supplier VARCHAR(20),
+                categoryRoom VARCHAR(20),
+                begin_time DATETIME,
+                end_time DATETIME,
+                remark VARCHAR(200),
+                storage_in_serial VARCHAR(20),
+                remain INT
+            );
+             CREATE TABLE hotel.storage_in_detail_history
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                house VARCHAR(20),
+                cargo VARCHAR(20),
+                unit VARCHAR(10),
+                num INT,
+                price DOUBLE,
+                total DOUBLE,
+                supplier VARCHAR(20),
+                categoryRoom VARCHAR(20),
+                begin_time DATETIME,
+                end_time DATETIME,
+                remark VARCHAR(200),
+                storage_in_serial VARCHAR(20),
+                remain INT
+            );
+            ALTER TABLE hotel.house MODIFY include_category VARCHAR(200) NOT NULL;
+2016-11-16: ALTER TABLE hotel.desk_detail_history ADD categoryRoom VARCHAR(20) NULL;
+            ALTER TABLE hotel.desk ADD seat INT NULL;
+2016-11-17: ALTER TABLE hotel.serial ADD storage_in_serial VARCHAR(20) NULL;
+            ALTER TABLE hotel.serial ADD storage_out_serial VARCHAR(20) NULL;
+            CREATE TABLE hotel.storage_in
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                in_time DATETIME,
+                approver VARCHAR(20),
+                buyer VARCHAR(200),
+                dept_in VARCHAR(20),
+                remark VARCHAR(200),
+                storage_in_serial VARCHAR(20),
+                categoryRoom VARCHAR(20),
+                buy_time DATETIME
+            );
+            CREATE TABLE hotel.storage_in_dept
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(20),
+                buyer VARCHAR(200)
+            );
+            CREATE UNIQUE INDEX storage_in_dept_name_uindex ON hotel.storage_in_dept (name);
+            CREATE TABLE hotel.storage_out
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                out_time DATETIME,
+                approver VARCHAR(20),
+                dept_out VARCHAR(20),
+                save_man VARCHAR(20),
+                remark VARCHAR(20),
+                storage_out_serial VARCHAR(20),
+                categoryRoom VARCHAR(20)
+            );
+            CREATE TABLE hotel.storage_out_detail
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                house VARCHAR(20),
+                cargo VARCHAR(20),
+                unit VARCHAR(20),
+                num INT,
+                price DOUBLE,
+                total DOUBLE,
+                my_usage VARCHAR(20),
+                storage_out_serial VARCHAR(20),
+                categoryRoom VARCHAR(20),
+                sale_total DOUBLE
+            );
+2016-11-20: ALTER TABLE hotel.room_shop ADD cargo BOOLEAN NULL;
+            ALTER TABLE hotel.room_shop_detail ADD cargo BOOLEAN NULL;
+            ALTER TABLE hotel.room_shop_detail ADD storage_done BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail ADD cargo BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail ADD storage_done BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail_history ADD cargo BOOLEAN NULL;
+            ALTER TABLE hotel.desk_detail_history ADD storage_done BOOLEAN NULL;
+            ALTER TABLE hotel.point_of_sale MODIFY module VARCHAR(10) NOT NULL;
+            ALTER TABLE hotel.point_of_sale MODIFY first_point_of_sale VARCHAR(10) NOT NULL;
+2016-11-21: ALTER TABLE hotel.desk_in_history ADD disabled BOOLEAN NULL;
+            CREATE UNIQUE INDEX vip_vip_number_uindex ON hotel.vip (vip_number);
+            ALTER TABLE hotel.storage_out ADD user_id VARCHAR(20) NULL;
+            ALTER TABLE hotel.storage_in ADD user_id VARCHAR(20) NULL;
+2016-11-22: CREATE OR REPLACE VIEW hotel.storage_remain AS
+              SELECT
+                `hotel`.`storage_in_detail`.`house`                    AS `house`,
+                `hotel`.`storage_in_detail`.`cargo`                    AS `cargo`,
+                `hotel`.`storage_in_detail`.`unit`                     AS `unit`,
+                sum(`hotel`.`storage_in_detail`.`remain`)              AS `remain`,
+                format((sum((`hotel`.`storage_in_detail`.`remain` * `hotel`.`storage_in_detail`.`price`)) /
+                        sum(`hotel`.`storage_in_detail`.`remain`)), 2) AS `price`
+              FROM `hotel`.`storage_in_detail`
+              GROUP BY `hotel`.`storage_in_detail`.`house`, `hotel`.`storage_in_detail`.`cargo`, `hotel`.`storage_in_detail`.`unit`
+2016-11-23: ALTER TABLE hotel.desk_detail_history ADD disabled BOOLEAN NULL;
+            ALTER TABLE hotel.desk_pay ADD disabled BOOLEAN NULL;
+2016-11-24: ALTER TABLE hotel.check_in_guest ADD country VARCHAR(20) NULL;
+            ALTER TABLE hotel.check_in_history ADD country VARCHAR(20) NULL;
+2016-11-27: CREATE TABLE `vip_history` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `vip_number` varchar(20) DEFAULT NULL,
+              `card_id` varchar(20) DEFAULT NULL,
+              `category` varchar(10) DEFAULT NULL,
+              `name` varchar(10) DEFAULT NULL,
+              `sex` varchar(10) DEFAULT NULL,
+              `address` varchar(20) DEFAULT NULL,
+              `race` varchar(10) DEFAULT NULL,
+              `birthday_time` datetime DEFAULT NULL,
+              `phone` varchar(20) DEFAULT NULL,
+              `state` varchar(5) DEFAULT NULL,
+              `score` int(11) DEFAULT NULL,
+              `remain` double DEFAULT NULL,
+              `deposit` double DEFAULT NULL,
+              `do_time` datetime DEFAULT NULL,
+              `done_time` datetime DEFAULT NULL,
+              `id_number` varchar(20) DEFAULT NULL,
+              `user_id` varchar(10) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+            ) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8;
+            ALTER TABLE hotel.vip ADD remain_time DATE NULL;
+            ALTER TABLE hotel.vip_history ADD remain_time DATE NULL;
+            ALTER TABLE hotel.user_log MODIFY action VARCHAR(1000);
+            CREATE TABLE hotel.clean_room_man
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                user VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX clean_room_man_user_uindex ON hotel.clean_room_man (user);
+            CREATE TABLE `vip_detail_history` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `father_id` int(11),
+              `vip_number` varchar(20) DEFAULT NULL,
+              `point_of_sale` varchar(10) DEFAULT NULL,
+              `consume` double DEFAULT NULL,
+              `pay` double DEFAULT NULL,
+              `category` varchar(10) DEFAULT NULL,
+              `description` varchar(100) DEFAULT NULL,
+              `self_account` varchar(20) DEFAULT NULL,
+              `group_account` varchar(20) DEFAULT NULL,
+              `pay_serial` varchar(20) DEFAULT NULL,
+              `user_id` varchar(10) DEFAULT NULL,
+              `do_time` datetime DEFAULT NULL,
+              `currency` varchar(20) DEFAULT NULL,
+              `deserve` double DEFAULT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+2016-11-28: ALTER TABLE hotel.free_detail ADD reason VARCHAR(100) NULL;
+            CREATE TABLE hotel.supplier
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX supplier_name_uindex ON hotel.supplier (name);
+2016-11-30: CREATE VIEW `vip_integration` AS
+            SELECT
+              NULL as father_id,
+              id,
+              vip_number,
+              point_of_sale,
+              consume,
+              pay,
+              category,
+              description,
+              self_account,
+              group_account,
+              pay_serial,
+              user_id,
+              do_time,
+              currency,
+              deserve
+            FROM vip_detail
+            UNION SELECT
+              father_id,
+              id,
+                    vip_number,
+                    point_of_sale,
+                    consume,
+                    pay,
+                    category,
+                    description,
+                    self_account,
+                    group_account,
+                    pay_serial,
+                    user_id,
+                    do_time,
+                    currency,
+                    deserve
+                  FROM vip_detail_history;
+2016-12-01: ALTER TABLE hotel.vip ADD work_company VARCHAR(20) NULL;
+            ALTER TABLE hotel.vip ADD remark VARCHAR(100) NULL;
+            ALTER TABLE hotel.vip_history ADD work_company VARCHAR(20) NULL;
+            ALTER TABLE hotel.vip_history ADD remark VARCHAR(100) NULL;
+            CREATE TABLE hotel.sauna_ring -- 桑拿开始
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                number VARCHAR(20),
+                repair BOOLEAN,
+                sex VARCHAR(1)
+            );
+            CREATE UNIQUE INDEX sauna_ring_number_uindex ON hotel.sauna_ring (number);
+            CREATE TABLE hotel.sauna_in
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                ring VARCHAR(20),
+                do_time DATETIME,
+                total_price DOUBLE,
+                user_id VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX sauna_in_ring_uindex ON hotel.sauna_in (ring);
+            CREATE TABLE hotel.sauna_in_history
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                sauna_serial VARCHAR(20),
+                ring VARCHAR(20),
+                do_time DATETIME,
+                done_time DATETIME,
+                total_price DOUBLE,
+                final_price DOUBLE,
+                discount DOUBLE,
+                user_id VARCHAR(20),
+                disabled BOOLEAN
+            );
+            CREATE TABLE `sauna_detail` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `sauna_menu` varchar(20) DEFAULT NULL,
+              `price` double DEFAULT NULL,
+              `num` int(11) DEFAULT NULL,
+              `ring` varchar(20) DEFAULT NULL,
+              `user_id` varchar(20) DEFAULT NULL,
+              `do_time` datetime DEFAULT NULL,
+              `menu_sign` varchar(20) DEFAULT NULL,
+              `category` varchar(20) DEFAULT NULL,
+              `remark` varchar(100) DEFAULT NULL,
+              `unit` varchar(10) DEFAULT NULL,
+              `if_discount` tinyint(1) DEFAULT NULL,
+              `cargo` tinyint(1) DEFAULT NULL,
+              `storage_done` tinyint(1) DEFAULT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+            CREATE TABLE `sauna_detail_history` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `sauna_serial` varchar(20) DEFAULT NULL,
+              `sauna_menu` varchar(20) DEFAULT NULL,
+              `price` double DEFAULT NULL,
+              `num` int(11) DEFAULT NULL,
+              `ring` varchar(20) DEFAULT NULL,
+              `user_id` varchar(20) DEFAULT NULL,
+              `do_time` datetime DEFAULT NULL,
+              `menu_sign` varchar(20) DEFAULT NULL,
+              `done_time` datetime DEFAULT NULL,
+              `total` double DEFAULT NULL,
+              `unit` varchar(10) DEFAULT NULL,
+              `if_discount` tinyint(1) DEFAULT NULL,
+              `remark` varchar(200) DEFAULT NULL,
+              `after_discount` double DEFAULT NULL,
+              `category` varchar(20) DEFAULT NULL,
+              `cargo` tinyint(1) DEFAULT NULL,
+              `storage_done` tinyint(1) DEFAULT NULL,
+              `disabled` tinyint(1) DEFAULT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=388 DEFAULT CHARSET=utf8;
+            CREATE TABLE `sauna_discount` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `discount_name` varchar(20) DEFAULT NULL,
+              `discount_value` double DEFAULT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+            CREATE TABLE `sauna_menu` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `category` varchar(10) DEFAULT NULL,
+              `name` varchar(20) DEFAULT NULL,
+              `price` double DEFAULT NULL,
+              `if_discount` tinyint(1) DEFAULT NULL,
+              `alias` varchar(20) DEFAULT NULL,
+              `unit` varchar(10) DEFAULT NULL,
+              `cost` double DEFAULT NULL,
+              `cargo` tinyint(1) DEFAULT NULL,
+              `many_price` tinyint(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `menu_name_uindex` (`name`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+2016-12-02: CREATE TABLE hotel.in_category
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                category VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX in_category_category_uindex ON hotel.in_category (category);
+            CREATE TABLE hotel.sauna_menu_detail
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                menu VARCHAR(20),
+                in_category VARCHAR(20),
+                price DOUBLE
+            );
+            ALTER TABLE hotel.sauna_menu_detail COMMENT = '根据账单类型区分价格';
+            ALTER TABLE hotel.sauna_menu_detail ADD CONSTRAINT sauna_menu_detail_menu_in_category_pk UNIQUE (menu, in_category);
+            ALTER TABLE hotel.serial ADD sauna_out_serial VARCHAR(20) NULL;
+            ALTER TABLE hotel.serial ADD sauna_group_serial VARCHAR(20) NULL;
+2016-12-03: ALTER TABLE hotel.sauna_in ADD sauna_group_serial VARCHAR(20) NULL;
+2016-12-04: CREATE TABLE hotel.sauna_user
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(20),
+                id_number VARCHAR(20)
+            );
+            CREATE UNIQUE INDEX sauna_user_name_uindex ON hotel.sauna_user (name);
+            CREATE UNIQUE INDEX sauna_user_idNumber_uindex ON hotel.sauna_user (idNumber);
+            ALTER TABLE hotel.sauna_detail ADD sauna_user VARCHAR(20) NULL;
+            ALTER TABLE hotel.sauna_detail_history ADD sauna_user VARCHAR(20) NULL;
+            ALTER TABLE hotel.sauna_in ADD in_category VARCHAR(20) NULL;
+            ALTER TABLE hotel.sauna_in_history ADD in_category VARCHAR(20) NULL;
+            ALTER TABLE hotel.other_param MODIFY value VARCHAR(100);
+            ALTER TABLE hotel.sauna_in ADD in_category VARCHAR(20) NULL;
+2016-12-05: ALTER TABLE hotel.sauna_detail ADD sauna_group_serial VARCHAR(20) NULL;
+            ALTER TABLE hotel.sauna_detail_history ADD sauna_group_serial VARCHAR(20) NULL;
+            ALTER TABLE hotel.cook_room ADD num INT NULL;
+2016-12-08: ALTER TABLE user_log ADD key_word VARCHAR(1000) NULL;
+            ALTER TABLE vip_detail ADD remain DOUBLE NULL;
+2016-12-15: CREATE UNIQUE INDEX vip_card_id_uindex ON hotel.vip (card_id);
+            ALTER TABLE hotel.room_price_add ADD vip BOOLEAN NULL;
+2016-12-21: ALTER TABLE hotel.room_shop ADD unit VARCHAR(10) NULL;
+            ALTER TABLE hotel.room_shop_detail ADD unit VARCHAR(10) NULL;
+            ALTER TABLE hotel.company ADD alias VARCHAR(20) NULL;

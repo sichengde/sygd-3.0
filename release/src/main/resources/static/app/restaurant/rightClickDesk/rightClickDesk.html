@@ -1,0 +1,8 @@
+<div ng-if="pop" ng-controller="rightClickDeskController" class="rightClickBox">
+    <ul>
+        <li ng-click="deskDetail()"><i class="icon-file-alt"></i>查看明细</li>
+        <li ng-click="guestOutPrintAgain()"><i class="icon-print"></i>补打结账单</li>
+        <li ng-click="checkOutReverse()" ng-show="userPermission && debtTool"><i class="icon-reply"></i>叫回结账单</li>
+        <div class="clear"></div>
+    </ul>
+</div>

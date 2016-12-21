@@ -1,0 +1,15 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="宴会预定">
+            <sz-table fields="deskBookFields" head="true" deep-search="true" init-refresh="deskBookInitRefresh(f)" right-click="rightClickBook" button="add" items-per-page="15"></sz-table>
+            <div class="button" style="margin: 0px; border: none">
+                <div class="fl">
+                    <input type="button" value="录入订单" ng-click="deskBookInput()">
+                </div>
+            </div>
+        </sz-pane>
+    </sz-tab>
+</div>
+<sz-pop-up refresh="refresh()" name="restaurant/deskOtherTools/deskBookIn/deskBookIn.html"></sz-pop-up>
+<sz-pop-up name="reception/book/rightClickBook/rightClickBook.html" back="white"></sz-pop-up>
+<sz-pop-up refresh="refresh()" name="reception/book/addSubscription/addSubscription.html"></sz-pop-up>

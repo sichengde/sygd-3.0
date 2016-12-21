@@ -1,0 +1,40 @@
+<div class="tanchuang huang" ng-controller="deskDetailController" style="width: 600px; left: 27%" ng-if="pop" drag>
+    <dl class="tctit"><h1>点餐明细</h1></dl>
+    <div class="tcDiv">
+        <div class="searchDiv">
+            台号：{{desk.name}} &nbsp; 合计消费：￥{{totalConsume}} &nbsp; 人数：<input type="text" ng-model="desk.deskIn.num" style="float: none; width: 50px;">
+        </div>
+        <!--新增菜品-->
+        <sz-table fields="deskDetailFields" items="deskDetailAddList" button="add delete" right-click="rightClickDeskDetail" items-per-page="100" scroll="true"></sz-table>
+
+        <div class="clear"></div>
+        <table class="tableBorderfff" style="width: 600px;" ng-show="desk.deskIn && !desk.onlyView">
+            <tr>
+                <td style="width: 100px">结算工具：</td>
+                <td>
+                    <span class="red" ng-click="manyCurrency()" style="margin-top: 10px; cursor: pointer">+分单</span>
+                    <button ng-click="readDeskBook()">读取订金</button>
+                    <span>{{payRemark}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <sz-pay></sz-pay>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100px">折扣：</td>
+                <td><select ng-model="deskDiscount" ng-change="deskDiscountChange()" style="width: 80px; float: none" ng-options="x.discountName for x in deskDiscountList">
+                </select></td>
+            </tr>
+        </table>
+    </div>
+    <div class="button" ng-show="!desk.onlyView">
+        <div class="fr"><input type="button" sz-one-click="deskDetailAction()" value="暂记"><input type="button" value="预结单" ng-click="deskPrintBefore()" ng-show="desk.deskIn"></div>
+        <div class="fl"><input ng-show="desk.deskIn" type="button" value="结账" sz-one-click="deskOut()"></div>
+    </div>
+    <div class="closeBox" ng-click="closePop('deskDetail')">+</div>
+    <div class="drig" drag-handle></div>
+    <sz-pop-up name="restaurant/readDeskBook/readDeskBook.html" back="white2"></sz-pop-up>
+</div>
+

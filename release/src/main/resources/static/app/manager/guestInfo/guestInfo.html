@@ -1,0 +1,23 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="在店宾客-客房">
+            <sz-table fields="checkInGuestFields" items="checkInAndGuestList" head="true" button="add update delete" items-per-page="15" print="在店宾客-客房"></sz-table>
+        </sz-pane>
+        <sz-pane title="客史查询">
+            <sz-table fields="checkInHistoryFields" head="true" button="add delete update" row-click="chooseCheckInHistory(d)" title="点击查看详情" deep-search="true"></sz-table>
+            <div class="szSheet">
+                <sz-tab>
+                    <sz-pane title="住店历史">
+                        <sz-table fields="checkInHistoryLogFields" button="add update delete" search-condition="initConditionCheckInHistoryLog" head="true" right-click="rightClickDebt"></sz-table>
+                    </sz-pane>
+                </sz-tab>
+            </div>
+        </sz-pane>
+        <sz-pane title="在店宾客-餐饮">
+            <sz-table fields="deskInFields" head="true" items-per-page="15"></sz-table>
+        </sz-pane>
+        <sz-pane title="在店宾客-桑拿"></sz-pane>
+    </sz-tab>
+</div>
+<sz-pop-up name="reception/rightClickDebt/rightClickDebt.html" back="white"></sz-pop-up>
+<sz-pop-up name="reception/debtDetail/debtDetail.html"></sz-pop-up>

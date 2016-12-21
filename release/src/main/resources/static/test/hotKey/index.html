@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../angular.js"></script>
+    <script>
+        var App = angular.module('app', []);
+        App.controller('appCon', function ($scope) {
+            $scope.a = '1';
+            $scope.b = '1';
+            $scope.hhh = function () {
+                $scope.a++
+            };
+            $scope.hhh2 = function () {
+                $scope.b++
+            };
+            $scope.aaa = function () {
+                $scope.show = !$scope.show;
+            }
+        })
+    </script>
+    <script src="../../directive/hotKey/szHotKeyEnter.js"></script>
+    <script src="../../directive/hotKey/szHotKeyArea.js"></script>
+</head>
+<body ng-controller="appCon" >
+<div>
+{{a}}   {{b}}
+<div ng-if="show">
+    <button ng-click="hhh()" >asd</button>
+</div>
+<button ng-click="hhh2()" >asd</button>
+<button ng-click="aaa()">sss</button>
+<input type="text">
+</div>
+</body>
+</html>

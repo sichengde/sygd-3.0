@@ -1,0 +1,64 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="出库">
+            <div class="saixuanbox">
+                <ul class="saixuanul">
+                    <li class="sxtit">批准人</li>
+                    <li class="sxli2"><select ng-model="storageOut.approver" ng-options="x for x in approverList" style="width: 120px;"></select></li>
+                    <li class="sxtit">领用部门</li>
+                    <li class="sxli2"><select ng-model="storageOut.deptOut" ng-change="changeDeptOut()" ng-options="x.name for x in storageOutDeptList" style="width: 120px;"></select></li>
+                    <li class="sxtit">领用人</li>
+                    <li class="sxli2"><select ng-model="storageOut.saveMan" ng-options="x for x in saveManList" style="width: 120px;"></select></li>
+                    <li class="sxtit">备注</li>
+                    <li class="sxli2"><input type="text" ng-model="storageOut.remark" style="width: 120px;"></li>
+                    <li class="sxtit">出库类型</li>
+                    <li class="sxli2"><select ng-model="storageOut.category" ng-options="x for x in storageOutCategory" style="width: 120px;"></select></li>
+                </ul>
+            </div>
+            <sz-table fields="storageOutDetailFields" items="storageOutDetailList" select-list="storageInAndOutDetailSelectList" item-change="storageOutDetailItemChange(item,field)" back-up="storageOutDetailBackUp"></sz-table>
+            <div class="button" style="border: none; margin: 0px;">
+                <div class="fr">
+                    <div class="tsHoverDiv">
+                        <span>说明：自动将餐厅房吧等销售的物品出库</span>
+                        <button ng-click="autoOut()">自动出库</button>
+                    </div>
+                </div>
+                <div class="fl">
+                    <button ng-click="storageOutAction()" class="fl">提交</button>
+                    <div class="tsHoverDiv">
+                        <button ng-click="storageOutSpecify()">指定出库</button>
+                        <span>说明：不指定出库的话即为先进先出</span>
+                    </div>
+                </div>
+            </div>
+        </sz-pane>
+        <sz-pane title="入库">
+            <div class="saixuanbox">
+                <ul class="saixuanul">
+                    <li class="sxtit">批准人</li>
+                    <li class="sxli2"><select ng-model="storageIn.approver" ng-options="x for x in approverList" style="width: 120px;"></select></li>
+                    <li class="sxtit">购买部门</li>
+                    <li class="sxli2"><select ng-model="storageIn.deptIn" ng-change="changeDeptIn()" ng-options="x.name for x in storageInDeptList" style="width: 120px;"></select></li>
+                    <li class="sxtit">采购员</li>
+                    <li class="sxli2"><select ng-model="storageIn.buyer" ng-options="x for x in buyerList" style="width: 120px;"></select></li>
+                    <li class="sxtit">摘要</li>
+                    <li class="sxli2"><input type="text" ng-model="storageIn.remark" style="width: 120px;"></li>
+                    <li class="sxtit">入库类型</li>
+                    <li class="sxli2"><select ng-model="storageIn.category" ng-options="x for x in storageInCategory" style="width: 120px;"></select></li>
+                    <li class="sxtit">购买时间</li>
+                    <li class="sxli2"><input type="text" ng-model="storageIn.buyTime" uib-datepicker-popup style="width: 120px"></li>
+                </ul>
+            </div>
+            <sz-table fields="storageInDetailFields" items="storageInDetailList" button="update" select-list="storageInAndOutDetailSelectList" item-change="storageInDetailItemChange(item,field)"></sz-table>
+            <div class="button" style="border: none; margin: 0px;">
+                <div class="fl">
+                    <button ng-click="storageInAction()">提交</button>
+                </div>
+            </div>
+        </sz-pane>
+        <sz-pane title="库存盘点">
+            <sz-table fields="storageRemainFields" head="true" deep-search="true" button="add delete update" print="库存盘点" ></sz-table>
+        </sz-pane>
+    </sz-tab>
+</div>
+<sz-pop-up name="storage/storageManager/storageOutSpecify/storageOutSpecify.html"></sz-pop-up>

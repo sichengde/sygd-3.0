@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>左右移动层</title>
+    <script type="text/javascript" src="../../otherJS/jquery.min.js"></script>
+    <style type="text/css">
+        #div1{ background: #FFCC66; border:#FF6600 1px solid; height:100px; width:100px; position:relative; left:0px;}
+    </style>
+    <script type="text/javascript">
+        var t=null;
+        function startMove()
+        {
+            if(t)
+            {
+                clearInterval(t);
+            }
+            t=setInterval(move, 30);
+        }
+        var step=0;
+        function move()
+        {
+            var odiv=document.getElementById("div1");
+            step+=(100-odiv.offsetLeft)/50;
+            step=step*0.98
+            odiv.style.left=odiv.offsetLeft+step;
+        }
+    </script>
+</head>
+<body>
+<div id="div1">
+</div>
+<input type="button" value="移动" onclick="startMove()"/>
+
+</body>
+</html>

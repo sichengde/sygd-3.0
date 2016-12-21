@@ -1,0 +1,10 @@
+<div class="tanchuang huang" ng-controller="deskPayController" ng-if="pop" style="width: 800px; left: 25%" drag>
+    <dl class="tctit"><h1>结算款明细</h1></dl>
+    <div class="tcDiv">
+        <sz-table fields="deskPayFields" items="deskPayList" head="true" button="add update delete" right-click="rightClickDesk"></sz-table>
+    </div>
+    <div class="closeBox" ng-click="closePop('deskPay')">+</div>
+    <div class="drig" drag-handle></div>
+</div>
+<sz-pop-up name="restaurant/rightClickDesk/rightClickDesk.html" back="white"></sz-pop-up>
+<sz-pop-up name="restaurant/deskDetailHistory/deskDetailHistory.html"></sz-pop-up>

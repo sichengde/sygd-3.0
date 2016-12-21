@@ -1,0 +1,169 @@
+.topbox { width: 100%; height: 91px; background: url('../images/topbg.png') no-repeat center; border-bottom: 5px solid #fff;
+    -webkit-box-shadow: 0px 3px 3px #ccc;
+    -moz-box-shadow: 0px 3px 3px #ccc;
+    box-shadow: 0px 3px 3px #ccc; position:fixed; top: 0px; z-index: 899}
+.logo { width: 400px; height: 70px; margin-left: 60px; text-align: left; float: left; padding-top: 15px; }
+.menu { margin-left: 410px; margin-right: 130px;}
+.mb30 {
+    margin: 30px 10px 0px 10px;
+}
+.menubox { height: 91px; position: relative; margin: 0px 40px; overflow: hidden}
+.menubox button { width: 87px; height: 91px; float: left; display:block; text-align: center; color: #fff; cursor: pointer; background: none; border: none;
+    -webkit-border-radius:0px;
+    -moz-border-radius:0px;
+    border-radius:0px;}
+.menubox button i { width: 35px; height: 35px; font-size: 30px;margin: 0px auto 5px auto;line-height: 35px; display: block; text-align: center}
+.menubox button i.icon-home,.menubox a i.icon-mobile-phone { font-size: 35px;}
+.menubox button i.icon-tags { font-size: 25px;}
+.menubox button i.icon-volume-down { font-size: 40px;}
+.menubox button i.icon-vip { background: url('../images/vipota.png') no-repeat 0px 10px;}
+.menubox button i.icon-ota { background: url('../images/vipota.png') no-repeat -47px 10px; width: 42px; height: 35px;}
+.menubox button i.icon-czy { background: url('../images/czy.png') no-repeat 0px 0px; width: 27px; margin: 18px 0px -3px 0px;}
+.menubox button.hover i.icon-vip { background: url('../images/vipotah.png') no-repeat 0px 10px;}
+.menubox button.hover i.icon-ota { background: url('../images/vipotah.png') no-repeat -47px 10px; width: 42px; height: 35px;}
+.menubox button.hover i.icon-czy { background: url('../images/czy.png') no-repeat -27px 0px; width: 27px; margin: 18px 0px -3px 0px;}
+.menubox button h1 { font-size: 14px; margin: 0px; padding: 0px; text-align: center; line-height: 20px; font-weight: normal}
+.menubox button:hover { background: rgba(255,255,255,0.1);
+    -webkit-box-shadow: inset 0px 0px 5px #eee;
+    -moz-box-shadow: inset 0px 0px 5px #eee;
+    box-shadow: inset 0px 0px 5px #eee;}
+.menubox button:hover i {
+    -webkit-animation:itemHover 0.3s;
+    -o-animation:itemHover 0.3s;
+    animation:itemHover 0.3s;}
+.menubox button.hover { background: #fff}
+.menubox button.hover i,.menubox button.hover h1 { color: #ef9d00}
+
+.userbox { float: right; position: relative}
+.userbox a {
+    padding: 3px 6px;
+    display: block;
+    cursor: pointer;
+    border: 1px solid #b5c5ef;
+    margin-right: 10px;
+    background: #89a2e5;
+    color: #fff;
+    text-shadow: none;
+    font-size: 16px;
+    width: 75px;
+    height: 25px;
+    line-height: 25px;
+    -webkit-box-shadow: 1px 1px 0px #666;
+    -moz-box-shadow: 1px 1px 0px #666;
+    box-shadow: 1px 1px 0px #666;
+    float: left;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+.userbox a i { margin: 0px; position: static;}
+.userbox a span { line-height: 25px; color: #fff; font-size: 12px; display: inline-block; position: relative; top:-3px
+}
+.userbox ul { width:95px;position: absolute; left: -5px; top:40px; border: 1px solid #ccc; background:#fff;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;}
+.userbox ul li { width:100%; height: 24px; line-height: 24px; cursor: pointer; text-align: center; position: relative; border-bottom: 1px solid #ccc; font-size: 14px; float:left; }
+.userbox ul li:hover { color: #d78400}
+.userbox ul li:last-child { border-bottom: 0px;}
+/*.userbox ul li:nth-child(2):after{ content:url("../images/my_xiala1.gif");
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+    width: 10px; height: 10px; display: block; position: absolute; left: 20px;
+    top:7px;
+}*/
+.userbox ul li.jtli {
+    background: url("../images/my_jtz.gif") no-repeat 10px;
+}
+.userbox ul .ejul{ position: absolute; width: 95px;
+    top: 0px!important; background: rgba(255,255,255,0.8); border:1px solid #ccc;
+}
+.userbox ul:nth-child(3){ position: absolute; width: 95px;
+    top: 50px!important; background: rgba(255,255,255,0.8); border:1px solid #ccc; left: -110px; z-index: 999;
+}
+.userbox ul:nth-child(3) li:nth-child(2):after { content: ''!important;}
+.userbox ul.ulUser { left: 95px!important; display: none}
+/*.userbox ul.ulUser { right: -10px!important; top:-10px; left: auto!important; display: none}*/
+/*.userbox ul.ulUser li { color: #555}*/
+
+
+.csDivBox { width: 100%; margin: 50px 0px 20px 0px; }
+.cstit { height: 2px; line-height: 2px; background: #a8b8e2; position: relative; margin-bottom: 20px;}
+.cstit h1 { font-size: 16px; line-height: 30px; position: absolute; width: 150px; top:-30px; left: 50%; margin-left: -75px; text-align: center; padding: 0px 10px; color: #274286; background: #fff;
+    text-shadow: 0px 2px 0px #fff,0px -2px 0px #fff,2px 0px 0px #fff, -2px 0px 0px #fff;
+}
+
+/*右键样式*/
+.rightClickBox { width: 150px;border: 1px solid #ccc; background: #fff; color: #666;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+    -webkit-box-shadow: 0px 0px 3px #ccc;
+    -moz-box-shadow: 0px 0px 3px #ccc;
+    box-shadow: 0px 0px 3px #ccc;
+}
+.rightClickBox ul { padding: 13px 8px;}
+.rightClickBox ul li { font-size: 14px; line-height: 30px; text-align: left; cursor: pointer; width: 134px; float: left}
+.rightClickBox ul li i { width: 30px; line-height: 30px; padding-right: 10px; font-size: 20px; color: #666; float: left; border-right: 1px solid #ddd; display: block; margin-right: 10px;}
+.rightClickBox ul li i.icon-book,.rightClickBox ul li i.icon-signin,.rightClickBox ul li i.icon-sitemap,.rightClickBox ul li i.icon-ok,.rightClickBox ul li i.icon-ok-sign,.rightClickBox ul li i.icon-check,.rightClickBox ul li i.icon-plus-sign { color: #60a820}
+.rightClickBox ul li i.icon-random {color:#ef9d00}
+.rightClickBox ul li i.icon-user,.rightClickBox ul li i.icon-file-alt,.rightClickBox ul li i.icon-credit-card,.rightClickBox ul li i.icon-minus-sign { color: #c52d30}
+.rightClickBox ul li i.icon-credit-card { font-size: 18px;}
+.rightClickBox ul li i.icon-group,.rightClickBox ul li i.icon-signout { color: #ff484c}
+.rightClickBox ul li i.icon-exchange { color: #1c73d5}
+.rightClickBox ul li i.icon-money,.rightClickBox ul li i.icon-reply,.rightClickBox ul li i.icon-tag { color: #d97b15}
+.rightClickBox ul li i.icon-edit { color: #dd9700}
+.rightClickBox ul li i.icon-list-alt,.rightClickBox ul li i.icon-credit-card { color: #5091dc}
+.rightClickBox ul li i.icon-print { color: deepskyblue}
+.rightClickBox ul li i.icon-reorder { color: #6b46e5}
+.lefta { display: none}
+
+
+.rightClickBox ul .liButton { font-size: 14px; line-height: 30px; text-align: left; cursor: pointer; width: 134px; float: left; border: none; background: none;}
+.rightClickBox ul .liButton i { width: 30px; text-align: center; line-height: 30px; padding-right: 10px; font-size: 20px; color: #666; float: left; border-right: 1px solid #ddd; display: block; margin-right: 10px}
+.rightClickBox ul .liButton i.icon-minus-sign { color: #c60000;}
+.rightClickBox ul button[disabled="disabled"]:hover i { color: #666}
+
+/*@media (min-width:1410px) and (max-width: 1570px) {
+    .logo { width: 300px; margin-left: 0px;}
+}*/
+@media ( min-width: 1179px) and (max-width:1409px){
+    /*.menubox a { width: 75px;}*/
+    .saixuanbox .styleSheet { margin-right: 0px;}
+}
+
+@keyframes itemHover {0%{
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);}
+    30%{
+        -webkit-transform: rotate(10deg);
+        -moz-transform: rotate(10deg);
+        -ms-transform: rotate(10deg);
+        -o-transform: rotate(10deg);
+        transform: rotate(10deg);}
+    60%{
+        -webkit-transform: rotate(-10deg);
+        -moz-transform: rotate(-10deg);
+        -ms-transform: rotate(-10deg);
+        -o-transform: rotate(-10deg);
+        transform: rotate(-10deg);}
+    100%{
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+}
+@-webkit-keyframes itemHover {
+    0%{-webkit-transform: rotate(0deg)}30%{-webkit-transform: rotate(10deg)}60%{-webkit-transform: rotate(-10deg)}100%{-webkit-transform:rotate(0deg)}
+}
+@-moz-keyframes itemHover {
+    0%{-moz-transform: rotate(0deg)}30%{-moz-transform: rotate(10deg)}60%{-moz-transform: rotate(-10deg)}100%{-moz-transform:rotate(0deg)}
+}

@@ -1,0 +1,53 @@
+<ion-view title="房间预订">
+    <ion-content padding="true" class="has-header" ng-controller="bookInputController">
+      <ion-refresher on-refresh="doRefresh()"
+                     pulling-text="松开刷新"
+                     refreshing-text="刷新成功"
+                     refreshing-icon="ion-loading-b">
+
+      </ion-refresher>
+        <ion-list>
+            <ion-item class=" item-input item-select">
+                <div class="input-label">房间类别：</div>
+                <select>
+                    <option>大床房</option>
+                    <option>标准间</option>
+                </select>
+            </ion-item>
+            <ion-item class=" item-input item-select">
+                <div class="input-label">房租方式：</div>
+                <select>
+                    <option>日租房</option>
+                    <option>小时房</option>
+                </select>
+            </ion-item>
+            <ion-item class=" item-input item-select">
+                <div class="input-label">房价协议：</div>
+                <select>
+                    <option>散客门市价</option>
+                    <option>散客团购价</option>
+                </select>
+            </ion-item>
+            <ion-item class=" item-input">
+                <div class="input-label">预订房数：</div>
+                <input type="text" placeholder="请输入房间数量">
+            </ion-item>
+            <ion-item class="item-input">
+                <div class="input-label">来店日期：</div>
+                <input type="text" placeholder="请输入来店日期">
+            </ion-item>
+            <ion-item class=" item-input">
+                <div class="input-label">离店日期：</div>
+                <input type="text" placeholder="请输入离店日期">
+            </ion-item>
+            <ion-item class="item-input">
+                <div class="input-label">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</div>
+                <input type="text" placeholder="请输入订房人姓名">
+            </ion-item>
+            <ion-item class=" item-input">
+                <div class="input-label">电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</div>
+                <input type="text" placeholder="请输入电话号码">
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

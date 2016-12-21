@@ -1,0 +1,20 @@
+<ion-view title="" id="page5" class=" ">
+    <ion-content padding="true" class="has-header" ng-controller="loginControllerM">
+        <div class="toptitle">用户登录</div>
+        <form id="login-form1" class="list ">
+            <ion-list id="login-list1" class=" ">
+                <label class="item item-input " id="login-input1">
+                    <input type="text" placeholder="用户名" ng-model="userId">
+                </label>
+                <label class="item item-input " id="login-input2">
+                    <input type="password" placeholder="密码" ng-model="password">
+                </label>
+            </ion-list>
+            <div class="spacer" style="height: 40px;"></div>
+            <button id="login-button1" class=" button button-stable  button-block " ng-click="login()">登录</button>
+        </form>
+    </ion-content>
+</ion-view>
+
+
+

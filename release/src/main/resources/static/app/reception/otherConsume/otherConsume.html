@@ -1,0 +1,37 @@
+<div class="tanchuang" style="width: 800px; left: 25%; margin-top:-200px; top:50%; z-index: 997" ng-controller="OtherConsumeController"  ng-if="pop" drag>
+    <dl class="tctit"><h1>消费挂账</h1></dl>
+    <div class="tcDiv">
+        <dl class="tcTopName">
+            房号：
+            <span ng-bind="room.roomId"></span>
+        </dl>
+        <table class="tableBorderfff" style="width: 800px; margin-top: 5px;">
+            <tr>
+                <td>费用类别：</td>
+                <td>
+                    <select ng-model="manualConsume" style="width: 140px;">
+                        <option value="杂单">杂单</option>
+                        <option value="冲账" class="red">冲账</option>
+                    </select>
+                </td>
+                <td><span class={{manualConsume=='冲账'?'red':''}}>营业部门：</span></td>
+                <td>
+                    <select ng-model="pointOfSale" ng-options="x for x in pointOfSaleList" style="width: 140px;"></select>
+                </td>
+                <td><span class={{manualConsume=='冲账'?'red':''}}>费用金额：</span></td>
+                <td><input type="text" ng-model="consume"></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td colspan="7"><input type="text" style="width: 630px;" ng-model="remark"></td>
+            </tr>
+        </table>
+        <dl class="button">
+            <button ng-show="manualConsume=='杂单'" sz-submit ng-click="addDebt()" sz-permission="杂单">入账</button>
+            <button ng-show="manualConsume=='冲账'" sz-submit ng-click="addDebt()" sz-permission="冲账">入账</button>
+        </dl>
+    </div>
+
+    <div class="closeBox" ng-click="closePop('otherConsume')">+</div>
+    <div class="drig" drag-handle></div>
+</div>

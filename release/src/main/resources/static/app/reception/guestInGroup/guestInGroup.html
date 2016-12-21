@@ -1,0 +1,199 @@
+<!--main-container-part-->
+<div id="content">
+
+    <div id="main">
+        <!-- 房间信息录入 begin -->
+        <div class="tableBordernone" style="width:350px; height: 100%; float: left; margin-right: 30px; margin-top: 0px;">
+            <table>
+                <tr>
+                    <td>房间类别：</td>
+                    <td colspan="3">
+                        <select style="width: 180px; float: none" ng-model="roomCategory"
+                                ng-options="x for x in roomCategoryList">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>房租方式：</td>
+                    <td colspan="3">
+                        <select style="width: 180px; float: none" ng-model="roomPriceCategory"
+                                ng-options="x for x in roomPriceCategoryList">
+                        </select>
+                    </td>
+                </tr>
+                <td>协议单位：</td>
+                <td>
+                    <select style="width: 180px;" ng-model="company"
+                            ng-options="x.name for x in companyList">
+                        <option value=""></option>
+                    </select>
+                </td>
+                <tr>
+                    <td>房价协议：</td>
+                    <td colspan="3">
+                        <select style="width: 180px; float: none" ng-model="protocol"
+                                ng-options="x.protocol for x in protocolShowList">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{roomCategory}}：</td>
+                    <td class="red">￥ {{protocol.roomPrice}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="canUseRoom">
+                            <h1 class="curTit">可用房间</h1>
+                            <div class="checkInRoom" ng-mousedown="count" sz-alert>
+                                <a class="roomID {{r.hover}}" ng-click="clickRoom(r,$event.shiftKey)"
+                                   ng-repeat="r in roomShowList">{{r.roomId}}</a>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="button chooseRoom" style="float: right; margin:0px 0px 0px 10px;padding:0px; border: 0;">
+                                <input type="button" ng-click="clearList()" value="清空选择">
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align: left"><div class="tswz">*注：单击选择入住房，再次单击取消入住房</div></td>
+                </tr>
+            </table>
+        </div>
+        <!-- 房间信息录入end -->
+
+        <!-- right begin -->
+        <div class="checkInDiv">
+            <!-- 团队信息录入begin -->
+            <div class="checkInEnter">
+                <ul>
+                    <li>
+                        <label>团名：</label>
+                        <input type="text" style="width: 120px;" ng-model="checkInGroup.name">
+                    </li>
+                    <li>
+                        <label>客人来源：</label>
+                        <select style="width: 131px;" ng-model="guestSource" ng-options="x for x in guestSourceList">
+                        </select>
+                    </li>
+                    <li>
+                        <label style="width: 100px">预定转入住：</label>
+                        <select style="width: 131px;" ng-options="x.name for x in bookList" ng-model="book" ng-change="bookIn(book)">
+                            <option></option>
+                        </select>
+                    </li>
+                    <li>
+                        <label>转入现有团队：</label>
+                        <select style="width: 131px;" ng-options="x.name for x in checkInGroupList" ng-model="checkInGroup">
+                            <option></option>
+                        </select>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <label>领队姓名：</label>
+                        <input type="text" style="width: 120px;" ng-model="checkInGroup.leader">
+                    </li>
+                    <li>
+                        <label>领队房号：</label>
+                        <select style="width: 131px;" ng-options="x for x in selectGuestList[2]" ng-model="checkInGroup.leaderRoom">
+                            <option></option>
+                        </select>
+                    </li>
+                    <li>
+                        <label>电话：</label>
+                        <input type="text" style="width: 120px;" ng-model="checkInGroup.phone">
+                    </li>
+                    <li>
+                        <label><a sz-read-key="idNumber" enter-method="readCard()"
+                                  class="icon-credit-card yellow"
+                                  style=" padding-right: 5px; width:90%; line-height:25px; display:block; text-align:right; cursor: pointer">读会员卡</a></label>
+                        卡号：{{vip.vipNumber}}/{{vip.category}}
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <label>押金：</label>
+                        <input type="text" value="" style="width: 120px;" ng-model="checkInGroup.deposit">
+                    </li>
+
+                    <li>
+                        <label>支付方式：</label>
+                        <select style="width: 131px;" ng-options="x for x in currencyList" ng-model="checkInGroup.currency"></select>
+                    </li>
+                    <li>
+                        <label>备注：</label>
+                        <input type="text" style="width: 120px;" ng-model="checkInGroup.remark">
+                    </li>
+                    <li ng-show="book">
+                        <label>预订订金：</label>
+                        {{book.subscription}}
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <label>入住时间：</label>
+                        <input type="text" disabled="disabled" style="width: 120px;"
+                               ng-model="checkInGroup.reachTime" uib-datepicker-popup>
+                    </li>
+                    <li>
+                        <label>预住天数：</label>
+                        <input type="button" class="jia" value="-" style="margin-right: -1px;" ng-click="minusDay()">
+                        <input type="text" style="width: 60px;" id="Days" ng-model="days" ng-init="days=1">
+                        <input type="button" class="jia" value="+" style="margin-left: -1px;" ng-click="addDay()">
+                    </li>
+                    <li style="width: 600px">
+                        <label style="width: 100px">预离时间：</label>
+                        <input type="text" style="width: 85px;" ng-model="checkInGroup.leaveTime" uib-datepicker-popup>
+                        <div class="timeSfm" ng-show="showLeaveTimeDetail">
+                            <uib-timepicker show-spinners="false" ng-model="checkInGroup.leaveTime" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                        <input type="checkbox" ng-model="showLeaveTimeDetail" style="margin-left: 10px;">精确时间
+                    </li>
+                </ul>
+            </div>
+            <!-- 团队信息录入 end -->
+            <div class="szSheet">
+                <sz-tab>
+                    <sz-pane title="入住信息">
+                        <div sz-easy-width style="width: 700px" class="huang">
+                            <sz-table fields="checkInFields" items="checkInList" button="add delete"></sz-table>
+                        </div>
+                    </sz-pane>
+                    <sz-pane title="客人信息">
+                        <div class="huang">
+                            <sz-table fields="checkInGuestFields" items="checkInGuestList" select-list="selectGuestList"></sz-table>
+                        </div>
+                        <button ng-click="readIdCard()">读身份证</button>
+                    </sz-pane>
+                </sz-tab> 
+            </div>
+
+            <div class="button" style="border: none;height: 200px">
+                <button ng-click="guestInGroupAction()" sz-permission="团队开房">确认团队开房</button>
+            </div>
+        </div>
+        <!-- right end -->
+
+    </div>
+    <div class="userTipsBox contentToggle">
+        <dl>
+            <h1>可用房操作</h1>
+            单机选择入住房，再次单机取消入住房！
+        </dl>
+        <dl>
+            <h1>必填项：</h1>
+            团名、入住信息、客人信息必须填写完整，否则出错！
+        </dl>
+    </div>
+    <div class="userTips" sz-toggle><img src="../images/tishi.gif"> </div>
+    <!--<object  id="Control"
+             TYPE="application/xhanhan-activex"
+             ALIGN="baseline" BORDER="0"
+             WIDTH="1px"HEIGHT="1px"
+             clsid="{2FE52D49-D1E2-44C4-AE30-D35BAB691F21}">
+    </object>-->
+</div>
+

@@ -1,0 +1,52 @@
+<div id="content">
+    <!--Filter begin-->
+    <div class="saixuanbox">
+        <ul class="saixuanul">
+            <li class="sxtit">手牌类别：</li>
+            <li class="sxli2">
+                <select style="width: 70px;" ng-model="ringSex" ng-options="x for x in ringSexList">
+                </select>
+            </li>
+            <li class="sxtit">手牌状态：</li>
+            <li class="sxli2">
+                <select style="width: 100px;" ng-model="ringState" ng-options="x for x in ringStateList">
+                </select>
+            </li>
+            <li class="sxli2 littleButton" style="margin-left: 10px;"><input type="button" value="刷新全部手牌" ng-click="refresh()" sz-auto-click></li>
+            <li class="sxtit">手牌号：</li>
+            <li class="sxli2" style="margin-left: 10px;"><input type="text" ng-model="ringNumber" style="width: 90%"></li>
+            <li class="sxli2 littleButton"><input type="button" value="手动开牌" ng-click="saunaIn()"></li>
+            <li class="sxli2 littleButton"><input type="button" value="折扣开牌" ng-click="saunaInSale()"></li>
+            <li class="sxli2 littleButton"><input type="button" value="手动结算" ng-click="saunaOut()"></li>
+        </ul>
+        <ul class="tongji">
+            <p>已开牌人数：<span class="red">{{todayTotal}}</span></p>
+            <p>店内人数：<span class="red">{{ringIn}}</span></p>
+        </ul>
+    </div>
+    <!--Filter end-->
+
+    <div class="mainSaunaState">
+        <ul class="snBox {{saunaRing.hover}}" ng-repeat="saunaRing in saunaRingList | saunaState:ringSex:ringState" ng-click="saunaRing1Click(saunaRing)" ng-dblclick="pushIn(saunaRing.number)"> <!--sz-right-click="rightClickState" right-click-param="saunaRing">暂时不用右键菜单-->
+            <li class="{{saunaRing.sex=='男'?'shMan':'shWomen'}}"></li>
+            <li class="{{saunaRing.sex=='男'?'shUseMan':'shUseWomen'}}" ng-show="saunaRing.saunaIn"></li>
+            <li class="icon-wrench" ng-show="saunaRing.repair"></li>
+            <li class="shNumber">{{saunaRing.number}}</li>
+        </ul>
+    </div>
+
+    <!-- 底部图标说明 -->
+    <div class="roomStateLabel">
+        <p class="riqi">
+            营业日期：{{nightDate}}
+        </p>
+        <p><i class="shMan"></i>男士手牌</p>
+        <p><i class="shWomen"></i>女士手牌</p>
+        <p><i class="icon-wrench"></i>维修</p>
+        <p><i class="shUseMan"></i>占用(男)</p>
+        <p><i class="shUseWomen"></i>占用(女)</p>
+    </div>
+    <sz-pop-up name="sauna/rightClickState/rightClickState.html" back="white"></sz-pop-up>
+</div>
+<sz-pop-up name="sauna/saunaInSale/saunaInSale.html"></sz-pop-up>
+<sz-pop-up name="sauna/saunaOut/saunaOut.html"></sz-pop-up>

@@ -1,0 +1,13 @@
+<div id="content" class="ddDing">
+    <sz-tab>
+        <sz-pane title="入库查询">
+            <sz-table fields="storageInFields" button="add delete update" head="true" deep-search="true" print="入库查询" right-click="rightClickStorageInOut"></sz-table>
+        </sz-pane>
+        <sz-pane title="出库查询">
+            <sz-table fields="storageOutFields" button="add delete update" head="true" deep-search="true" print="出库查询" right-click="rightClickStorageInOut"></sz-table>
+        </sz-pane>
+    </sz-tab>
+</div>
+<sz-pop-up name="storage/storageReport/rightClickStorageInOut/rightClickStorageInOut.html" back="white"></sz-pop-up>
+<sz-pop-up name="storage/storageReport/storageInDetail/storageInDetail.html"></sz-pop-up>
+<sz-pop-up name="storage/storageReport/storageOutDetail/storageOutDetail.html"></sz-pop-up>

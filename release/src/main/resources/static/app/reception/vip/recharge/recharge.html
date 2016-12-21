@@ -1,0 +1,16 @@
+<div ng-if="pop" ng-controller="rechargeVipController">
+    <div class="littlePop" drag>
+        <div class="littlePopBox">
+            <h1>会员充值</h1>
+            <p class="tagp"><span>会员卡号：</span>{{vipNumber}}</p>
+            <p class="tagp"><span>充值金额：</span><input type="text" placeholder="请输入充值金额" style="float: none; width: 150px;" ng-model="money"></p>
+            <p class="tagp"><span>抵用金额：</span><input type="text" placeholder="不可为空" style="float: none; width: 150px;" ng-model="deserve"></p>
+            <p class="tagp"><span>支付方式：</span><select style="width: 162px; float:none" ng-options="x for x in currencyList" ng-model="currency">
+            </select></p>
+            <div class="clear"></div>
+            <button style="margin-top: 20px;" ng-click="recharge()">确认充值</button>
+        </div>
+        <div class="closeBox" ng-click="closePop('recharge')">+</div>
+        <div class="drig" drag-handle></div>
+    </div>
+</div>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>沈阳贵德科技开发有限公司-网站首页</title>
+    <LINK href="favicon.ico" type=image/x-icon rel="shortcut icon"/>
+    <link href="css/index.css" type="text/css" rel="stylesheet">
+    <link href="css/banner-style.css" type="text/css" rel="stylesheet">
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/jquery.banner.revolution.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+             $(".linkMobile").click(function () {
+                 $(".menuBox").toggle()
+             })
+        })
+    </script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                        }
+                    };
+
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script>var _hmt = _hmt || [];(function() {  var hm = document.createElement("script");  hm.src = "//hm.baidu.com/hm.js?9fc3e3d51513200adab4016ec7b1f29d";  var s = document.getElementsByTagName("script")[0];  s.parentNode.insertBefore(hm, s);})();</script>
+</head>
+<body>
+<div class="topBlue">
+    <div class="box1200">
+        欢迎访问沈阳贵德科技开发有限公司网站，期待与您的合作！
+        <span class="tel400"><img src="http://o7rv84v9u.bkt.clouddn.com/tel138.gif"></span>
+    </div>
+</div>
+<div class="topBox">
+    <div class="menuBox">
+        <a href="index.html" class="hover">网站首页</a>
+        <a href="about.html">关于我们</a>
+        <a href="product.html">产品介绍</a>
+        <a href="case.html">客户见证</a>
+        <a href="join.html">招商加盟</a>
+        <a href="contact.html">联系我们</a>
+    </div>
+    <div class="linkMobile"><img src="images/linkmobil.png"> </div>
+    <div class="logo"><img src="http://o7rv84v9u.bkt.clouddn.com/logoab.gif"></div>
+    <div class="logom"><img src="images/logom.png"></div>
+    <a class="mfsy" href="http://101.200.171.37/app/index1.html" target="_blank">
+        免费试用
+    </a>
+</div>
+
+    <div id="wrapper">
+        <div class="fullwidthbanner" style="background:#0E3077;">
+            <ul style="list-style:none;">
+                <li data-transition="3dcurtain-horizontal" data-slotamount="15" data-masterspeed="300" data-link="/product.html">
+                    <img src="http://o7rv84v9u.bkt.clouddn.com/banner0.png" /><br />
+                </li>
+                <li data-transition="3dcurtain-horizontal" data-slotamount="15" data-masterspeed="300">
+                    <img src="http://o7rv84v9u.bkt.clouddn.com/banner11.jpg" /><br />
+                </li>
+                <li id="banner2"  data-transition="3dcurtain-vertical" data-slotamount="15" data-masterspeed="300" data-link="#">
+                    <img src="http://o7rv84v9u.bkt.clouddn.com/banner21.jpg" /><br />            </li>
+                <li data-transition="papercut" data-slotamount="15" data-masterspeed="300" data-link="#">
+                    <img src="http://o7rv84v9u.bkt.clouddn.com/ban3.jpg" /><br />            </li>
+
+            </ul>
+        </div>
+    </div>
+    <script>
+        $(".fullwidthbanner").css("background-image","url("+$("#banner2").find('img').attr('src')+")").css("background-size","cover");
+
+    </script>
+    <script>
+        var api;
+        jQuery(document).ready(function() {
+            api =  jQuery('.fullwidthbanner').revolution(
+                    {
+
+                        delay:9000,
+                        startheight:577,
+                        startwidth:1920,
+
+                        hideThumbs:200,
+
+                        thumbWidth:100,							// Thumb With and Height and Amount (only if navigation Tyope set to thumb !)
+                        thumbHeight:50,
+                        thumbAmount:4,
+
+                        navigationType:"both",					//bullet, thumb, none, both		(No Thumbs In FullWidth Version !)
+                        navigationArrows:"solo",				//nexttobullets, verticalcentered, none
+                        navigationStyle:"round",				//round,square,navbar
+
+                        touchenabled:"on",						// Enable Swipe Function : on/off
+                        onHoverStop:"on",						// Stop Banner Timet at Hover on Slide on/off
+
+                        navOffsetHorizontal:0,
+                        navOffsetVertical:0,
+
+                        stopAtSlide:-1,
+                        stopAfterLoops:-1,
+
+                        shadow:0,								//0 = no Shadow, 1,2,3 = 3 Different Art of Shadows  (No Shadow in Fullwidth Version !)
+                        fullWidth:"on",							// Turns On or Off the Fullwidth Image Centering in FullWidth Modus
+                        lazyLoad:"off"
+
+                    });
+
+        });
+
+    </script>
+
+<div class="bgSoft">
+    <div class="box1200">
+        <ul class="bgText">
+            <h1 class="rjTitle">
+                宾馆软件<br><span>无漏洞、无故障、系统稳定、操作简单</span>
+            </h1>
+            <p>
+                快速准确的操作，独具一键入住和一键退房结账功能<br>
+                钟点房时段房价的电脑自适应设置功能<br>
+                带有强大的会员积分管理功能，自动实现积分奖励功能<br>
+                团队和会议用房的前期批量处理，提高服务工作效率<br>
+                具有丰富的外设接口，如门锁、身份证扫描仪、IPAD<br>
+                可自定义界面房态图，适应不同的客户使用界面习惯<br>
+                开房退房均使用房卡进行，彻底杜绝员工手工操作<br>
+                独有的软件系统365天自动监控功能，所有操作一目了然<br>
+                可实现早餐电子券的管理，收入数据准确无误
+            </p>
+        </ul>
+        <ul class="bgPic"><img src="images/bgpic.png"></ul>
+    </div>
+</div>
+<div class="msSoft">
+    <div class="box1200">
+        <ul class="msText">
+            <h1 class="rjTitle" style="background: url('images/lock.gif') no-repeat left top; color: #f38200; padding-top: 5px;">
+                门锁系统<br><span>独创国内服务先例，3年质保，保用8年</span>
+            </h1>
+            <p>
+                智能门锁是我公司专门为广大宾馆客户提供的高性价比产品，具有产品稳定、 维修量小、配件成本低等特点。还有电梯楼层控制器、客房智能取电开关，多 功能的电子门牌显示器，具有环保节能的作用。
+            </p>
+        </ul>
+    </div>
+</div>
+<div class="znSoft">
+    <div class="box1200">
+        <h1 class="rjTitle m" style="background: url('images/kk.gif') no-repeat left top; margin-top: 20px; color: #598f23; padding-top: 5px;">
+            智能客控<br><span>五星级宾馆的服务和体验</span>
+        </h1>
+        <p class="p1 m">
+            <i style="margin-top: 5px;">迎宾模式</i>当客人进入房间插卡取电时，廊灯自动开启，贴心的服务让客人倍感亲切
+        </p>
+        <p class="p1">
+           当客人进入房间插卡取电时，廊灯自动开启，贴心的服务让客人倍感亲切
+            <i style="margin-top: 15px;">迎宾模式</i>
+        </p>
+        <p class="p2">
+            <i style="margin-top: 5px;">一键总关</i>
+            一键总关所有灯光，每路灯光可单独控制,<br>
+            解决客人睡觉前逐一关灯的烦恼
+
+        </p>
+        <p class="p3">
+            <i style="margin-top: 15px; margin-bottom: 5px;">智能夜灯</i>
+            当客人一键总关所有灯以后，房间内<br>所有灯光关闭的同时自动夜灯亮起，<br>给客人贴心的服务
+
+        </p>
+        <p class="p4">
+            <i style="margin-top: 15px; margin-bottom: 5px;">人体感应</i>
+            当人进入卫生间时，卫生间灯、换气扇开启；<br>客人离开后延时10分钟后关闭，<br>人性化设计，安全节能
+
+        </p>
+        <p class="p5">
+            <i>电器控制</i>
+            可对电视、窗帘等进行智能控制
+        </p>
+        <p class="p6">
+            <i style=" margin-top: 5px;">夜光识别</i>
+            LED暗背光显示、有利于夜间识别<br>
+            采用平行光原理，不影响客人睡觉
+        </p>
+        <p class="p7">
+            <i style="margin-top: 15px; margin-bottom: 5px;">安全稳定</i>
+            人接触到的为5V安全电压<br>
+            安全系数高，内置过载保护<br>
+            可防浪涌电流和防雷击<br>
+        </p>
+        <p class="p8">
+            <i style="margin-top: 5px;">安装方便</i>
+            标准的86式墙壁开关外形设计<br>
+            不需对灯具做任何改动接配件
+        </p>
+        <p class="p9">
+            <i style="margin-top: 5px;">维修方便</i>
+            相比客控主机系统，维修更方便<br>
+            可与普通开关互控，电工即能解决
+        </p>
+    </div>
+
+</div>
+<div class="ptSoft">
+    <div class="box1200">
+        <ul class="ptText">
+            <h1 class="ptTit">配套产品</h1>
+            <p>
+                十几年来，我们总结经验，为了满足不同客户的不同需求，研制开发了一系列周边软件产品，其中包括 餐饮、桑拿洗浴、游泳馆、会所、马术俱乐部等一系列管理系统。
+            </p>
+        </ul>
+        <ul class="ptMenu">
+            <a href="restaurant.html" class="a01" target="_blank"><span>餐饮</span></a>
+            <a href="#" class="a02"><span>桑拿洗浴</span></a>
+            <a href="#" class="a03"><span>游泳馆</span></a>
+            <a href="#" class="a04"><span>马术俱乐部</span></a>
+            <a href="#" class="a05"><span>会所</span></a>
+        </ul>
+    </div>
+</div>
+<div class="caseBox">
+    <h1 class="caseTitle"><img src="http://o7rv84v9u.bkt.clouddn.com/altit.gif"></h1>
+    <!--<dl>
+        <dt>盘古七星酒店</dt>
+        <dd><a href="case.html"><img src="http://o7rv84v9u.bkt.clouddn.com/bjpg.jpg"></a></dd>
+    </dl>
+    <dl>
+        <dt>北京会议中心</dt>
+        <dd><a href="case.html"><img src="http://o7rv84v9u.bkt.clouddn.com/bjhy.jpg"></a></dd>
+    </dl>
+    <dl>
+        <dt>沈阳凤凰饭店</dt>
+        <dd><a href="case.html"><img src="http://o7rv84v9u.bkt.clouddn.com/case4.jpg"></a></dd>
+    </dl>
+    <dl>
+        <dt>阜新西山宾馆</dt>
+        <dd><a href="case.html"><img src="http://o7rv84v9u.bkt.clouddn.com/case1.jpg"></a></dd>
+    </dl>
+    <dl>
+        <dt>长春南湖宾馆</dt>
+        <dd><a href="case.html"><img src="http://o7rv84v9u.bkt.clouddn.com/case3.jpg"></a></dd>
+    </dl>
+    <dl>
+        <dt>辽宁省军区招待所</dt>
+        <dd><a href="case.html"><img src="http://o7rv84v9u.bkt.clouddn.com/case6.jpg"></a></dd>
+    </dl>-->
+    <dl>
+        <dt>鲅鱼圈金海湾酒店</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E9%B2%85%E9%B1%BC%E5%9C%88%E9%87%91%E6%B5%B7%E6%B9%BE%E9%85%92%E5%BA%97.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>盘锦武星宾馆</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E7%9B%98%E9%94%A6%E6%AD%A6%E6%98%9F%E5%AE%BE%E9%A6%86.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>延吉洲际酒店</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E5%BB%B6%E5%90%89%E6%B4%B2%E9%99%85%E9%85%92%E5%BA%97.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>长春教育宾馆</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E9%95%BF%E6%98%A5%E6%95%99%E8%82%B2%E5%AE%BE%E9%A6%86.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>锦州大厦</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E9%94%A6%E5%B7%9E%E5%A4%A7%E5%8E%A6.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>本溪明珠大酒店</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E6%9C%AC%E6%BA%AA%E6%98%8E%E7%8F%A0%E5%A4%A7%E9%85%92%E5%BA%97.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>抚顺天宝大厦</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E6%8A%9A%E9%A1%BA%E5%A4%A9%E5%AE%9D%E5%A4%A7%E5%8E%A6.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>沈阳金海岸大酒店</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E6%B2%88%E9%98%B3%E9%87%91%E6%B5%B7%E5%B2%B8%E5%A4%A7%E9%85%92%E5%BA%97.jpg"> </dd>
+    </dl>
+    <dl>
+        <dt>辽阳宾馆</dt>
+        <dd><img src="http://o7rv84v9u.bkt.clouddn.com/%E8%BE%BD%E9%98%B3%E5%AE%BE%E9%A6%86.jpg"> </dd>
+    </dl>
+</div>
+<div class="indexContact">
+    <ul class="indexTel m">免费热线<br>400-166-2068</ul>
+    <div class="contactBox">
+        <div class="box800">
+
+            <ul class="ewmRight">
+                <h1>想实时了解我们<br><span>请扫描二维码，关注我们的<font>公众帐号</font></span></h1>
+                <img src="http://i2.buimg.com/b5598f9f67f2ba36.jpg">
+            </ul>
+           <ul class="lefcon">
+               <h1>沈阳贵德科技开发有限公司</h1>
+               <li>
+                   <i class="lxr"></i>
+                   联系人：舒经理
+               </li>
+               <li>
+                   <i class="rx"></i>
+                   热 &nbsp;  线：13804046634      &nbsp; &nbsp;      电话：024-23902618 | 024-23905138
+               </li>
+               <li>
+                   <i class="yx"></i>
+                   E-mail：sy_guide@126.com
+               </li>
+               <li>
+                   <i class="dz"></i>
+                   地 &nbsp;址：沈阳市和平区文化路17号金科名苑十三层
+               </li>
+           </ul>
+
+        </div>
+    </div>
+
+</div>
+<div class="bottom">
+    <div class="box800">
+        <div class="fr">
+            <a href="index.html">网站首页</a>|
+            <a href="product.html">产品介绍</a>|
+            <a href="join.html">招商加盟</a>|
+            <a href="contact.html">联系我们</a>
+        </div>
+        沈阳贵德科技开发有限公司 版权所有。 备案号：辽ICP备13010473
+    </div>
+
+</div>
+<div class="right-side">
+    <ul>
+        <li class="slide-left hidden-xs"><a title=""  href="#"><div class="sidebox"><img src="images/right-tel.png"><span style="position:relative;top:-8px;">13804046634</span></div></a></li>
+        <li class="slide-left hidden-xs"><a title="" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2651283633&site=qq&menu=yes"><div class="sidebox"><img src="images/right-qq.png"><span style="position:relative;top:-8px;">QQ客服</span></div></a></li>
+        <li class="slide-weixin hidden-xs"><a title=""  href="javascript:void(0);" ><div class="sidebox"><img src="images/right-wx.png"><span style="position:relative;top:-8px;">微信</span></div></a></li>
+        <li style="border:none;"><a title=""  href="javascript:goTop();" class="sidetop"><img src="images/right-top.png" style="padding-top:3.8px;padding-left:5px;"></a></li>
+    </ul>
+    <img class="two-dimension animated flipInX" src="http://i2.buimg.com/b5598f9f67f2ba36.jpg" width="110" alt=""/>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $(".right-side ul .slide-left").hover(function(){
+            $(this).find(".sidebox").stop().animate({"width":"150px"},100).css({"opacity":"1","filter":"Alpha(opacity=100)","background":"#ae1c1c"})
+        },function(){
+            $(this).find(".sidebox").stop().animate({"width":"40px"},100).css({"opacity":"0.8","filter":"Alpha(opacity=80)","background":"#3392FA"})
+        });
+        $(".right-side ul .slide-weixin").hover(function(){
+            //console.log("over");
+
+            $(".two-dimension").css("display","block");
+
+        },function(){
+
+            $('.two-dimension').stop().css("display","none");
+
+        });
+
+    });
+    //回到顶部
+    function goTop(){
+        $('html,body').animate({'scrollTop':0},600);
+    }
+</script>
+</body>
+</html>

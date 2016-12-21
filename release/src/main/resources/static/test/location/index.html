@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../angular.js"></script>
+    <script>
+        var app=angular.module('app',[]);
+        app.controller('controller',['$location',function ($location) {
+            window.open('https://www.baidu.com');
+            window.print();
+        }])
+    </script>
+</head>
+<body ng-controller="controller">
+    {{2+2}}
+</body>
+</html>

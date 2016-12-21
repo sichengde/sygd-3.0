@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src = "https://cdn.wilddog.com/js/client/current/wilddog.js" ></script>
+    <script>
+        var ref = new Wilddog("https://wild-cock-71704.wilddogio.com/");
+        ref.on("value", function(datasnapshot) {
+            console.log(datasnapshot.val());   // 结果会在 console 中打印出 "beijing"
+        });
+    </script>
+</head>
+<body>
+
+</body>
+</html>

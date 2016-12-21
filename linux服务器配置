@@ -1,0 +1,11 @@
+先安装java http://jingyan.baidu.com/article/4853e1e51d0c101909f72607.html
+再安装mysql http://www.cnblogs.com/starof/p/4680083.html
+文件传输（jar包）http://blog.csdn.net/libaineu2004/article/details/49476207
+新增数据库操作员
+create user 'yujianyifenghua'@'iz2ze1lsoerlt9qp1u5asxz' identified by 'q123';
+create user 'yujianyifenghua'@'%' identified by 'q123';
+grant all privileges on *.* to hotel@'%';
+grant grant option on *.* to hotel@'%';
+create user 'hotel'@'%' identified by 'q123';
+grant all privileges on *.* to hotel@'%';
+grant grant option on *.* to hotel@'%';

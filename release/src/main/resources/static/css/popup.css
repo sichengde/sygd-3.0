@@ -1,0 +1,623 @@
+body { margin: 0px; padding: 0px; font-size: 14px; font-family: "Microsoft Yahei"; color: #555;}
+div,ul,li{ margin: 0px; padding: 0px;}
+ul,li { list-style: none}
+i { margin: 0px;
+    padding:0px;}
+select::-ms-expand { display: none; }
+table { border-collapse: collapse; border-spacing: 0px; font-size: 14px;}
+table,tr,td,th { margin: 0px; padding: 0px;}
+td { position: relative}
+textarea { border: 1px solid #ccc; padding: 10px; line-height: 24px; overflow-y: auto; font-size: 14px; text-align: left; color: #555}
+input[type=text],input[type=password],select,.tanchuang td input,.tanchuang td select{ border: 1px solid #ccc; padding: 0px 5px;line-height: 24px; width: 70%; color: #555; float: left; font-size: 14px;}
+option { color: #555; line-height: 24px; height: 24px;}
+.tanchuang td input,.tanchuang td select { border: 1px solid #ccc!important;}
+input:hover, select:hover, textarea:hover,.inputCover,.tanchuang .tableBlue td input:hover,.tanchuang .tableBlue td select:hover {border: 1px solid;
+    border-color: #66afe9 !important;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.tanchuang .tableBlue td input:focus,.tanchuang .tableBlue td select:focus { border:1px solid #ccc}
+select {
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    background: #fff url(../images/my_xiala1.gif) 93% 9px no-repeat;
+    padding:1px 14px 1px 5px!important; line-height: 20px; height:26px;
+}
+
+
+.tanchuang td select {background: #fff url(../images/my_xiala1.gif) 93% 9px no-repeat!important; height: 26px!important; line-height: 20px!important;}
+
+.tanchuang .saixuanbox,.jdSetting .saixuanbox { margin-top: 10px!important;}
+
+input[disabled=disabled],select[disabled=disabled]{
+    background-color: #eee;
+}
+.inputNumber { width: 20px!important; height: 20px;}
+.fl { float: left}
+.fr { float: right}
+.none { display: none}
+.clear { height: 1px; line-height: 1px; overflow: hidden; clear: both;}
+.h1 { border-bottom: 1px dashed #ccc; line-height: 20px; padding: 0px; text-align: left; font-size: 14px;
+    position:relative; z-index:99;margin: 10px 0px -15px 0px; font-weight: normal; background: #f1f1f1;}
+.jia {
+    text-align: center;
+    padding: 0px;
+    border: 1px solid #ccc;
+    background: #eee;
+    width: 26px!important;
+    height: 26px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 15px;
+    float: left;
+}
+
+.add {
+    height: 20px;
+    line-height: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    top: 2px;
+    position: relative;
+    margin-right: 5px;
+    float: left;
+}
+
+#tanchuang { position:absolute; width: 100%; height: 100%; top:0px; bottom: 0px; left: 0px; right:0px; z-index: 9999; background: rgba(0,0,0,0.5)}
+.bgblack,.bgblack2,.szPopUpBg,.szPopUpBg2 { width: 100%; height: 100%; top:0px; right:0px; left: 0px; bottom: 0px; background: rgba(0,0,0,0.2); position:absolute; z-index: 980; display: block}
+.bgblack2 { z-index: 996}
+.szPopUpBg { background: none; z-index: 998}
+.szPopUpBg2 { background: none;z-index: 989; position: fixed}
+.tcBox {display: none; position: absolute; width: 100px; height: 100px; background: #ccc; z-index: 8;}
+.tcBox:after{ position: absolute; width: 100%; height: 100%; z-index: 9; top:0px; right:0px; left: 0px; bottom: 0px; background: rgba(0,0,0,0.2);}
+.bgblack2 { z-index: 991}
+.tanchuang { position:fixed; top:10%; left: 20%; margin: auto; z-index: 990; width: 980px; height:auto; display: block; padding:40px 30px 30px 30px; background: #f1f1f1; border-radius: 10px;
+    -webkit-box-shadow: inset 0px 0px 8px #bbb;
+    -moz-box-shadow: inset 0px 0px 8px #bbb;
+    box-shadow: inset 0px 0px 8px #bbb;
+    border: 1px solid #bbb;
+    animation: bottomtotop 0.5s;
+    -webkit-animation: bottomtotop 0.5s;
+    -moz-animation: bottomtotop 0.5s;
+    -ms-animation: bottomtotop 0.5s;
+    -o-animation: bottomtotop 0.5s;
+}
+
+.tanchuang2 { width: 800px; z-index: 992; top:10%; position: absolute;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    -webkit-animation:none;
+    -o-animation:none;
+    animation:none;
+    -webkit-border-radius:0;
+    -moz-border-radius:0;
+    border-radius:0;
+}
+
+.littlePop { position:fixed; top:10%; left: 40%; margin: auto; z-index: 990; width: 400px; height:auto; display: block; padding:40px 30px 30px 30px; background: #f1f1f1; border-radius: 10px;
+    -webkit-box-shadow: inset 0px 0px 8px #bbb;
+    -moz-box-shadow: inset 0px 0px 8px #bbb;
+    box-shadow: inset 0px 0px 8px #bbb;
+    border: 1px solid #bbb;
+}
+.littlePop .littlePopBox { border: 2px solid #ccc; text-align: center; position: relative; padding: 40px 20px;}
+.littlePop .littlePopBox .tagp { text-align: left; float: left}
+.littlePop .littlePopBox .tagp span { width: 100px; text-align: right; display: inline-block;}
+.littlePop h1 { text-align: center; line-height: 50px; font-size: 20px; color: #1c73d5; position: absolute;
+    width: 100px; height: 50px; background: #f1f1f1;top: -50px; left: 50%; margin-left: -50px;}
+
+
+.tanchuang:after { content: ''; display: block; clear: both; height: 0px; line-height: 0px; overflow: hidden}
+.tanchuang dl { font-size: 14px; margin-bottom: 10px; margin-top: 0px;}
+.tanchuang dl:after {  content: ''; display: block; clear: both; height: 0px; line-height: 0px;
+    overflow: hidden;}
+.tanchuang dl dt { padding: 5px 10px; min-width:75px; min-height:30px; line-height: 30px; border-bottom: 1px solid #d3daeb; border-right: 1px solid #d3daeb; float: left; text-align: right }
+.tanchuang dl dd { padding: 5px 10px; margin: 0px; width: 183px; line-height: 30px; overflow: visible; background:#c0cae3; border-bottom: 1px solid #d3daeb; border-right: 1px solid #d3daeb; float: left; text-align: left }
+.tanchuang dl dd span { float: right}
+.tanchuang dl dd b { color: #0d2460;}
+.tanchuang dl dd strong { color: #a14e04;}
+.tanchuang dl dd .lbselect { width: 174px; height: 28px; line-height: 28px; background: #fff; border:1px solid #eee; margin: 0px;}
+.tanchuang dl dd.xieyi { width: 483px; line-height: 30px;}
+.tanchuang dl dt.beizhu { border-bottom:0}
+.tanchuang dl dd.beizhu { width: 483px; border: none}
+.tanchuang dl dd.beizhu textarea { width: 95%; height: 50px; line-height: 24px; padding: 10px; margin-top: 10px; background: #fff; border: 1px solid #ccc;}
+.tanchuang dl dd input[type=text] { width: 90%; height: 28px; text-align: left; padding: 0px 5px;line-height: 28px; border: 1px solid #ccc; margin: 0px;margin-top: -4px;}
+.tsinput { width: 60px!important; margin: 0px;}
+.tanchuang dl.add_delet { background: none; height: 25px; line-height: 25px; text-align: left; font-size:20px; margin: 0px; font-weight: lighter}
+.tanchuang dl dd i { width: 25px; height: 25px; line-height: 25px; float: right; font-size: 20px; color: #6b8bdf; margin: 0px; margin-top: 3px;}
+.tanchuang dl dd i span { display: none}
+.tctit { height: 2px; line-height: 2px; background: #a8b8e2; position: relative}
+.tctit h1 { font-size: 16px; line-height: 30px; position: absolute; width: 150px; top:-40px; left: 50%; margin-left: -75px; text-align: center; padding: 0px 10px; color: #274286; background: #f1f1f1;
+text-shadow: 0px 2px 0px #fff,0px -2px 0px #fff,2px 0px 0px #fff, -2px 0px 0px #fff; height: 30px;
+}
+.tcTopName { height: 30px; line-height: 30px; border-bottom: 1px dashed #ccc; text-align: left; margin-bottom: 0px!important;}
+.tcTopName span { color: #0e90d2}
+.tanchuang dl.tabsheet { margin-bottom: 0px; margin-top: 20px; background: none;line-height: 25px;text-shadow: 1px 0px 0px #fff,-1px 0px 0px #fff,0px 1px 1px #fff,0px -1px 0px #fff;color: #274286;}
+.tanchuang dl.tabsheet dt { width: 100px; height: 25px; line-height: 25px; border:1px solid #aaa; border-bottom:0; border-radius: 3px 3px 0px 0px; text-align: center; margin-right: 5px; float: left;
+    color: #274286; cursor: pointer; background: linear-gradient(#c0d1fc, #9db1e7);
+}
+.tanchuang dl.tabsheet dt:hover,.tanchuang dl.tabsheet dt.hover {background: linear-gradient(#4a5ba4, #dee7fe); }
+.tanchuang .jiesuan { padding:20px 0px; background: #ccc; text-align: left; margin-top: 20px; border:1px dashed #6b8bdf}
+.tanchuang .jiesuan dt { width: 98px; border-right: none; border-bottom: 1px solid #aaa; background: none; text-align: right;}
+.tanchuang .jiesuan dd { width: 175px; border-right: none; border-bottom: 1px solid #aaa; background: none; text-align: left }
+.tanchuang .jiesuan .reprint { width: 245px; text-align: right; color: #e00808; text-shadow: 1px 1px 0px #bbb;}
+.tanchuang .jiesuan .reprint input[type=checkbox]{ margin-top: -2px; margin-right: 3px;}
+.tanchuang dl .dwselect { width:98%; height: 30px; margin-top: 5px; border: 1px solid #ccc; line-height: 30px; }
+.tanchuang dl.jiesuan .input { border: 1px solid #ccc; height: 28px; line-height: 28px; width: 93%;}
+
+
+/*权限管理*/
+.chooseUser { width: 100%; margin: 20px 0px 10px 0px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;}
+.chooseUser b {margin-left: 10px; color: #6b8bdf; font-weight: normal}
+.chooseUser p { margin-right: 15px; float: left}
+.qxBox {margin-top: 10px;}
+.qxBox h1 {font-size: 16px; margin-bottom: 10px; font-weight: bold;}
+.qxBox dl {float: left; min-width: 100px; position: relative; min-height: 30px; margin-right: 10px; margin-bottom: 20px;box-shadow: 2px 2px 1px #dec8b8; border-bottom: 1px solid #fff; border-right: 1px solid #fff}
+.qxBox dt {position: absolute; left: 0px; display: inline; border: none!important; line-height: normal!important; min-height: 20px!important; padding: 0px 10px 7px 10px!important; height: auto!important; color: #bd7210}
+.qxBox dd {display: inline; margin-left: 95px!important; width: auto!important; background: none!important; border:none!important; min-height: 20px; line-height: normal!important; padding: 0px 10px 7px 10px!important;}
+.qxBox dd span { margin-right: 10px; float: left!important; line-height: 20px;}
+.qxBox dd span input[type=checkbox] { margin-left: 3px;}
+
+
+.tc_xl{width:90%;padding-left: 10px; position:relative;background: #fff url(../images/my_xiala1.gif) 93% 9px no-repeat;cursor:pointer; height: 24px; line-height: 24px; border: 1px solid #ccc;}
+.tc_xl_txt{float:left;width: 100%;line-height: 24px;padding-right:17px;color:#555; font-size: 14px; font-weight: normal}
+.tc_xl_list{border:1px solid #ccc; background: #fff}
+.tc_xl_txt,.tc_xl_list li{text-indent:0px;overflow:hidden;}
+.tc_xl_list{z-index:99;position:absolute;top: 25px;left:-1px;z-index:88888;border-top:none;width:100%;display:none;_top:23px;margin-left:0px !important}
+.tc_xl_list li{list-style:none;height: 24px;line-height: 24px;cursor:default;background:#fff;padding-left: 10px;color:#555; font-size: 14px; font-weight: normal}
+.tc_xl_list li.focus{background:#3399FF;color:#fff}
+.tc_xl_list li.llfd { width: 227px; float: left; text-align: left;}
+
+
+@keyframes bottomtotop {0%{opacity: 0}100%{opacity: 1}}
+@-webkit-keyframes bottomtotop {0%{opacity: 0}100%{opacity: 1}}
+@-moz-keyframes  bottomtotop {0%{opacity: 0}100%{opacity: 1}}
+@-ms-keyframes  bottomtotop {0%{opacity: 0}100%{opacity: 1}}
+@-o-keyframes  bottomtotop {0%{opacity: 0}100%{opacity: 1}}
+
+@keyframes ysPopMove {0%{opacity: 0}100%{opacity: 1}}
+@-webkit-keyframes ysPopMove {0%{opacity: 0}100%{opacity: 1}}
+@-moz-keyframes  ysPopMove {0%{opacity: 0}100%{opacity: 1}}
+@-ms-keyframes  ysPopMove {0%{opacity: 0}100%{opacity: 1}}
+@-o-keyframes  ysPopMove {0%{opacity: 0}100%{opacity: 1}}
+
+
+/*表格样式*/
+table { width: 100%; margin-bottom: 10px; color:#555; padding: 5px 10px !important;
+    border-collapse: inherit;}
+.tanchuang td { padding: 5px 5px 5px 0px; height: 25px; line-height: 25px;}
+.tanchuang td:nth-child(odd) { text-align: right;}
+.tanchuang td:nth-child(even){ text-align: left}
+table tr td:last-child{ border-right: none}
+.price { color: #0d2460; font-weight: bold; margin-right: 5px;}
+.roomID { color: #a14e04; font-weight: bold}
+.tableBorderaaa { border:5px solid #fff;background: #f1eae1;
+    -webkit-box-shadow: 1px 1px 0px #bbb;
+    -moz-box-shadow: 1px 1px 0px #bbb;
+    box-shadow: 1px 1px 0px #bbb; margin-top: 20px; width: 960px;}
+.tableBorderaaa td { border-bottom: 1px solid #fff; padding: 5px 5px 5px 0px; height: 25px; line-height: 25px;}
+.tableBorderaaa td:nth-child(odd) { width: 75px; text-align: right;}
+.tableBorderaaa td:nth-child(even){ text-align: left}
+.tableBorderaaa tr:last-child td { border: none}
+.tableBordernone { border:5px solid #fff;background: #e1eaff;
+    -webkit-box-shadow: 1px 1px 0px #bbb;
+    -moz-box-shadow: 1px 1px 0px #bbb;
+    box-shadow: 1px 1px 0px #bbb; margin-top: 20px; width: 960px;}
+.tableBordernone td { border-bottom: 1px solid #fff; padding: 5px 5px 5px 0px; height: 25px; line-height: 25px; position: relative }
+.tableBordernone td:nth-child(odd) { width: 75px; text-align: right;}
+.tableBordernone td:nth-child(even){ text-align: left}
+.tableBordernone tr:last-child td { border: none}
+.tableBorderfff { border: 5px solid #fff; background: #e1e1e1;
+    -webkit-box-shadow: 1px 1px 0px #bbb;
+    -moz-box-shadow: 1px 1px 0px #bbb;
+    box-shadow: 1px 1px 0px #bbb; margin-top: 20px; width: 960px;}
+.tableBorderfff td { border-bottom: 1px solid #c1c1c1; padding: 5px 5px 5px 0px; height: 25px; line-height: 25px;}
+.tableBorderfff td:nth-child(even){ text-align: left}
+.tableBorderfff tr:last-child td { border: none}
+.tableBorderfff tr:last-child td { border: none}
+
+
+
+/*房吧录入*/
+.snackbox { width: 400px;}
+.snackbox h1 { height: 40px; line-height: 40px; margin: 0px; padding: 0px; text-align: center; font-size: 16px; color: #b79044; font-weight: bold}
+.snackbox .snackListBox { width:398px; border: 1px solid #ccc; height: 360px; background: #fff; position: relative}
+.snackButton { width: 50px; padding-top: 180px;}
+.snackButton i{ width: 35px; height: 25px; line-height: 25px; font-size: 16px; text-align: center; display: block; float: left; margin-bottom: 10px;
+    margin-left: 7px; background: linear-gradient(#eee,#bbb); border: 1px solid #ccc;
+}
+.snackbox h1 select { height: 25px; line-height: 25px; margin-top: 7px; margin-left: 10px; width: 320px;}
+
+
+.productSearch { width: 398px; border: 1px solid #ccc; height: 28px; line-height: 28px; background: #fff;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px; margin-top: 10px;}
+.productSearch input { width: 340px; height: 25px; line-height: 25px; margin: 0px; border: none; padding: 0px; outline: none}
+.productSearch i { width: 30px; height: 28px; line-height: 28px; text-align: center; font-size: 20px; color: #bbb; float: left; display: block}
+
+@keyframes printIn {0%{opacity: 0}100%{opacity: 1}}
+
+/*表格筛选样式*/
+.tableFilter { border: 1px solid #bbb; position: relative; padding: 20px; margin-bottom: 20px; margin-top: 20px;}
+.tableFilter .tFtit { width: 100px; height: 40px; line-height: 40px; text-align: center; font-weight: bold; font-size: 14px; color:#da0000; position: absolute; top:-30px; left: 10px; background: #e5e5e5; z-index: 999}
+.tableFilter .tFul { margin: 0px; padding: 0px;}
+.tableFilter .tFul:after { display: block; width: 100%; height: 0px; line-height: 0px; overflow: hidden; clear: both; content: ''}
+.tableFilter .tFul li { float: left; height: 30px; line-height: 30px; padding: 0px 5px;}
+.tableFilter .tFul li:nth-child(3) { margin-right: 15px;}
+.tableFilter .tFul li .tc_xl{ width: 120px;}
+
+.tableConsumption { height: 550px; position: relative; border: 1px solid #ccc}/*消费明细表格高度限制*/
+
+/*离店结算按钮样式*/
+.leaveButton { width: 290px; float: right}
+.leaveButton .button { margin: 0px; padding: 5px 0px; border: none}
+.leaveButton .button a.sbe { width: 80px; height: 20px; line-height: 20px; overflow: hidden; display: block; float: left; margin-bottom: 10px;}
+
+/*房号样式*/
+.tanchuang .checkInRoom { height: auto; /*overflow: visible;*/ padding: 0px;}
+.checkInRoom { max-height: 380px; overflow-y: auto; padding: 0px; margin: 10px;}
+.checkInRoom .roomID,.checkInRoomC .roomID,.roomIdBox { width: 60px; height: 30px; line-height: 30px; text-align: center; border: 1px solid #fff; background: #e5e5e5;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;
+    box-shadow: 1px 1px 1px #999;
+    -webkit-box-shadow: 1px 1px 1px #999;
+    -moz-box-shadow: 1px 1px 1px #999;
+    float: left;
+    display: block;
+    margin:4px 4px;
+    color:#3e5797; font-weight: normal; font-size: 14px;cursor: pointer; position: relative;
+}
+.roomIdBox { width: 100px; height: 50px; font-size: 12px; line-height: 25px;}
+.checkInRoom .roomID:hover,.checkInRoomC .roomID:hover { cursor: pointer}
+.checkInRoom .roomID.hover,.checkInRoomC .roomID.hover,.roomIdBox.hover  { background:#a14e04; color: #fff; cursor: pointer }
+.chooseRoom { margin-left: 18px; line-height: 24px; max-height: 50px; overflow-y: auto; font-size: 14px; padding-bottom: 10px; display: none}
+.chooseRoom b { font-weight: bold; float: left; height: 100%;}
+.chooseRoom a { float: left; padding: 0px 5px; height: 24px; line-height: 24px; color:#a14e04}
+.chooseRoom a:after { content: '|'; padding-left: 10px;}
+
+.roomID .hoverDiv { display: none; position: absolute;
+    z-index: 999;
+    left: 0px;
+    width:200px;
+    height:auto;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    -moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    -o-box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    padding: 10px; text-align: left; color: #333; line-height: 20px;}
+.roomID .hoverDiv:before {position:absolute; bottom:-8px; left:10px;display: inline-block;border-right: 8px solid transparent;border-top: 8px solid #ccc;border-left: 8px solid transparent;border-top-color: #fff;content: '';}
+.roomID .hoverDiv .htit { float: left; height: 100%; text-align: right; width: 50px; display: block}
+
+
+
+/*房号样式end*/
+
+.button {  background: none; margin-top: 20px; text-align: center;border-top: 2px solid #c0cae3;  padding-top: 20px;}
+.button input[type=button],.button .sbegray,.button button { padding: 3px 5px; min-width: 80px; text-align: center; margin: 0px 6px; border:1px solid #ba9761;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px; background: linear-gradient(#ffd777,#a16200);
+    color: #6e3e00; cursor: pointer; font-weight: bold; margin-bottom: 10px;
+    -webkit-box-shadow:inset -1px 0px 0px #c2a16e, inset 0px -1px 0px #c2a16e,inset 1px 1px 0px #e2c089;
+    -moz-box-shadow:inset -1px 0px 0px #c2a16e, inset 0px -1px 0px #c2a16e,inset 1px 1px 0px #e2c089;
+    box-shadow:inset -1px 0px 0px #c2a16e, inset 0px -1px 0px #c2a16e,inset 1px 1px 0px #e2c089;}
+.button input[type=button].no,.button button.no  { background: #ccc; color: #333;border-color: #bbb; box-shadow: none}
+.button input[type=button]:hover,.button button:hover { background: linear-gradient(#a16200,#ffd777); border:1px solid #ba9761!important;}
+.button input[type=button].no:hover,.button .userTishi:hover,.button button.no:hover { background: #ccc; color: #333;border-color: #bbb!important; box-shadow: none}
+.button .sbegray { background: linear-gradient(#eee,#afafaf)!important; border: 1px solid #bbb!important;
+    -webkit-box-shadow:inset -1px 0px 0px #f1f1f1, inset 0px -1px 0px #eee,inset 1px 1px 0px #eee;
+    -moz-box-shadow:inset -1px 0px 0px #c2a16e, inset 0px -1px 0px #c2a16e,inset 1px 1px 0px #e2c089;
+    box-shadow:inset -1px 0px 0px #f1f1f1, inset 0px -1px 0px #eee,inset 1px 1px 0px #eee!important; color: #555!important;
+}
+
+.littleButton input[type=button],.littleButton button{ padding: 5px 12px; text-align: center; margin-right: 9px; border:1px solid #ba9761;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px; background: linear-gradient(#ffd777,#a16200);
+    color: #fff; cursor: pointer; font-weight: bold; margin-bottom: 10px;
+    -webkit-box-shadow: inset -1px -1px 0px #fff6d0,inset 1px 1px 0px #fff6d0;
+    -moz-box-shadow: inset -1px -1px 0px #fff6d0;
+    box-shadow:inset -1px 0px 0px #c2a16e, inset 0px -1px 0px #c2a16e,inset 1px 1px 0px #e2c089; margin-left: -10px; line-height: 20px;}
+.littleButton input[type=button]:hover,.littleButton button:hover { background: linear-gradient(#a16200,#ffd777); border:1px solid #ba9761!important;}
+
+/*新增随客信息*/
+.addh1 { border-bottom: 1px dashed #ccc; line-height: 20px; margin: 0px; padding: 0px; text-align: left; font-size: 14px; font-weight: normal;}
+.addh1 a { color: #0e90d2}
+input.butn {
+    background: #b79044;
+    border: 0px;
+    color: #FFF;
+    cursor: pointer;
+    width: 30px;
+    height: 26px;
+    float: left;
+    line-height: 24px;
+    font-size: 24px;
+    text-align: center;
+    padding-left: 6px;
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+input.butn2 {
+    background: #6b8bdf;
+    border: 0px;
+    color: #FFF;
+    cursor: pointer;
+    width: 25px;
+    height: 20px;
+    float: left;
+    line-height: 20px;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 3px;
+}
+.divOther { height: auto}
+/**/
+.accruedBox { width: 940px; margin-top: 50px; float: left; margin-left: 50px; border: 2px solid #ccc; background: #fff; position: relative; padding: 30px;
+    -webkit-box-shadow:3px 3px 0px #ccc;
+    -moz-box-shadow:3px 3px 0px #ccc;
+    box-shadow:3px 3px 0px #ccc;}
+.accruedTitle { width: 120px; height: 20px; line-height: 20px; font-size: 16px; font-weight: bold; text-align: center; background: #fff; position: absolute; top: -30px; left: 50%; margin-left: -60px;color: #3e5797;
+    text-shadow: 2px 2px 0px #fff,-2px -2px 0px #fff;}
+
+.accruedTableBox { float: left; margin-left: 50px; margin-top: 50px; position: relative}
+
+.tableBlueTc th,.huang .tableBlue th {
+    font-size: 14px;
+    border-bottom: 1px #967040 solid!important;
+    border-right: 1px #CEAC69 solid!important;
+    height: 32px;
+    background: #b79044;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center!important;
+    padding: 0px 5px;
+}
+.huang .tableBlue { border-collapse: inherit!important; padding: 0px!important;}
+.tableScroll thead tr { display: block}
+.tableScroll tbody {
+    max-height: 150px; display: block; overflow-x: hidden; overflow-y: scroll; width:calc(100% + 15px); width: -webkit-calc(100% + 15px); width: -moz-calc(100% + 15px);
+}
+.tableBlueTc td,.huang .tableBlue td {
+    border-bottom: 1px #ddd solid;
+    border-right: 1px #ddd solid;
+    line-height: 20px;
+    text-align: center!important;
+    padding: 2px 5px;
+    font-size: 13px;
+    background: #fff;
+
+}
+
+.tableBlueTc td input,.tableBlueTc td select { height: 24px; line-height: 24px; padding: 0px 5px;}
+.tableBlue input{ float: none; padding: 0px;width:100%}
+.huang .tableBlue tbody td input{ float: none; padding: 0px;width:calc(100% - 3px)}
+.tableBlue select,.huang .tableBlue select { float: none; width: calc(100% - 15px); padding: 0px 14px 0px 0px!important;}
+.huang .tableBlue tbody td input,.huang .tableBlue tbody td select { border:1px solid #fff!important; outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow:none;  padding: 0px; float: none; background: none!important;}
+.huang .tableBlue tbody td input:hover,.huang .tableBlue tbody td select:hover{border: 1px solid #ccc!important; }
+.huang .tableBlue tbody td input:focus,.huang .tableBlue tbody td select:focus { border: 1px solid #ccc!important; outline: none;  padding: 0px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow:none;
+}
+.huang .tableBlue tbody td select:focus{  background: #fff url(../images/my_xiala1.gif) 93% 9px no-repeat!important;}
+
+
+.tableEasy th {
+    font-size: 14px;
+    border-bottom: 1px #967040 solid;
+    border-right: 1px #CEAC69 solid;
+    height: 32px;
+    background: #b79044;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center!important;
+}
+.tableEasy td {
+    border-bottom: 1px #ddd solid;
+    border-right: 1px #ddd solid;
+    line-height: 20px;
+    text-align: center!important;
+    padding: 2px 5px;
+    font-size: 12px;
+    background: #fff;
+
+}
+.tableEasy input,.tableEasy select { width: 80%!important;}
+.tableEasy td input,.tableEasy td select,.tableEasy td input:hover,.tableEasy td select:hover { border:1px solid #fff!important; outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow:none;  padding: 0px 5px; text-align: center; float: none; background: none!important;}
+.tableEasy td input:focus,.tableEasy td select:focus { border: 1px solid #ccc!important; outline: none;  padding: 0px 5px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow:none; text-align: center;
+}
+.tableEasy td select:focus{  background: #fff url(../images/my_xiala1.gif) 93% 9px no-repeat!important;}
+
+
+/*联房管理*/
+.lftit {width: 100%; line-height: 30px; border-bottom: 1px solid #fff; margin-bottom: 10px;
+    text-align: left; font-size: 14px; color:#6b8bdf; font-weight: bold}
+.selectRoom .roomID{ margin-right: 20px; position: relative;}
+.alRoomul { width: 90%!important; padding:0px 0px 0px 0px!important; float: left; position: relative; margin-left:10px;
+}
+.alRoomul .roomID { margin-right: 20px; position: relative; color:#a14e04; font-weight: bold;}
+.alRoomul .roomID:after, .selectRoom .roomID:after{ content: '+'; width: 20px; height: 20px; display: block; text-align: center; color: #666; font-size: 16px; position: absolute;
+left:65px; top:0px; font-weight:normal;
+}
+.alRoomul .roomID:nth-last-of-type(1):after{ content: '';}
+.alRoomEdit { width: 95%; margin:0px; margin-top: 10px; float: left;}
+.alRoomul input[type=button] { position: absolute; top:0px; right:0px; width: 50px; height: 24px; line-height: 20px; text-align: center; font-size: 12px;
+    z-index: 99;
+}
+
+/*拖动层*/
+.drig { position: absolute; left: 0px; height: 50px;width: 100%; left: 0px; top: 0px; cursor: move; z-index: 998}
+
+/*关闭弹窗按钮*/
+.closeBox { position: absolute; right:-10px; top:-10px; width: 26px; height: 26px; line-height: 22px;
+    font-size: 26px; color: #fff; background: #777; border: 3px solid #FFFFFF;text-align: center;
+    -webkit-border-radius:20px;
+    -moz-border-radius:20px;
+    border-radius:20px;
+    -webkit-box-shadow:  0px 0px 3px #666;
+    -moz-box-shadow: 0px 0px 3px #666;
+    box-shadow: 0px 0px 3px #666;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg); cursor: pointer; z-index: 999;
+}
+.closeBox input[type=button]{ border: none; background: none;}
+.close2 { right: -20px!important; top: -20px!important;}
+
+/**/
+.selectUl,.selectUlDown { position: absolute; width: 180px; bottom:35px; right: 0px; max-height: 150px; overflow-y: auto; padding: 10px 5px; border: 1px solid #ccc;
+     background: #fff;
+     -webkit-box-shadow: 0px 0px 5px #999;
+     -moz-box-shadow: 0px 0px 5px #999;
+     box-shadow: 0px 0px 5px #999; z-index: 999;
+ }
+.selectUlDown { top:35px; bottom:auto;
+}
+.selectUl li,.selectUlDown li { float: left; height: 24px; line-height: 24px; padding: 0px; margin: 0px 5px!important; text-align: left; border-bottom: 1px solid #eee; cursor: pointer}
+.selectUl li:hover,.selectUlDown li:hover{ color: #d60000;}
+
+
+/*提示窗*/
+.tsPop { position:fixed; top:35%; left: 38%;right: 38%; z-index: 999; width: 24%; display: block; background: #f1f1f1;
+    border: 10px solid #ccc;
+    animation: ysPopMove 0.5s;
+    -webkit-animation: ysPopMove 0.5s;
+    -moz-animation: ysPopMove 0.5s;
+    -ms-animation: ysPopMove 0.5s;
+    -o-animation: ysPopMove 0.5s;
+    -webkit-box-shadow: 0 0 10px #555;
+    -moz-box-shadow: 0 0 10px #555;
+    box-shadow: 0 0 10px #555;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;
+    word-wrap: break-word;
+}
+.tsPop input[type=button] { padding: 5px 20px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px; border: 1px solid #ccc; line-height: 22px; font-size: 14px; font-family: "Microsoft Yahei";}
+.tsPop p { padding-left: 120px; margin-top: 40px; margin-bottom: 40px; padding-top: 20px; min-height: 60px; max-height: 420px; font-size: 20px; line-height: 35px; text-align:left; padding-right: 20px; overflow-y: auto}
+.tsPop .tsTime { font-size: 14px; text-align: center}
+.tsPop .tsTime p { padding-top: 0px; font-size: 14px; line-height: 20px; margin: 0px;}
+.tsPop button { font-size: 14px; line-height: 18px; width: 35px; height: 30px; margin-right: 10px; border: 1px solid #ccc; margin-top: 5px; background:#eee;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;}
+.tsPop button.fff { background: linear-gradient(#ffae00,#d08e00); color: #fff}
+.tsPop button:hover {background: linear-gradient(#ccc,#fff);}
+.tsPop button.fff:hover { background:#d08e00; color: #fff}
+
+.infoBox { background:#f1f1f1 url("../images/info.png") no-repeat 30px center; background-size: 60px;}
+.infoBox p { color: #1c73d5!important;}
+.errorBox { background:#f1f1f1 url("../images/error.png") no-repeat 30px center; background-size: 60px;}
+.errorBox p{ color: #d60000!important;}
+.successBox { background:#f1f1f1 url("../images/success.png") no-repeat 30px center; background-size: 60px;
+    /*-webkit-animation:sucOver 2s;
+    -o-animation:sucOver 2s;
+    animation:sucOver 2s;*/
+}
+.successBox p { color: #69a537!important;}
+.alterBox p { color: #fc931a!important;}
+
+.alterBox { background:#f1f1f1 url("../images/alter.png") no-repeat 30px 50%; background-size: 60px;
+}
+
+.chooseBox {  background:#f1f1f1 url("../images/choose.png") no-repeat 30px 50%; background-size: 60px;
+}
+.chooseBox button {}
+
+.tswz { font-size: 12px; color: #c60000;}
+.kong { display: none; line-height: 20px;}
+
+/*未来房态一览*/
+#timeline { height: 480px; margin-top: 30px; left: 5%; width: 100%; z-index: 999; overflow-y: auto; overflow-x: scroll;}
+#timelineTitle { position: absolute; width: 200px; height: 35px; line-height: 35px; background: #fff; left: 50%; margin-left: -100px; top:165px; text-align: center;
+    font-size: 16px; z-index: 999;
+}
+.closePop1 .tsPop {
+    -webkit-animation:closePop 1s;
+    -o-animation:closePop 1s;
+    animation:closePop 1s;}
+
+
+/*经理查询-统计图*/
+.chartBox { width: 1000px; height: 700px; padding: 20px; position: absolute; left: 220px; top:-750px; background: #fff!important; border: 1px solid #ccc; z-index: 777;
+    -webkit-transition: top 0.5s;
+    -moz-transition: top 0.5s;
+    -ms-transition: top 0.5s;
+    -o-transition: top 0.5s;
+    transition: top 0.5s;}
+.chartBoxTop { top:150px;}
+.chartButton { width: 70px; font-size: 16px; text-align: center; height: 25px; font-weight: normal; color: #fff; margin: 0px auto; cursor: pointer;    position: absolute;  top: 25px;  right: 80px;  background: #c79b32;}
+
+
+
+@keyframes closePop {0%{ transform: scale(1)}100%{ transform: scale(0)}
+
+}
+
+/*@keyframes sucOver {0%{opacity: 1;z-index: -1;}20%{opacity: 1; z-index: 1;}40%{opacity: 1;z-index: 2}100%{opacity: 1; z-index: -1 }}
+@-webkit-keyframes sucOver {0%{opacity: 1;z-index: -1;}20%{opacity: 1; z-index: 1;}40%{opacity: 1;z-index: 2}100%{opacity: 1; z-index: -1}}
+@-moz-keyframes sucOver {0%{opacity: 1;z-index: -1;}20%{opacity: 1; z-index: 1;}40%{opacity: 1;z-index: 2}100%{opacity:1; z-index: -1}}
+@-ms-keyframes sucOver {0%{opacity: 1;z-index: -1;}20%{opacity: 1; z-index: 1;}40%{opacity: 1;z-index: 2}100%{opacity:1; z-index: -1}}*/
+
+.tableEasyDiv {max-height: 370px; position:relative; top:35px; overflow-y:auto; width:100%;}
+
+
+/**结算弹窗ppp**/
+.ppp p { float: left; width: 230px; margin: 0px; margin-right: 20px; line-height: 30px; text-align: left }
+.ppp p span { width: 80px; text-align: right; display: block; float: left}
+.ppp input { float: none!important;}
+
+/**结算弹窗积分余额**/
+.fdjy { position: absolute; bottom:25px; right:0px; background: #fff; line-height: 20px; border: 1px solid #ccc; border-radius: 3px; padding: 5px;}
+
+.tanchuang .tcDiv { max-height: 680px; overflow-x: hidden; overflow-y: auto; padding-right: 15px;}
+
+/*读卡*/
+.redcard {
+    margin-right: 5px;
+    cursor: pointer;
+    position: absolute;
+    width: 120px;
+    left: -80px;
+    top: 10px;}
+
+@media screen and (max-height:769px) {
+    .tanchuang { top:10px;}
+    .tanchuang .tcDiv { max-height: 600px; overflow-x: hidden; overflow-y: auto;}
+    .tsPop p {  max-height: 250px;}
+
+}
+@media screen and (max-width: 1366px){
+    .tsPop { width: 35%;left: 31%; right: 31%}
+    .tsPop p { padding-left: 100px; font-size: 18px; line-height: 30px;}
+    .chooseBox,.errorBox,.infoBox,.alterBox { background-position: 20px 50%;}
+}
+@media screen and (max-width:1024px){
+    .tsPop { width: 38%; left: 30%; right: 30%}
+    .tsPop p { padding-left: 10px; padding-right: 10px; font-size: 16px; line-height: 25px;}
+    .chooseBox,.errorBox,.infoBox,.alterBox { padding-top: 10px; background-position: center 10px;}
+}

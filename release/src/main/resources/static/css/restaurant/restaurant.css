@@ -1,0 +1,106 @@
+.cyStateContent { margin: 20px; padding-top:40px; width: 100%; transition: width 0.3s; -webkit-transition: width 0.3s; }
+.cySCwidth { width: calc(100% -  410px); width: -webkit-calc(100% - 410px);width: -moz-calc(100% - 410px);}
+.cyStateBox { width: 145px; height: 145px; background: #e3e3e3; margin: 15px 18px; display: inline-block; position: relative; border: 1px solid #fff;
+    -webkit-box-shadow: 0px 0px 2px #ccc;
+    -moz-box-shadow: 0px 0px 2px #ccc;
+    box-shadow: 0px 0px 2px #ccc;
+    -webkit-border-radius:80px;
+    -moz-border-radius:80px;
+    border-radius:80px; cursor: pointer;}
+.cyStateBox h1 { text-align: center; font-size: 18px; color: #333; margin-top: 35px; margin-bottom: 0px;}
+.cyStateBox p { font-size: 14px; color: #5091dc; line-height: 25px; margin: 0px; padding: 0px; text-align: center}
+.cyStateBox i {position: absolute;}
+.cyStateBox i span { display: none}
+.cyStateBox .icon-hp { width: 46px; height: 61px; background: url("../../images/hping.png") no-repeat center; left: 50%; margin-top: -10px; margin-left: -23px;}
+.cyStateBox .icon-jc { width: 65px; height: 57px; background: url("../../images/jcan.png") no-repeat center; left: 50%; margin-top: 5px; margin-left: -32px;
+background-size: 65px;
+}
+
+.cyStateBox .hoverDiv {
+    position: absolute;
+    z-index: 999;
+    left: 0px;
+    min-width:270px;
+    height:auto;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    -moz-box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    -o-box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    padding: 10px;
+    display: none;
+
+}
+.cyStateBox .hoverDiv ul {
+    width:100%;
+    height:auto;
+
+}
+
+.cyStateBox .hoverDiv:before{ position:absolute; bottom:-10px; left:60px;display: inline-block;border-right: 10px solid transparent;border-top: 10px solid #ccc;border-left: 10px solid transparent;border-top-color: #fff;content: '';}
+.cyStateBox .rigb:before { left: auto!important; right: 60px!important;}
+.cyStateBox .hoverDiv ul li { text-align: left; border-bottom: 1px solid #eee; float: left; margin: 0px 10px; line-height: 30px; padding: 0px; width: 250px;
+    position:relative!important; height: 30px!important; left: 0px!important; display: block; bottom: inherit!important; font-weight: normal!important;
+}
+
+
+
+.dotd { width: 20px!important; height: 20px; font-size: 12px; line-height: 20px; text-align: center; color: #fff; display: block;
+    -webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;}
+.icon-d1 { background: #2a9ec9; left: 40px; top:50px;}
+.icon-d2 { background: #ffa800; left: 105px; top:20px;}
+.icon-d3 { background: #4f4f4f; left: 95px; top:50px;}
+
+/*菜品列表*/
+.cdBox {position: fixed; height: calc(100% - 40px); height: -webkit-calc(100% - 40px); height: -moz-calc(100% - 40px); width: 60px; right: 0px; bottom: 0px; top:0px; overflow: hidden;transition:width 0.5s;
+    -webkit-transition:width 0.5s;}
+.cdBoxWidth { width: 430px;}
+.cpButton { position: relative;right:0px; top:300px; width: 60px; height: 60px; background: #ffae00; border: none;
+    -webkit-border-radius:10px 0px 0px 10px;
+    -moz-border-radius:10px 0px 0px 10px;
+    border-radius:10px 0px 0px 10px; font-size: 16px; font-weight: bold; color: #fff; z-index: 999 }
+.cpButton span { font-family:"SimSun"; margin-right: 5px;display:block; float:left; }
+.jspan {transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);}
+.cpButton:hover { background: #ffae00}
+.zw { /*width: 840px;*/ width: 380px; height: 100%; position: relative; left: 60px; }
+.cyListBox { width: 375px; background: #e6e6e6; padding:40px 0px; height: 100%;}
+.cyList {  width: 345px; margin:0px auto; /*border: 1px solid #ccc;*/
+    /*-webkit-border-radius:10px;
+    -moz-border-radius:10px;
+    border-radius:10px;*/}
+.cyList .xlName { width: 60px; text-align: right}
+.searchDiv { padding:20px 0px 10px 0px; text-align: left; line-height: 24px;}
+
+/*自助餐*/
+.perHelp { font-size: 16px;margin:0px 5%;margin-top: 200px;}
+.perHelp .divLine { float: left; width: 100%; line-height: 40px; margin-bottom: 10px;}
+.perHelp .numStyle { width: 45px; height: 40px; line-height: 40px; margin-right: 5px; font-size: 16px; font-weight: bold}
+.perHelp .spanTitle {
+    width: 100px;
+    display: block;
+    float: left;
+    text-align: right;
+    line-height: 40px; font-size: 16px; }
+.perHelp .divCon { width: 70%; float: left;}
+.perHelp .divCon button { margin-right: 10px; line-height: 20px; margin-bottom: 10px;  padding: 5px 15px;
+    height: 40px;
+    font-size: 18px;}
+.perHelp .divCon input { width: 17px!important; height: 20px;}
+.perHelp .divLine table { font-size: 16px;}
+.perHelp .divLine select { padding: 5px 14px 5px 5px!important;  background-position:93% 13px; font-size: 16px;}
+.perHelp .divLine input { line-height: 30px; font-size: 16px;}
+.perHelp .divLine .lan2 { width: 80px;}
+
+
+
+@media ( min-width: 1110px) and (max-width:1280px) {
+    .cyStateBox { margin: 15px 13px;}
+}

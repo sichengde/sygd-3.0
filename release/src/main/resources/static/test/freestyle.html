@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html  ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <script src="../otherJS/jquery.min.js"></script>
+    <script src="../angular.js"></script>
+    <script>
+       angular.module('app',[])
+               .controller('my',['$scope','$parse',function ($scope,$parse) {
+                   $scope.b='asdasdasd';
+                   $scope.a=$parse('b')($scope);
+                   $scope.asd=function (event) {
+                       var a=event.target;
+                   }
+               }])
+    </script>
+</head>
+
+<body ng-controller="my">
+<div ng-click="asd($event)">a</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <script src="../otherJS/lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+    <link rel="stylesheet" href="../css/bootstrap-3.3.6-dist/css/bootstrap.css"/>
+    <link href="../otherJS/lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <style type="text/css">
+        .platform-ios .manual-ios-statusbar-padding {
+            padding-top: 20px;
+        }
+
+        .manual-remove-top-padding {
+            padding-top: 0px;
+        }
+
+        .manual-remove-top-padding .scroll {
+            padding-top: 0px !important;
+        }
+
+        ion-list.manual-list-fullwidth div.list, .list.card.manual-card-fullwidth {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        ion-list.manual-list-fullwidth div.list > .item, .list.card.manual-card-fullwidth > .item {
+            border-radius: 0px;
+            border-left: 0px;
+            border-right: 0px;
+        }
+    </style>
+    <!--<script src="../app-mobile.js"></script>-->
+    <!--OtherJs-->
+    <script src="../otherJS/jquery.min.js"></script>
+    <script src="../appIp.js"></script>
+    <!--自己的-->
+    <script src="../appMobileState.js"></script>
+    <!--service-->
+    <script src="../service/util.js"></script>
+    <script src="../service/webService.js"></script>
+    <script src="../service/popUpService.js"></script>
+    <script src="../service/loginService.js"></script>
+    <script src="../service/dataService.js"></script>
+    <script src="../service/receptionService.js"></script>
+    <script src="../service/protocolService.js"></script>
+    <script src="../service/validateService.js"></script>
+    <script src="../service/saleService.js"></script>
+    <script src="../service/messageService.js"></script>
+    <script src="../service/userService.js"></script>
+    <script src="../service/readIdCardService.js"></script>
+    <script src="../service/doorInterfaceService.js"></script>
+    <script src="../service/bookService.js"></script>
+    <script src="../service/guestOutService.js"></script>
+    <!--filter-->
+    <script src="../filter/filter.js"></script>
+    <script src="../filter/roomStateEn.js"></script>
+    <script src="../filter/protocol.js"></script>
+    <script src="../filter/bookRoom.js"></script>
+    <script src="../filter/dirtyRoom.js"></script>
+    <script src="../filter/szTableFilter.js"></script>
+    <script src="../filter/nullToString.js"></script>
+    <!--控制器-->
+    <script src="roomState/roomStateControllerM.js"></script>
+    <script src="login/loginControllerM.js"></script>
+    <script src="roomDetail/roomDetailControllerM.js"></script>
+    <script src="checkOutDetailReport/checkOutDetailReportControllerM.js"></script>
+    <script src="exchangeUserReport/exchangeUserReportControllerM.js"></script>
+    <!-- Only required for Tab projects w/ pages in multiple tabs
+    <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
+    -->
+
+</head>
+<body ng-app="appMobile" animation="slide-left-right-ios7">
+<div>
+    <div>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-back-button class="button-icon icon ion-ios-arrow-back"></ion-nav-back-button>
+        </ion-nav-bar>
+        <ion-nav-view></ion-nav-view>
+    </div>
+</div>
+</body>
+</html>
