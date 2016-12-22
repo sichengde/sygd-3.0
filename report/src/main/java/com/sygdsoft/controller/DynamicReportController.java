@@ -33,7 +33,7 @@ public class DynamicReportController {
         if(reportService==null){
             return "此报表已过期";
         }
-        reportService2.getMap().remove(id);//调试时先不删除
+        //reportService2.getMap().remove(id);//调试时先不删除，统一放在夜审时删除
         List<FieldTemplate> fieldTemplateList=reportService.getTemplateList();
         if(fieldTemplateList==null){
             JREmptyDataSource jrEmptyDataSource=new JREmptyDataSource();
