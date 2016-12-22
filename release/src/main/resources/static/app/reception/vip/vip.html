@@ -2,7 +2,7 @@
     <sz-tab>
         <sz-pane title="会员系统">
             <div class="tableBox">
-                <sz-table fields="vipFields" head="true" button="add delete" row-click="chooseVip(d)" deep-search="true" title="点击查看详情" select-list="selectListVip" right-click="rightClickVip" print="会员信息"></sz-table>
+                <sz-table fields="vipFields" head="true" button="add delete" row-click="chooseVip(d)" deep-search="true" title="点击查看详情" select-list="selectListVip" right-click="rightClickVip" print="会员信息" init-refresh="refreshVip(f)"></sz-table>
             </div>
             <div class="button fl" style="margin: 0px 20px; border: none">
                 <input type="button" value="开通会员卡" ng-click="clickPop('vipCreate')">

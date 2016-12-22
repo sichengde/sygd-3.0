@@ -70,8 +70,12 @@ App.controller('vipController', ['$scope', 'popUpService', 'util', 'dataService'
             $scope.selectListVip[0] = util.objectListToString(dataService.getVipCategoryList(), 'category');
         });
     $scope.selectList = [];
+    var refreshVip;
+    $scope.refreshVip=function (f) {
+        refreshVip=f;
+    };
     $scope.refresh = function () {
-        window.location.reload();
+        refreshVip();
     };
     $scope.clickPop = function (name) {
         popUpService.pop(name);
