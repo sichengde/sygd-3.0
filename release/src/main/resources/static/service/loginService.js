@@ -174,6 +174,11 @@ App.factory('LoginService', [function () {
             name: '数据分析',
             href: 'dataParse',
             class: 'icon-signal'
+        },
+        {
+            name: '报表预览',
+            href: 'report',
+            class: 'icon-file-alt'
         }
     ];
     var sauna = [

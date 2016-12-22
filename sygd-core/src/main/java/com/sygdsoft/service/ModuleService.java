@@ -47,7 +47,7 @@ public class ModuleService {
                     "报表查询"
             }),
             new Module("经理查询", "manager", new String[]{
-                    "实时状态","宾客信息","数据分析"
+                    "实时状态","宾客信息","数据分析","报表预览"
             }),
             new Module("系统维护", "hotelParam", new String[]{
                     "客房叫回", "餐饮叫回", "权限管理"
