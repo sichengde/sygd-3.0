@@ -58,7 +58,7 @@ App.directive('szReadKey', ['$document', '$interval', function ($document, $inte
                 interval = $interval(function () {
                     beforeInterval = scope.szReadKey;
                     scope.szReadKey = '';
-                }, 1000)
+                }, 5000)
             }
         }
     }
