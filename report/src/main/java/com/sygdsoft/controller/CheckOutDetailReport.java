@@ -78,11 +78,12 @@ public class CheckOutDetailReport {
             if (!debtPay.getPaySerial().equals(lastSerial)) {
                 lastSerial = debtPay.getPaySerial();
                 fieldTemplate = new FieldTemplate();//第一行是主账号
+                fieldTemplate.setField1("主账号");
                 if (debtPay.getGroupAccount() != null) {
-                    fieldTemplate.setField1("主账号:" + debtPay.getGroupAccount());
-                    fieldTemplate.setField2("公司:" + debtPay.getCompany());
+                    fieldTemplate.setField2(ifNotNullGetString(debtPay.getGroupAccount()));
+                    fieldTemplate.setField3("公司:" + debtPay.getCompany());
                 } else {
-                    fieldTemplate.setField1("主账号:" + debtPay.getSelfAccount());
+                    fieldTemplate.setField2(ifNotNullGetString(debtPay.getSelfAccount()));
                 }
                 fieldTemplate.setField6("true");
                 templateList.add(fieldTemplate);
