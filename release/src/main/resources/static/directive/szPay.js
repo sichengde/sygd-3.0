@@ -2,6 +2,11 @@
  * Created by Administrator on 2016/9/11 0011.
  * 结算分单币种选择
  * 父页面如果设置分单按钮，则可以分单，否则无法分单
+ * 父页面调用方法：
+ * $scope.currencyPayList = [];//sz-pay
+ * $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
+ * $scope.currencyPayList[0].money=10;//设置总金额，有时候也可以没有
+ * $scope.currencyList=xxx 自定义币种数组
  */
 App.directive('szPay', function () {
     return {
@@ -10,7 +15,9 @@ App.directive('szPay', function () {
             dataService.initData(['refreshCurrencyList', 'refreshCompanyList', 'refreshVipList', 'refreshRoomList', 'refreshCompanyLordList', 'refreshFreemanList'], [{condition: 'check_out=1'}, {condition: 'if_debt=\'y\''}, {condition: 'state=\'正常\''}])
                 .then(function () {
                     /*可供选择的币种*/
-                    $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');
+                    if(!$scope.currencyList) {
+                        $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');
+                    }
                     $scope.currencyPayList[0].currency = $scope.currencyList[0];
                     /*初始化可供选择的单位结账数组*/
                     $scope.companyList = util.objectListToString(dataService.getCompanyList(), 'name');

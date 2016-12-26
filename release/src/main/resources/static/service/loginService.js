@@ -140,6 +140,11 @@ App.factory('LoginService', [function () {
             class: 'icon-file-alt'
         },
         {
+            name: '应收应付',
+            href: 'companyDebt/edit',
+            class: 'icon-edit'
+        },
+        {
             name: '其他工具',
             href: 'otherTools',
             class: 'icon-wrench'

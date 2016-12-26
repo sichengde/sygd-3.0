@@ -447,6 +447,7 @@ public class GuestOutController {
         * 18.总房费                           ifNotNullGetString(totalRoomConsume)
         * 19.总房吧消费                       ifNotNullGetString(totalRoomShopConsume)
         * 20.其他消费                         ifNotNullGetString(otherConsume)
+        * 21.开房会员                         guestInVip
         * field
         * 1.日期
         * 2.房号
@@ -463,6 +464,7 @@ public class GuestOutController {
         String groupName = null;
         String roomID = null;
         String roomIdAll = null;
+        String guestInVip=null;//开房时的会员
         List<String> roomList = guestOut.getRoomIdList();
         String account;
         String finalRoomPrice = null;
@@ -482,6 +484,7 @@ public class GuestOutController {
                 deposit = checkIn.getDeposit();
                 roomID = checkIn.getRoomId();
                 account = checkIn.getSelfAccount();
+                guestInVip=checkIn.getVipNumber();
                 finalRoomPrice = ifNotNullGetString(checkIn.getFinalRoomPrice());
                 totalRoomConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房费", checkIn.getSelfAccount());
                 totalRoomShopConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkIn.getSelfAccount());
@@ -499,6 +502,7 @@ public class GuestOutController {
                 account = checkInGroup.getGroupAccount();
                 groupName = checkInGroup.getName();
                 roomIdAll = roomService.roomListToString(roomList);
+                guestInVip=checkInGroup.getVipNumber();
                 totalRoomConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房费", checkInGroup.getGroupAccount());
                 totalRoomShopConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkInGroup.getGroupAccount());
             }
@@ -516,11 +520,15 @@ public class GuestOutController {
             consume = checkOut.getConsume();
             deposit = checkOut.getDeposit();
             if (guestOut.getGroupAccount() == null) {
+                CheckInHistoryLog checkInHistoryLog = checkInHistoryLogService.getByCheckOutSerial(checkOut.getCheckOutSerial()).get(0);
                 account = checkOut.getSelfAccount();
+                guestInVip=checkInHistoryLog.getVipNumber();
                 finalRoomPrice = checkOutRoomService.getByCheckOutSerial(guestOut.getCheckOutSerial()).get(0).getFinalRoomPrice();
                 totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getSelfAccount());
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getSelfAccount());
             } else {
+                CheckOutGroup checkOutGroup=checkOutGroupService.getByCheckOutSerial(checkOut.getCheckOutSerial());
+                guestInVip=checkOutGroup.getVipNumber();
                 account = checkOut.getGroupAccount();
                 groupName = checkOut.getGroupName();
                 roomIdAll = roomService.roomListToString(roomList);
@@ -567,7 +575,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, timeService.getNowLong(), company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume)};
+        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, timeService.getNowLong(), company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume),guestInVip};
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 

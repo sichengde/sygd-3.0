@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.util.NullJudgement;
 
 import javax.persistence.Transient;
@@ -31,7 +32,7 @@ public class Vip extends BaseEntity {
     @Transient
     private String protocol;//关联的房价协议
     @Transient
-    private String currency;//会员发卡的时候充值的币种，为了记表vipDetail方便，vip中就不记了
+    private CurrencyPost currencyPost;//会员发卡的时候充值的币种，为了记表vipDetail方便，vip中就不记了
     @Transient
     private Double deserve;//抵用金额，用于记录在vipDetail表中，vip表里只记录余额
 
@@ -189,12 +190,12 @@ public class Vip extends BaseEntity {
         this.protocol = protocol;
     }
 
-    public String getCurrency() {
-        return currency;
+    public CurrencyPost getCurrencyPost() {
+        return currencyPost;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setCurrencyPost(CurrencyPost currencyPost) {
+        this.currencyPost = currencyPost;
     }
 
     public Double getDeserve() {

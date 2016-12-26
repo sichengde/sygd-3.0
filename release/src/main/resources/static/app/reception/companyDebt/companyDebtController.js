@@ -37,6 +37,7 @@ App.controller('companyDebtController',['$scope','popUpService','dataService','u
         {name:'支付款',id:'pay',width:'100px',sum:'true'},
         {name:'操作类别',id:'category',width:'150px',filter:'list'},
         {name:'结账流水号',id:'paySerial',width:'150px'},
+        {name:'备注',id:'description',width:'150px'},
         {name:'操作员',id:'userId',width:'120px'}
     ];
 

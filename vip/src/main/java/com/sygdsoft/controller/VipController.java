@@ -44,6 +44,8 @@ public class VipController {
     VipHistoryService vipHistoryService;
     @Autowired
     VipDetailHistoryService vipDetailHistoryService;
+    @Autowired
+    DebtPayService debtService;
 
     @RequestMapping(value = "vipUpdate")
     @Transactional(rollbackFor = Exception.class)
@@ -78,16 +80,20 @@ public class VipController {
                 vip.setBirthdayTime(timeService.stringToDateShort(idCard.substring(6, 10) + "-" + idCard.substring(10, 12) + "-" + idCard.substring(12, 14)));
             }
         }
+        String currency=vip.getCurrencyPost().getCurrency();
+        String currencyAdd=vip.getCurrencyPost().getCurrencyAdd();
         Double realMoney=vip.getRemain();//实际充值的金额，因为计表后该值将会被抵用金额覆盖，所以在此先保留;
-        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), vip.getCurrency(),timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
+        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+currencyAdd,timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
         if (vip.getDeserve() != null) {
             vip.setRemain(vip.getDeserve());
         }
         vipService.add(vip);
         if (vip.getRemain() != null) {//有金额的话就增加一条充值记录
             /*增加一条账务明细*/
-            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), vip.getCurrency());
+            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency+"/"+currencyAdd);
         }
+        debtService.parseCurrency(currency,currencyAdd,realMoney,null,null,"会员发卡充值",null,null );
+        /*判断币种，这里允许挂单位账*/
         return reportService.generateReport(null, params, "vipAdd", "pdf");
     }
 
