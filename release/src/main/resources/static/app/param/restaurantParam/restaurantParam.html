@@ -11,6 +11,17 @@
                 </sz-tab>
             </div>
         </sz-pane>
+        <sz-pane title="类别定义">
+            <div class="szSheet" style="width: 800px">
+                <sz-tab choose-item="chooseItemSaleCount(d)">
+                    <sz-pane ng-repeat="r in pointOfSaleList" title="{{r.firstPointOfSale}}">
+                        <div style="margin-top: 10px; margin-left: 10px; width: 700px">
+                            <sz-table fields="saleCountFields" outer-refresh="initList()" select-list="selectSaleCountList" head="true" items-per-page="20" search-condition="saleCountCondition"></sz-table>
+                        </div>
+                    </sz-pane>
+                </sz-tab>
+            </div>
+        </sz-pane>
         <sz-pane title="菜谱定义">
             <div class="szSheet">
                 <sz-tab choose-item="chooseItemMenu(d)">

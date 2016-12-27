@@ -28,7 +28,7 @@ public class TestOthers {
     static private byte[] module2 = {1, 2, 3, 4, 5, 6, 7, 8};//拥有模块字符串{1,2,3,4,5,6,7,8}
 
     @Test
-    public void freeTest() throws Exception{
+    public void freeTest() throws Exception {
         String filePath = "C://report/qrCode";
         String fileName = "桌子.png";
         JSONObject json = new JSONObject();
@@ -58,7 +58,16 @@ public class TestOthers {
 
     @Test
     public void dsds() {
-        System.out.print(-98 & 0xff);
+        StringBuilder sb = new StringBuilder("41029828178BFBFF00630F01-95879982207809719");
+        Integer int1 = null;
+        for (int i = 0; i < sb.length(); i++) {
+            try {
+                int1 = Integer.valueOf(String.valueOf(sb.charAt(i)), 16);
+            } catch (NumberFormatException e) {
+                sb.replace(i, i+1, "0");
+            }
+        }
+        System.out.print(sb);
     }
 
     @Test
@@ -162,6 +171,7 @@ public class TestOthers {
 
     /**
      * 校验注册号是否正确
+     *
      * @param serial
      * @return
      * @throws UnknownHostException

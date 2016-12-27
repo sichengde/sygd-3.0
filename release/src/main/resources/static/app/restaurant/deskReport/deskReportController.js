@@ -151,7 +151,12 @@ App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 
     /**
      * 提交销售流水报表统计
      */
+    var backUpQueryMessage = {};
     $scope.SaleStreamReport = function (pointOfSale, beginTime, endTime, category) {
+        backUpQueryMessage.pointOfSale = pointOfSale;
+        backUpQueryMessage.beginTime = beginTime;
+        backUpQueryMessage.endTime = endTime;
+        backUpQueryMessage.category = category;
         webService.post('SaleStreamReport', {
             pointOfSale: pointOfSale,
             beginTime: beginTime,
@@ -162,6 +167,22 @@ App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 
                 $scope.saleStreamReportList = r.saleStreamRowList;
                 $scope.saleStreamRemark = r.categoryParse;
                 webService.openReport(r.reportIndex);
+            })
+    };
+    /*点击流水数量弹出明细,注意：弹出的明细无法区分类别，也就是同名菜*/
+    $scope.SaleStreamReportItemClick = function (item, id) {
+        var user = util.wrapWithBrackets(backUpQueryMessage.userId);
+        var foodName = util.wrapWithBrackets(item.foodName);
+        var beginTime = util.wrapWithBrackets(dateFilter(backUpQueryMessage.beginTime, 'yyyy-MM-dd HH:mm:ss'));
+        var endTime = util.wrapWithBrackets(dateFilter(backUpQueryMessage.endTime, 'yyyy-MM-dd HH:mm:ss'));
+        var condition='done_time>' + beginTime + ' and done_time<' + endTime+' and food_name='+foodName;
+        if(backUpQueryMessage.userId&&backUpQueryMessage.userId!=''){
+            condition+=' and user_id = ' + user;
+        }
+        var p = {condition: condition};
+        webService.post('deskDetailHistoryGet', p)
+            .then(function (r) {
+                popUpService.pop('deskDetailHistory', null, null, r);
             })
     };
     /**

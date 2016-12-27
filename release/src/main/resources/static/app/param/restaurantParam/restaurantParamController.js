@@ -46,6 +46,19 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
         ];
         $scope.deskCondition = 'pointOfSale=' + util.wrapWithBrackets(pointOfSale);
     };
+    /*侦听切换，随时更新szTable内容，类别定义*/
+    $scope.chooseItemSaleCount = function (pointOfSale) {
+        /*类别定义，只能定义当前营业部门的*/
+        $scope.selectSaleCountList = [];
+        $scope.selectSaleCountList[0] = util.getValueByField($scope.pointOfSaleList,'firstPointOfSale',pointOfSale).secondPointOfSale.split(' ');
+        $scope.saleCountFields = [
+            {id: 'pointOfSale', default: pointOfSale},
+            {name: '统计部门', id: 'secondPointOfSale', selectId: '0', copy: true, width: '200px'},
+            {name: '品种类别', id: 'name', width: '200px'},
+            {name: '厨房', id: 'cookRoom', selectId: '2',  width: '200px'}
+        ];
+        $scope.saleCountCondition = 'firstPointOfSale=' + util.wrapWithBrackets(pointOfSale);
+    };
     /*侦听切换，随时更新szTable内容，菜谱定义*/
     $scope.chooseItemMenu = function (pointOfSale) {
         $scope.menuFields = [

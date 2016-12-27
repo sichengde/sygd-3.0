@@ -61,7 +61,7 @@
                     </li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="SaleStreamReport(pointOfSale.firstPointOfSale,beginTime,endTime,category)" value="查询"></li>
                 </ul>
-                <sz-table fields="saleStreamReportFields" items="saleStreamReportList" button="add update delete" ng-if="saleStreamReportList" items-per-page="20" remark="saleStreamRemark"></sz-table>
+                <sz-table fields="saleStreamReportFields" items="saleStreamReportList" button="add update delete" ng-if="saleStreamReportList" items-per-page="20" remark="saleStreamRemark" item-click="SaleStreamReportItemClick(item,id)"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="类别分析表">
@@ -160,3 +160,4 @@
 <sz-pop-up refresh="refresh()" name="restaurant/deskPay/deskPay.html"></sz-pop-up>
 <sz-pop-up name="reception/vip/vipDetail/vipDetail.html"></sz-pop-up>
 <sz-pop-up name="restaurant/rightClickDesk/rightClickDesk.html" back="white"></sz-pop-up>
+<sz-pop-up name="restaurant/deskDetailHistory/deskDetailHistory.html"></sz-pop-up>
