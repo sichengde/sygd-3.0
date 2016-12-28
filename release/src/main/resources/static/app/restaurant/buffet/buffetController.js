@@ -1,12 +1,12 @@
 /**
  * Created by Administrator on 2016/10/22 0022.
  */
-App.controller('buffetController',['$scope','dataService','LoginService','webService','messageService','popUpService',function ($scope,dataService,LoginService,webService,messageService,popUpService) {
+App.controller('buffetController',['$scope','dataService','LoginService','webService','messageService','util',function ($scope,dataService,LoginService,webService,messageService,util) {
     $scope.currencyPayList = [];//sz-pay
     $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
     $scope.num=1;
     var pointOfSale=LoginService.getPointOfSale();
-    dataService.initData(['refreshMenuList'],[{condition:'category=\'自助餐\''}])
+    dataService.initData(['refreshMenuList'],[{condition:'category=\'自助餐\' and point_of_sale='+util.wrapWithBrackets(pointOfSale)}])
         .then(function () {
             $scope.menuList=dataService.getMenuList();
         });

@@ -52,7 +52,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
         $scope.selectSaleCountList = [];
         $scope.selectSaleCountList[0] = util.getValueByField($scope.pointOfSaleList,'firstPointOfSale',pointOfSale).secondPointOfSale.split(' ');
         $scope.saleCountFields = [
-            {id: 'pointOfSale', default: pointOfSale},
+            {id: 'firstPointOfSale', default: pointOfSale},
             {name: '统计部门', id: 'secondPointOfSale', selectId: '0', copy: true, width: '200px'},
             {name: '品种类别', id: 'name', width: '200px'},
             {name: '厨房', id: 'cookRoom', selectId: '2',  width: '200px'}
