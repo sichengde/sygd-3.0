@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.sygdsoft.util.NullJudgement.ifNullGetString;
+import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 
 /**
  * Created by 舒展 on 2016-12-01.
@@ -118,6 +118,6 @@ public class SaunaInController {
         }
         saunaInService.add(saunaInList);
         saunaDetailService.add(saunaDetailList);
-        userLogService.addUserLog("桑拿开牌:"+ringString+"|"+ifNullGetString(inCategory),userLogService.sauna,userLogService.saunaIn,null);
+        userLogService.addUserLog("桑拿开牌:"+ringString+"|"+ifNotNullGetString(inCategory),userLogService.sauna,userLogService.saunaIn,null);
     }
 }

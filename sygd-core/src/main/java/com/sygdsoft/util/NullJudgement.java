@@ -33,7 +33,7 @@ public class NullJudgement {
             return null;
         }
     }
-    static public String ifNullGetString(String s){
+    static public String ifNotNullGetString(String s){
         if(s==null){
             return "";
         }else {

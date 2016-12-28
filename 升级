@@ -455,3 +455,4 @@
             ALTER TABLE hotel.company ADD alias VARCHAR(20) NULL;
 2016-12-22: ALTER TABLE hotel.vip_id_number MODIFY id_number VARCHAR(20) NOT NULL;
 2016-12-26: ALTER TABLE hotel.company_debt ADD description VARCHAR(100) NULL;
+2016-12-26: ALTER TABLE hotel.company_debt ADD description VARCHAR(100) NULL;
