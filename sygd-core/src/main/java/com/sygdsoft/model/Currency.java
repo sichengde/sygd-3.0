@@ -9,8 +9,8 @@ import com.sygdsoft.util.NullJudgement;
 public class Currency extends BaseEntity{
     private String currency;//币种代码
     private Boolean score;//参与积分
-    private Boolean checkIn;//结账币种
-    private Boolean checkOut;//押金币种
+    private Boolean checkOut;//结账币种
+    private Boolean checkIn;//押金币种
     private Boolean payTotal;//参与结算款统计
 
     public Currency() {
