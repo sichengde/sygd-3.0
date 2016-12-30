@@ -52,7 +52,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
         $scope.selectSaleCountList = [];
         $scope.selectSaleCountList[0] = util.getValueByField($scope.pointOfSaleList,'firstPointOfSale',pointOfSale).secondPointOfSale.split(' ');
         $scope.saleCountFields = [
-            {id: 'firstPointOfSale', default: pointOfSale},
+            {id: 'firstPointOfSale', default: pointOfSale,copy: true},
             {name: '统计部门', id: 'secondPointOfSale', selectId: '0', copy: true, width: '200px'},
             {name: '品种类别', id: 'name', width: '200px'},
             {name: '厨房', id: 'cookRoom', selectId: '2',  width: '200px'}
@@ -62,7 +62,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
     /*侦听切换，随时更新szTable内容，菜谱定义*/
     $scope.chooseItemMenu = function (pointOfSale) {
         $scope.menuFields = [
-            {id: 'pointOfSale', default: pointOfSale},
+            {id: 'pointOfSale', default: pointOfSale,copy: true},
             {name: '菜名', id: 'name', notNull: 'true', width: '200px'},
             {name: '种类', id: 'category', selectId: '0', notNull: 'true', width: '200px', copy: 'true', filter: 'list'},
             {name: '单价', id: 'price', notNull: 'true', width: '200px'},
