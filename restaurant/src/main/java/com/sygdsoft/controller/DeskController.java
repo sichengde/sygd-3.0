@@ -76,6 +76,18 @@ public class DeskController {
         deskService.delete(deskList);
     }
 
+    @RequestMapping(value = "deskUpdate")
+    @Transactional(rollbackFor = Exception.class)
+    public void deskUpdate(@RequestBody List<Desk> deskList) throws Exception {
+        if (deskList.size() > 1) {
+            if (deskList.get(0).getId().equals(deskList.get(deskList.size() / 2).getId())) {
+                deskService.update(deskList.subList(0, deskList.size() / 2));
+                return;
+            }
+        }
+        deskService.update(deskList);
+    }
+
     @RequestMapping(value = "deskGet")
     public List<Desk> deskGet(@RequestBody Query query) throws Exception {
         List<Desk> deskList = deskService.get(query);

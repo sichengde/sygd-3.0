@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.sygdsoft.json.VipRecharge;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.Vip;
 import com.sygdsoft.model.VipDetail;
@@ -121,23 +122,23 @@ public class VipController {
 
     /**
      * 充值
-     *
-     * @param params 1：会员卡号。2：金额
      * @return
      */
     @RequestMapping(value = "vipRecharge")
     @Transactional(rollbackFor = Exception.class)
-    public Integer vipRecharge(@RequestBody List<String> params) throws Exception {
+    public Integer vipRecharge(@RequestBody VipRecharge vipRecharge) throws Exception {
         timeService.setNow();
-        String vipNumber = params.get(0);
-        Double money = Double.valueOf(params.get(1));
-        Double deserve = Double.valueOf(params.get(2));
-        String currency = params.get(3);
+        String vipNumber = vipRecharge.getVipNumber();
+        Double money = vipRecharge.getMoney();
+        Double deserve = vipRecharge.getDeserve();
+        String currency=vipRecharge.getCurrencyPost().getCurrency();
+        String currencyAdd=vipRecharge.getCurrencyPost().getCurrencyAdd();
         vipService.updateVipRemain(vipNumber, deserve);
         /*增加一条账务明细*/
-        vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency);
-        userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency, userLogService.vip, userLogService.recharge,vipNumber);
-        String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency};
+        vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency+"/"+currencyAdd);
+        userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
+        String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency+"/"+currencyAdd};
+        debtService.parseCurrency(currency,currencyAdd,money,null,null,"会员充值",null,null );
         return reportService.generateReport(null, param, "vipRecharge", "pdf");
     }
 

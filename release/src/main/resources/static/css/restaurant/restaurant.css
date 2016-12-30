@@ -95,7 +95,7 @@ background-size: 65px;
     font-size: 18px;}
 .perHelp .divCon input { width: 17px!important; height: 20px;}
 .perHelp .divLine table { font-size: 16px;}
-.perHelp .divLine select { padding: 5px 14px 5px 5px!important;  background-position:93% 13px; font-size: 16px;}
+.perHelp .divLine select { background-position:93% 13px; font-size: 16px;}
 .perHelp .divLine input { line-height: 30px; font-size: 16px;}
 .perHelp .divLine .lan2 { width: 80px;}
 

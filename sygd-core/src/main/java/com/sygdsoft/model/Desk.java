@@ -7,7 +7,7 @@ import java.util.List;
  * Created by 舒展 on 2016-07-14.
  * 餐饮桌台定义
  */
-public class Desk {
+public class Desk extends BaseEntity{
     private String name;
     private String pointOfSale;
     private String seat;
