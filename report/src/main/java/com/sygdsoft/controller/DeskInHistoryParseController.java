@@ -108,7 +108,7 @@ public class DeskInHistoryParseController {
         }
         /*统计上座率和人均消费*/
         Integer totalSeat=deskService.getTotalSeat();
-        String remark="人均消费: "+szMath.formatTwoDecimal(totalConsume,totalPeople)+"    上座率:"+szMath.formatPercent(totalPeople,totalSeat);
+        String remark="合计人数："+totalPeople+"    合计金额"+totalConsume+"    人均消费: "+szMath.formatTwoDecimal(totalConsume,totalPeople)+"    上座率:"+szMath.formatPercent(totalPeople,totalSeat);
         DeskInHistoryParseOut deskInHistoryParseOut=new DeskInHistoryParseOut();
         deskInHistoryParseOut.setFieldTemplateList(fieldTemplateList);
         deskInHistoryParseOut.setHeadFieldList(headFieldList);
