@@ -79,6 +79,9 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     /*时间按钮减一天*/
     $scope.minusDay = function () {
         $scope.days = $scope.days - 1;
+        if($scope.days==0){
+            $scope.days++;
+        }
         calculateLeaveTime();
     };
     /*时间按钮加一天*/

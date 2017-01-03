@@ -13,14 +13,14 @@ public class Room extends BaseEntity{
     private String area;//楼区
     private String floor;//楼层
     private String category;//房间类别
-    private Double price;//房价
+    private Double price;//房价,没什么用了，开房房价走协议房价，这里只有换房时用作临时变量，应该声明@Transient，但为了避免修改库表太多，暂时不换了
     private String breakfast;//早餐标志
     private String totalBed;//总共床位
     private String state;//房间状态 对应annotation.RoomState里的常量
     private Boolean dirty;//是否为脏房
     private Date checkOutTime;//最近一次退房时间
-    private String repairReason;//最近一次退房时间
-    private Date repairTime;//最近一次退房时间
+    private String repairReason;//维修理由
+    private Date repairTime;//维修时间
     private String todayLock;//当日锁房，不锁的时候是null，锁的时候是原因
     @Transient
     private CheckIn checkIn;

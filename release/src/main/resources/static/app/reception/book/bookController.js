@@ -71,5 +71,5 @@ App.controller("BookController",['$scope','popUpService','dataService','$route',
     };
     $scope.bookInput=function () {
         popUpService.pop('bookInput');
-    }
+    };
 }]);

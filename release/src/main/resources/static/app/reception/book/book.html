@@ -144,12 +144,18 @@
                     </tr>
                     <tr>
                         <td>抵达时间：</td>
-                        <td colspan="3">
+                        <td>
                             <input type="text" ng-model="book.reachTime" uib-datepicker-popup style="width: 90px;">
                             <div class="timeSfm">
                                 <uib-timepicker show-spinners="false" ng-model="book.reachTime" show-meridian="false"
                                                 show-seconds="true"></uib-timepicker>
                             </div>
+                        </td>
+                        <td>预住天数：</td>
+                        <td>
+                            <input type="button" class="jia" value="-" style="margin-right: -1px;" ng-click="minusDay()">
+                            <input type="text" style="width: 50px;" id="Days" ng-model="days" ng-init="days=1">
+                            <input type="button" class="jia" value="+" style="margin-left: -1px;" ng-click="addDay()">
                         </td>
                         <td width="80">预离时间：</td>
                         <td colspan="3">
@@ -167,6 +173,7 @@
                                     ng-options="x.name for x in companyList" ng-disabled="beginChoose?true:false">
                                 <option></option>
                             </select>
+                            <span class="tswz" ng-if="beginChoose">'必须在选房之前才能选择单位</span>
                         </td>
                         <td width="50">客源：</td>
                         <td>

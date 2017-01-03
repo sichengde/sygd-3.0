@@ -71,6 +71,9 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
     /*时间按钮减一天*/
     $scope.minusDay = function () {
         $scope.days = $scope.days - 1;
+        if($scope.days==0){
+            $scope.days++;
+        }
         calculateLeaveTime();
     };
     /*时间按钮加一天*/
@@ -233,11 +236,12 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             popUpService.pop('message');
             return;
         }
-        if ($scope.checkInList.length < 2) {
+        /*忘了为什么有这个限制了，先删除*/
+        /*if ($scope.checkInList.length < 2) {
             messageService.setMessage({type: 'error', content: '至少要开两间以上的房间'});
             popUpService.pop('message');
             return;
-        }
+        }*/
         if (!$scope.checkInGroup.leaderRoom) {
             messageService.setMessage({type: 'error', content: '至少选择一个领队房'});
             popUpService.pop('message');
@@ -307,6 +311,6 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
      */
     /*根据来期和预住天数计算出离期*/
     function calculateLeaveTime() {
-        $scope.checkInGroup.leaveTime = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
+        $scope.checkInGroup.leaveTime = new Date($scope.checkInGroup.reachTime.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
     }
 }]);

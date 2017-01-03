@@ -60,12 +60,12 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
                 /*时间*/
                 $scope.book.reachTime = util.newDateNow(dataService.getTimeNow());
                 var time = dataService.getOtherParamMapValue('离店时间');
-                $scope.book.remainTime = util.newDateAndTime(new Date($scope.book.reachTime.valueOf() + 24 * 60 * 60 * 1000), '00:00:00');//保留时间取第二天凌晨
                 if (time != 'n') {
                     $scope.book.leaveTime = util.newDateAndTime(new Date($scope.book.reachTime.valueOf() + 24 * 60 * 60 * 1000), time)
                 } else {
                     $scope.book.leaveTime = new Date($scope.book.reachTime.valueOf() + 24 * 60 * 60 * 1000);
                 }
+                $scope.book.remainTime = util.newDateAndTime(new Date($scope.book.leaveTime.valueOf() + 24 * 60 * 60 * 1000), '00:00:00');//保留时间取第二天凌晨
                 $scope.book.guestSource = $scope.guestSourceList[0];
                 $scope.book.currency = '人民币';
                 $scope.protocol = a[0];
@@ -127,6 +127,19 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
     $scope.writeCard=function () {
         doorInterfaceService.doorWriteList(util.objectListToString($scope.chooseRoomList,'roomId'));
     };
+    /*时间按钮减一天*/
+    $scope.minusDay = function () {
+        $scope.days = $scope.days - 1;
+        if($scope.days==0){
+            $scope.days++;
+        }
+        calculateLeaveTime();
+    };
+    /*时间按钮加一天*/
+    $scope.addDay = function () {
+        $scope.days = $scope.days + 1;
+        calculateLeaveTime();
+    };
     /*监听变量的变化，从而设置房价协议*/
     var watch = $scope.$watchGroup(['book.roomPriceCategory', 'roomCategory', 'company', 'book.reachTime', 'book.leaveTime', 'abortTime'], function (newValues, oldValues) {
         if(newValues[0]!=oldValues[0] || newValues[1]!=oldValues[1] || newValues[2]!=oldValues[2]) {
@@ -146,6 +159,12 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
     });
     var watch3 =$scope.$watchCollection('chooseCategoryList',function (newValue) {
         $scope.beginChoose = !($scope.chooseRoomList.length == 0 && $scope.chooseCategoryList.length == 0);
+    });
+    /*监听预离时间，设置保留时间*/
+    var watch4=$scope.$watch('book.leaveTime',function () {
+        if($scope.book.leaveTime) {
+            $scope.book.remainTime = util.newDateAndTime(new Date($scope.book.leaveTime.valueOf() + 24 * 60 * 60 * 1000), '00:00:00');//保留时间取第二天凌晨
+        }
     });
     /*确认预订*/
     $scope.confirm = function () {
@@ -204,7 +223,11 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
         watch();
         watch2();
         watch3();
+        watch4();
     };
+    function calculateLeaveTime() {
+        $scope.book.leaveTime = new Date($scope.book.reachTime.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
+    }
     function calculateTotalUnsureRoom() {
         var totalRoom=0;//该房类总计预定的房数
         for (var i = 0; i < $scope.bookList.length; i++) {
@@ -220,4 +243,5 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
         }
         return totalRoom;
     }
+
 }]);
