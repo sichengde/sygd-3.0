@@ -1,11 +1,7 @@
 <div id="content" class="ddDing">
     <sz-tab>
         <sz-pane title="应收应付">
-            <sz-table fields="companyFields" row-click="chooseCompany(d)" search-condition="condition" outer-refresh="lordInit(d)" head="true" title="点击查看账务明细" select-list="companySelectList" button="{{editable?false:'add update delete'}}"></sz-table>
-            <div class="button fl" style="margin: 0px; border: none" ng-show="editable">
-                <input type="button" value="结算" ng-click="pop('companyPay')">
-                <input type="button" value="预付" ng-click="pop('companyDeposit')">
-            </div>
+            <sz-table fields="companyFields" row-click="chooseCompany(d)" search-condition="condition" outer-refresh="lordInit(d)" head="true" title="点击查看账务明细" select-list="companySelectList" button="{{editable?false:'add update delete'}}" right-click="{{editable?'rightClickCompany':''}}"></sz-table>
             <div class="clear"></div>
             <div class="detailTable">
                 <h1>账务明细</h1>
@@ -35,3 +31,4 @@
 </div>
 <sz-pop-up name="reception/debtDetail/debtDetail.html"></sz-pop-up>
 <sz-pop-up name="reception/rightClickDebt/rightClickDebt.html" back="white"></sz-pop-up>
+<sz-pop-up name="reception/rightClickCompany/rightClickCompany.html" back="white"></sz-pop-up>

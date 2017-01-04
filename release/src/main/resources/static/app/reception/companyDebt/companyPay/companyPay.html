@@ -2,12 +2,10 @@
     <div class="littlePop" drag>
         <div class="littlePopBox">
             <h1>单位结算</h1>
-            <p class="tagp"><span>单位名称：</span><input type="text" ng-model="company" sz-select="companyList" style="float: none;width: 180px;"></p>
+            <p class="tagp"><span>单位名称：</span>{{company}}</p>
             <p class="tagp"><span>结算金额：</span><input type="text" style="float: none; width: 180px;" ng-model="total"></p>
-            <p class="tagp"><span>支付金额：</span><input type="text" style="float: none; width: 180px;" ng-model="pay"></p>
-            <p class="tagp"><span>使用预存款：</span><input type="text" style="float: none; width: 180px;" ng-model="deposit"></p>
-            <p class="tagp"><span>支付方式：</span><select style="width: 130px; float: none" ng-options="x for x in currencyList" ng-model="currency">
-            </select></p>
+            <p class="tagp"><span>使用预存款：</span><input type="checkbox" style="float: none; width: 180px;" ng-model="useDeposit"></p>
+            <p class="tagp"><sz-pay></sz-pay></p>
             <div class="clear"></div>
             <button style="margin-top: 20px;" ng-click="submit()">确认支付</button>
         </div>
