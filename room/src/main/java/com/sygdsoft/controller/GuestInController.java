@@ -111,7 +111,12 @@ public class GuestInController {
     private void checkInProcess(GuestIn guestIn) throws Exception {
         List<CheckIn> checkInList = guestIn.getCheckInList();
         if (checkInList.size() > 1) {//大于1，团队开房
-            serialService.setGroupAccount();
+            /*如果是转入现有团队*/
+            if(guestIn.getCheckInGroup()!=null){
+                serialService.setGroupAccount(guestIn.getCheckInGroup().getGroupAccount());
+            }else {
+                serialService.setGroupAccount();
+            }
             for (CheckIn checkIn : checkInList) {
                 /*提取一个公付账号*/
                 serialService.setSelfAccount();
@@ -194,8 +199,6 @@ public class GuestInController {
                 debt.setRoomId(checkInGroup.getLeaderRoom());
                 debt.setCategory(debtService.deposit);
                 debtService.add(debt);
-            } else {//转入已知团队
-                serialService.setGroupAccount(checkInGroup.getGroupAccount());
             }
             /*凌晨房判断*/
             if (nowTime.compareTo(limit) < 0 && nowTime.compareTo(nightTime) > 0) {//需要直接产生一笔房费
