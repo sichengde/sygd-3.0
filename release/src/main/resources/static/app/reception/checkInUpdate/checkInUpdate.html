@@ -15,7 +15,7 @@
                             <td style="text-align: right">早餐：</td>
                             <td style="text-align: left; width: 110px"><input type="text" ng-model="checkIn.breakfast" style="width: 30px;">&nbsp;份</td>
                             <td>会员卡号：</td>
-                            <td>{{checkIn.vipNumber}}</td>
+                            <td style="text-align: left; width: 110px">{{checkIn.vipNumber}}</td>
                         </tr>
                         <tr>
                             <td style="text-align: right">客源：</td>
@@ -64,6 +64,7 @@
                     <div class="button">
                         <button ng-click="submitCheckInUpdate()">确认修改</button>
                         <button ng-click="writeDoorAgain()">补做房卡</button>
+                        <!--<button ng-click="changeToGroup()">转为团队</button>-->
                     </div>
 
                 </sz-pane>

@@ -262,4 +262,16 @@ public class DebtService extends BaseService<Debt>{
         }
         return consume;
     }
+
+    /**
+     * 为该房间号的账务设置公付账号（用于散客转团队和联房）
+     */
+    public void setGroupAccountByRoomId(String roomId,String groupAccount) throws Exception {
+        /*为每一条账务设置公付账号*/
+        List<Debt> debtList = getListByRoomId(roomId);
+        for (Debt debt : debtList) {
+            debt.setGroupAccount(groupAccount);
+            update(debt);
+        }
+    }
 }

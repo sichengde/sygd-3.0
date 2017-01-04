@@ -2,7 +2,7 @@
  * Created by 舒展 on 2016-04-28.
  * 团队开房
  */
-App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host) {
+App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host','$filter', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host,$filter) {
     /*用于提交的对象*/
     var guestInGroup = {};
     $scope.checkInList = [];
@@ -208,10 +208,15 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         $scope.vip = util.getValueByField(dataService.getVipList(), 'idNumber', $scope.idNumber)
     };
     /*监听单位和房租方式的的变化，从而设置房价协议*/
-    var watch = $scope.$watchGroup(['roomPriceCategory', 'roomCategory', 'company', 'vip'], function (newValues, oldValues) {
+    var watch = $scope.$watchGroup(['roomPriceCategory', 'roomCategory', 'company', 'vip','onlyBook'], function (newValues, oldValues) {
         /*如果房间类型变了，还要更新一下房间数组*/
         if (newValues[1] != oldValues[1]) {
             $scope.roomShowList = roomFilter($scope.roomList, $scope.availableState, $scope.roomCategory)
+        }
+        if($scope.onlyBook){//二次过滤，只有预定的房才显示
+            $scope.roomShowList=$filter('filter')($scope.roomShowList,function (item) {
+                return util.getValueByField($scope.book.bookRoomList, 'roomId', item.roomId);
+            })
         }
         if (!bookIn) {
             $scope.protocolShowList = protocolFilter($scope.protocolList, $scope.roomPriceCategory, $scope.roomCategory, $scope.company, $scope.vip);

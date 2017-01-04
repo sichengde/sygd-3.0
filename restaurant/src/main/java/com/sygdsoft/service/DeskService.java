@@ -47,7 +47,7 @@ public class DeskService extends BaseService<Desk> {
     /**
      * 获取总计座位数
      */
-    public Integer getTotalSeat(){
-        return deskMapper.getTotalSeat();
+    public Integer getTotalSeat(String pointOfSale){
+        return deskMapper.getTotalSeat(pointOfSale);
     }
 }

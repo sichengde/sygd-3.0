@@ -34,7 +34,7 @@ App.controller('companyDebtController',['$scope','popUpService','dataService','u
         {name:'结账时间',id:'doTime',date:'true',width:'100px',desc:'0',filter:'date'},
         {name:'挂账款',id:'debt',width:'100px'},
         {name:'预付款',id:'deposit',width:'100px'},
-        {name:'支付款',id:'pay',width:'100px',sum:'true'},
+        /*{name:'支付款',id:'pay',width:'100px',sum:'true'},*/
         {name:'操作类别',id:'category',width:'150px',filter:'list'},
         {name:'结账流水号',id:'paySerial',width:'150px'},
         {name:'备注',id:'description',width:'150px'},

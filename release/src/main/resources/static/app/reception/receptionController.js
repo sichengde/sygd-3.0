@@ -1,7 +1,7 @@
 /**
  * 主页控制器，主要负责初始化所有经常用到的系统参数,Service负责从服务器索取数据，Util提供一些本模块用到的方法
  */
-App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 'receptionService', 'util', 'dateFilter', 'messageService', function ($scope, dataService, popUpService, receptionService, util, dateFilter, messageService) {
+App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 'receptionService', 'util', 'dateFilter', 'messageService','webService', function ($scope, dataService, popUpService, receptionService, util, dateFilter, messageService,webService) {
 
     /*鼠标移动到盘态--用于右键菜单确定房间对象*/
     $scope.mouseEnter = function (r) {
@@ -172,5 +172,44 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                 item.hover = null;
             })
         }
+    };
+    var sourceMoveRoom;
+    /*鼠标按下一个客房准备拖动*/
+    $scope.chooseSource=function (room) {
+        if(room.state=='散客房'){
+            sourceMoveRoom=room;
+        }
+    };
+    /*松开确认*/
+    $scope.chooseTarget=function (room) {
+        var postRoom=angular.copy(sourceMoveRoom);
+        if(postRoom){//有之前的选择才可以继续
+            switch (room.state){
+                case '可用房':
+                    /*messageService.setMessage({content:'是否换房？'+postRoom.roomId+'换入'+room.roomId});
+                    messageService.actionChoose();*/
+                    break;
+                case '团队房':
+                    messageService.setMessage({content:'是否转入现有团队？'+postRoom.roomId+'转入'+room.checkIn.groupAccount});
+                    messageService.actionChoose()
+                        .then(function () {
+                            postRoom.checkIn.groupAccount=room.checkInGroup.groupAccount;
+                            postRoom.state='团队房';
+                            postRoom.checkInGroup=room.checkInGroup;
+                            postRoom.checkInGroup.totalRoom++;
+                            postRoom.checkInGroup.deposit=postRoom.checkIn.deposit;
+                            postRoom.checkInGroup.consume=postRoom.checkIn.consume;
+                            webService.post('guestToGroup', postRoom)
+                                .then(function () {
+                                    $scope.refresh();
+                                    messageService.actionSuccess();
+                                })
+                        });
+                    break;
+            }
+        }
+    };
+    $scope.clearSourceMoveRoom=function () {
+        sourceMoveRoom=null;
     }
 }]);

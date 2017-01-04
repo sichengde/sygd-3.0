@@ -71,5 +71,8 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
             $scope.selectList[0] = util.objectListToString(dataService.getRoomCategoryList(), 'category');
             $scope.selectRoomShopList[0] = util.objectListToString(dataService.getSaleCountList(), 'name');
         });
+    /*批量增加房号弹窗*/
+    $scope.addMany=function () {
 
+    }
 }]);

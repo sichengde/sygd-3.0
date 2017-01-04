@@ -16,8 +16,10 @@ public class CompanyDebt extends BaseEntity{
     private String category;//操作种类
     private Date doTime;//操作时间
     private String userId;//操作员号
-    private String currency;//币种
+    private String currency;//币种，单位结算用的
+    private String currencyAdd;//币种额外信息
     private String description;//备注，描述
+    private String pointOfSale;//营业部门
 
     public CompanyDebt() {
     }
@@ -108,5 +110,21 @@ public class CompanyDebt extends BaseEntity{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCurrencyAdd() {
+        return currencyAdd;
+    }
+
+    public void setCurrencyAdd(String currencyAdd) {
+        this.currencyAdd = currencyAdd;
+    }
+
+    public String getPointOfSale() {
+        return pointOfSale;
+    }
+
+    public void setPointOfSale(String pointOfSale) {
+        this.pointOfSale = pointOfSale;
     }
 }

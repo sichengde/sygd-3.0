@@ -48,7 +48,7 @@
         <th class="id" ng-if="state=='delete'" ng-click="deleteAll()" style="width: 50px; text-align: center">删除</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody scroll-glue>
     <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse" ng-click="chooseRow(item)" ng-class="{hover:item.selected}" sz-right-click="{{rightClick}}" right-click-param="item">
         <td ng-repeat="r in fields" ng-style="{width:r.width}" ng-if="r.name">
             <!--非更新时-->

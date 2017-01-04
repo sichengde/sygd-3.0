@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by 舒展 on 2016-05-13.
@@ -26,6 +28,26 @@ import java.util.Map;
 public class TestOthers {
     static private byte[] success = {33, 77};//注册成功字符串
     static private byte[] module2 = {1, 2, 3, 4, 5, 6, 7, 8};//拥有模块字符串{1,2,3,4,5,6,7,8}
+    @Test
+    public void test33() {
+        String phoneString = "哈哈,13888889999";
+        // 提取数字
+        // 1
+        Pattern pattern = Pattern.compile("[^0-9]");
+        Matcher matcher = pattern.matcher(phoneString);
+        String all = matcher.replaceAll("");
+        System.out.println("phone:" + all);
+        // 2
+        Pattern.compile("[0-9]").matcher(phoneString).replaceAll("");
+    }
+    @Test
+    public void test() {
+        // 提取张三 去除数字
+        String r_name3 = "张三 13599998888 000000";
+        Pattern pattern = Pattern.compile("[\\d]");
+        Matcher matcher = pattern.matcher(r_name3);
+        System.out.println(matcher.replaceAll("").trim());
+    }
 
     @Test
     public void freeTest() throws Exception {

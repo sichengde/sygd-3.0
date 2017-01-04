@@ -1,5 +1,5 @@
 'use strict';
-var App = angular.module("appMain", ['ngRoute', 'ui.bootstrap','angular-drag','appIp']);
+var App = angular.module("appMain", ['ngRoute', 'ui.bootstrap','angular-drag','luegg.directives','appIp']);
 App.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.

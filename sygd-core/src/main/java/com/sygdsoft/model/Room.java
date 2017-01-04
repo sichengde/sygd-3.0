@@ -36,6 +36,27 @@ public class Room extends BaseEntity{
     public Room() {
     }
 
+    public Room(Room room) {
+        this.roomId = room.roomId;
+        this.area = room.area;
+        this.floor = room.floor;
+        this.category = room.category;
+        this.price = room.price;
+        this.breakfast = room.breakfast;
+        this.totalBed = room.totalBed;
+        this.state = room.state;
+        this.dirty = room.dirty;
+        this.checkOutTime = room.checkOutTime;
+        this.repairReason = room.repairReason;
+        this.repairTime = room.repairTime;
+        this.todayLock = room.todayLock;
+        this.checkIn = room.checkIn;
+        this.checkInGuestList = room.checkInGuestList;
+        this.bookList = room.bookList;
+        this.checkInGroup = room.checkInGroup;
+        this.longRoom = room.longRoom;
+    }
+
     public Boolean getNotNullDirty() {
         if(dirty==null){
             return false;

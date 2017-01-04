@@ -48,5 +48,9 @@ App.controller('checkInUpdateController',['$scope','receptionService','dataServi
             num=checkInGuestList.length;
         }
         doorInterfaceService.doorWrite($scope.room.roomId, dateFilter($scope.checkIn.leaveTime, 'yyyyMMddHHmmss'),num);
-    }
+    };
+    /*/!*转为团队*!/
+    $scope.changeToGroup=function () {
+
+    }*/
 }]);

@@ -1,5 +1,5 @@
 <!--main-container-part-->
-<div id="content">
+<div id="content" ng-mouseup="clearSourceMoveRoom()">
     <!--Filter begin-->
     <div class="saixuanbox">
         <ul class="saixuanul">
@@ -52,7 +52,7 @@
     <!--房态预览 begin-->
     <ul class="mainRoomState">
         <li class="roomState {{r.hover}}" ng-repeat="r in roomList | room: roomState:roomCategory:null:null:areaChoose:floorChoose"
-            ng-dblclick="clickGuestIn(r)" ng-click="receptionClick(r)" sz-right-click="rightClickRoom" ng-mouseenter="mouseEnter(r)" sz-hover-room>
+            ng-dblclick="clickGuestIn(r)" ng-click="receptionClick(r)" sz-right-click="rightClickRoom" ng-mouseenter="mouseEnter(r)" sz-hover-room ng-mousedown="chooseSource(r)" ng-mouseup="chooseTarget(r)">
             <ul>
                 <li ng-bind="r.roomId"></li>
                 <li ng-bind="r.category"></li>

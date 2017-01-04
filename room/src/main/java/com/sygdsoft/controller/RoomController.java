@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by 舒展 on 2016-03-22.
@@ -39,10 +42,31 @@ public class RoomController {
     OtherParamService otherParamService;
     @Autowired
     ProtocolService protocolService;
+    @Autowired
+    CheckInGroupService checkInGroupService;
 
     @RequestMapping(value = "roomAdd")
     public void roomAdd(@RequestBody Room room) throws Exception {
-        roomService.add(room);
+        /*增加的房间可以通过' - '来指定区间*/
+        String[] roomRange=room.getRoomId().split("-");
+        if(roomRange.length>1){//这是一个区间
+            String prefix = Pattern.compile("[0-9]").matcher(roomRange[0]).replaceAll("");//前缀
+            String roomIdMinString=Pattern.compile("[^0-9]").matcher(roomRange[0]).replaceAll("");
+            /*计算一下数字位数*/
+            Integer length=roomIdMinString.length();
+            Integer roomIdMin= Integer.valueOf(roomIdMinString);//最小数
+            Integer roomIdMax= Integer.valueOf(Pattern.compile("[^0-9]").matcher(roomRange[1]).replaceAll(""));//最大数
+            List<Room> roomList=new ArrayList<>();
+            Integer range=roomIdMax-roomIdMin;
+            for (int i = 0; i < range+1; i++) {
+                Room roomTmp=new Room(room);
+                roomTmp.setRoomId(String.format(prefix+"%0"+length+"d",roomIdMin+i));
+                roomList.add(roomTmp);
+            }
+            roomService.add(roomList);
+        }else {
+            roomService.add(room);
+        }
     }
 
     @RequestMapping(value = "roomDelete")
@@ -111,11 +135,27 @@ public class RoomController {
         debtService.update(debtList);
         userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom,null);
     }
+    /**
+     * 转入现有团队
+     */
+    @RequestMapping(value = "guestToGroup")
+    @Transactional(rollbackFor = Exception.class)
+    public void guestToGroup(@RequestBody Room room)throws Exception{
+        /*更新在店户籍*/
+        checkInService.update(room.getCheckIn());
+        /*更新房间状态*/
+        roomService.update(room);
+        /*更新团队信息，主要是金额*/
+        checkInGroupService.update(room.getCheckInGroup());
+        /*更新账务信息*/
+        debtService.setGroupAccountByRoomId(room.getRoomId(), room.getCheckInGroup().getGroupAccount());
+    }
 
     /**
      * 客房清扫
      */
     @RequestMapping(value = "cleanRoom")
+    @Transactional(rollbackFor = Exception.class)
     public void cleanRoom(@RequestBody CleanRoomPost cleanRoomPost) throws Exception {
         List<Room> roomList = cleanRoomPost.getRoomList();
         timeService.setNow();

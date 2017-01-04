@@ -56,6 +56,9 @@
                         </div>
                     </td>
                 </tr>
+                <tr ng-show="book">
+                    <td colspan="4" style="text-align: left">只显示该预定     的可用房<input type="checkbox" ng-model="onlyBook" ng-change="onlyBookChanged()"></td>
+                </tr>
                 <tr>
                     <td colspan="4" style="text-align: left"><div class="tswz">*注：单击选择入住房，再次单击取消入住房</div></td>
                 </tr>

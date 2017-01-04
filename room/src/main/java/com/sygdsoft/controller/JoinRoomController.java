@@ -45,12 +45,7 @@ public class JoinRoomController {
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             checkIn.setGroupAccount(groupAccount);
             checkInService.update(checkIn);
-            /*为每一条账务设置公付账号*/
-            List<Debt> debtList = debtService.getListByRoomId(roomId);
-            for (Debt debt : debtList) {
-                debt.setGroupAccount(groupAccount);
-                debtService.update(debt);
-            }
+            debtService.setGroupAccountByRoomId(roomId, groupAccount);
             /*合计押金*/
             totalDeposit = totalDeposit + checkIn.getNotNullDeposit();
             /*合计消费*/

@@ -20,7 +20,7 @@ import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 
 /**
  * Created by Administrator on 2016/10/29 0029.
- * 餐饮账单分析(暂时不实现报表，直接主界面查看)
+ * 餐饮账单分析
  */
 @RestController
 public class DeskInHistoryParseController {
@@ -107,7 +107,7 @@ public class DeskInHistoryParseController {
             fieldTemplateList.add(fieldTemplate);
         }
         /*统计上座率和人均消费*/
-        Integer totalSeat=deskService.getTotalSeat();
+        Integer totalSeat=deskService.getTotalSeat(pointOfSale);
         String remark="合计人数："+totalPeople+"    合计金额"+totalConsume+"    人均消费: "+szMath.formatTwoDecimal(totalConsume,totalPeople)+"    上座率:"+szMath.formatPercent(totalPeople,totalSeat);
         DeskInHistoryParseOut deskInHistoryParseOut=new DeskInHistoryParseOut();
         deskInHistoryParseOut.setFieldTemplateList(fieldTemplateList);

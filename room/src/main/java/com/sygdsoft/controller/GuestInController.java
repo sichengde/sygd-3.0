@@ -110,9 +110,9 @@ public class GuestInController {
      */
     private void checkInProcess(GuestIn guestIn) throws Exception {
         List<CheckIn> checkInList = guestIn.getCheckInList();
-        if (checkInList.size() > 1) {//大于1，团队开房
+        if (guestIn.getCheckInGroup()!=null) {//团队开房
             /*如果是转入现有团队*/
-            if(guestIn.getCheckInGroup()!=null){
+            if(guestIn.getCheckInGroup().getGroupAccount()!=null){
                 serialService.setGroupAccount(guestIn.getCheckInGroup().getGroupAccount());
             }else {
                 serialService.setGroupAccount();
