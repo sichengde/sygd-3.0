@@ -15,14 +15,14 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
         });
     $scope.submit = function () {
         if (!$scope.total) {
-            $scope.total = 0;
+            return
         }
-        /*看看支付金额是不是超过了单位的挂账款*/
+        /*/!*看看支付金额是不是超过了单位的挂账款，取消了预付，这个也没用了*!/
         if (company.debt < $scope.total) {
             messageService.setMessage({type: 'error', content: '结算的金额超过了单位挂账款'});
             popUpService.pop('message');
             return;
-        }
+        }*/
         /*if ((parseFloat($scope.deposit) + $scope.pay*1) != $scope.total) {
          messageService.setMessage({content: '结账金额不等于支付金额加上预存款，确认结算?'})
          messageService.actionChoose()
@@ -37,7 +37,6 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
         var companyPost = {};
         companyPost.companyName = $scope.company;
         companyPost.total = $scope.total;
-        companyPost.useDeposit = $scope.useDeposit;
         companyPost.currencyPost=$scope.currencyPayList[0];
         webService.post('companyPay', companyPost)
             .then(function (r) {

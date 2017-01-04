@@ -120,7 +120,7 @@ public class DeskController {
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
             changeDebt += " 币种:" + currency + "/" + money;
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "自助餐", serialService.getCkSerial(), "餐饮");
+            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "餐饮结账", serialService.getCkSerial(), "餐饮");
         }
         deskPayService.add(deskPayList);
         /*餐桌信息转移到历史*/

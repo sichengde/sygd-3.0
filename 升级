@@ -457,3 +457,5 @@
 2016-12-26: ALTER TABLE hotel.company_debt ADD description VARCHAR(100) NULL;
 2017-01-04: ALTER TABLE hotel.company_debt ADD point_of_sale VARCHAR(20) NULL;
             ALTER TABLE hotel.company_debt ADD currency_add VARCHAR(20) NULL;
+            ALTER TABLE hotel.company_debt ADD current_remain DOUBLE NULL;
+            CREATE UNIQUE INDEX company_name_uindex ON hotel.company (name);

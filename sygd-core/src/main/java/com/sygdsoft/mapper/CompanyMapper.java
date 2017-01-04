@@ -41,6 +41,6 @@ public interface CompanyMapper extends MyMapper<Company> {
     /**
      * 结算
      */
-    @Update("UPDATE company set debt=ifnull(debt,0)-#{total},deposit=ifnull(deposit,0)-#{deposit} where name=#{company}")
-    void pay(@Param("company") String company, @Param("total") Double total, @Param("deposit") Double deposit);
+    @Update("UPDATE company set debt=ifnull(debt,0)-#{total} where name=#{company}")
+    void pay(@Param("company") String company, @Param("total") Double total);
 }

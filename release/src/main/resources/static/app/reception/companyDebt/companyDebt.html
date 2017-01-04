@@ -5,7 +5,7 @@
             <div class="clear"></div>
             <div class="detailTable">
                 <h1>账务明细</h1>
-                <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickDebt"></sz-table>
+                <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="单位签单人">
@@ -21,7 +21,7 @@
             <div class="detailTable">
                 <h1>宴请明细</h1>
                 <sz-table fields="freeDetailFields" button="add update delete" search-condition="initConditionFreeman" head="true"
-                          right-click="rightClickDebt"></sz-table>
+                          right-click="rightClickCompanyDebt"></sz-table>
             </div>
         </sz-pane>
     </sz-tab>
@@ -30,5 +30,6 @@
     <sz-pop-up refresh="refresh()" name="reception/companyDebt/companyDeposit/companyDeposit.html"></sz-pop-up>
 </div>
 <sz-pop-up name="reception/debtDetail/debtDetail.html"></sz-pop-up>
-<sz-pop-up name="reception/rightClickDebt/rightClickDebt.html" back="white"></sz-pop-up>
+<sz-pop-up name="restaurant/deskDetailHistory/deskDetailHistory.html"></sz-pop-up>
+<sz-pop-up name="reception/companyDebt/rightClickCompanyDebt/rightClickCompanyDebt.html" back="white"></sz-pop-up>
 <sz-pop-up name="reception/rightClickCompany/rightClickCompany.html" back="white"></sz-pop-up>

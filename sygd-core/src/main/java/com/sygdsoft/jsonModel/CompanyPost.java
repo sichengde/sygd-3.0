@@ -5,10 +5,8 @@ package com.sygdsoft.jsonModel;
  */
 public class CompanyPost {
     private String companyName ;
-    private Double total ;//实际抵扣的挂账款
-    private Double deposit ;//预付款
-    private Double pay ;//实际支付的结算款
-    private String currency;
+    private Double total ;
+    private CurrencyPost currencyPost ;//币种信息
 
     public CompanyPost() {
     }
@@ -29,27 +27,11 @@ public class CompanyPost {
         this.total = total;
     }
 
-    public Double getDeposit() {
-        return deposit;
+    public CurrencyPost getCurrencyPost() {
+        return currencyPost;
     }
 
-    public void setDeposit(Double deposit) {
-        this.deposit = deposit;
-    }
-
-    public Double getPay() {
-        return pay;
-    }
-
-    public void setPay(Double pay) {
-        this.pay = pay;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setCurrencyPost(CurrencyPost currencyPost) {
+        this.currencyPost = currencyPost;
     }
 }

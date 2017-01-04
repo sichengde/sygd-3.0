@@ -86,29 +86,34 @@ public class CompanyController {
         timeService.setNow();
         String companyName = companyPost.getCompanyName();
         Double total = companyPost.getTotal();
-        Double deposit = companyPost.getDeposit();
-        Double pay = companyPost.getPay();
-        String currency = companyPost.getCurrency();
+        String currency = companyPost.getCurrencyPost().getCurrency();
+        String currencyAdd = companyPost.getCurrencyPost().getCurrencyAdd();
         /*更新单位金额*/
-        companyService.pay(companyName, total, deposit);
+        Company company=companyService.getByName(companyName);
+        if(company==null){
+            throw new Exception("该单位不存在");
+        }
+        company.setDebt(company.getDebt()-total);
+        companyService.update(company);
         /*插入一条账务*/
         CompanyDebt companyDebt = new CompanyDebt();
         companyDebt.setCompany(companyName);
-        companyDebt.setPay(pay);
         companyDebt.setDebt(-total);
-        companyDebt.setDeposit(-deposit);
         companyDebt.setDoTime(timeService.getNow());
         companyDebt.setUserId(userService.getCurrentUser());
-        companyDebt.setCategory("单位挂账");
+        companyDebt.setCategory("应收结算");
         companyDebt.setCurrency(currency);
+        companyDebt.setCurrencyAdd(currencyAdd);
+        companyDebt.setCurrentRemain(company.getDebt());
         companyDebtService.add(companyDebt);
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + total, userLogService.company, userLogService.companyPay,companyName);
         /*生成结算报表
         * 1.单位名称
         * 2.结算金额
         * 3.操作员
+        * 4.币种信息
         * */
-        return reportService.generateReport(null, new String[]{companyName, ifNotNullGetString(total), userService.getCurrentUser()}, "companyPay", "pdf");
+        return reportService.generateReport(null, new String[]{companyName, ifNotNullGetString(total), userService.getCurrentUser(),currency+"/"+currencyAdd}, "companyPay", "pdf");
     }
 
     /**

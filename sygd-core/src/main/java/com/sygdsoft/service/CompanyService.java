@@ -31,6 +31,14 @@ public class CompanyService extends BaseService<Company>{
     UserService userService;
     @Autowired
     CompanyDebtService companyDebtService;
+    /**
+     * 通过单位名称获取单位对象
+     */
+    public Company getByName(String name){
+        Company companyQuery=new Company();
+        companyQuery.setName(name);
+        return companyMapper.selectOne(companyQuery);
+    }
 
     /**
      * 更新单位挂账数值
@@ -48,8 +56,8 @@ public class CompanyService extends BaseService<Company>{
     /**
      * 结算
      */
-    public void pay(String company,Double total,Double deposit){
-        companyMapper.pay(company, total, deposit);
+    public void pay(String company,Double total){
+        companyMapper.pay(company, total);
     }
     /**
      * 查询充值总额
@@ -68,18 +76,22 @@ public class CompanyService extends BaseService<Company>{
     /**
      * 结算时币种为单位（离店结算，商品零售）
      */
-    public String companyPay(String company, String lord, Double money,String description) throws Exception {
-        this.addDebt(company, money);
+    public String companyPay(String company, String lord, Double money, String description, String pointOfSale,String serial) throws Exception {
+        Company companyObj=getByName(company);
+        companyObj.setDebt(companyObj.getDebt()+money);
+        update(companyObj);
         companyLordService.addDebt(lord, money);
         CompanyDebt companyDebt = new CompanyDebt();
         companyDebt.setCompany(company);
         companyDebt.setLord(lord);
-        companyDebt.setPaySerial(serialService.getPaySerial());
+        companyDebt.setPaySerial(serial);
         companyDebt.setDebt(money);
         companyDebt.setDoTime(timeService.getNow());
         companyDebt.setUserId(userService.getCurrentUser());
         companyDebt.setCategory("单位挂账");
         companyDebt.setDescription(description);
+        companyDebt.setPointOfSale(pointOfSale);
+        companyDebt.setCurrentRemain(companyObj.getDebt());
         companyDebtService.add(companyDebt);
         return " 转单位至:" + company + " 签单人:" + lord;
     }
