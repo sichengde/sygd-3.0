@@ -88,7 +88,7 @@ public class RealRoomStateReport {
         bookRoom=bookList.size();
         Integer length=roomList.size();
         // 动态指定报表模板url
-        model.addAttribute("url", "http://"+hotelService.getIp()+"/report/realRoomState.jasper");
+        model.addAttribute("url", "file:///C:/report/realRoomState.jasper");
         model.addAttribute("format", "pdf"); // 报表格式
         model.addAttribute("jrMainDataSource", jrDataSource);
         model.addAttribute("parameter1", timeService.getNowLong());

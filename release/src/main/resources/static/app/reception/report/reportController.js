@@ -2,7 +2,7 @@
  * Created by 舒展 on 2016-06-21.
  * 报表控制器
  */
-App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'LoginService', '$route', 'webService', 'popUpService', 'dateFilter', '$window', function ($scope, host, dataService, util, LoginService, $route, webService, popUpService, dateFilter, $window) {
+App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'LoginService', '$route', 'webService', 'popUpService', 'dateFilter', '$window','messageService', function ($scope, host, dataService, util, LoginService, $route, webService, popUpService, dateFilter, $window,messageService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     dataService.refreshPointOfSaleList().then(function () {
@@ -244,10 +244,22 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
     /**
      * 房类出租表
      */
-    $scope.roomCategorySaleReport = function () {
-        document.getElementById('roomCategorySaleReport').action = host + '/roomCategorySaleReport';
+    $scope.roomCategorySaleReport = function (beginTime,endTime) {
+        var post={};
+        post.beginTime=beginTime;
+        post.endTime=endTime;
+        webService.post('roomCategorySaleReport',post)
+            .then(function (r) {
+                if(r) {
+                    webService.openReport(r);
+                }else {
+                    messageService.setMessage({type:'alert',content:'没有数据'});
+                    popUpService.pop('message');
+                }
+            });
+        /*document.getElementById('roomCategorySaleReport').action = host + '/roomCategorySaleReport';
         document.getElementById('roomCategorySaleReport').submit();
-        angular.element("#iframeReport").fadeIn('slow');
+        angular.element("#iframeReport").fadeIn('slow');*/
     };
     /**
      * 单位营业员业务报表
