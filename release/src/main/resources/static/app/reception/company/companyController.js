@@ -5,6 +5,7 @@ App.controller('companyController',['$scope','popUpService','dataService','util'
     $scope.companyFields=[
         {name:'序号',id:'id',width:'70px'},
         {name:'单位名称',id:'name',width:'250px'},
+        {name:'别名',id:'alias',width:'100px'},
         {name:'单位类别',id:'category',selectId:'1',width:'140px'},
         {name:'房价协议',id:'protocol',selectId:'0',width:'170px'},
         {name:'单位消费',id:'consume',static:'true',width:'140px'},

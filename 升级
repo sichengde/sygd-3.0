@@ -459,3 +459,24 @@
             ALTER TABLE hotel.company_debt ADD currency_add VARCHAR(20) NULL;
             ALTER TABLE hotel.company_debt ADD current_remain DOUBLE NULL;
             CREATE UNIQUE INDEX company_name_uindex ON hotel.company (name);
+2017-01-05: ALTER TABLE hotel.company ADD alias VARCHAR(20) NULL;
+            CREATE VIEW `check_in_integration` AS
+            SELECT
+              ci.room_id,
+              ci.room_category,
+              ci.final_room_price,
+              ci.reach_time,
+              ci.leave_time,
+              ci.remark,
+              cig.name
+            FROM check_in ci LEFT JOIN check_in_guest cig ON ci.room_id = cig.room_id
+            UNION SELECT
+                    cihl.room_id,
+                    cihl.room_category,
+                    cihl.final_room_price,
+                    cihl.reach_time,
+                    cihl.leave_time,
+                    cihl.remark,
+                    cih.name
+                  FROM check_in_history_log cihl
+                    LEFT JOIN check_in_history cih ON cihl.card_id = cih.card_id

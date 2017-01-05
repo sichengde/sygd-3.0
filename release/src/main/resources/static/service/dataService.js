@@ -1495,6 +1495,23 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 来店信息整合
+     */
+    var checkInIntegrationList;
+    function refreshCheckInIntegrationList(p) {
+        p = p || {};
+        return webService.post('checkInIntegrationGet', p)
+            .then(function (d) {
+                checkInIntegrationList = d;
+                return d;
+            })
+    }
+
+    function getCheckInIntegrationList() {
+        return checkInIntegrationList;
+    }
+
+    /**
      * 公共方法，获取之类的
      */
     var refreshed;
@@ -1701,6 +1718,8 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getSaunaUserList:getSaunaUserList,
         refreshInCategoryList:refreshInCategoryList,
         getInCategoryList:getInCategoryList,
+        refreshCheckInIntegrationList:refreshCheckInIntegrationList,
+        getCheckInIntegrationList:getCheckInIntegrationList,
         initData: initData
     }
 }]);

@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class Company extends BaseEntity{
     private String name;//单位名称
+    private String alias;//单位别名，便于检索
     private String category;//协议类别
     private Double consume;//单位消费
     private Double deposit;//单位存款
@@ -112,5 +113,13 @@ public class Company extends BaseEntity{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

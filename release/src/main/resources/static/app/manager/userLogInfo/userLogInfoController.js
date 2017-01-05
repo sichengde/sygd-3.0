@@ -37,6 +37,15 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name: '协议公司', id: 'company', filter: 'list', width: '150px'},
         {name: '开房人员', id: 'userId', width: '100px', filter: 'list', width: '100px'}
     ];
+    $scope.checkInIntegrationFields=[
+        {name:'房号',id:'roomId'},
+        {name:'房型',id:'roomCategory'},
+        {name:'房价',id:'finalRoomPrice'},
+        {name:'姓名',id:'name'},
+        {name:'单位',id:'reachTime'},
+        {name:'来期',id:'leaveTime',filterInit:'today',filter: 'date'},
+        {name:'离期',id:'remark'}
+    ];
     $scope.checkOutFields = [
         {name: '主账号', exp: 'groupAccount?groupAccount:selfAccount'},
         {name: '房间号', id: 'roomId'},

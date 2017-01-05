@@ -9,6 +9,7 @@ App.controller('companyDebtController',['$scope','popUpService','dataService','u
     $scope.companyFields=[
         {name:'序号',id:'id',width:'70px'},
         {name:'单位名称',id:'name',width:'265px'},
+        {name:'别名',id:'alias',width:'100px'},
         {name:'单位类别',id:'category',selectId:'1',width:'130px'},
         {name:'价格协议',id:'protocol',selectId:'0',width:'170px'},
         {name:'挂账款',id:'debt',static:'true',width:'100px'},

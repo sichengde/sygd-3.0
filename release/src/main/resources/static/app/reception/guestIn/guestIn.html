@@ -1,7 +1,7 @@
 <div class="tanchuang huang" ng-controller="GuestInController" ng-if="pop" drag>
     <dl class="tctit"><h1>入住登记表</h1></dl>
     <div class="tcDiv">
-        <dl class="tcTopName" ng-show="roomBookList">
+        <dl class="tcTopName" ng-show="roomBookList.length>0">
             预定转入住：
             <select style="width: 112px; float: none" ng-model="book" ng-options="x.name for x in roomBookList " ng-change="chooseBook(book)">
             <option>选择预订名称</option>
@@ -24,9 +24,10 @@
             <tr>
                 <td>协议单位：</td>
                 <td>
-                    <select style="width: 105px;" ng-model="company" ng-options="x.name for x in companyList">
+                    <input type="text" style="width: 105px;" ng-model="companyName" choose-model="company" sz-select="companyList" sz-field="'name'" sz-alias="alias" sz-down="true" sz-select-width="200">
+                    <!--<select style="width: 105px;height:200px;overflow-y:auto;" ng-model="company" ng-options="x.name for x in companyList">
                         <option></option>
-                    </select>
+                    </select>-->
                 </td>
                 <td>房价协议：</td>
                 <td style="width: 135px;">
