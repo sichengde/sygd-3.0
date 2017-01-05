@@ -27,6 +27,6 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
     @ResultType(Double.class)
     Double getDepositBy(@Param("currency")String currency, @Param("beginTime") Date beginTime, @Param("endTime")Date endTime);
 
-    @Select("SELECT c.name,sum(dp.debt_money) debtMoney FROM debt_pay dp LEFT JOIN company c  ON c.name=dp.company WHERE c.sale_man=#{saleMan} and done_time>#{beginTime} and done_time<#{endTime} GROUP BY c.name")
+    @Select("SELECT c.name name,sum(dp.debt_money) consume FROM debt_pay dp LEFT JOIN company c  ON c.name=dp.company WHERE c.sale_man=#{saleMan} and done_time>#{beginTime} and done_time<#{endTime} GROUP BY c.name")
     List<Company> getTotalDebtBySaleManDate(@Param("saleMan")String saleMan, @Param("beginTime")Date beginTime, @Param("endTime")Date endTime);
 }

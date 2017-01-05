@@ -28,6 +28,8 @@ App.controller('buffetController',['$scope','dataService','LoginService','webSer
                 $scope.num=1;
                 $scope.currencyPayList[0] = {};
                 $scope.currencyPayList[0].currency = $scope.currencyList[0];
+                /*刷新一下会员数据*/
+                dataService.refreshVipList();
             });
     };
 }]);

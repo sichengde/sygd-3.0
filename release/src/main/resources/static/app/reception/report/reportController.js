@@ -252,6 +252,12 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
     /**
      * 单位营业员业务报表
      */
+    /*表头*/
+    $scope.saleManReportFields=[
+        {id:'name',name:'单位名称'},
+        {id:'consume',name:'消费金额',sum:'true'}
+    ];
+    /*查询*/
     $scope.saleManReport=function (saleMan, beginTime, endTime) {
         var post={};
         post.saleMan=saleMan;

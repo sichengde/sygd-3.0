@@ -102,7 +102,6 @@
                                 <jsSourceFile>angular-locale_zh-cn.js</jsSourceFile>
                                 <jsSourceFile>angular-ui-1.3.2.js</jsSourceFile>
                                 <jsSourceFile>angular-drag.js</jsSourceFile>
-                                <jsSourceFile>angular-scroll.js</jsSourceFile>
                                 <jsSourceFile>appIp.js</jsSourceFile>
                                 <jsSourceFile>otherJS/44/googleChartLoader.js</jsSourceFile>
                                 <jsSourceFile>app.js</jsSourceFile>
@@ -175,7 +174,6 @@
                         <exclude>**/angular-locale_zh-cn.js</exclude>
                         <exclude>**/angular-ui-1.3.2.js</exclude>
                         <exclude>**/angular-drag.js</exclude>
-                        <exclude>**/angular-scroll.js</exclude>
                         <exclude>**/otherJS/44/googleChartLoader.js</exclude>
                         <exclude>**/app.js</exclude>
                         <exclude>**/appIp.js</exclude>
