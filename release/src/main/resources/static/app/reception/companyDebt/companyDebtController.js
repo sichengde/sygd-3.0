@@ -33,7 +33,7 @@ App.controller('companyDebtController',['$scope','popUpService','dataService','u
         {name:'签单人',id:'lord',width:'100px'},
         {name:'结账时间',id:'doTime',date:'true',width:'100px',desc:'0',filter:'date'},
         {name:'挂账款',id:'debt',width:'100px'},
-        {name:'剩余挂账',id:'currentRemain',width:'100px'},
+        {name:'剩余挂账',id:'currentRemain',width:'100px',sum:'true'},
         /*{name:'预付款',id:'deposit',width:'100px'},*/
         /*{name:'支付款',id:'pay',width:'100px',sum:'true'},*/
         {name:'币种',id:'currency',width:'150px',filter:'list'},

@@ -13,6 +13,11 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
             $scope.exchangeUserList = dataService.getExchangeUserList();
             $scope.userList = util.objectListToString(dataService.getUserList(), 'userId');
         });
+    webService.post('sql','SELECT DISTINCT sale_man FROM company WHERE sale_man IS NOT NULL')
+        .then(function (r) {
+            $scope.saleManList=r;
+            $scope.saleMan=r[0];
+        });
     $scope.userId = LoginService.getUser();
     $scope.chooseExchangeUser = function (r) {
         if (r.beginTime < r.endTime) {
@@ -243,5 +248,19 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         document.getElementById('roomCategorySaleReport').action = host + '/roomCategorySaleReport';
         document.getElementById('roomCategorySaleReport').submit();
         angular.element("#iframeReport").fadeIn('slow');
+    };
+    /**
+     * 单位营业员业务报表
+     */
+    $scope.saleManReport=function (saleMan, beginTime, endTime) {
+        var post={};
+        post.saleMan=saleMan;
+        post.beginTime=beginTime;
+        post.endTime=endTime;
+        webService.post('saleManReport',post)
+            .then(function (r) {
+                $scope.saleManReportList=r;
+                $scope.queryMessageSaleManReport=dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss') + '  销售员:' + saleMan;
+            })
     }
 }]);

@@ -1,11 +1,11 @@
 <div id="content" class="ddDing">
     <sz-tab>
         <sz-pane title="应收应付">
-            <sz-table fields="companyFields" row-click="chooseCompany(d)" search-condition="condition" outer-refresh="lordInit(d)" head="true" title="点击查看账务明细" select-list="companySelectList" button="{{editable?false:'add update delete'}}" right-click="{{editable?'rightClickCompany':''}}"></sz-table>
+            <sz-table fields="companyFields" row-click="chooseCompany(d)" search-condition="condition" outer-refresh="lordInit(d)" head="true" title="点击查看账务明细" select-list="companySelectList" button="{{editable?false:'add update delete'}}" right-click="{{editable?'rightClickCompany':''}}" deep-search="true"></sz-table>
             <div class="clear"></div>
             <div class="detailTable">
                 <h1>账务明细</h1>
-                <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt"></sz-table>
+                <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt" deep-search="true"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="单位签单人">

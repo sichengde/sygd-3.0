@@ -1,11 +1,13 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.mapper.CompanyDebtMapper;
+import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/7/16 0016.
@@ -34,5 +36,12 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
         CompanyDebt companyDebt = new CompanyDebt();
         companyDebt.setPaySerial(paySerial);
         this.delete(companyDebt);
+    }
+
+    /**
+     * 根据销售员和时间获得各个单位的总挂账款
+     */
+    public List<Company> getTotalDebtBySaleManDate(String saleMan,Date beginTime,Date endTime ){
+        return companyDebtMapper.getTotalDebtBySaleManDate(saleMan,beginTime,endTime );
     }
 }

@@ -22,7 +22,7 @@
  * print:szTable是否打印
  * printNow:立即预览-针对手机端，自动获取的一般表格宽度生成之后数据还有有生成，手动获取的一般数据生成时表格宽度还没有生成，所以有两处打印
  * title:打印时的标题
- * queryMessage:查询信息，也就是这个报表的筛选条件，暂时不包括szTable内的条件筛选，所以如果用print，最好别加head和deepSearch
+ * queryMessage:查询信息，也就是这个报表的筛选条件
  * itemChange:修改之后调用的外部方法
  * remark:外部生成的备注，描述一些总结，例如菜品统计表中统计一下各个品种的总和
  * initState:初始状态（增加，删除，修改）
