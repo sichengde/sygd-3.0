@@ -92,6 +92,7 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
             } else {
                 var room = {};
                 room.roomId = r.roomId;
+                room.totalBed = r.totalBed;
                 room.roomPrice = $scope.protocol.roomPrice;
                 room.roomCategory = $scope.protocol.roomCategory;
                 $scope.chooseRoomList.push(room);
@@ -125,7 +126,11 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
     };
     /*批量制卡*/
     $scope.writeCard=function () {
-        doorInterfaceService.doorWriteList(util.objectListToString($scope.chooseRoomList,'roomId'));
+        var bed;
+        if (dataService.getOtherParamMapValue('按人数发卡') == 'y') {
+            bed=true;
+        }
+        doorInterfaceService.doorWriteList(util.objectListToString($scope.chooseRoomList,'roomId'),$scope.book.leaveTime,bed);
     };
     /*时间按钮减一天*/
     $scope.minusDay = function () {

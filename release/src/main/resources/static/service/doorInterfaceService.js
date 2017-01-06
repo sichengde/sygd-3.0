@@ -9,22 +9,32 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
         return write(x, num);
     }
 
-    function doorWriteList(roomList, leavetime) {
+    /**
+     *
+     * @param roomList 包含床位和房号的对象数组
+     * @param leavetime
+     * @param bed
+     */
+    function doorWriteList(roomList, leavetime,bed) {
         if (!roomList || roomList.length == 0) {
             return
         }
-        messageService.setMessage({content: '即将制作' + roomList[0] + '房卡'});
+        messageService.setMessage({content: '即将制作' + roomList[0].roomId + '房卡'});
         messageService.actionChoose()
             .then(function () {
-                doorWrite(roomList[0], dateFilter(leavetime, 'yyyyMMddHHmmss'),1);
+                var num=1;
+                if(bed){//按床位发卡
+                    num=roomList[0].bed;
+                }
+                doorWrite(roomList[0].roomId, dateFilter(leavetime, 'yyyyMMddHHmmss'),num);
                 roomList.splice(0, 1);
                 if (roomList.length > 0) {
-                    doorWriteList(roomList, leavetime);
+                    doorWriteList(roomList, leavetime,bed);
                 }
             }, function () {//点是点否都要继续
                 roomList.splice(0, 1);
                 if (roomList.length > 0) {
-                    doorWriteList(roomList, leavetime);
+                    doorWriteList(roomList, leavetime,bed);
                 }
             });
     }
@@ -45,7 +55,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
                     return resolve();
                 });
             } else {
-                messageService.setMessage({content: '是否制作第二张房卡'});
+                messageService.setMessage({content: '是否制作该房间下一张房卡'});
                 messageService.actionChoose()
                     .then(function () {
                         num--;

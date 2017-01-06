@@ -8,6 +8,7 @@ public class BookRoom extends BaseEntity {
     private String roomId;//房号
     private String roomPrice;//房价
     private String roomCategory;//房类
+    private Integer totalBed;//总床位
     private boolean opened;//已开标志
 
     public BookRoom() {
@@ -51,5 +52,13 @@ public class BookRoom extends BaseEntity {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    public Integer getTotalBed() {
+        return totalBed;
+    }
+
+    public void setTotalBed(Integer totalBed) {
+        this.totalBed = totalBed;
     }
 }

@@ -10,7 +10,7 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
     };
     /*刷新全部房态按钮*/
     $scope.refresh = function () {
-        var p = {orderByList: ['roomId']};
+        var p = {orderByList: ['floor','roomId']};
         dataService.initData(['refreshRoomList', 'refreshRoomCategoryList'], [p])
             .then(function () {
                 $scope.roomCategoryList = ['全部'].concat(util.objectListToString(dataService.getRoomCategoryList(), 'category'));

@@ -2,7 +2,7 @@
  * Created by 舒展 on 2016-04-28.
  * 团队开房
  */
-App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host','$filter', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host,$filter) {
+App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host', '$filter', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host, $filter) {
     /*用于提交的对象*/
     var guestInGroup = {};
     $scope.checkInList = [];
@@ -19,7 +19,8 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         {name: '民族', id: 'race', width: '150px'},
         {name: '证件类型', id: 'cardType', selectId: '1', width: '150px', default: '身份证'},
         {name: '证件号码', id: 'cardId', width: '300px', notNull: 'true'},
-        {name: '地址', id: 'address', width: '300px'}
+        {name: '地址', id: 'address', width: '300px'},
+        {name: '床位', id: 'bed', width: '50px'}
     ];
     $scope.selectGuestList = [];
     $scope.selectGuestList[0] = dataService.getSexList;
@@ -71,7 +72,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
     /*时间按钮减一天*/
     $scope.minusDay = function () {
         $scope.days = $scope.days - 1;
-        if($scope.days==0){
+        if ($scope.days == 0) {
             $scope.days++;
         }
         calculateLeaveTime();
@@ -208,13 +209,13 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         $scope.vip = util.getValueByField(dataService.getVipList(), 'idNumber', $scope.idNumber)
     };
     /*监听单位和房租方式的的变化，从而设置房价协议*/
-    var watch = $scope.$watchGroup(['roomPriceCategory', 'roomCategory', 'company', 'vip','onlyBook'], function (newValues, oldValues) {
+    var watch = $scope.$watchGroup(['roomPriceCategory', 'roomCategory', 'company', 'vip', 'onlyBook'], function (newValues, oldValues) {
         /*如果房间类型变了，还要更新一下房间数组*/
         if (newValues[1] != oldValues[1]) {
             $scope.roomShowList = roomFilter($scope.roomList, $scope.availableState, $scope.roomCategory)
         }
-        if($scope.onlyBook){//二次过滤，只有预定的房才显示
-            $scope.roomShowList=$filter('filter')($scope.roomShowList,function (item) {
+        if ($scope.onlyBook) {//二次过滤，只有预定的房才显示
+            $scope.roomShowList = $filter('filter')($scope.roomShowList, function (item) {
                 return util.getValueByField($scope.book.bookRoomList, 'roomId', item.roomId);
             })
         }
@@ -225,6 +226,23 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             }
         } else {
             bookIn = false;
+        }
+    });
+    /*添加宾客后前检查是不是会议房，如果是的话设置床位号，（后期去掉会议房判断，普通房也有床位）*/
+    var watch2 = $scope.$watchCollection('checkInGuestList', function (newValue, oldValue) {
+        if (newValue.length > oldValue.length) {//大于说明是新增
+            /*相对于散客开房这里要判断一下房号*/
+            var newRoomId = newValue[newValue.length - 1].roomId;
+            for (var i = oldValue.length - 1; i >= 0; i--) {
+                var checkInGuest = oldValue[i];
+                if (newRoomId == checkInGuest.roomId) {
+                    newValue[newValue.length - 1].bed = checkInGuest.bed + 1;
+                    break;
+                }
+            }
+            if(i==-1){//之前没有，那就设置为1
+                newValue[newValue.length - 1].bed=1;
+            }
         }
     });
     /*读身份证信息*/
@@ -243,10 +261,10 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         }
         /*忘了为什么有这个限制了，先删除*/
         /*if ($scope.checkInList.length < 2) {
-            messageService.setMessage({type: 'error', content: '至少要开两间以上的房间'});
-            popUpService.pop('message');
-            return;
-        }*/
+         messageService.setMessage({type: 'error', content: '至少要开两间以上的房间'});
+         popUpService.pop('message');
+         return;
+         }*/
         if (!$scope.checkInGroup.leaderRoom) {
             messageService.setMessage({type: 'error', content: '至少选择一个领队房'});
             popUpService.pop('message');
@@ -262,8 +280,8 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             popUpService.pop('message');
             return;
         }
-        if(!$scope.checkInGroup.deposit){
-            $scope.checkInGroup.deposit=0;
+        if (!$scope.checkInGroup.deposit) {
+            $scope.checkInGroup.deposit = 0;
         }
         if (isNaN($scope.checkInGroup.deposit)) {
             messageService.setMessage({type: 'error', content: '您输入的预付款不是数字'});
@@ -282,8 +300,8 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         /*如果该房间没有录入客人信息，则产生一条无名客人*/
         for (var i = 0; i < $scope.checkInList.length; i++) {
             var checkIn = $scope.checkInList[i];
-            if(!util.getValueByField($scope.checkInGuestList,'roomId',checkIn.roomId)){
-                $scope.checkInGuestList.push({roomId:checkIn.roomId,name:'临时',cardId:'000'});
+            if (!util.getValueByField($scope.checkInGuestList, 'roomId', checkIn.roomId)) {
+                $scope.checkInGuestList.push({roomId: checkIn.roomId, name: '临时', cardId: '000'});
             }
         }
         /*ajax对象封装*/
@@ -303,13 +321,14 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         guestInGroup.book = $scope.book;
         webService.post('guestIn', guestInGroup)
             .then(function (d) {
-                if(d!=-1) {
+                if (d != -1) {
                     window.open(host + "/receipt/" + d);
                 }
                 /*弹出打印预览界面*/
                 window.location.reload();
             });
         watch();
+        watch2();
     };
     /**
      * 私有方法
