@@ -124,6 +124,10 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
     $scope.cancelDeposit = function () {
         popUpService.pop('cancelDeposit', null, refreshData, {room: $scope.room.roomId});
     };
+    /*中间结算*/
+    $scope.debtPayMiddle=function () {
+        popUpService.pop('debtPayMiddle', null, refreshData, {room: $scope.room.roomId});
+    };
     /*读房卡*/
     $scope.readDoor = function () {
         doorInterfaceService.doorRead();
