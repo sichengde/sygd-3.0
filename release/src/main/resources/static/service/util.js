@@ -11,6 +11,7 @@
  * wrapWithBrackets为字符串包裹上单括号
  * addAttributeOnly为数组某一个条件相等的对象新增一个对象，通过field相等来判断
  * addAttributes为数组某一些条件相等的对象新增一个对象，通过field相等来判断
+ * addAttributeAnyWay为数组1里的每个值添加一个特定的对象
  * addArray为数组新增一个对象数组，通过field相等来判断
  * dateEqualsDay:判断两个date对象对日期是否相等
  * getHourMinSec:根据时间戳获得小时，分钟，秒

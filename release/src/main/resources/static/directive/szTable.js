@@ -115,6 +115,9 @@ App.directive('szTable', ['$filter', function ($filter) {
             if (!$scope.print) {
                 $scope.print = false;
             }
+            /*初始化时间map*/
+            $scope.beginTime={};
+            $scope.endTime={};
             $scope.prefix = $attrs.fields.substring(0, $attrs.fields.indexOf('Fields'));
             $scope.parse = $parse;//分析表达式
             $scope.reverse = false;
@@ -380,9 +383,9 @@ App.directive('szTable', ['$filter', function ($filter) {
                     } else {//时间类型初始化
                         if (field.filterInit == 'today') {
                             field.beginTime = util.getTodayMin();
-                            $scope.beginTime = util.getTodayMin();
+                            $scope.beginTime[field.id] = util.getTodayMin();
                             field.endTime = util.getTodayMax();
-                            $scope.endTime = util.getTodayMax();
+                            $scope.endTime[field.id] = util.getTodayMax();
                         }
                     }
                     haveInit = true;

@@ -42,9 +42,9 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name:'房型',id:'roomCategory'},
         {name:'房价',id:'finalRoomPrice'},
         {name:'姓名',id:'name'},
-        {name:'单位',id:'reachTime'},
-        {name:'来期',id:'leaveTime',filterInit:'today',filter: 'date'},
-        {name:'离期',id:'remark'}
+        {name:'单位',id:'company'},
+        {name:'来期',id:'reachTime',filterInit:'today',filter: 'date'},
+        {name:'离期',id:'leaveTime',filter: 'date'}
     ];
     $scope.checkOutFields = [
         {name: '主账号', exp: 'groupAccount?groupAccount:selfAccount'},

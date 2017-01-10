@@ -169,10 +169,11 @@
                     <tr>
                         <td width="50">单位：</td>
                         <td width="100">
-                            <select style="width: 110px;" ng-model="company"
+                            <input type="text" style="width: 100px;" ng-model="companyName" choose-model="company" sz-select="companyList" sz-field="'name'" sz-alias="alias" sz-down="true" sz-select-width="200" ng-disabled="beginChoose?true:false">
+                            <!--<select style="width: 110px;" ng-model="company"
                                     ng-options="x.name for x in companyList" ng-disabled="beginChoose?true:false">
                                 <option></option>
-                            </select>
+                            </select>-->
                             <span class="tswz" ng-if="beginChoose">'必须在选房之前才能选择单位</span>
                         </td>
                         <td width="50">客源：</td>

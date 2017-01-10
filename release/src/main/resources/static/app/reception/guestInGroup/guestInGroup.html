@@ -23,10 +23,11 @@
                 </tr>
                 <td>协议单位：</td>
                 <td>
-                    <select style="width: 180px;" ng-model="company"
+                    <input type="text" style="width: 168px;" ng-model="companyName" choose-model="company" sz-select="companyList" sz-field="'name'" sz-alias="alias" sz-down="true" sz-select-width="200">
+                    <!--<select style="width: 180px;" ng-model="company"
                             ng-options="x.name for x in companyList">
                         <option value=""></option>
-                    </select>
+                    </select>-->
                 </td>
                 <tr>
                     <td>房价协议：</td>
@@ -162,7 +163,7 @@
                 <sz-tab>
                     <sz-pane title="入住信息">
                         <div sz-easy-width style="width: 700px" class="huang">
-                            <sz-table fields="checkInFields" items="checkInList" button="add delete"></sz-table>
+                            <sz-table fields="checkInFields" items="checkInList" button="add delete {{editableRoomPrice?'':'update'}}"></sz-table>
                         </div>
                     </sz-pane>
                     <sz-pane title="客人信息">

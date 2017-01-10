@@ -26,8 +26,8 @@
                     </li>
                     <li ng-if="r.filter=='input'" style="float: left"><input type="text" ng-change="filterFieldList(r,value)" ng-model="value"></li>
                     <li ng-if="r.filter=='date'" style="float: left; margin-right: 30px;">
-                        <input type="text" style="width: 110px; float: none" ng-model="beginTime" uib-datepicker-popup ng-change="filterFieldDate(r,beginTime,endTime)">至
-                        <input type="text" style="width: 110px; float: none" ng-model="endTime" uib-datepicker-popup ng-change="filterFieldDate(r,beginTime,endTime)">
+                        <input type="text" style="width: 110px; float: none" ng-model="beginTime[r.id]" uib-datepicker-popup ng-change="filterFieldDate(r,beginTime[r.id],endTime[r.id])">至
+                        <input type="text" style="width: 110px; float: none" ng-model="endTime[r.id]" uib-datepicker-popup ng-change="filterFieldDate(r,beginTime[r.id],endTime[r.id])">
                     </li>
                 </ul>
             </div>

@@ -8,8 +8,12 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
     $scope.checkInList = [];
     $scope.checkInGuestList = [];
     $scope.checkInGroup = {};
-    $scope.checkInFields = [{name: '房号', id: 'roomId', width: '120px'},
-        {name: '房型', id: 'roomCategory', width: '200px'},
+    dataService.refreshOtherParamList()
+        .then(function () {
+            $scope.editableRoomPrice = dataService.getOtherParamMapValue('可编辑房价') == 'y';
+        });
+    $scope.checkInFields = [{name: '房号', id: 'roomId', width: '120px',static:'true'},
+        {name: '房型', id: 'roomCategory', width: '200px',static:'true'},
         {name: '结算价格', id: 'finalRoomPrice', width: '150px'},
         {name: '早餐人数', id: 'breakfast', width: '100px'}];
     $scope.checkInGuestFields = [
@@ -27,7 +31,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
     $scope.selectGuestList[1] = dataService.getCardTypeList;
     var bookIn = false;//预定开房，如果是预定开房，则监听不起作用，只阻止一次
     var p2 = {condition: 'check_in=1'};
-    dataService.initData(['refreshBookList', 'refreshCurrencyList', 'refreshRoomList', 'refreshGuestSourceList', 'refreshProtocolList', 'refreshRoomCategoryList', 'refreshTimeNow', 'refreshBookRoomList', 'refreshCheckInGroupList', 'refreshCompanyList', 'refreshVipList'], [{condition: 'state=\'有效\' and total_room-book.booked_room>1'}, p2])
+    dataService.initData(['refreshBookList', 'refreshCurrencyList', 'refreshRoomList', 'refreshGuestSourceList', 'refreshProtocolList', 'refreshRoomCategoryList', 'refreshTimeNow', 'refreshBookRoomList', 'refreshCheckInGroupList', 'refreshCompanyList', 'refreshVipList'], [{condition: 'state=\'有效\' and total_room-book.booked_room>0'}, p2])
         .then(function () {
             /*房间类别数组*/
             $scope.roomCategoryList = util.objectListToString(dataService.getRoomCategoryList(), 'category');
