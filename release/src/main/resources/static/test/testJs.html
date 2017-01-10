@@ -6,86 +6,25 @@
     <script src="../angular.js"></script>
     <script>
         angular.module('app', [])
-                .controller('ctr', function ($scope) {
-                    $scope.room = null;
-                    $scope.asd = '123';
-                })
-                .directive('szValidation', ['$compile', function ($compile) {
-                    return {
-                        require: 'ngModel',
-                        link: function (scope, element, attrs,ctrl) {
-                            element.bind('input enterKey', function () {
-                                scope.$apply(function () {
-                                    var f = attrs.szValidation.split(' ');
-                                    for (var i = 0; i < f.length; i++) {
-                                        var split = f[i].indexOf('-');
-                                        if (split == -1) {
-                                            if (ctrl.$viewValue == '') {
-                                                scope.wrongMsg = '不可为空';
-                                                break;
-                                            } else {
-                                                scope.wrongMsg = false;
-                                            }
-                                        } else {
-                                            var p1 = f[i].substring(split + 1, f[i].length);
-                                            if (ctrl.$viewValue.length > p1) {
-                                                scope.wrongMsg = '最大长度为' + p1;
-                                            } else {
-                                                scope.wrongMsg = false;
-                                            }
-                                        }
-                                    }
-                                });
-                            });
-                            var el = $compile('<span ng-show="wrongMsg">{{wrongMsg}}</span>')(scope);
-                            element.after(el);
-                        }
-                    }
-                }])
-                .directive('szSubmit', [function () {
-                    return {
-                        link:function (scope,element) {
-                            scope.$watch(
-                                    function(scope) {
-                                        // watch the 'compile' expression for changes
-                                        return scope.wrongMsg;
-                                    },
-                                    function(value) {
-                                        if (value){
-                                            element.attr({disabled:true});
-                                        }else {
-                                            element.removeAttr('disabled');
-                                        }
-
-                                    }
+                .controller('ctr', function ($scope,$http) {
+                    $scope.post = function () {
+                        return $http.get('http://127.0.0.1:8000/test?t1=china&t2=cxg')
+                            .then(
+                                function (response) {
+                                    $scope.r=response.data;
+                                },
+                                function (errResponse) {
+                                    handleException(errResponse.data);
+                                    return $q.reject();
+                                }
                             );
-                        }
-                    }
-                }])
+                    };
+                })
     </script>
 </head>
 <body ng-controller="ctr">
-<input ng-model="room" sz-validation="notNull maxLength-4">
-<button sz-submit>submit</button>
-<div style="position: relative; width: 120px; margin-top: 100px;">
-    <div style="width:120px;height: 80px;">
-        <select style="width: 100px; height: 20px; line-height: 20px;margin-top:-20px;">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-        </select>
-    </div>
-    <select style=" width:100px;" size="3" multiple="multiple">
-        <option value="1">1</option>
-        <option value="1">1</option>
-        <option value="1">1</option>
-        <option value="1">1</option>
-        <option value="1">1</option>
-        <option value="1">1</option>
-    </select>
-</div>
+<button ng-click="post()">asd</button>
+{{r.name}}
+{{r.sex}}
 </body>
 </html>

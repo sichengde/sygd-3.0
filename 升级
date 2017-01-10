@@ -462,7 +462,7 @@
 2017-01-05: ALTER TABLE hotel.company ADD alias VARCHAR(20) NULL;
 2017-01-06: ALTER TABLE hotel.book_room ADD total_bed INT NULL;
             ALTER TABLE hotel.room MODIFY floor INT;
-2017-01-06: ALTER TABLE hotel.check_out_room MODIFY name VARCHAR(1000);
+            ALTER TABLE hotel.check_out_room MODIFY name VARCHAR(1000);
             CREATE OR REPLACE VIEW hotel.check_in_integration AS SELECT
                                                                    `ci`.`room_id`          AS `room_id`,
                                                                    `ci`.`room_category`    AS `room_category`,
