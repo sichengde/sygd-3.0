@@ -66,9 +66,9 @@
             <tr>
                 <td>房价：</td>
                 <td style="text-align: left">
-                    <span ng-show="!roomPriceEditable&&protocol.roomPriceCategory=='日租房'">￥{{protocol.roomPrice}}({{protocol.breakfast}}份早餐)</span>
+                    <span ng-show="!roomPriceEditable&&protocol.roomPriceCategory!='小时房'">￥{{protocol.roomPrice}}({{protocol.breakfast}}份早餐)</span>
                     <span ng-show="!roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
-                    <span ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'"><input type="text" ng-model="protocol.roomPrice" style="width: 92px; float: none"></span>
+                    <span ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'"><input type="text" ng-model="protocol.roomPrice" style="width: 92px; float: none"></span>
                     <span ng-show="roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
                 <td ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'" style="width: 90px; text-align: right">
                 早餐：
