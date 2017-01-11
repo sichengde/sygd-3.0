@@ -25,16 +25,22 @@ App.factory('popUpService', [function () {
      * @param css 添加的样式
      * @param fun 关闭之后调用的函数
      * @param param2 传递进来的参数
+     * @param afterPop 弹出后立马执行的方法
+     * @param alwaysFun 无论关闭时如何都要执行的方法
      */
-    function pop(name, css, fun, param2) {
+    function pop(name, css, fun, param2,afterPop,alwaysFun) {
         scopeMap[name].pop = true;
         if (css) {
             elementMap[name].css(css);
         }
         /*弹出时初始化特殊方法*/
         scopeMap[name].specialFunction=fun;
+        scopeMap[name].alwaysFunction=alwaysFun;
         /*弹出时可以带一个参数*/
         param=param2;
+        if(afterPop){
+            afterPop();
+        }
     }
 
     /**
@@ -52,6 +58,9 @@ App.factory('popUpService', [function () {
             if (scopeMap[name].refresh && !notRefresh) {
                 scopeMap[name].refresh();
             }
+        }
+        if(scopeMap[name].alwaysFunction){
+            scopeMap[name].alwaysFunction();
         }
     }
 

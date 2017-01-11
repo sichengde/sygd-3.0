@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,28 +44,35 @@ public class HotelService {
         return request.getHeader("database");
     }
 
-    public String post(String url, Map<String, String> params) throws Exception {
+    public String post(String url, Map<String, String> params) {
         //实例化httpClient
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(url);
-        //处理参数
-        List<NameValuePair> nvps = new ArrayList<>();
-        Set<String> keySet = params.keySet();
-        for (String key : keySet) {
-            nvps.add(new BasicNameValuePair(key, params.get(key)));
-        }
-        //结果
-        CloseableHttpResponse response = null;
-        String content = "";
-        //提交的参数
-        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(nvps, "UTF-8");
-        //将参数给post方法
-        httpPost.setEntity(uefEntity);
-        //执行post方法
-        response = httpclient.execute(httpPost);
-        if (response.getStatusLine().getStatusCode() == 200) {
-            content = EntityUtils.toString(response.getEntity(), "utf-8");
-            System.out.println(content);
+        String content = null;
+        try {
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(url);
+            //处理参数
+            List<NameValuePair> nvps = new ArrayList<>();
+            Set<String> keySet = params.keySet();
+            for (String key : keySet) {
+                nvps.add(new BasicNameValuePair(key, params.get(key)));
+            }
+            //结果
+            CloseableHttpResponse response = null;
+            content = "";
+            //提交的参数
+            UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(nvps, "UTF-8");
+            //将参数给post方法
+            httpPost.setEntity(uefEntity);
+            //执行post方法
+            response = httpclient.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                content = EntityUtils.toString(response.getEntity(), "utf-8");
+                System.out.println(content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return content;
     }

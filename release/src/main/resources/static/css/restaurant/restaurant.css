@@ -89,7 +89,7 @@ background-size: 65px;
     float: left;
     text-align: right;
     line-height: 40px; font-size: 16px; }
-.perHelp .divCon { width: 70%; float: left;}
+.perHelp .divCon { width: 40%; float: left;}
 .perHelp .divCon button { margin-right: 10px; line-height: 20px; margin-bottom: 10px;  padding: 5px 15px;
     height: 40px;
     font-size: 18px;}

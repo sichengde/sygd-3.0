@@ -11,7 +11,7 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
     /*刷新全部房态按钮*/
     $scope.refresh = function () {
         var p = {orderByList: ['floor','roomId']};
-        dataService.initData(['refreshRoomList', 'refreshRoomCategoryList'], [p])
+        dataService.initData(['refreshRoomList', 'refreshRoomCategoryList','refreshOtherParamList'], [p])
             .then(function () {
                 $scope.roomCategoryList = ['全部'].concat(util.objectListToString(dataService.getRoomCategoryList(), 'category'));
                 $scope.roomCategory = $scope.roomCategoryList[0];
@@ -22,6 +22,7 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                 $scope.floorList=util.objectListToString($scope.roomList, 'floor');
                 $scope.areaChoose=angular.copy($scope.areaList);
                 $scope.floorChoose=angular.copy($scope.floorList);
+                $scope.ifFaster=dataService.getOtherParamMapValue('性能优先')=='y';
                 /*计算出当前的房间信息*/
                 $scope.roomMessage = {};
                 $scope.roomMessage.totalRoom = $scope.roomList.length;
@@ -65,18 +66,27 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                     messageService.setMessage({content:'未来24小时内该房有预定，是否确认开房?'});
                     messageService.actionChoose()
                         .then(function () {
-                            popUpService.pop('guestIn');
+                            popUpService.pop('guestIn',null,null,null,setNoShow,clearNoShow);
+                            $scope.noShow=true;
                         })
                 }else {
-                    popUpService.pop('guestIn');
+                    popUpService.pop('guestIn',null,null,null,setNoShow,clearNoShow);
+                    $scope.noShow=true;
                 }
             }else {
-                popUpService.pop('guestIn');
+                popUpService.pop('guestIn',null,null,null,setNoShow,clearNoShow);
+                $scope.noShow=true;
             }
         } else if (r.state == '团队房' || r.state == '散客房') {
-            popUpService.pop('guestOut');
+            popUpService.pop('guestOut',null,null,null,setNoShow,clearNoShow);
         }
     };
+    function setNoShow() {
+        $scope.noShow=true;
+    }
+    function clearNoShow() {
+        $scope.noShow=false;
+    }
     /*计算出客人姓名字符串*/
     $scope.guestName = function (r) {
         if (!r) {

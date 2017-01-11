@@ -285,12 +285,12 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
     /*判断是否加收房租*/
     $scope.checkRoomPriceAdd = function () {
         var debtAdd;
-        /*日租房计算方式*/
+        /*日租房，会议房计算方式*/
         for (var i = 0; i < chooseRoom.length; i++) {
             var checkIn = chooseRoom[i];
             /*看看是不是当日来当日走*/
             var reachTime = new Date(checkIn.reachTime);
-            if (checkIn.roomPriceCategory == '日租房') {
+            if (checkIn.roomPriceCategory != '小时房') {
                 if (util.dateEqualsDay($scope.nowTime, reachTime)) {//先判断是不是当日来当日走
                     var nightRoomLimit = util.newDateAndTime($scope.nowTime, dataService.getOtherParamMapValue('凌晨房时段'));
                     if (nightRoomLimit < reachTime) {//再判断开房的时候是不是凌晨房，因为凌晨房已经加上房租了
@@ -313,6 +313,9 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                         debtAddList.push(debtAdd);
                         $scope.debtShowList.push(debtAdd);
                         $scope.debtConsume += debtAdd.consume;
+                        if(checkIn.roomPriceCategory=='会议房'){//会议房要根据人头算
+                            
+                        }
                         continue;
                     }
                 }

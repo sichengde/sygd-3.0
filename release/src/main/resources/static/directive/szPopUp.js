@@ -3,6 +3,7 @@
  * 弹窗控件，通过传入的参数决定具体打开哪个弹窗
  * 参数
  * refresh：关闭之后可以调用的外部方法，
+ * noShow:禁止背景显示，优化效率
  * 背景：
  * undefined:自动添加半透明黑色背景，不可背景关闭弹窗  guestOut.html
  * top:弹窗上的弹窗背景，黑色半透明，不可背景关闭弹窗  roomShopIn.html
@@ -15,7 +16,8 @@ App.directive('szPopUp', ['$compile','$interval', function ($compile,$interval) 
     return {
         restrict: 'E',
         scope: {
-            refresh:'&'
+            refresh:'&',
+            noShow:'=?'
         },
         controller: ['$scope', 'popUpService',function ($scope, popUpService) {
             $scope.pop = false;
@@ -23,6 +25,7 @@ App.directive('szPopUp', ['$compile','$interval', function ($compile,$interval) 
                 popUpService.init(name, $scope, ele);
             };
             $scope.closePop = function (name) {
+                $scope.noShow=false;
                 popUpService.close(name,true);//点击背景关闭，就不刷新了
             };
         }],

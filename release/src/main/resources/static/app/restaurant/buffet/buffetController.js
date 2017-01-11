@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/10/22 0022.
  */
-App.controller('buffetController',['$scope','dataService','LoginService','webService','messageService','util',function ($scope,dataService,LoginService,webService,messageService,util) {
+App.controller('buffetController',['$scope','dataService','LoginService','webService','messageService','util','popUpService',function ($scope,dataService,LoginService,webService,messageService,util,popUpService) {
     $scope.currencyPayList = [];//sz-pay
     $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
     $scope.num=1;
@@ -15,6 +15,11 @@ App.controller('buffetController',['$scope','dataService','LoginService','webSer
             $scope.todayTotalNum=r;
         });
     $scope.buffetPay=function (menu,num) {
+        if(!num){
+            messageService.setMessage({type: 'error', content: '没有输入数量'});
+            popUpService.pop('message');
+            return;
+        }
         var post={};
         post.menu=menu;
         post.num=num;

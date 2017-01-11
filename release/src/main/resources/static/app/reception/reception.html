@@ -1,5 +1,5 @@
 <!--main-container-part-->
-<div id="content" ng-mouseup="clearSourceMoveRoom()" ng-if="!noShow">
+<div id="content" ng-mouseup="clearSourceMoveRoom()" ng-if="!ifFaster|| !noShow">
     <!--Filter begin-->
     <div class="saixuanbox">
         <ul class="saixuanul">
@@ -121,14 +121,14 @@
 </div>
 <!--最后路径.html前的单词被初始化为popService中的变量标志-->
 <sz-pop-up refresh="refresh()" name="reception/rightClickRoom/rightClickRoom.html" back="white"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/guestIn/guestIn.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/guestOut/guestOut.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/otherConsume/otherConsume.html" back="top"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/depositIn/depositIn.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/roomShopIn/roomShopIn.html" back="top"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/debtDetail/debtDetail.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/checkInUpdate/checkInUpdate.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/changeRoom/changeRoom.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/todayLock/todayLock.html"></sz-pop-up>
-<sz-pop-up refresh="refresh()" name="reception/cleanRoom/cleanRoom.html"></sz-pop-up>
-<sz-pop-up name="reception/cancelDeposit/cancelDeposit.html" back="top"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/guestIn/guestIn.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/guestOut/guestOut.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/otherConsume/otherConsume.html" back="top"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/depositIn/depositIn.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/roomShopIn/roomShopIn.html" back="top"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/debtDetail/debtDetail.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/checkInUpdate/checkInUpdate.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/changeRoom/changeRoom.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/todayLock/todayLock.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" refresh="refresh()" name="reception/cleanRoom/cleanRoom.html"></sz-pop-up>
+<sz-pop-up no-show="noShow" name="reception/cancelDeposit/cancelDeposit.html" back="top"></sz-pop-up>
