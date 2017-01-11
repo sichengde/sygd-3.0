@@ -13,7 +13,7 @@
                     <p><span>离店时间：</span>{{nowTime | date:'yyyy-MM-dd HH:mm:ss'}}</p>
                     <p><span>房租方式：</span>{{checkInGroup?checkInGroup.roomPriceCategory:checkIn.roomPriceCategory}}</p>
                     <p ng-show="enableCancelDebtAdd"><span>加收房租：</span><input type="checkbox" ng-click="calculateDebtAdd()" ng-model="ifDebtAdd"></p>
-                    <p ng-show="checkInGuestList.length>1"><span>按床位结：</span><input type="checkbox" ng-click="watchCheckOutByBed(true)" ng-model="checkOutByBed"></p>
+                    <!--<p ng-show="checkInGuestList.length>1"><span>按床位结：</span><input type="checkbox" ng-click="watchCheckOutByBed(true)" ng-model="checkOutByBed"></p>-->
                 </td>
             </tr>
             <tr>

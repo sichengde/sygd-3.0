@@ -298,23 +298,42 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                             checkIn.roomPriceCategory = '小时房';
                             continue;
                         }
-                        debtAdd = {};
-                        debtAdd.doTime = $scope.nowTime;
-                        debtAdd.pointOfSale = '房费';
-                        debtAdd.consume = checkIn.finalRoomPrice;
-                        debtAdd.deposit = null;
-                        debtAdd.currency = '挂账';
-                        debtAdd.description = '加收房租(当日来当日走):' + debtAdd.consume;
-                        debtAdd.selfAccount = checkIn.selfAccount;
-                        debtAdd.roomId = checkIn.roomId;
-                        debtAdd.protocol = checkIn.protocol;
-                        debtAdd.userId = LoginService.getUser();
-                        debtAdd.category = '加收房租';
-                        debtAddList.push(debtAdd);
-                        $scope.debtShowList.push(debtAdd);
-                        $scope.debtConsume += debtAdd.consume;
-                        if(checkIn.roomPriceCategory=='会议房'){//会议房要根据人头算
-                            
+                        if(checkIn.roomPriceCategory=='日租房') {
+                            debtAdd = {};
+                            debtAdd.doTime = $scope.nowTime;
+                            debtAdd.pointOfSale = '房费';
+                            debtAdd.consume = checkIn.finalRoomPrice;
+                            debtAdd.deposit = null;
+                            debtAdd.currency = '挂账';
+                            debtAdd.description = '加收房租(当日来当日走):' + debtAdd.consume;
+                            debtAdd.selfAccount = checkIn.selfAccount;
+                            debtAdd.roomId = checkIn.roomId;
+                            debtAdd.protocol = checkIn.protocol;
+                            debtAdd.userId = LoginService.getUser();
+                            debtAdd.category = '加收房租';
+                            debtAddList.push(debtAdd);
+                            $scope.debtShowList.push(debtAdd);
+                            $scope.debtConsume += debtAdd.consume;
+                        }else if(checkIn.roomPriceCategory=='会议房'){//会议房要根据人头算
+                            for (var j = 0; j < chooseRoom.checkInGuestList.length; j++) {
+                                var checkInGuest = chooseRoom.checkInGuestList[j];
+                                var debtAdd = {};
+                                debtAdd.doTime = $scope.nowTime;
+                                debtAdd.pointOfSale = '房费';
+                                debtAdd.consume = checkIn.finalRoomPrice;
+                                debtAdd.deposit = null;
+                                debtAdd.currency = '挂账';
+                                debtAdd.description = '加收房租(当日来当日走):' + debtAdd.consume;
+                                debtAdd.selfAccount = checkIn.selfAccount;
+                                debtAdd.roomId = checkIn.roomId;
+                                debtAdd.protocol = checkIn.protocol;
+                                debtAdd.userId = LoginService.getUser();
+                                debtAdd.category = '加收房租';
+                                debtAdd.bed = checkInGuest.bed;
+                                debtAddList.push(debtAdd);
+                                $scope.debtShowList.push(debtAdd);
+                                $scope.debtConsume += debtAdd.consume;
+                            }
                         }
                         continue;
                     }
