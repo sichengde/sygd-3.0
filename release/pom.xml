@@ -78,7 +78,6 @@
                             <cssSourceFiles>
                                 <cssSourceFile>bootstrap-3.3.6-dist/css/bootstrap.css</cssSourceFile>
                                 <cssSourceFile>font-awesome.css</cssSourceFile>
-                                <cssSourceFile>mainState/mainState.css</cssSourceFile>
                                 <cssSourceFile>common.css</cssSourceFile>
                                 <cssSourceFile>index.css</cssSourceFile>
                                 <cssSourceFile>popup.css</cssSourceFile>
