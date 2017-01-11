@@ -234,8 +234,8 @@ public class DeskController {
      */
     @RequestMapping(value = "deskOutPrintAgain")
     @Transactional(rollbackFor = Exception.class)
-    public Integer deskOutPrintAgain(@RequestBody DeskInHistory deskInHistory) throws Exception {
-        String ckSerial = deskInHistory.getCkSerial();
+    public Integer deskOutPrintAgain(@RequestBody String ckSerial) throws Exception {
+        DeskInHistory deskInHistory=deskInHistoryService.getByCkSerial(ckSerial);
         /*消费明细*/
         List<FieldTemplate> templateList = new ArrayList<>();
         List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getListByCkSerial(ckSerial);

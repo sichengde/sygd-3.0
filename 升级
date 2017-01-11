@@ -485,3 +485,4 @@
                                                                        FROM (`hotel`.`check_in_history_log` `cihl` LEFT JOIN
                                                                          `hotel`.`check_in_history` `cih`
                                                                            ON ((`cihl`.`card_id` = `cih`.`card_id`)))
+2017-01-11: ALTER TABLE hotel.user ADD max_discount INT NULL;

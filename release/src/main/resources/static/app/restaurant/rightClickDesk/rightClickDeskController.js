@@ -11,11 +11,16 @@ App.controller('rightClickDeskController', ['$scope', 'popUpService', 'webServic
     };
     /*补打结账单*/
     $scope.guestOutPrintAgain = function () {
-        popUpService.close('rightClickDebt');
-        webService.post('deskOutPrintAgain', $scope.deskInHistory)
+        popUpService.close('rightClickDesk');
+        webService.post('deskOutPrintAgain', $scope.deskInHistory.ckSerial)
             .then(function (r) {
                 window.open(host + "/receipt/" + r);
             })
+    };
+    /*账单分析*/
+    $scope.deskParse=function () {
+        popUpService.close('rightClickDesk');
+        popUpService.pop('deskParse', null, null, {ckSerial:$scope.deskInHistory.ckSerial});
     };
     /*叫回结账单*/
     $scope.checkOutReverse = function () {

@@ -24,6 +24,14 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
     @Autowired
     Util util;
     /**
+     * 通过结账序列号获取
+     */
+    public DeskInHistory getByCkSerial(String ckSerial){
+        DeskInHistory deskInHistoryQuery=new DeskInHistory();
+        deskInHistoryQuery.setCkSerial(ckSerial);
+        return deskInHistoryMapper.selectOne(deskInHistoryQuery);
+    }
+    /**
      * 通过结账时间和营业部门筛选
      */
     public List<DeskInHistory> getByDatePointOfSale(Date begin,Date endTime,String pointOfSale){

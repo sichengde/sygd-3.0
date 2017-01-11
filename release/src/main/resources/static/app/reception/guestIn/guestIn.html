@@ -70,10 +70,10 @@
                     <span ng-show="!roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
                     <span ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'"><input type="text" ng-model="protocol.roomPrice" style="width: 92px; float: none"></span>
                     <span ng-show="roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
-                <td ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'" style="width: 90px; text-align: right">
+                <td ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'" style="width: 90px; text-align: right">
                 早餐：
                 </td>
-                <td ng-show="roomPriceEditable&&protocol.roomPriceCategory=='日租房'" style="text-align: left">
+                <td ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'" style="text-align: left">
                     <input type="text" ng-model="protocol.breakfast" style="width: 50px;">&nbsp;份
                 </td>
                 <td style="width: 100px; text-align: right">

@@ -11,7 +11,7 @@ App.controller('deskDetailHistoryController', ['$scope', 'popUpService', 'util',
     ];
     $scope.deskPayFields = [
         {name: '币种', id: 'currency'},
-        {name: '金额', id: 'payMoney'}
+        {name: '实收金额', id: 'payMoney'}
     ];
     var deskDetailHistoryRefresh;
     $scope.deskDetailHistoryRefresh=function (f) {
@@ -27,9 +27,11 @@ App.controller('deskDetailHistoryController', ['$scope', 'popUpService', 'util',
         ]);
     } else {
         var p = {condition: 'ck_serial=' + util.wrapWithBrackets($scope.param.ckSerial)};
-        dataService.initData(['refreshDeskDetailHistoryList'], [p])
+        dataService.initData(['refreshDeskDetailHistoryList','refreshDeskInHistoryList'], [p,p])
             .then(function () {
                 $scope.deskDetailHistoryList = dataService.getDeskDetailHistoryList();
+                var deskInHistory=dataService.getDeskInHistoryList()[0];
+                $scope.deskPayRemark='总金额:'+deskInHistory.totalPrice+'  实收款:'+deskInHistory.finalPrice
             });
         $scope.deskPayCondition = 'ckSerial=' + util.wrapWithBrackets($scope.param.ckSerial);
     }

@@ -2,7 +2,7 @@
     <dl class="tctit"><h1>点餐明细</h1></dl>
     <div class="tcDiv">
         <div class="searchDiv">
-            台号：{{desk.name}} &nbsp; 合计消费：￥{{totalConsume}} &nbsp; 人数：<input type="text" ng-model="desk.deskIn.num" style="float: none; width: 50px;">
+            台号：{{desk.name}} &nbsp; 合计消费：￥{{beforePrice}} &nbsp; 人数：<input type="text" ng-model="desk.deskIn.num" style="float: none; width: 50px;">
         </div>
         <!--新增菜品-->
         <sz-table fields="deskDetailFields" items="deskDetailAddList" button="add delete" right-click="rightClickDeskDetail" items-per-page="100" scroll="true"></sz-table>
@@ -24,8 +24,10 @@
             </tr>
             <tr>
                 <td style="width: 100px">折扣：</td>
-                <td><select ng-model="deskDiscount" ng-change="deskDiscountChange()" style="width: 80px; float: none" ng-options="x.discountName for x in deskDiscountList">
-                </select></td>
+                <td>
+                    <select ng-model="deskDiscount" ng-change="deskDiscountChange()" style="width: 80px; float: none" ng-options="x.discountName for x in deskDiscountList"></select>
+                    <span style="width: 80px; float: none">实收款：</span><input type="text" ng-model="totalConsume" style="width: 80px; float: none" ng-change="changeTotalConsume()">
+                </td>
             </tr>
         </table>
     </div>

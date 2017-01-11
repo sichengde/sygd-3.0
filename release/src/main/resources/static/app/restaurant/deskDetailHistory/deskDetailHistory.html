@@ -7,7 +7,7 @@
                     <sz-table fields="deskDetailHistoryFields" items="deskDetailHistoryList" button="add update delete" search-condition="deskDetailHistoryCondition" init-refresh="deskDetailHistoryRefresh(f)"></sz-table>
                 </sz-pane>
                 <sz-pane title="结算明细" ng-if="param.ckSerial">
-                    <sz-table fields="deskPayFields" button="add update delete" search-condition="deskPayCondition"></sz-table>
+                    <sz-table fields="deskPayFields" button="add update delete" search-condition="deskPayCondition" remark="deskPayRemark"></sz-table>
                 </sz-pane>
             </sz-tab>
         </div>

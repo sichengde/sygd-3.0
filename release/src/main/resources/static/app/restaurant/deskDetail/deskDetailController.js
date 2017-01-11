@@ -110,6 +110,12 @@ App.controller('deskDetailController', ['$scope', 'popUpService', 'dataService',
             }
         }
     });
+    /*改变实收款*/
+    $scope.changeTotalConsume = function () {
+        if ($scope.currencyPayList.length = 1) {
+            $scope.currencyPayList[0].money = $scope.totalConsume;
+        }
+    };
     /*计算当前总金额，通过菜品和折扣*/
     function calculateTotalMoney() {
         $scope.totalConsume = 0;
@@ -128,13 +134,14 @@ App.controller('deskDetailController', ['$scope', 'popUpService', 'dataService',
             $scope.totalConsume = Math.round($scope.totalConsume);
         }
         $scope.currencyPayList[0].money = $scope.totalConsume;
+        $scope.beforePrice = $scope.totalConsume;
     }
 
     /*暂记*/
     $scope.deskDetailAction = function () {
         if (!$scope.desk.deskIn) {
             $scope.deskDetailAddList[0].people = 1;
-        }else{
+        } else {
             $scope.deskDetailAddList[0].people = $scope.desk.deskIn.num;
         }
         /*提交检查，退菜数量不能大于现有菜品之和*/
@@ -195,11 +202,44 @@ App.controller('deskDetailController', ['$scope', 'popUpService', 'dataService',
     };
     /*结账*/
     $scope.deskOut = function () {
+        /*判断输入的金额对不对*/
+        var totalPay = 0;
+        for (var i = 0; i < $scope.currencyPayList.length; i++) {
+            var obj = $scope.currencyPayList[i];
+            if (obj.money < 0) {
+                messageService.setMessage({type: 'error', content: '结账金额不可以为负数'});
+                popUpService.pop('message');
+                return $q(function (resolve) {
+                    return resolve();
+                });
+            }
+            totalPay += obj.money * 1;
+        }
+        if (totalPay != $scope.totalConsume) {
+            messageService.setMessage({type: 'error', content: '结账金额总和不等于实收款'});
+            popUpService.pop('message');
+            return $q(function (resolve) {
+                return resolve();
+            });
+        }
+        /*判断抹零金额是否超过服务员权限*/
+        var user = LoginService.getUserObj();
+        if ($scope.beforePrice - $scope.totalConsume > user.maxDiscount) {
+            messageService.setMessage({type: 'error', content: '该操作员最大抹零金额为' + user.maxDiscount});
+            popUpService.pop('message');
+            return $q(function (resolve) {
+                return resolve();
+            });
+        }
         var deskOut = {};
         deskOut.desk = $scope.desk.name;
         deskOut.pointOfSale = LoginService.getPointOfSale();
         deskOut.currencyPostList = $scope.currencyPayList;
-        deskOut.discount = $scope.deskDiscount.discountValue;
+        if ($scope.deskDiscount.discountValue == 1 && $scope.totalConsume != $scope.beforePrice) {//手动抹零
+            deskOut.discount = ($scope.totalConsume / $scope.beforePrice).toFixed(2);
+        } else {
+            deskOut.discount = $scope.deskDiscount.discountValue;
+        }
         deskOut.finalPrice = $scope.totalConsume;
         deskOut.deskBook = $scope.deskBook;
         return webService.post('deskOut', deskOut)

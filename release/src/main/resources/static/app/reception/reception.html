@@ -1,5 +1,5 @@
 <!--main-container-part-->
-<div id="content" ng-mouseup="clearSourceMoveRoom()">
+<div id="content" ng-mouseup="clearSourceMoveRoom()" ng-if="!noShow">
     <!--Filter begin-->
     <div class="saixuanbox">
         <ul class="saixuanul">
@@ -118,7 +118,6 @@
        <p><i class="icon-flag"></i>领队</p>
     </div>
     <!-- 房态图标说明 end -->
-
 </div>
 <!--最后路径.html前的单词被初始化为popService中的变量标志-->
 <sz-pop-up refresh="refresh()" name="reception/rightClickRoom/rightClickRoom.html" back="white"></sz-pop-up>

@@ -100,7 +100,7 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
     List<DeskCategoryOut> getCategoryParse(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
 
     /*根据某个账单，分析三级类别*/
-    @Select("SELECT category , sum(total) total FROM desk_detail_history ddh WHERE ddh.point_of_sale =#{pointOfSale} and done_time>#{beginTime} AND done_time<#{endTime} and ck_serial=#{ckSerial} and ifnull(disabled,false)=false group by category")
+    @Select("SELECT category , sum(total) total FROM desk_detail_history ddh WHERE ck_serial=#{ckSerial} and ifnull(disabled,false)=false group by category")
     List<DeskCategoryOut> getCategoryParseBySerial(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("ckSerial") String ckSerial);
 
     /*不限定账单号，分析二级类别*/

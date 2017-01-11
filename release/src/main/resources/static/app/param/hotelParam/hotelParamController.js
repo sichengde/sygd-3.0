@@ -19,10 +19,11 @@ App.controller('UserController', ['$scope', 'dataService', 'util', 'popUpService
     $scope.selectCurrencyList=[];
     $scope.selectListPointOfSale=[];
     $scope.selectCurrencyList[0]=dataService.getBooleanListEn;
-    $scope.userFields = [{name: '姓名', id: 'userId', notNull: 'true', width: '100px'},
-        {name: '模块', id: 'moduleArray', width: '300px'},
-        {name: '权限', id: 'permissionArray', width: '500px'},
-        {name: '营业部门', id: 'pointOfSaleArray', width: '200px'}
+    $scope.userFields = [{name: '姓名', id: 'userId', notNull: 'true', width: '100px',static:'true'},
+        {name: '模块', id: 'moduleArray', width: '300px',static:'true'},
+        {name: '权限', id: 'permissionArray', width: '500px',static:'true'},
+        {name: '营业部门', id: 'pointOfSaleArray', width: '200px',static:'true'},
+        {name: '最高折扣', id: 'maxDiscount', width: '500px'}
     ];
     $scope.updateUser=function () {
         popUpService.pop('userAdd',null,null,{mode:'update'})

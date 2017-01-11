@@ -10,6 +10,7 @@ public class User extends BaseEntity {
     private String permissionArray;//权限数组，操作员所拥有的权限在数据库中是按字符串的形式存储的
     private String moduleArray;//模块数组，操作员所拥有的模块在数据库中是按字符串的形式存储的
     private String pointOfSaleArray;//营业部门数组，操作员所拥有的营业部门在数据库中是按字符串的形式存储的（这个只限于餐饮，接待默认就接待一个，桑拿默认也就桑拿一个）
+    private Integer maxDiscount;//营业部门数组，操作员所拥有的营业部门在数据库中是按字符串的形式存储的（这个只限于餐饮，接待默认就接待一个，桑拿默认也就桑拿一个）
 
     public User() {
     }
@@ -57,5 +58,13 @@ public class User extends BaseEntity {
 
     public void setPointOfSaleArray(String pointOfSale) {
         this.pointOfSaleArray = pointOfSale;
+    }
+
+    public Integer getMaxDiscount() {
+        return maxDiscount;
+    }
+
+    public void setMaxDiscount(Integer maxDiscount) {
+        this.maxDiscount = maxDiscount;
     }
 }

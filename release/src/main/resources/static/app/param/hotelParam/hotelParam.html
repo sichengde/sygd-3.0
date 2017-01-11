@@ -9,7 +9,7 @@
                 <sz-table fields="currencyFields" select-list="selectCurrencyList"></sz-table>
         </sz-pane>
         <sz-pane title="操作员">
-            <sz-table head="true" fields="userFields" button="add update" init-refresh="outRefreshUserList(f)"></sz-table>
+            <sz-table head="true" fields="userFields" button="add" init-refresh="outRefreshUserList(f)"></sz-table>
             <div class="button fl" style="margin: 0px; border: none">
                 <button ng-click="updateUser('userPermission')" sz-permission="权限管理">权限管理</button>
                 <input type="button" value="新增" ng-click="addUser('userAdd')" sz-permission="权限管理">
