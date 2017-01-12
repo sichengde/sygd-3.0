@@ -204,10 +204,6 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         });
         $scope.checkInList = [];
     };
-    /*批量制卡*/
-    $scope.writeCard = function () {
-        doorInterfaceService.doorWriteList(util.objectListToString($scope.checkInList, 'roomId'));
-    };
     /*读取会员开房*/
     $scope.readCard = function () {
         $scope.vip = util.getValueByField(dataService.getVipList(), 'idNumber', $scope.idNumber)
@@ -292,7 +288,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             popUpService.pop('message');
             return;
         }
-        /*验证有没有乱输入房号的*/
+        /*验证有没有乱输入房号的，同时绑定checkIn数据，以便团队制卡*/
         for (var i = 0; i < $scope.checkInGuestList.length; i++) {
             var obj = $scope.checkInGuestList[i];
             if (!obj.roomId) {
@@ -330,6 +326,8 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                 }
                 /*弹出打印预览界面*/
                 window.location.reload();
+                /*批量制卡*/
+                doorInterfaceService.doorWrite(util.objectListToString($scope.checkInList, 'roomId'));
             });
         watch();
         watch2();

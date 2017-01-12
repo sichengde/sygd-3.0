@@ -19,6 +19,7 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     var staticGuestInCurrency = ["会员"];//押金币种常量
     var storageCalculateStrategy = ["加权平均", "先进先出", "后进后出"];//出库成本计算方式
     var saunaRingState = ["未用", "占用", "维修"];//桑拿手牌状态
+    var interfaceAddr = ["身份证读卡器", "门锁接口"];//外部接口客户端
     /**
      * 获得可以开房的房态数组
      */
@@ -1512,6 +1513,23 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 接口地址定义
+     */
+    var interfaceAddrList;
+    function refreshInterfaceAddrList(p) {
+        p = p || {};
+        return webService.post('interfaceAddrGet', p)
+            .then(function (d) {
+                interfaceAddrList = d;
+                return d;
+            })
+    }
+
+    function getInterfaceAddrList() {
+        return interfaceAddrList;
+    }
+
+    /**
      * 公共方法，获取之类的
      */
     var refreshed;
@@ -1557,6 +1575,7 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getBookState: bookState,
         storageCalculateStrategy: storageCalculateStrategy,
         saunaRingState: saunaRingState,
+        interfaceAddr: interfaceAddr,
         getAvailableModule: getAvailableModule,
         refreshAvailableModuleList: refreshAvailableModuleList,
         getUserList: getUserList,
@@ -1720,6 +1739,8 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getInCategoryList:getInCategoryList,
         refreshCheckInIntegrationList:refreshCheckInIntegrationList,
         getCheckInIntegrationList:getCheckInIntegrationList,
+        refreshInterfaceAddrList:refreshInterfaceAddrList,
+        getInterfaceAddrList:getInterfaceAddrList,
         initData: initData
     }
 }]);

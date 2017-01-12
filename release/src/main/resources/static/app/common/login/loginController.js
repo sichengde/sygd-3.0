@@ -13,7 +13,7 @@ App.controller('LoginController', ['$scope', 'LoginService', 'dataService', 'uti
     /*获取可用操作员*/
     dataService.refreshUserList()
         .then(function (r) {
-            $scope.userList=util.objectListToString(r,'userId');
+            $scope.userList = util.objectListToString(r, 'userId');
         });
     /*向上广播用户，模块*/
     function emitThree() {
@@ -119,22 +119,18 @@ App.controller('LoginController', ['$scope', 'LoginService', 'dataService', 'uti
         /*回写session*/
         webService.post('userSet', [LoginService.getUser(), LoginService.getModule()])
             .then(function (r) {
-                if (!r) {
-                    messageService.setMessage({content: '该用户已经在别处登录，请先退出登录', type: 'error'});
-                    popUpService.pop('message');
-                } else {
-                    var permission = LoginService.getOwnPermissionList();//操作员拥有的权限
-                    var moduleList = LoginService[LoginService.getModuleLink()];
-                    for (var i = 0; i < moduleList.length; i++) {
-                        var module = moduleList[i];
-                        if (permission.indexOf(module.name) > -1) {
-                            module.hover='hover';
-                            webService.redirect(module.href);
-                            break;
-                        }//判断该操作员是否有该模块主页的权限，有的话就跳转，没有的话依次查找知道最近的权限
-                    }
-                    emitThree();
+                var permission = LoginService.getOwnPermissionList();//操作员拥有的权限
+                var moduleList = LoginService[LoginService.getModuleLink()];
+                for (var i = 0; i < moduleList.length; i++) {
+                    var module = moduleList[i];
+                    if (permission.indexOf(module.name) > -1) {
+                        module.hover = 'hover';
+                        webService.redirect(module.href);
+                        break;
+                    }//判断该操作员是否有该模块主页的权限，有的话就跳转，没有的话依次查找知道最近的权限
                 }
+                emitThree();
+                localStorage.setItem('ip',r.data);
             });
         dataService.refreshTimeNow()
             .then(function (r) {

@@ -2,6 +2,7 @@ package com.sygdsoft.controller;
 
 import com.sygdsoft.conf.dataSource.DynamicDataSourceContextHolder;
 import com.sygdsoft.conf.dataSource.TargetDataSource;
+import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.User;
 import com.sygdsoft.service.HotelService;
@@ -87,7 +88,7 @@ public class UserController {
      * 登陆成功回记session
      */
     @RequestMapping(value = "userSet")
-    public boolean userSet(HttpSession httpSession, @RequestBody List<String> paramList) throws Exception {
+    public OnlyString userSet(HttpSession httpSession, @RequestBody List<String> paramList) throws Exception {
         timeService.setNow();
         String user = paramList.get(0);
         /*if(userLogService.logUser.indexOf(user)>-1){//取消单一站点登录限制
@@ -96,7 +97,7 @@ public class UserController {
         httpSession.setAttribute("userId", user);
         userLogService.addUserLog("登录:" + user, paramList.get(1), userLogService.login,null);
         //userLogService.logUser.add(user);
-        return true;
+        return new OnlyString(userService.getCurrentIpAddr());
         //}
     }
 

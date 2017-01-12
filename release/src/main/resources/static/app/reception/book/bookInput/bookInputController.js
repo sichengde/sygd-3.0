@@ -126,11 +126,11 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
     };
     /*批量制卡*/
     $scope.writeCard = function () {
-        var bed;
+        var num=1;
         if (dataService.getOtherParamMapValue('按人数发卡') == 'y') {
-            bed = true;
+            num=util.objectListToString($scope.chooseRoomList, 'totalBed').join(',')
         }
-        doorInterfaceService.doorWriteList(util.objectListToString($scope.chooseRoomList, 'roomId'), $scope.book.leaveTime, bed);
+        doorInterfaceService.doorWrite(util.objectListToString($scope.chooseRoomList, 'roomId').join(','), $scope.book.leaveTime, num);
     };
     /*时间按钮减一天*/
     $scope.minusDay = function () {

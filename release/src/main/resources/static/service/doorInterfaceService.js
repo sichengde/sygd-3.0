@@ -1,79 +1,30 @@
 /**
  * Created by Administrator on 2016-08-08.
  */
-App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popUpService', function (messageService, dateFilter, $q, popUpService) {
-    function doorWrite(roomId, leaveTime, num) {
-        var x = document.getElementById("Control");
-        x.roomId = roomId;
-        x.leaveTime = leaveTime;
-        return write(x, num);
-    }
+App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popUpService','$http', function (messageService, dateFilter, $q, popUpService,$http) {
 
     /**
-     *
-     * @param roomList 包含床位和房号的对象数组
-     * @param leavetime
-     * @param bed
+     * 新版本客户端发卡
+     * @param roomId 可以是逗号分隔的房号数组
+     * @param leaveTime
+     * @param num 如果房号是逗号分隔，这个也要逗号分隔
+     * @returns {*}
      */
-    function doorWriteList(roomList, leavetime,bed) {
-        if (!roomList || roomList.length == 0) {
-            return
+    function doorWrite(roomId, leaveTime, num) {
+        var ip=localStorage.getItem('ip');
+        if(!ip){
+            messageService.setMessage({type: 'error', content: '没有获取到本机ip，制卡失败，请重新登陆，或者检查localStorage当中'});
+            popUpService.pop('message');
+            return $q.reject();
         }
-        messageService.setMessage({content: '即将制作' + roomList[0].roomId + '房卡'});
-        messageService.actionChoose()
-            .then(function () {
-                var num=1;
-                if(bed){//按床位发卡
-                    num=roomList[0].bed;
-                }
-                doorWrite(roomList[0].roomId, dateFilter(leavetime, 'yyyyMMddHHmmss'),num);
-                roomList.splice(0, 1);
-                if (roomList.length > 0) {
-                    doorWriteList(roomList, leavetime,bed);
-                }
-            }, function () {//点是点否都要继续
-                roomList.splice(0, 1);
-                if (roomList.length > 0) {
-                    doorWriteList(roomList, leavetime,bed);
-                }
-            });
-    }
-
-    function write(x, num) {
-        if (x.door == 'false') {
-            messageService.setMessage({content: '发卡失败，是否重新发卡'});
-            return messageService.actionChoose()
-                .then(function () {
-                    write(x);
-                }, function (r) {
-                    return r;
-                })
-        } else {
-            if (num == 1) {
-                messageService.actionSuccess();
-                return $q(function (resolve, reject) {
-                    return resolve();
-                });
-            } else {
-                messageService.setMessage({content: '是否制作该房间下一张房卡'});
-                messageService.actionChoose()
-                    .then(function () {
-                        num--;
-                        write(x, num);
-                    }, function () {
-                        return $q(function (resolve, reject) {
-                            return resolve();
-                        });
-                    })
-            }
-        }
+        return $http.get('http://'+ip+':8080/writeDoor?roomId='+roomId+'&leaveTimeStr='+leaveTime+'&num='+num)
     }
 
     function doorRead() {
         var x = document.getElementById("Control");
         var msg = x.readDoor.split(' ');
         if (msg.length == 1) {
-            messageService.setMessage({type: 'error', content: '读卡失败,错误代码:' + msg})
+            messageService.setMessage({type: 'error', content: '读卡失败,错误代码:' + msg});
             popUpService.pop('message');
         } else {
             var time = msg[1];
@@ -100,17 +51,10 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
             });
         }
     }
-    function getDoorIdNumber() {
-        var x = document.getElementById("Control");
-        //return x.doorCardId;//测试时
-        return 3333;
-    }
 
     return {
         doorWrite: doorWrite,
         doorRead: doorRead,
-        doorWriteList: doorWriteList,
         doorClear: doorClear,
-        getDoorIdNumber:getDoorIdNumber
     }
 }]);

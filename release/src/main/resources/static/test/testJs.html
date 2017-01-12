@@ -8,7 +8,7 @@
         angular.module('app', [])
                 .controller('ctr', function ($scope,$http) {
                     $scope.post = function () {
-                        return $http.get('http://127.0.0.1:8000/test?t1=china&t2=cxg')
+                        return $http.get('http://192.168.1.21:8080/writeDoor?roomId=china&leaveTimeStr=cxg&num=')
                             .then(
                                 function (response) {
                                     $scope.r=response.data;

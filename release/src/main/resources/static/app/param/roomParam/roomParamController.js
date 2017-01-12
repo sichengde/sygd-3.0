@@ -42,6 +42,8 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
     $scope.selectList[1] = dataService.getRoomStateList;
     /*0是房吧种类*/
     $scope.selectRoomShopList = [];
+    /*0是可选接口类型*/
+    $scope.selectInterfaceAddrList = [];
 
     /*房租方式*/
     $scope.protocolFields = [{name: '协议名称', id: 'protocol', permission: 'notNull', width: '205px'},
@@ -65,6 +67,11 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
         {name: '参数数值', id: 'value', width: '200px'},
         {name: '隶属模块', id: 'module', width: '200px', desc: '0'}
     ];
+    $scope.interfaceAddrFields=[
+        {name:'接口名称',id:'name',selectId:'0'},
+        {name:'ip地址',id:'ip'}
+    ];
+    $scope.selectInterfaceAddrList[0]=dataService.interfaceAddr;
     $scope.otherParamCondition = 'module=\'公共\' or module = \'接待\'';
     dataService.initData(['refreshSaleCountList', 'refreshRoomCategoryList'], [{condition: 'second_point_of_sale=\'房吧\''}])
         .then(function () {

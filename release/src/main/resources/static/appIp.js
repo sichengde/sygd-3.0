@@ -3,8 +3,8 @@ angular.module("appIp", [])
     .constant('host', 'http://192.168.1.21')//在云端时这个需要设置为空
     .constant('hostJquery', 'http://192.168.1.21')//这个是无论如何都需要的，客户端能ping通的服务器ip
     .constant('cloud', 'http://101.200.171.37')
-    .constant('database', 'yujianyifenghua')
-    .config(['$httpProvider', function ($httpProvider) {
+    .constant('database', 'yujianyifenghua');
+    /*.config(['$httpProvider', function ($httpProvider) {
         //initialize get if not there
         if (!$httpProvider.defaults.headers.get) {
             $httpProvider.defaults.headers.get = {};
@@ -18,4 +18,4 @@ angular.module("appIp", [])
         // extra
         $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache';
         $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
-    }]);
+    }])*/
