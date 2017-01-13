@@ -486,9 +486,13 @@
                                                                          `hotel`.`check_in_history` `cih`
                                                                            ON ((`cihl`.`card_id` = `cih`.`card_id`)))
 2017-01-11: ALTER TABLE hotel.user ADD max_discount INT NULL;
-2017-01-12: CREATE TABLE hotel.interface_addr
+2017-01-12: CREATE TABLE hotel.interface_door
             (
                 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-                name VARCHAR(20),
-                ip VARCHAR(20)
+                room_id VARCHAR(20),
+                tel_id VARCHAR(20),
+                door_id VARCHAR(20),
+                  UNIQUE KEY `interface_door_room_id_uindex` (`room_id`),
+                  UNIQUE KEY `interface_door_door_id_uindex` (`door_id`),
+                  UNIQUE KEY `interface_door_tel_id_uindex` (`tel_id`)
             );

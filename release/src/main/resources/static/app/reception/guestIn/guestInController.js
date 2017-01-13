@@ -233,7 +233,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                 if (dataService.getOtherParamMapValue('按人数发卡') == 'y') {
                     num = $scope.checkInGuestList.length;
                 }
-                doorInterfaceService.doorWrite($scope.room.roomId, dateFilter($scope.leave, 'yyyyMMddHHmmss'), num)
+                doorInterfaceService.doorWrite([$scope.room.roomId], dateFilter($scope.leave, 'yyyyMMddHHmmss'), [num])
                     .then(function () {
                         /*执行成功后，关闭该页面*/
                         popUpService.close('guestIn');

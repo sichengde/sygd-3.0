@@ -176,6 +176,9 @@ App.config(['$routeProvider',
         }).when('/companyDebt/:mode', {//应收应付
             templateUrl: 'reception/companyDebt/companyDebt.html',
             controller: 'companyDebtController'
+        }).when('/breakfast', {//早餐刷卡
+            templateUrl: 'reception/breakfast/breakfast.html',
+            controller: 'breakfastController'
         }).when('/retail', {//商品零售
             templateUrl: 'reception/retail/retail.html',
             controller: 'retailController'//******************系统维护-客房参数******************

@@ -5,15 +5,17 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
 
     /**
      * 新版本客户端发卡
-     * @param roomId 可以是逗号分隔的房号数组
+     * @param roomIdList 房号list
      * @param leaveTime
-     * @param num 如果房号是逗号分隔，这个也要逗号分隔
+     * @param numList 如果房号是逗号分隔，这个也要逗号分隔
      * @returns {*}
      */
-    function doorWrite(roomId, leaveTime, num) {
+    function doorWrite(roomIdList, leaveTime, numList) {
+        var roomId=roomIdList.join(',');
+        var num=numList.join(',');
         var ip=localStorage.getItem('ip');
         if(!ip){
-            messageService.setMessage({type: 'error', content: '没有获取到本机ip，制卡失败，请重新登陆，或者检查localStorage当中'});
+            messageService.setMessage({type: 'error', content: '没有获取到本机ip，制卡失败，请重新登陆，或者手动在localStorage中添加ip'});
             popUpService.pop('message');
             return $q.reject();
         }
@@ -21,19 +23,13 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
     }
 
     function doorRead() {
-        var x = document.getElementById("Control");
-        var msg = x.readDoor.split(' ');
-        if (msg.length == 1) {
-            messageService.setMessage({type: 'error', content: '读卡失败,错误代码:' + msg});
+        var ip=localStorage.getItem('ip');
+        if(!ip){
+            messageService.setMessage({type: 'error', content: '没有获取到本机ip，制卡失败，请重新登陆，或者手动在localStorage中添加ip'});
             popUpService.pop('message');
-        } else {
-            var time = msg[1];
-            messageService.setMessage({
-                type: 'alert',
-                content: '房间号:' + msg[0] + '有效期:' + time.substring(0, 4) + '-' + time.substring(4, 6) + '-' + time.substring(6, 8) + ' ' + time.substring(8, 10) + ':' + time.substring(10, 12)
-            });
-            popUpService.pop('message');
+            return $q.reject();
         }
+        $http.get('http://'+ip+':8080/readDoor');
     }
 
     function doorClear(roomId) {

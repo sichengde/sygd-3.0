@@ -22,6 +22,7 @@
  * timestampByTimeString:通过时分秒字符串获得时间戳
  * getTodayMin:把当前的时间设为0点，主要用于初始化报表时间范围
  * getTodayMax:把当前的时间设为24点，主要用于初始化报表时间范围
+ * listToMapByField:通过数组的一个域作为key将数组转化成map
  */
 App.factory('util', [function () {
     /**
@@ -308,6 +309,18 @@ App.factory('util', [function () {
     }
 
     /**
+     * 通过数组的一个域作为key将数组转化成map
+     */
+    function listToMapByField(list,field) {
+        var out={};
+        for (var i = 0; i < list.length; i++) {
+            var obj = list[i];
+            out[obj[field]]=obj;
+        }
+        return out;
+    }
+
+    /**
      * 把当前的时间设为24点，主要用于初始化报表时间范围
      */
     function getTodayMax() {
@@ -341,6 +354,7 @@ App.factory('util', [function () {
         isNullSetString:isNullSetString,
         timestampByTimeString:timestampByTimeString,
         getTodayMin:getTodayMin,
-        getTodayMax:getTodayMax
+        getTodayMax:getTodayMax,
+        listToMapByField:listToMapByField
     };
 }]);

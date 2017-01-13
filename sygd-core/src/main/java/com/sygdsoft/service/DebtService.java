@@ -8,6 +8,7 @@ import com.sygdsoft.model.CheckInGroup;
 import com.sygdsoft.model.Debt;
 import com.sygdsoft.model.DebtHistory;
 import com.sygdsoft.util.NullJudgement;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class DebtService extends BaseService<Debt>{
     public String otherConsumeIn="杂单";
     public String otherConsumeOut="冲账";
     public String roomShopIn="房吧";
+    public String tel="电话费";
     public String allDayPrice="全日房费";
     @Autowired
     DebtMapper debtMapper;
@@ -48,6 +50,8 @@ public class DebtService extends BaseService<Debt>{
     RoomShopService roomShopService;
     @Autowired
     Util util;
+    @Autowired
+    SzMath szMath;
 
     /**
      * 增加一条消费
@@ -81,13 +85,13 @@ public class DebtService extends BaseService<Debt>{
      */
     public void updateGuestInMoney(String roomId,Double consume,Double deposit){
         CheckIn checkIn=checkInService.getByRoomId(roomId);
-        checkIn.setConsume(NullJudgement.nullToZero(consume) + checkIn.getNotNullConsume());
-        checkIn.setDeposit(NullJudgement.nullToZero(deposit)+checkIn.getNotNullDeposit());
+        checkIn.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkIn.getNotNullConsume()));
+        checkIn.setDeposit(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(deposit)+checkIn.getNotNullDeposit()));
         checkInMapper.updateByPrimaryKey(checkIn);
         if (checkIn.getGroupAccount() != null) {
             CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(checkIn.getGroupAccount());
-            checkInGroup.setConsume(NullJudgement.nullToZero(consume) + checkInGroup.getNotNullGroupConsume());
-            checkInGroup.setDeposit(NullJudgement.nullToZero(deposit) + checkInGroup.getNotNullGroupDeposit());
+            checkInGroup.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkInGroup.getNotNullGroupConsume()));
+            checkInGroup.setDeposit(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(deposit) + checkInGroup.getNotNullGroupDeposit()));
             checkInGroupMapper.updateByPrimaryKey(checkInGroup);
         }
     }

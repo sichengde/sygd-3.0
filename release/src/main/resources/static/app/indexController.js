@@ -44,7 +44,7 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
         }
     }
 
-    dataService.initData(['refreshAvailableModuleList', 'refreshOtherParamList'])
+    dataService.initData(['refreshAvailableModuleList', 'refreshOtherParamList','refreshInterfaceDoorList'])
         .then(function () {
             $scope.nightDate=dataService.getOtherParamMapValue("账务日期");
         });
