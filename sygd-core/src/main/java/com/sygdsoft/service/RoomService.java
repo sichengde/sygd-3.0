@@ -4,6 +4,7 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.RoomMapper;
 import com.sygdsoft.model.Book;
 import com.sygdsoft.model.CheckIn;
+import com.sygdsoft.model.CheckInGuest;
 import com.sygdsoft.model.Room;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,17 @@ public class RoomService extends BaseService<Room> {
                 }
                 room.setCheckInGuestList(checkInGuestService.get(query1));
                 room.setCheckInGroup(checkInGroupService.getByGroupAccount(checkIn.getGroupAccount()));
+                /*判断是不是预离*/
+                if(timeService.dateToStringShort(checkIn.getLeaveTime()).equals(timeService.getNowShort())){
+                    room.setTodayLeave(true);
+                }
+                /*判断是不是生日*/
+                List<CheckInGuest> checkInGuestList=room.getCheckInGuestList();
+                for (CheckInGuest checkInGuest : checkInGuestList) {
+                    if(timeService.dateToStringShort(checkInGuest.getBirthdayTime()).equals(timeService.getNowShort())){
+                        room.setTodayLeave(true);
+                    }
+                }
             }
             List<Book> bookList=bookService.getBookByRoomId(room.getRoomId());
             if(bookList.size()>0) {

@@ -72,6 +72,12 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
         });
     }
 
+    /*选择主房态样式*/
+    $scope.mainStateCss=localStorage.getItem('mainStateCss');
+    if(!$scope.mainStateCss){
+        $scope.mainStateCss='../css/mainState/mainState.css';
+    }
+
     //connect();//正式运行的时候再使用，平时都先注释掉
     /*判断是否登录了*/
     var userId = sessionStorage.getItem('user');

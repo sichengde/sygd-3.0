@@ -496,3 +496,13 @@
                   UNIQUE KEY `interface_door_door_id_uindex` (`door_id`),
                   UNIQUE KEY `interface_door_tel_id_uindex` (`tel_id`)
             );
+2017-01-13: CREATE TABLE hotel.tel_detail
+            (
+                id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                tel_id VARCHAR(20),
+                tel_time DATETIME,
+                duration INT,
+                price DOUBLE,
+                target_number VARCHAR(20),
+                total_price DOUBLE
+            );

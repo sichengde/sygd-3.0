@@ -32,6 +32,10 @@ public class Room extends BaseEntity{
     private CheckInGroup checkInGroup;
     @Transient
     private Boolean longRoom;
+    @Transient
+    private Boolean birthday;//是否是生日
+    @Transient
+    private Boolean todayLeave;//今日预离
 
     public Room() {
     }
@@ -207,5 +211,21 @@ public class Room extends BaseEntity{
 
     public void setLongRoom(Boolean longRoom) {
         this.longRoom = longRoom;
+    }
+
+    public Boolean getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Boolean birthday) {
+        this.birthday = birthday;
+    }
+
+    public Boolean getTodayLeave() {
+        return todayLeave;
+    }
+
+    public void setTodayLeave(Boolean todayLeave) {
+        this.todayLeave = todayLeave;
     }
 }

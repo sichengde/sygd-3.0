@@ -51,6 +51,6 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
     return {
         doorWrite: doorWrite,
         doorRead: doorRead,
-        doorClear: doorClear,
+        doorClear: doorClear
     }
 }]);

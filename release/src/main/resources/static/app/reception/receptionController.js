@@ -94,13 +94,13 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
         }
         return util.objectListToString(r, 'name').join(' ');
     };
-    /*判断在店户籍的生日是否是今天*/
-    $scope.checkBirthday = function (checkInGuestList) {
-        /*没有开房的房间*/
+    /*判断在店户籍的生日是否是今天，优化掉*/
+    /*$scope.checkBirthday = function (checkInGuestList) {
+        /!*没有开房的房间*!/
         if (!checkInGuestList) {
             return false;
         }
-        /*开了的有在店宾客的*/
+        /!*开了的有在店宾客的*!/
         for (var i = 0; i < checkInGuestList.length; i++) {
             var checkInGuest = checkInGuestList[i];
             if (util.dateEqualsDay(new Date(checkInGuest.birthdayTime), new Date())) {
@@ -108,15 +108,15 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
             }
         }
         return false;
-    };
-    /*判断今天是否预离*/
-    $scope.checkLeaveTime = function (leaveTime) {
+    };*/
+    /*判断今天是否预离，优化掉*/
+    /*$scope.checkLeaveTime = function (leaveTime) {
         if (util.dateEqualsDay(new Date(leaveTime), new Date())) {
             return true
         } else {
             return false;
         }
-    };
+    };*/
     /*先刷新一下*/
     $scope.refresh();
 

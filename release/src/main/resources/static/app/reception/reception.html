@@ -43,6 +43,7 @@
             <p>房态图：</p>
             <a sz-resize-state="mainState" class="icon-info-sign" title="图标"></a>
             <a sz-resize-state="mainStateLittle2" class="icon-info-sign" title="小图标" style="color: #c60000"></a>
+            <a sz-resize-state="mainStateVeryLittle" class="icon-info-sign" title="小图标" style="color: #47c60f"></a>
             <a sz-resize-state="mainStateLittle" class="little" title="颜色"></a>
             <a sz-resize-state="mainStateBig" class="big icon-adjust" title="红绿色盲"></a>
         </ul>
@@ -60,11 +61,11 @@
                 <li ng-class="r.state | roomStateEn"></li>
                 <ul class="rigtb">
                     <li class="icon-lock" ng-show="r.bookList"><span>预定</span></li>
-                    <li class="icon-heart" ng-if="checkBirthday(r.checkInGuestList)"><span>生日</span></li>
+                    <li class="icon-heart" ng-if="r.birthday"><span>生日</span></li>
                     <li class="icon-exclamation-sign" ng-if="r.checkIn.important"><span>特殊要求</span></li><!--不要-->
                     <li class="icon-star" ng-if="r.checkIn.vip"><span>贵宾标志</span></li>
                     <li class="icon-flag" ng-if="r.checkInGroup.leaderRoom==r.roomId"><span>领队标志</span></li>
-                    <li class="icon-ylbz" ng-if="checkLeaveTime(r.checkIn.leaveTime)"><span>预离标志</span></li>
+                    <li class="icon-ylbz" ng-if="r.todayLeave"><span>预离标志</span></li>
                     <li class="icon-zfbz" ng-if="r.dirty==true"><span>脏房标志</span></li>
                     <li class="icon-time" ng-show="r.checkIn.roomPriceCategory=='小时房'"><span>小时房</span></li>
                     <li class="icon-lock" style="color:#c60000" ng-show="r.todayLock"><span>锁房</span></li>

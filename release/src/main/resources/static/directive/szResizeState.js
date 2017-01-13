@@ -3,7 +3,9 @@ App.directive('szResizeState',function () {
         restrict: 'A',
         link: function (scope, ele, attr, ctr) {
             ele.on('click', function () {
-                document.getElementsByTagName("link")["pagestyle"].href = "../css/mainState/" + attr.szResizeState + ".css";
+                var href="../css/mainState/" + attr.szResizeState + ".css";
+                document.getElementsByTagName("link")["pagestyle"].href = href;
+                localStorage.setItem('mainStateCss',href);
             });
         }
     }
