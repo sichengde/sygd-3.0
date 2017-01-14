@@ -17,7 +17,16 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                 $scope.roomCategory = $scope.roomCategoryList[0];
                 $scope.roomStateList = ['全部'].concat(dataService.getRoomStateList);
                 $scope.roomState = $scope.roomStateList[0];
-                $scope.roomList = dataService.getRoomList();
+                if(!$scope.roomList) {
+                    $scope.roomList = dataService.getRoomList();
+                }else {
+                    var newRoomList=dataService.getRoomList();
+                    for (var i = 0; i < newRoomList.length; i++) {
+                        if(changedRoom($scope.roomList[i],newRoomList[i])){
+                            $scope.roomList[i]=angular.copy(newRoomList[i]);
+                        }
+                    }
+                }
                 $scope.areaList=util.objectListToString($scope.roomList, 'area');
                 $scope.floorList=util.objectListToString($scope.roomList, 'floor');
                 $scope.areaChoose=angular.copy($scope.areaList);
@@ -233,4 +242,23 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
         var room=angular.copy(r);
         receptionService.setChooseRoom(room);
     };
+    /*判断这两个对象一样不*/
+    function changedRoom(room1, room2) {
+        var hash=room1.$$hashKey;
+        var hover=room1.hover;
+        delete room1.$$hashKey;
+        delete room1.hover;
+        if(JSON.stringify(room1)==JSON.stringify(room2)){
+            room1.$$hashKey=hash;
+            room1.hover=hover;
+            return false;
+        }else {
+            return true;
+        }
+    }
+    /*测试*/
+    $scope.test=function () {
+        $scope.roomList[0]=angular.copy($scope.roomList[1]);
+    }
 }]);
+
