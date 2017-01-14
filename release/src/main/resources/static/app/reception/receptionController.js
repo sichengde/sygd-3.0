@@ -17,7 +17,7 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                 $scope.roomCategory = $scope.roomCategoryList[0];
                 $scope.roomStateList = ['全部'].concat(dataService.getRoomStateList);
                 $scope.roomState = $scope.roomStateList[0];
-                $scope.roomList = dataService.getRoomList();    
+                $scope.roomList = dataService.getRoomList();
                 $scope.areaList=util.objectListToString($scope.roomList, 'area');
                 $scope.floorList=util.objectListToString($scope.roomList, 'floor');
                 $scope.areaChoose=angular.copy($scope.areaList);
@@ -50,10 +50,15 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                     }
                 }
                 $scope.roomMessage.roomRate = $scope.roomMessage.roominUse / $scope.roomMessage.totalRoom * 100;
+                for (var i = 0; i < $scope.roomList.length; i++) {
+                    var r = $scope.roomList[i];
+                    r={};
+                }
             });
     };
     /*鼠标房态图标，根据房态智能选择弹出的窗口*/
     $scope.clickGuestIn = function (r) {
+        $scope.copyRoom();
         receptionService.setChooseRoom(angular.copy(r));
         if (r.state == '可用房' || r.state == '走客房') {
             if (dataService.getOtherParamMapValue('脏房可否开房') == 'n' && r.state == '走客房') {
@@ -164,6 +169,7 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
 
     /*点击样式，同一团队浮动*/
     $scope.receptionClick = function (r) {
+        $scope.copyRoom(r);
         if (r.checkIn) {
             angular.forEach($scope.roomList, function (item) {
                 item.hover = null;
@@ -221,5 +227,10 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
     };
     $scope.clearSourceMoveRoom=function () {
         sourceMoveRoom=null;
-    }
+    };
+    /*私有方法，进行操作前，复制当前对象*/
+    $scope.copyRoom=function (r) {
+        var room=angular.copy(r);
+        receptionService.setChooseRoom(room);
+    };
 }]);

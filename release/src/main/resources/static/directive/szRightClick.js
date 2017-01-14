@@ -2,14 +2,15 @@
  * Created by Administrator on 2016-04-25.
  * scope----
  * rightClickParam:加一个参数
+ * beforeFun:前置方法
  */
 App.directive('szRightClick', ['$window', function ($window) {
     return {
         restrict: 'A',
         scope: {
-            rightClickParam:'='
+            rightClickParam: '=?'
         },
-        controller: ['$scope','popUpService', function ($scope,popUpService) {
+        controller: ['$scope', 'popUpService', function ($scope, popUpService) {
             function mouseCoords(ev) {
                 if (ev.pageX || ev.pageY) {
                     return {x: ev.pageX, y: ev.pageY};
@@ -20,8 +21,8 @@ App.directive('szRightClick', ['$window', function ($window) {
                 };
             }
 
-            this.rightClick = function (event,popName) {
-                if(popName==''||!popName){
+            this.rightClick = function (event, popName) {
+                if (popName == '' || !popName) {
                     return;
                 }
                 event.preventDefault();
@@ -30,36 +31,56 @@ App.directive('szRightClick', ['$window', function ($window) {
                     left: mousePos.x,
                     top: mousePos.y,
                     display: 'block',
-                    position:'absolute',
-                    zIndex:'999'
-                },null,$scope.rightClickParam);
+                    position: 'absolute',
+                    zIndex: '999'
+                }, null, $scope.rightClickParam);
             };
         }],
         link: function ($scope, element, attr, controller) {
-            if(!attr.szRightClick){
+            if (!attr.szRightClick) {
                 return
             }
             element.bind('contextmenu', function (event) {
                 event.preventDefault();
                 $scope.$apply(function () {
-                    controller.rightClick(event,attr.szRightClick);
+                    controller.rightClick(event, attr.szRightClick);
                 });
                 var bodyWidth = document.body.offsetWidth;
                 var rdiv = angular.element(".rightClickBox");
                 var rleft = rdiv.offset().left;
-                var rright = bodyWidth-rleft;
+                var rright = bodyWidth - rleft;
                 var num1 = rdiv.find("li").length;
                 var num2 = rdiv.find("li.ng-hide").length;
-                var num = num1-num2;
-                if(num>5){
-                    rdiv.css("width","300px");
-                    if(rright<300){
-                        rdiv.css("margin-left","-300px");
+                var num = num1 - num2;
+                if (num > 5) {
+                    rdiv.css("width", "300px");
+                    if (rright < 300) {
+                        rdiv.css("margin-left", "-300px");
                     }
                 }
-                else
-                {return};
+                else {
+                    return
+                }
             });
         }
     };
+}]);
+/*右键的时候设置房间对象*/
+App.directive('szRightClickRoomState', [function () {
+    return {
+        restrict: 'A',
+        controller: ['$scope', function ($scope) {
+            this.rightClick = function () {
+                $scope.copyRoom($scope.r);
+            }
+        }],
+        link: function ($scope, element, attr, controller) {
+            element.bind('contextmenu', function (event) {
+                event.preventDefault();
+                $scope.$apply(function () {
+                    controller.rightClick();
+                });
+            });
+        }
+    }
 }]);

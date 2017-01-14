@@ -10,6 +10,7 @@
     margin: 2px 0 2px 5px;
     font-size: 12px;
     font-weight: 900;
+    font-weight: 900;
     line-height: 20px;
 }
 .mainRoomState li .hoverDiv { display: none;}
@@ -202,4 +203,4 @@
 .roomStateLabel p i.shMan  { width: 25px; background: url("../../images/man.png") no-repeat -19px 8px; background-size: 40px;}
 
 /*压缩标签*/
-.saixuanbox { margin :0 0 0 20px; font-size: 14px; height: auto; padding-top:20px}
+.saixuanbox { margin: 0 0 0 20px; font-size: 14px; height: auto; padding-top:20px}

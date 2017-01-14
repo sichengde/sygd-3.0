@@ -50,48 +50,10 @@
     </div>
     <!--Filter end-->
 
-    <!--房态预览 begin-->
+    <!--房态预览 begin ，优化步骤，directive添加浮动和图表，去掉filter，去掉浮动（改成单击），去掉进入就显示-->
     <ul class="mainRoomState">
-        <li class="roomState {{r.hover}}" ng-repeat="r in roomList | room: roomState:roomCategory:null:null:areaChoose:floorChoose"
-            ng-dblclick="clickGuestIn(r)" ng-click="receptionClick(r)" sz-right-click="rightClickRoom" ng-mouseenter="mouseEnter(r)" sz-hover-room ng-mousedown="chooseSource(r)" ng-mouseup="chooseTarget(r)">
-            <ul>
-                <li ng-bind="r.roomId"></li>
-                <li ng-bind="r.category"></li>
-                <li><b ng-show="r.checkIn">￥{{r.checkIn.consume*1-r.checkIn.deposit*1}}</b>{{guestName(r.checkInGuestList)}}</li>
-                <li ng-class="r.state | roomStateEn"></li>
-                <ul class="rigtb">
-                    <li class="icon-lock" ng-show="r.bookList"><span>预定</span></li>
-                    <li class="icon-heart" ng-if="r.birthday"><span>生日</span></li>
-                    <li class="icon-exclamation-sign" ng-if="r.checkIn.important"><span>特殊要求</span></li><!--不要-->
-                    <li class="icon-star" ng-if="r.checkIn.vip"><span>贵宾标志</span></li>
-                    <li class="icon-flag" ng-if="r.checkInGroup.leaderRoom==r.roomId"><span>领队标志</span></li>
-                    <li class="icon-ylbz" ng-if="r.todayLeave"><span>预离标志</span></li>
-                    <li class="icon-zfbz" ng-if="r.dirty==true"><span>脏房标志</span></li>
-                    <li class="icon-time" ng-show="r.checkIn.roomPriceCategory=='小时房'"><span>小时房</span></li>
-                    <li class="icon-lock" style="color:#c60000" ng-show="r.todayLock"><span>锁房</span></li>
-                    <li class="icon-home" style="color:#ff542e" ng-show="r.longRoom"><span>长包房</span></li>
-                </ul>
-            </ul>
-            <div class="hoverDiv" ng-show="r.state">
-                <ul style="margin-bottom: 12px;" ng-show="r.checkIn">
-                    <li ng-show="r.checkIn" class="krName"><b>{{guestName(r.checkInGuestList)}}</b></li>
-                    <li ng-show="r.checkIn" class="kyName"><b>{{r.checkIn.guestSource}}</b></li>
-                    <li ng-show="r.checkIn" class="qkNumber"><b>房间欠款：￥{{r.checkIn.consume*1-r.checkIn.deposit*1}}</b></li>
-                    <li ng-show="r.checkInGroup" class="qkNumber"><b>团队欠款：￥{{r.checkInGroup.consume*1-r.checkInGroup.deposit*1}}</b></li>
-                    <div class="clear"></div>
-                </ul>
-                <ul>
-                    <li ng-show="r.state=='走客房'"><b>离店时间：</b>{{r.checkOutTime|date:'yyyy-MM-dd HH:mm:ss'}}</li>
-                    <li ng-show="r.checkIn"><b>抵店日期：</b>{{r.checkIn.reachTime|date:'yyyy-MM-dd HH:mm:ss'}}</li>
-                    <li ng-show="r.checkIn"><b>预离日期：</b>{{r.checkIn.leaveTime|date:'yyyy-MM-dd HH:mm:ss'}}</li>
-                    <li ng-show="r.checkInGroup"><b>团名：</b>{{r.checkInGroup.name}}</li>
-                    <li ng-repeat="r2 in r.bookList" style="width: 520px"><b ng-style="{color: '#ef9d00'}">预订号：</b>{{r2.bookSerial}} &nbsp; <b>来期：</b>{{r2.reachTime|date:'yyyy-MM-dd HH:mm:ss'}} &nbsp; <b>团名：</b>{{r2.name}}</li>
-                    <li ng-show="r.state=='维修房'"><b>维修原因：{{r.repairReason}}</b></li>
-                    <li ng-show="r.state=='维修房'"><b>预计完工：{{r.repairTime | date:'yyyy-MM-dd HH:mm:ss'}}</b></li>
-                    <li ng-show="r.todayLock"><b>锁房原因：</b>{{r.todayLock}}</li>
-                    <div class="clear"></div>
-                </ul>
-            </div>
+        <li class="roomState" ng-class="r.hover" ng-repeat="r in roomList | room: roomState:roomCategory:null:null:areaChoose:floorChoose"
+            ng-dblclick="clickGuestIn(r)" ng-click="receptionClick(r)" sz-right-click="rightClickRoom" sz-right-click-room-state sz-hover-room ng-mousedown="chooseSource(r)" ng-mouseup="chooseTarget(r)" sz-state-icon>
         </li>
     </ul>
     <!--房态预览 end-->
@@ -101,22 +63,22 @@
         <p class="riqi">
             营业日期：{{nightDate}}
         </p>
-       <p><i class="icon-tdf"></i>团队占房</p>
-       <p><i class="icon-skf"></i>散客占房</p>
-       <p><i class="icon-kyf"></i>空房</p>
-       <p><i class="icon-zkf"></i>走客房</p>
-       <p><i class="icon-wxf"></i>坏房</p>
-       <p><i class="icon-time"></i>小时房</p>
-       <!--<p><i class="icon-czkf"></i>长包房</p>
-       <p><i class="icon-zyf"></i>自用房</p>-->
-       <p><i class="icon-lock"></i>预订房</p>
-       <p><i class="icon-ylbz"></i>预离</p>
-       <p><i class="icon-zfbz"></i>脏房</p>
-       <p><i class="icon-heart"></i>生日</p>
-       <p><i class="icon-exclamation-sign"></i>特殊要求</p>
-       <p><i class="icon-star"></i>贵宾</p>
-       <!--<p><i class="icon-laptop"></i>团购</p>-->
-       <p><i class="icon-flag"></i>领队</p>
+        <p><i class="icon-tdf"></i>团队占房</p>
+        <p><i class="icon-skf"></i>散客占房</p>
+        <p><i class="icon-kyf"></i>空房</p>
+        <p><i class="icon-zkf"></i>走客房</p>
+        <p><i class="icon-wxf"></i>坏房</p>
+        <p><i class="icon-time"></i>小时房</p>
+        <!--<p><i class="icon-czkf"></i>长包房</p>
+        <p><i class="icon-zyf"></i>自用房</p>-->
+        <p><i class="icon-lock"></i>预订房</p>
+        <p><i class="icon-ylbz"></i>预离</p>
+        <p><i class="icon-zfbz"></i>脏房</p>
+        <p><i class="icon-heart"></i>生日</p>
+        <p><i class="icon-exclamation-sign"></i>特殊要求</p>
+        <p><i class="icon-star"></i>贵宾</p>
+        <!--<p><i class="icon-laptop"></i>团购</p>-->
+        <p><i class="icon-flag"></i>领队</p>
     </div>
     <!-- 房态图标说明 end -->
 </div>
