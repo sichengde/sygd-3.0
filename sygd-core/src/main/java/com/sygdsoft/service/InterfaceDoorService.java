@@ -20,7 +20,12 @@ public class InterfaceDoorService extends BaseService<InterfaceDoor> {
     public String getRoomIdByTelId(String telId){
         InterfaceDoor interfaceDoorQuery=new InterfaceDoor();
         interfaceDoorQuery.setTelId(telId);
-        return interfaceDoorMapper.selectOne(interfaceDoorQuery).getRoomId();
+        InterfaceDoor interfaceDoor=interfaceDoorMapper.selectOne(interfaceDoorQuery);
+        if(interfaceDoor==null){
+            return "";
+        } else {
+          return interfaceDoor.getRoomId();
+        }
     }
 
     /**
