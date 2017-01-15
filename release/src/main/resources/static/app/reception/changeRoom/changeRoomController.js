@@ -30,7 +30,7 @@ App.controller('changeRoomController', ['$scope', 'dataService', 'roomFilter', '
                         if (dataService.getOtherParamMapValue('按人数发卡') == 'y') {
                             num = $scope.checkInGuestList.length;
                         }
-                        doorInterfaceService.doorWrite($scope.currentRoom.roomId, dateFilter($scope.leave, 'yyyyMMddHHmmss'), num)
+                        doorInterfaceService.doorWrite([room.roomId], dateFilter($scope.leave, 'yyyyMMddHHmmss'), [num])
                             .then(function () {
                                 popUpService.close('changeRoom');
                             })

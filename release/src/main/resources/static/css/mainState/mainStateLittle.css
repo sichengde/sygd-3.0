@@ -205,3 +205,5 @@
 .roomStateLabel p i.icon-star {background:none;color: #ff8b03;}/*贵宾图标*/
 .roomStateLabel p i.icon-laptop {background:none;color: #558018;}/*团购图标*/
 .roomStateLabel p i.icon-flag {background:none;color: #1561d2;}/*领队图标*/
+/*压缩标签*/
+.saixuanbox { margin: 0 0 0 20px; font-size: 14px; height: auto; padding-top:20px}

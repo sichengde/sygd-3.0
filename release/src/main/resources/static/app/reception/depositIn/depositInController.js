@@ -60,7 +60,7 @@ App.controller('depositInController',['$scope','dataService','receptionService',
                     if(dataService.getOtherParamMapValue('按人数发卡')=='y'){
                         num=checkInGuestList.length;
                     }
-                    doorInterfaceService.doorWrite($scope.room.roomId, dateFilter($scope.room.checkIn.leaveTime, 'yyyyMMddHHmmss'),num)
+                    doorInterfaceService.doorWrite([$scope.room.roomId], dateFilter($scope.room.checkIn.leaveTime, 'yyyyMMddHHmmss'),[num])
                 }
                 window.open(host + "/receipt/" + r);
                 popUpService.close('depositIn');

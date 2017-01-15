@@ -36,7 +36,7 @@ App.controller('checkInUpdateController',['$scope','receptionService','dataServi
                     if(dataService.getOtherParamMapValue('按人数发卡')=='y'){
                         num=checkInGuestList.length;
                     }
-                    doorInterfaceService.doorWrite($scope.room.roomId, dateFilter($scope.checkIn.leaveTime, 'yyyyMMddHHmmss'),num)
+                    doorInterfaceService.doorWrite([$scope.room.roomId], dateFilter($scope.checkIn.leaveTime, 'yyyyMMddHHmmss'),[num])
                 }
                 popUpService.close('checkInUpdate');
             });
@@ -47,7 +47,7 @@ App.controller('checkInUpdateController',['$scope','receptionService','dataServi
         if(dataService.getOtherParamMapValue('按人数发卡')=='y'){
             num=checkInGuestList.length;
         }
-        doorInterfaceService.doorWrite($scope.room.roomId, dateFilter($scope.checkIn.leaveTime, 'yyyyMMddHHmmss'),num);
+        doorInterfaceService.doorWrite([$scope.room.roomId], dateFilter($scope.checkIn.leaveTime, 'yyyyMMddHHmmss'),[num]);
     };
     /*/!*转为团队*!/
     $scope.changeToGroup=function () {

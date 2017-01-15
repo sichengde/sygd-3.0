@@ -2,7 +2,7 @@
  * Created by 舒展 on 2016-04-28.
  * 团队开房
  */
-App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host', '$filter', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host, $filter) {
+App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host', '$filter', 'dateFilter', 'readIdCardService', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host, $filter, dateFilter, readIdCardService) {
     /*用于提交的对象*/
     var guestInGroup = {};
     $scope.checkInList = [];
@@ -12,19 +12,19 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         .then(function () {
             $scope.editableRoomPrice = dataService.getOtherParamMapValue('可编辑房价') == 'y';
         });
-    $scope.checkInFields = [{name: '房号', id: 'roomId', width: '120px',static:'true'},
-        {name: '房型', id: 'roomCategory', width: '200px',static:'true'},
+    $scope.checkInFields = [{name: '房号', id: 'roomId', width: '120px', static: 'true'},
+        {name: '房型', id: 'roomCategory', width: '200px', static: 'true'},
         {name: '结算价格', id: 'finalRoomPrice', width: '150px'},
         {name: '早餐人数', id: 'breakfast', width: '100px'}];
     $scope.checkInGuestFields = [
-        {name: '房号', id: 'roomId', selectId: '2', width: '120px'},
+        {name: '房号', id: 'roomId', width: '120px', static: 'true'},
         {name: '姓名', id: 'name', width: '150px', notNull: 'true'},
         {name: '性别', id: 'sex', selectId: '0', width: '70px'},
         {name: '民族', id: 'race', width: '150px'},
         {name: '证件类型', id: 'cardType', selectId: '1', width: '150px', default: '身份证'},
         {name: '证件号码', id: 'cardId', width: '300px', notNull: 'true'},
         {name: '地址', id: 'address', width: '300px'},
-        {name: '床位', id: 'bed', width: '50px'}
+        {name: '床位', id: 'bed', width: '50px', static: 'true'}
     ];
     $scope.selectGuestList = [];
     $scope.selectGuestList[0] = dataService.getSexList;
@@ -123,7 +123,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                 $scope.checkInList.push(checkIn);
             }
         }
-        $scope.selectGuestList[2] = util.objectListToString($scope.checkInList, 'roomId');
+        $scope.checkInRoomIdList = util.objectListToString($scope.checkInList, 'roomId');
     };
     /*预定转入住*/
     $scope.bookIn = function (book) {
@@ -240,16 +240,25 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                     break;
                 }
             }
-            if(i==-1){//之前没有，那就设置为1
-                newValue[newValue.length - 1].bed=1;
+            if (i == -1) {//之前没有，那就设置为1
+                newValue[newValue.length - 1].bed = 1;
             }
+            /*checkIn里设置一个床位*/
+            util.getValueByField($scope.checkInList, 'roomId', newRoomId).totalBed = newValue[newValue.length - 1].bed;
         }
     });
     /*读身份证信息*/
-    $scope.readIdCard = function () {
-        readIdCardService.readIdCard();
-        var guestInfo = readIdCardService.getGuestInfo();
-        $scope.checkInGuestList.push(guestInfo);
+    $scope.readIdCard = function (roomId) {
+        if (!roomId) {
+            messageService.setMessage({type: 'error', content: '请先输入该宾客的房号'});
+            popUpService.pop('message');
+            return;
+        }
+        readIdCardService.readIdCard()
+            .then(function (r) {
+                r.roomId = roomId;
+                $scope.checkInGuestList.push(r);
+            });
     };
     /*开房确认*/
     $scope.guestInGroupAction = function () {
@@ -288,7 +297,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             popUpService.pop('message');
             return;
         }
-        /*验证有没有乱输入房号的，同时绑定checkIn数据，以便团队制卡*/
+        /*验证有没有乱输入房号的*/
         for (var i = 0; i < $scope.checkInGuestList.length; i++) {
             var obj = $scope.checkInGuestList[i];
             if (!obj.roomId) {
@@ -302,6 +311,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             var checkIn = $scope.checkInList[i];
             if (!util.getValueByField($scope.checkInGuestList, 'roomId', checkIn.roomId)) {
                 $scope.checkInGuestList.push({roomId: checkIn.roomId, name: '临时', cardId: '000'});
+                checkIn.totalBed = 1;
             }
         }
         /*ajax对象封装*/
@@ -324,10 +334,15 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                 if (d != -1) {
                     window.open(host + "/receipt/" + d);
                 }
-                /*弹出打印预览界面*/
-                window.location.reload();
                 /*批量制卡*/
-                doorInterfaceService.doorWrite(util.objectListToString($scope.checkInList, 'roomId'));
+                doorInterfaceService.doorWrite(util.objectListToString($scope.checkInList, 'roomId'), dateFilter(guestInGroup.checkInGroup.leaveTime, 'yyyyMMddHHmmss'), util.objectListToStringDuplicate($scope.checkInList, 'totalBed'))
+                    .then(function () {
+                        /*弹出打印预览界面*/
+                        window.location.reload();
+                    }, function () {
+                        alert('发卡失败');
+                        window.location.reload();
+                    })
             });
         watch();
         watch2();

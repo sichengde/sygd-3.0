@@ -18,7 +18,7 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
                 out += '<li class="icon-time"><span>小时房</span></li>'
             }
         }
-        if (room.checkInGroup && room.checkInGroup.leaderRoom) {
+        if (room.checkInGroup && room.checkInGroup.leaderRoom==room.roomId) {
             out += '<li class="icon-flag"><span>领队标志</span></li>'
         }
         if (room.todayLeave) {

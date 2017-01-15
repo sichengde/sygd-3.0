@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-08-08.
  */
-App.factory('readIdCardService',[function () {
+App.factory('readIdCardService',['$http',function ($http) {
     var guestInfo;
     var raceList=[];
     raceList[1] = '汉';
@@ -63,16 +63,27 @@ App.factory('readIdCardService',[function () {
     raceList[97] = '其他';
     raceList[98] = '外国血统中国籍人士';
     function readIdCard() {
-        var x = document.getElementById("Control");
-        var a=x.Msg;
-        guestInfo=$.parseJSON(a);
-        guestInfo.birthdayTime=new Date(guestInfo.year,parseInt(guestInfo.month)-1,guestInfo.day);
-        delete guestInfo.year;
-        delete guestInfo.month;
-        delete guestInfo.day;
-        guestInfo.race=raceList[guestInfo.race];
-        guestInfo.cardType='身份证';
-        guestInfo.country='中国';
+        var ip = localStorage.getItem('ip');
+        if (!ip) {
+            messageService.setMessage({type: 'error', content: '没有获取到本机ip，制卡失败，请重新登陆，或者手动在localStorage中添加ip'});
+            popUpService.pop('message');
+            return $q.reject();
+        }
+        return $http.get('http://' + ip + ':8080/readIdCard')
+            .then(function (msg) {
+                guestInfo=null;
+                if(msg.data){
+                    guestInfo=msg.data;
+                    guestInfo.birthdayTime=new Date(guestInfo.year,parseInt(guestInfo.month)-1,guestInfo.day);
+                    delete guestInfo.year;
+                    delete guestInfo.month;
+                    delete guestInfo.day;
+                    guestInfo.race=raceList[guestInfo.race];
+                    guestInfo.cardType='身份证';
+                    guestInfo.country='中国';
+                }
+                return guestInfo;
+            })
     }
     function getGuestInfo() {
         return guestInfo;

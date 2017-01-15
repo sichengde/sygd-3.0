@@ -101,7 +101,7 @@
                     </li>
                     <li>
                         <label>领队房号：</label>
-                        <select style="width: 131px;" ng-options="x for x in selectGuestList[2]" ng-model="checkInGroup.leaderRoom">
+                        <select style="width: 131px;" ng-options="x for x in checkInRoomIdList" ng-model="checkInGroup.leaderRoom">
                             <option></option>
                         </select>
                     </li>
@@ -170,7 +170,11 @@
                         <div class="huang">
                             <sz-table fields="checkInGuestFields" items="checkInGuestList" select-list="selectGuestList"></sz-table>
                         </div>
-                        <button ng-click="readIdCard()">读身份证</button>
+                        <button ng-click="readIdCard(guestRoom)">读身份证</button>
+                        <span>房号</span>
+                        <select style="width: 180px; float: none" ng-model="guestRoom"
+                                ng-options="x for x in checkInRoomIdList">
+                        </select>
                     </sz-pane>
                 </sz-tab> 
             </div>

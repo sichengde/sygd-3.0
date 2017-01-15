@@ -27,10 +27,10 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     $scope.checkInGuestSelect[0] = dataService.getSexList;
     $scope.checkInGuestSelect[1] = dataService.getCardTypeList;
     $scope.room = receptionService.getChooseRoom();
-    webService.post('getBookAlone',$scope.room.category)
+    webService.post('getBookAlone', $scope.room.category)
         .then(function (r) {
-            if(!$scope.room.bookList){
-                $scope.room.bookList=[];
+            if (!$scope.room.bookList) {
+                $scope.room.bookList = [];
             }
             $scope.roomBookList = r.concat($scope.room.bookList);//option中使用点不好使，所以在这里使用了
         });
@@ -79,7 +79,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     /*时间按钮减一天*/
     $scope.minusDay = function () {
         $scope.days = $scope.days - 1;
-        if($scope.days==0){
+        if ($scope.days == 0) {
             $scope.days++;
         }
         calculateLeaveTime();
@@ -106,18 +106,21 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     };
     /*读身份证信息*/
     $scope.readIdCard = function () {
-        /*readIdCardService.readIdCard();
-         var guestInfo = readIdCardService.getGuestInfo();
-         if (dataService.getOtherParamMapValue("客史会员") == 'y' && vipNumberList.indexOf(guestInfo.cardId) > -1) {
-         messageService.setMessage({content: '该宾客之前来过，是否启用客史房价'});
-         messageService.actionChoose()
-         .then(function () {
-         $scope.vip = util.getValueByField(dataService.getVipList(), 'vipNumber', guestInfo.cardId);
-         })
-         }
-         $scope.checkInGuestList.push(guestInfo);*/
+        readIdCardService.readIdCard()
+            .then(function (guestInfo) {
+                if (guestInfo) {
+                    if (dataService.getOtherParamMapValue("客史会员") == 'y' && vipNumberList.indexOf(guestInfo.cardId) > -1) {
+                        messageService.setMessage({content: '该宾客之前来过，是否启用客史房价'});
+                        messageService.actionChoose()
+                            .then(function () {
+                                $scope.vip = util.getValueByField(dataService.getVipList(), 'vipNumber', guestInfo.cardId);
+                            })
+                    }
+                    $scope.checkInGuestList.push(guestInfo);
+                }
+            });
         /*测试时*/
-        $scope.checkInGuestList.push({name: '舒展', cardId: '123456789012345678', bed: '1'});
+        //$scope.checkInGuestList.push({name: '舒展', cardId: '123456789012345678', bed: '1'});
     };
     /*监听单位和房租方式的的变化，从而设置房价协议*/
     var watch = $scope.$watchGroup(['roomPriceCategory', 'room.category', 'company', 'vip'], function () {
@@ -136,15 +139,17 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             newValue[newValue.length - 1].bed = newValue.length;
         }
     });
-    var watchGuest = $scope.$watch('checkInGuestList[0]',function (newValue, oldValue) {
-        if(!newValue){//户籍信息被删除并且之前的会员是通过户籍信息身份证添加的，清空会员信息
-            if($scope.vip&&$scope.vip.cardIdAdd){
-                $scope.vip=null;
+    var watchGuest = $scope.$watch('checkInGuestList[0]', function (newValue, oldValue) {
+        if (!newValue) {//户籍信息被删除并且之前的会员是通过户籍信息身份证添加的，清空会员信息
+            if ($scope.vip && $scope.vip.cardIdAdd) {
+                $scope.vip = null;
             }
-        }else {
-            if(!$scope.vip) {//没有会员信息，有宾客信息，查找会员身份证号
+        } else {
+            if (!$scope.vip) {//没有会员信息，有宾客信息，查找会员身份证号
                 $scope.vip = angular.copy(util.getValueByField(dataService.getVipList(), 'cardId', newValue.cardId));
-                $scope.vip.cardIdAdd=true;//通过身份证添加的
+                if($scope.vip) {
+                    $scope.vip.cardIdAdd = true;//通过身份证添加的
+                }
             }
         }
     });

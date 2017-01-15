@@ -2,7 +2,7 @@
  * Created by Administrator on 2016/7/27 0027.
  * 补交和退订金写在了一个html中，通过传入的参数判断
  */
-App.controller('rightClickBookController',['$scope','popUpService','doorInterfaceService','util','messageService','webService',function ($scope,popUpService,doorInterfaceService,util,messageService,webService) {
+App.controller('rightClickBookController',['$scope','popUpService','doorInterfaceService','util','messageService','webService','dateFilter','dataService',function ($scope,popUpService,doorInterfaceService,util,messageService,webService,dateFilter,dataService) {
     $scope.book=popUpService.getParam();
     if($scope.book.bookSerial){
         $scope.category='客房预订';
@@ -47,7 +47,15 @@ App.controller('rightClickBookController',['$scope','popUpService','doorInterfac
     /*提前制卡*/
     $scope.writeDoorBefore=function () {
         if($scope.book.bookRoomList.length>0) {
-            doorInterfaceService.doorWriteList(util.objectListToString($scope.book.bookRoomList, 'roomId'), $scope.book.leaveTime);
+            var num=[];
+            if (dataService.getOtherParamMapValue('按人数发卡') == 'y') {
+                num=util.objectListToStringDuplicate($scope.book.bookRoomList, 'totalBed')
+            }else {
+                for (var i = 0; i < $scope.book.bookRoomList.length; i++) {
+                    num.push(1);
+                }
+            }
+            doorInterfaceService.doorWrite(util.objectListToString($scope.book.bookRoomList, 'roomId'), dateFilter($scope.book.leaveTime,'yyyyMMddHHmmss'),num);
         }else {
             messageService.setMessage({type:'error',content:'没有具体预定的房间，请先安排房间'});
             popUpService.pop('message');

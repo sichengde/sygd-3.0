@@ -1,7 +1,7 @@
 /**
  * Created by 舒展 on 2016/6/19 0019.
  */
-App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protocolFilter', 'protocolService', 'webService', 'LoginService', 'popUpService', 'bookRoomFilter', 'messageService', 'doorInterfaceService', 'host', function ($scope, dataService, util, protocolFilter, protocolService, webService, LoginService, popUpService, bookRoomFilter, messageService, doorInterfaceService, host) {
+App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protocolFilter', 'protocolService', 'webService', 'LoginService', 'popUpService', 'bookRoomFilter', 'messageService', 'doorInterfaceService', 'host','dateFilter', function ($scope, dataService, util, protocolFilter, protocolService, webService, LoginService, popUpService, bookRoomFilter, messageService, doorInterfaceService, host,dateFilter) {
     $scope.bookList = angular.copy(dataService.getBookList());
     if (popUpService.getParam()) {
         $scope.mode = '修改';
@@ -126,11 +126,15 @@ App.controller('bookInputController', ['$scope', 'dataService', 'util', 'protoco
     };
     /*批量制卡*/
     $scope.writeCard = function () {
-        var num=1;
+        var num=[];
         if (dataService.getOtherParamMapValue('按人数发卡') == 'y') {
-            num=util.objectListToString($scope.chooseRoomList, 'totalBed').join(',')
+            num=util.objectListToStringDuplicate($scope.chooseRoomList, 'totalBed')
+        }else {
+            for (var i = 0; i < $scope.chooseRoomList.length; i++) {
+                num.push(1);
+            }
         }
-        doorInterfaceService.doorWrite(util.objectListToString($scope.chooseRoomList, 'roomId').join(','), $scope.book.leaveTime, num);
+        doorInterfaceService.doorWrite(util.objectListToString($scope.chooseRoomList, 'roomId'), dateFilter($scope.book.leaveTime,'yyyyMMddHHmmss'), num);
     };
     /*时间按钮减一天*/
     $scope.minusDay = function () {

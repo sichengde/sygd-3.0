@@ -501,7 +501,7 @@
                 id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
                 tel_id VARCHAR(20),
                 tel_time DATETIME,
-                duration INT,
+                duration INT,d
                 price DOUBLE,
                 target_number VARCHAR(20),
                 total_price DOUBLE
