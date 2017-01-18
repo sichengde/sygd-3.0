@@ -13,12 +13,11 @@ App.controller('OtherConsumeController',['$scope','webService','dataService','re
 
     $scope.addDebt=function(){
         debt.pointOfSale=$scope.pointOfSale;
+        debt.currency='挂账';
         if ($scope.manualConsume=='冲账'){
             debt.consume=-Math.abs($scope.consume);
-            debt.currency='冲账';
         }else {
             debt.consume=Math.abs($scope.consume);
-            debt.currency='杂单';
         }
         debt.description=$scope.manualConsume+':'+$scope.remark;
         debt.roomId=$scope.room.roomId;

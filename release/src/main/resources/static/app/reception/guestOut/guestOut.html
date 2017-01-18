@@ -12,7 +12,8 @@
                     <p><span>入住时间：</span>{{(checkInGroup?checkInGroup.reachTime:checkIn.reachTime) | date:'yyyy-MM-dd HH:mm:ss'}}</p>
                     <p><span>离店时间：</span>{{nowTime | date:'yyyy-MM-dd HH:mm:ss'}}</p>
                     <p><span>房租方式：</span>{{checkInGroup?checkInGroup.roomPriceCategory:checkIn.roomPriceCategory}}</p>
-                    <p ng-show="enableCancelDebtAdd"><span>加收房租：</span><input type="checkbox" ng-click="calculateDebtAdd()" ng-model="ifDebtAdd"></p>
+                    <p ng-show="enableCancelDebtAdd && !debtPayMiddleMode"><span>加收房租：</span><input type="checkbox" ng-click="calculateDebtAdd()" ng-model="ifDebtAdd"></p>
+                    <p ng-show="debtPayMiddleMode"><span>按明细结：</span><input type="checkbox" ng-model="debtPayMiddleByDetail" ng-change="changeToMiddleByDetail()"></p>
                     <!--<p ng-show="checkInGuestList.length>1"><span>按床位结：</span><input type="checkbox" ng-click="watchCheckOutByBed(true)" ng-model="checkOutByBed"></p>-->
                 </td>
             </tr>
@@ -41,7 +42,7 @@
             </tr>
         </table>
         <div>
-            <table class="tableBlueTc">
+            <table class="tableBlueTc" ng-hide="debtPayMiddleMode&&!debtPayMiddleByDetail">
                 <thead>
                 <tr style="display: block">
                     <th style="width: 50px">房号</th>
@@ -51,6 +52,7 @@
                     <th style="width: 106px">支付方式</th>
                     <th style="width: 132px">入账时间</th>
                     <th style="width: 176px">备注</th>
+                    <th style="width: 16px" ng-show="debtPayMiddleMode"></th>
                 </tr>
                 </thead>
                 <tbody style=" max-height: 150px; display: block; overflow-x: hidden; overflow-y: scroll; width:calc(100% + 15px)">
@@ -62,6 +64,7 @@
                     <td style="width: 106px" ng-bind="r.currency"></td>
                     <td style="width: 132px" ng-bind="r.doTime | date:'yyyy-MM-dd HH:mm:ss'"></td>
                     <td style="width: 176px" ng-bind="r.remark"></td>
+                    <td style="width: 16px" ng-show="debtPayMiddleMode"><input ng-show="r.consume>0" type="checkbox" ng-model="r.choose" ng-change="chooseMiddleDebt(r)"></td>
                 </tr>
                 </tbody>
             </table>
@@ -70,21 +73,24 @@
         <table class="tableBorderfff">
             <tr>
                 <td style="width: 100px;">消费金额：</td>
-                <td width="130">￥{{totalConsume}} &nbsp;&nbsp;<span class="red" ng-click="manyCurrency()" style="margin-top: 10px; cursor: pointer">+分单</span></td>
-                <td>客人预付：</td>
-                <td>￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}}</td>
+                <td width="200">
+                    <span ng-hide="debtPayMiddleMode&&!debtPayMiddleByDetail">￥{{totalConsume}} &nbsp;&nbsp;</span>
+                    <input type="text" ng-show="debtPayMiddleMode&&!debtPayMiddleByDetail" ng-model="totalConsume" ng-change="changeTotalConsume()">
+                    <span class="red" ng-click="manyCurrency()" style="margin-top: 10px; cursor: pointer">+分单</span>
+                </td>
+                <td ng-show="!debtPayMiddleMode">客人预付：</td>
+                <td ng-show="!debtPayMiddleMode">￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}}</td>
                 <td>备注：</td>
-                <td style="width: 350px;" ng-show="checkInGroup"><input type="text" style="width: 300px;" ng-model="checkInGroup.remark"></td>
-                <td style="width: 350px;" ng-show="!checkInGroup"><input type="text" style="width: 300px;" ng-model="checkInList[0].remark"></td>
+                <td style="width: 350px;"><input type="text" style="width: 300px;" ng-model="remark"></td>
             </tr>
-            <tr>
+            <tr ng-show="!debtPayMiddleMode">
                 <td width="80">现金退款：</td>
                 <td colspan="5">{{depositMessage}}</td>
             </tr>
             <tr>
-              <td colspan="6">
-                  <sz-pay></sz-pay>
-              </td>
+                <td colspan="6">
+                    <sz-pay></sz-pay>
+                </td>
             </tr>
 
         </table>
@@ -98,7 +104,7 @@
                 <input type="button" class="sbe" value="中间结算" ng-click="debtPayMiddle()">
             </div>
             <div class="fr">
-                <button class="sbe" ng-click="guestOutAction()" sz-submit sz-permission="结账">结账</button>
+                <button class="sbe" sz-submit sz-permission="结账" sz-one-click="guestOutAction()">结账</button>
                 <input type="button" class="sbe" value="明细打印" ng-click="guestOutQuery()">
             </div>
         </dl>

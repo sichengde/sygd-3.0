@@ -38,6 +38,10 @@ App.controller('deskStateController', ['$scope', 'dataService', 'util', 'LoginSe
     $scope.$on('cancelMenu', function (event, data) {
         $scope.$broadcast('cancelMenu2', data);
     });
+    /*赠菜*/
+    $scope.$on('freeMenu',function (event, data) {
+        $scope.$broadcast('freeMenu2', data);
+    });
     $scope.refresh = function () {
         var pointOfSale=LoginService.getPointOfSale();
         dataService.initData(['refreshDeskList'],[{condition:'point_of_sale='+util.wrapWithBrackets(pointOfSale)}])

@@ -32,7 +32,7 @@ public class ModuleService {
                     , "OTA订单"
             }),
             new Module("餐饮", "restaurant", new String[]{
-                    "退菜", "盘态图", "自助餐", "日志信息", "报表系统", "其他工具", "参数设置", "外卖"
+                    "退菜","赠菜", "盘态图", "自助餐", "日志信息", "报表系统", "其他工具", "参数设置", "外卖"
             }, true),
             new Module("桑拿", "sauna", new String[]{
                     "消费录入",

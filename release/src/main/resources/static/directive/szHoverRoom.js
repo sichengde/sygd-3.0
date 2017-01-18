@@ -13,7 +13,7 @@ App.directive('szHoverRoom',['$interval' , function ($interval) {
                 var right = bodyWidth-roomStateLeft;
                 var topHeight = hover.height();
                 var rightWidth = hover.width();
-                        hover.fadeIn("fast");
+                hover.toggle();
                         hover.css({top:-topHeight-25+'px'});
                         if(topHeight>roomStateTop ){
                             hover.css({top:-roomStateTop+'px'});

@@ -77,8 +77,8 @@ public class CheckOutDetailReport {
         for (DebtPay debtPay : debtPayList) {
             if (!debtPay.getPaySerial().equals(lastSerial)) {
                 lastSerial = debtPay.getPaySerial();
-                fieldTemplate = new FieldTemplate();//第一行是主账号
-                fieldTemplate.setField1("主账号");
+                fieldTemplate = new FieldTemplate();//第一行是主账号(现在改成结账时间了)
+                fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
                 if (debtPay.getGroupAccount() != null) {
                     fieldTemplate.setField2(ifNotNullGetString(debtPay.getGroupAccount()));
                     fieldTemplate.setField3("公司:" + debtPay.getCompany());
@@ -93,7 +93,7 @@ public class CheckOutDetailReport {
                 debtHistoryList=debtHistoryService.mergeDebtHistory(debtHistoryList);
                 for (DebtHistory debtHistory : debtHistoryList) {
                     fieldTemplate = new FieldTemplate();//循环输出结账明细
-                    fieldTemplate.setField1(timeService.longFormat.format(debtHistory.getDoneTime()));
+                    fieldTemplate.setField1(timeService.longFormat.format(debtHistory.getDoTime()));
                     fieldTemplate.setField4(String.valueOf(debtHistory.getConsume()));
                     fieldTemplate.setField3(debtHistory.getDescription());
                     fieldTemplate.setField5(debtHistory.getRoomId());

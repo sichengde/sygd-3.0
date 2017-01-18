@@ -6,7 +6,7 @@
                 <sz-pane title="消费明细">
                     <sz-table fields="debtFields" head="true" items="debtList" button="add update delete" right-click="rightClickDeposit" init-refresh="refreshDebtTable(f)"></sz-table>
                 </sz-pane>
-                <sz-pane title="分单明细" ng-if="param.paySerial">
+                <sz-pane title="分单明细" ng-if="param.paySerial || param.checkOutSerial">
                     <div class="huang" style="width: 300px">
                         <sz-table fields="debtPayFields" button="add update delete" search-condition="debtPayCondition"></sz-table>
                     </div>

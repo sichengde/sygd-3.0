@@ -89,6 +89,7 @@ public class RoomController {
 
     @RequestMapping(value = "roomGet")
     public List<Room> roomGet(@RequestBody Query query) throws Exception {
+        timeService.setNow();
         List<Room> roomList = roomService.get(query);
         roomService.setRoomDetail(roomList);
         return roomList;

@@ -24,7 +24,7 @@
         </sz-pane>
         <sz-pane title="退房记录" ng-if="category=='reception' || category==null">
             <div class="tableBox">
-                <sz-table fields="checkOutFields" head="true" deep-search="true" button="add update delete" max-num="200" row-click="chooseCheckOut(d)"></sz-table>
+                <sz-table fields="checkOutFields" head="true" deep-search="true" button="add update delete" max-num="200" row-click="chooseCheckOut(d)" right-click="rightClickDebt"></sz-table>
                 <div class="szSheet" style="margin-top:100px;">
                     <sz-tab>
                         <sz-pane title="客人信息">

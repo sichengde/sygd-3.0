@@ -32,6 +32,7 @@ public class DebtService extends BaseService<Debt>{
     public String roomShopIn="房吧";
     public String tel="电话费";
     public String allDayPrice="全日房费";
+    public String payMiddle="中间结算冲账";
     @Autowired
     DebtMapper debtMapper;
     @Autowired
@@ -102,6 +103,16 @@ public class DebtService extends BaseService<Debt>{
     public List<Debt> getListByRoomId(String roomId) {
         Example example = new Example(Debt.class);
         example.createCriteria().andCondition("room_id="+roomId);
+        example.orderBy("deposit").desc();
+        example.orderBy("pointOfSale");
+        example.orderBy("doTime");
+        return debtMapper.selectByExample(example);
+    }
+
+    /*刨除中间结算的冲账*/
+    public List<Debt> getListByRoomIdPure(String roomId) {
+        Example example = new Example(Debt.class);
+        example.createCriteria().andCondition("room_id="+roomId+" and ifnull(consume,0)>=0");
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");

@@ -2,7 +2,7 @@
     <dl class="tctit"><h1>点餐明细</h1></dl>
     <div class="tcDiv">
         <div class="searchDiv">
-            台号：{{desk.name}} &nbsp; 合计消费：￥{{beforePrice}} &nbsp; 人数：<input type="text" ng-model="desk.deskIn.num" style="float: none; width: 50px;">
+            台号：{{desk.name}} &nbsp; 合计消费：￥{{beforePrice}} &nbsp; 人数：<input type="text" ng-model="desk.deskIn.num" style="float: none; width: 50px;"> &nbsp; 菜品聚合：<input type="checkbox" ng-model="deskDetailGroup">
         </div>
         <!--新增菜品-->
         <sz-table fields="deskDetailFields" items="deskDetailAddList" button="add delete" right-click="rightClickDeskDetail" items-per-page="100" scroll="true"></sz-table>

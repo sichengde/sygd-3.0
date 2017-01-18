@@ -45,10 +45,10 @@ App.directive('szPay', function () {
                                     content: '有效日期为:' + dateFilter(vip.remainTime, 'yyyy-MM-dd') + ',当前时间:' + dateFilter(time, 'yyyy-MM-dd')
                                 });
                                 popUpService.pop('message');
-                            } else if (vip.remain+$scope.vipScale*vip.score<$scope.totalConsume) {//余额不足不能刷
+                            } else if (vip.remain+$scope.vipScale*vip.score<r.money) {//余额不足不能刷
                                 messageService.setMessage({
                                     type: 'error',
-                                    content: '余额为:' + vip.remain + ',积分可抵:'+$scope.vipScale*vip.score+',当前消费:' + $scope.totalConsume
+                                    content: '余额为:' + vip.remain + ',积分可抵:'+$scope.vipScale*vip.score+',当前消费:' + r.money
                                 });
                                 popUpService.pop('message');
                             } else {

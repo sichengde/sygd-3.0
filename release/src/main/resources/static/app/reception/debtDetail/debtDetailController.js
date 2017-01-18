@@ -49,21 +49,8 @@ App.controller('debtDetailController', ['$scope', 'dataService', 'util', 'recept
         webService.post('debtHistoryGetByCheckOutSerial',{data:$scope.param.checkOutSerial})
             .then(function (r) {
                 $scope.debtList=r;
-                refreshDebt();
             });
-        /*p = {condition: 'check_out_serial=' + util.wrapWithBrackets($scope.param.checkOutSerial)};
-        dataService.refreshDebtPayList(p)
-            .then(function (r) {
-
-            });
-        p = {condition: 'pay_serial=' + util.wrapWithBrackets($scope.param.paySerial)};
-        dataService.initData(['refreshDebtHistoryList'], [p])
-            .then(function () {
-                $scope.debtList = dataService.getDebtHistoryList();
-                refreshDebt();
-            });
-        $scope.debtPayCondition = 'pay_serial=' + util.wrapWithBrackets($scope.param.paySerial);
-        $scope.debtFields.push({id: 'done_time', name: '结账时间'})*/
+        $scope.debtPayCondition = 'check_out_serial=' + util.wrapWithBrackets($scope.param.checkOutSerial);
     }
     $scope.closePop = function () {
         popUpService.close('debtDetail');

@@ -100,14 +100,22 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                     });
                 break;
             case'deposit':
-                var p = {condition: ' deposit>0 and user_id= ' + util.wrapWithBrackets(userId) + ' and currency= ' + util.wrapWithBrackets(reportJson.currency) + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime)}
+                var conditionUser='';
+                if(userId){
+                    conditionUser='and user_id= '+util.wrapWithBrackets(userId)
+                }
+                var p = {condition: ' deposit>0 ' + conditionUser + ' and currency= ' + util.wrapWithBrackets(reportJson.currency) + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime)}
                 webService.post('debtIntegrationGet', p)
                     .then(function (r) {
                         popUpService.pop('debtDetail', null, null, r);
                     });
                 break;
             case 'cancelDeposit':
-                var p = {condition: ' ((deposit IS NOT NULL AND done_time IS NOT NULL ' + ' and done_time> ' + util.wrapWithBrackets(beginTime) + ' and done_time<' + util.wrapWithBrackets(endTime) + ') or (deposit<0 and done_time IS NULL ' + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime) + ' )) and user_id= ' + util.wrapWithBrackets(userId) + ' and currency= ' + util.wrapWithBrackets(reportJson.currency)}
+                var conditionUser='';
+                if(userId){
+                    conditionUser='and user_id= '+util.wrapWithBrackets(userId)
+                }
+                var p = {condition: ' ((deposit IS NOT NULL AND done_time IS NOT NULL ' + ' and done_time> ' + util.wrapWithBrackets(beginTime) + ' and done_time<' + util.wrapWithBrackets(endTime) + ') or (deposit<0 and done_time IS NULL ' + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime) + ' ))  ' + conditionUser + ' and currency= ' + util.wrapWithBrackets(reportJson.currency)}
                 webService.post('debtIntegrationGet', p)
                     .then(function (r) {
                         popUpService.pop('debtDetail', null, null, r);

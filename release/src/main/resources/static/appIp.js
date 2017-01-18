@@ -1,7 +1,7 @@
 window.szIpGoogleHost = 'http://localhost';
 angular.module("appIp", [])
-    .constant('host', 'http://10.1.31.153')//在云端时这个需要设置为空
-    .constant('hostJquery', 'http://10.1.31.153')//这个是无论如何都需要的，客户端能ping通的服务器ip
+    .constant('host', '')//在云端时这个需要设置为空
+    .constant('hostJquery', 'http://192.168.1.20')//这个是无论如何都需要的，客户端能ping通的服务器ip
     .constant('cloud', 'http://101.200.171.37')
     .constant('database', 'yujianyifenghua');
     /*.config(['$httpProvider', function ($httpProvider) {

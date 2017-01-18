@@ -10,6 +10,7 @@ public class Query {
     private Integer num;//查询数量
     private String[] orderByList;//排序（正序）
     private String[] orderByListDesc;//排序（倒序）
+    private String[] otherParam;//其他灵活参数
 
     public Query() {
     }
@@ -48,5 +49,13 @@ public class Query {
 
     public void setOrderByListDesc(String[] orderByListDesc) {
         this.orderByListDesc = orderByListDesc;
+    }
+
+    public String[] getOtherParam() {
+        return otherParam;
+    }
+
+    public void setOtherParam(String[] otherParam) {
+        this.otherParam = otherParam;
     }
 }

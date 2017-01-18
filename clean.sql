@@ -1,5 +1,6 @@
 DELETE FROM book;
 DELETE FROM book_room;
+DELETE FROM book_money;
 DELETE FROM book_room_category;
 DELETE FROM book_history;
 DELETE FROM check_in;
@@ -17,7 +18,6 @@ DELETE FROM free_detail;
 DELETE FROM lost_room;
 DELETE FROM user_log;
 DELETE FROM vip_detail;
-DELETE FROM vip;
 DELETE FROM protocol where temp=1;
 UPDATE room SET state='可用房';
 DELETE FROM serial;

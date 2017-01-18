@@ -20,6 +20,7 @@ public class UserLogService extends BaseService<UserLog> {
     public String guestIn = "散客开房";
     public String guestInGroup = "团队开房";
     public String guestOut = "散客结账";
+    public String guestOutMiddle = "中间结算";
     public String guestOutGroup = "团队结账";
     public String ZC = "杂单冲账";
     public String joinRoom = "联房";

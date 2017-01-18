@@ -18,7 +18,8 @@ import java.util.List;
 @SzMapper(id = "debtPay")
 public class DebtPayService extends BaseService<DebtPay> {
     public String ldjs = "离店结算";
-    public String zjjs = "中间结算";
+    public String zjjszdzw = "中间结算指定账务";
+    public String zjjsbzdzw = "中间结算不指定账务";
     @Autowired
     DebtPayMapper debtPayMapper;
     @Autowired

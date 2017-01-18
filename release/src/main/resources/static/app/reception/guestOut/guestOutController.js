@@ -2,7 +2,7 @@
  * Created by Administrator on 2016-04-26.
  * 离店结算
  */
-App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptionService', 'LoginService', 'popUpService', 'webService', 'roomFilter', 'host', 'doorInterfaceService', 'protocolService', 'guestOutService', '$filter', 'messageService', function ($scope, util, dataService, receptionService, LoginService, popUpService, webService, roomFilter, host, doorInterfaceService, protocolService, guestOutService, $filter, messageService) {
+App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptionService', 'LoginService', 'popUpService', 'webService', 'roomFilter', 'host', 'doorInterfaceService', 'protocolService', 'guestOutService', '$filter', 'messageService', '$q',function ($scope, util, dataService, receptionService, LoginService, popUpService, webService, roomFilter, host, doorInterfaceService, protocolService, guestOutService, $filter, messageService,$q) {
     var guestOut = {};//用于提交的对象集合
     $scope.debtList = [];//消费明细数组
     var chooseRoom = [];//结账房间（在店户籍数组）
@@ -116,7 +116,24 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                 $scope.currencyPayList = [];//sz-pay
                 $scope.currencyPayList[0] = {};
                 $scope.currencyPayList[0].currency = $scope.currencyList[0];
-                $scope.calculateDebtAdd();
+                if ($scope.debtPayMiddleMode) {
+                    $scope.debtShowList = [];
+                    totalConsumeMiddle = 0.0;
+                    for (var i = 0; i < $scope.debtList.length; i++) {
+                        var debt = $scope.debtList[i];
+                        if (debt.consume > 0) {
+                            debt.choose = true;
+                            $scope.debtShowList.push(debt);
+                            totalConsumeMiddle += debt.consume;
+                        }
+                    }
+                    /*重新设置总金额*/
+                    $scope.currencyPayList[0].money = totalConsume;
+                    $scope.totalConsume = totalConsumeMiddle;
+                }
+                else {//在非中间结算的情况下，才可以计算加收房租
+                    $scope.calculateDebtAdd();
+                }
             })
     };
     /*选择按哪个宾客结算*/
@@ -141,8 +158,68 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
         popUpService.pop('cancelDeposit', null, refreshData, {room: $scope.room.roomId});
     };
     /*中间结算*/
+    var totalConsumeMiddle;//中间结算总额
+    var totalConsumeMiddleHistory=0.0;//中间结算历史总额
     $scope.debtPayMiddle = function () {
-        popUpService.pop('debtPayMiddle', null, refreshData, {room: $scope.room.roomId});
+        if ($scope.debtPayMiddleMode) {/*已经是中间结算的模式下，取消中间结算*/
+            $scope.debtShowList = angular.copy(dataService.getDebtList());
+            $scope.calculateDebtAdd();
+            $scope.debtPayMiddleMode = false;
+        } else {/*正常结算的模式下，开启中间结算*/
+            $scope.debtPayMiddleMode = true;
+            $scope.debtPayMiddleByDetail = true;
+            $scope.debtShowList = [];
+            /*刨去加收房租，押金*/
+            var debtList = dataService.getDebtList();
+            totalConsumeMiddle = 0.0;
+            totalConsumeMiddleHistory = 0.0;
+            for (var i = 0; i < debtList.length; i++) {
+                var debt = debtList[i];
+                if (debt.consume>0) {
+                    debt.choose = true;
+                    $scope.debtShowList.push(debt);
+                    totalConsumeMiddle += debt.consume;
+                }else if(debt.consume<0){
+                    $scope.debtShowList.push(debt);
+                    totalConsumeMiddleHistory += debt.consume;
+                }
+            }
+            /*重新设置总金额*/
+            $scope.currencyPayList[0].money = totalConsumeMiddle;
+            $scope.totalConsume = totalConsumeMiddle;
+        }
+    };
+    /*中间结算改变实收款*/
+    $scope.changeTotalConsume = function () {
+        if ($scope.totalConsume > totalConsumeMiddle) {
+            messageService.setMessage({type: 'error', content: '中间结算不能大于消费总额'});
+            popUpService.pop('message');
+            $scope.totalConsume = totalConsumeMiddle;
+        } else {
+            $scope.currencyPayList[0].money = $scope.totalConsume;
+        }
+    };
+    /*中间结算设置为按照明细结算*/
+    $scope.changeToMiddleByDetail = function () {
+        if ($scope.debtPayMiddleByDetail) {
+            /*重新设置总金额*/
+            $scope.currencyPayList[0].money = totalConsumeMiddle;
+            $scope.totalConsume = totalConsumeMiddle;
+        }else {
+            $scope.currencyPayList[0].money = totalConsumeMiddle+totalConsumeMiddleHistory;
+            $scope.totalConsume = totalConsumeMiddle+totalConsumeMiddleHistory;
+        }
+
+    };
+    /*中间结算选择账务*/
+    $scope.chooseMiddleDebt = function (debt) {
+        if (debt.choose) {
+            $scope.currencyPayList[0].money += debt.consume;
+            $scope.totalConsume += debt.consume;
+        } else {
+            $scope.currencyPayList[0].money -= debt.consume;
+            $scope.totalConsume -= debt.consume;
+        }
     };
     /*读房卡*/
     $scope.readDoor = function () {
@@ -199,7 +276,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             }
             $scope.checkIn.consume = totalConsume;
             $scope.checkIn.deposit = totalDeposit;
-            $scope.totalConsume=totalConsume;
+            $scope.totalConsume = totalConsume;
             $scope.currencyPayList = [];//sz-pay
             $scope.currencyPayList[0] = {};
             $scope.currencyPayList[0].currency = $scope.currencyList[0];
@@ -298,7 +375,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                             checkIn.roomPriceCategory = '小时房';
                             continue;
                         }
-                        if(checkIn.roomPriceCategory=='日租房') {
+                        if (checkIn.roomPriceCategory == '日租房') {
                             debtAdd = {};
                             debtAdd.doTime = $scope.nowTime;
                             debtAdd.pointOfSale = '房费';
@@ -314,7 +391,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                             debtAddList.push(debtAdd);
                             $scope.debtShowList.push(debtAdd);
                             $scope.debtConsume += debtAdd.consume;
-                        }else if(checkIn.roomPriceCategory=='会议房'){//会议房要根据人头算
+                        } else if (checkIn.roomPriceCategory == '会议房') {//会议房要根据人头算
                             for (var j = 0; j < chooseRoom.checkInGuestList.length; j++) {
                                 var checkInGuest = chooseRoom.checkInGuestList[j];
                                 var debtAdd = {};
@@ -375,7 +452,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
         if (chooseRoom.length == 0) {
             messageService.setMessage({type: 'error', content: '至少要选择一个房间'});
             popUpService.pop('message');
-            return;
+            return $q.resolve();
         }
         /*判断输入的金额对不对*/
         var totalPay = 0;
@@ -384,23 +461,45 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             if (obj.money < 0) {
                 messageService.setMessage({type: 'error', content: '结账金额不可以为负数'});
                 popUpService.pop('message');
-                return;
+                return $q.resolve();
             }
             totalPay += obj.money * 1;
         }
         if (totalPay != $scope.totalConsume) {
             messageService.setMessage({type: 'error', content: '结账金额总和不等于消费额'});
             popUpService.pop('message');
-            return;
+            return $q.resolve();
         }
         guestOut.groupAccount = $scope.groupAccount;
         guestOut.currencyPayList = $scope.currencyPayList;
         guestOut.debtAddList = debtAddList;
         guestOut.remark = $scope.remark;
         guestOut.roomIdList = util.objectListToString(chooseRoom, 'roomId');
+        /*先判断是不是中间结算*/
+        if ($scope.debtPayMiddleMode) {
+            /*如果是按照明细结算*/
+            guestOut.payMoney=$scope.totalConsume;
+            if($scope.debtPayMiddleByDetail){
+                guestOut.debtList=util.getValueListByField($scope.debtShowList,'choose',true);
+            }
+            if(totalConsumeMiddle-$scope.totalConsume+totalConsumeMiddleHistory<0){
+                messageService.setMessage({type: 'error', content: '剩余消费不可小于0'});
+                popUpService.pop('message');
+                return $q.resolve();
+            }
+            return webService.post('guestOutMiddle', guestOut)
+                .then(
+                    function (d) {
+                        /*关闭该页面*/
+                        popUpService.close('guestOut');
+                        /*弹出打印预览界面*/
+                        window.open(host + "/receipt/" + d);
+                    }
+                );
+        }
         /*有卡结算判断，就是必须先注销掉门卡才能结算，只有在散客结算（也就是只有一间房时才起作用）*/
         if (dataService.getOtherParamMapValue('有卡结算') == 'y' && guestOut.roomIdList.length == 1) {
-            doorInterfaceService.doorClear(guestOut.roomIdList[0])
+            return doorInterfaceService.doorClear(guestOut.roomIdList[0])
                 .then(function () {
                     webService.post('guestOut', guestOut)
                         .then(
@@ -413,7 +512,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                         );
                 })
         } else {
-            webService.post('guestOut', guestOut)
+            return webService.post('guestOut', guestOut)
                 .then(
                     function (d) {
                         /*关闭该页面*/

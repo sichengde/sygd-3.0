@@ -8,6 +8,11 @@ App.controller('rightClickDeskDetailController',['$scope','popUpService',functio
         popUpService.close('rightClickDeskDetail');
         $scope.$emit('cancelMenu',$scope.deskDetail);
     };
+    /*赠菜*/
+    $scope.freeMenu=function () {
+        popUpService.close('rightClickDeskDetail');
+        $scope.$emit('freeMenu',$scope.deskDetail);
+    };
     /*套餐明细*/
     $scope.showFoodSet=function () {
         popUpService.close('rightClickDeskDetail');

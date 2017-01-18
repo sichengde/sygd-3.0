@@ -6,6 +6,9 @@ App.directive('szAutoClick', ['$interval','dataService','$parse', function ($int
         restrict: 'A',
         link: function (scope, element,attr,ctrl) {
             var fn = $parse(attr['ngClick']);
+            if(!fn){
+                fn=$parse(attr['szOneClick']);
+            }
             var stop;
             dataService.refreshOtherParamList()
                 .then(function () {

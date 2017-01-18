@@ -44,10 +44,10 @@ public class DeskDetailController {
     @RequestMapping(value = "deskDetailGet")
     public List<DeskDetail> deskDetailGet(@RequestBody Query query) throws Exception {
         /*判断菜品是否聚合*/
-        if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
-            /*要在排序前增加foodName*/
+        String[] var1=query.getOtherParam();
+        if(var1!=null){
             return deskDetailService.getGroupByQuery(query);
-        } else {
+        }else {
             return deskDetailService.get(query);
         }
     }

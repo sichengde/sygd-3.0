@@ -69,7 +69,7 @@ App.factory('readIdCardService',['$http',function ($http) {
             popUpService.pop('message');
             return $q.reject();
         }
-        return $http.get('http://' + ip + ':8080/readIdCard')
+        return $http.get('http://' + ip + ':8081/readIdCard')
             .then(function (msg) {
                 guestInfo=null;
                 if(msg.data){

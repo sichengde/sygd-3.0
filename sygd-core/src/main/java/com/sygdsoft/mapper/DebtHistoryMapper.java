@@ -160,7 +160,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
             "debt_history.currency currency," +
             "debt_history.remark remark," +
             "debt_history.bed bed" +
-            " FROM debt_pay LEFT JOIN debt_history on debt_pay.pay_serial=debt_history.pay_serial WHERE debt_pay.check_out_serial=#{checkOutSerial}")
+            " FROM debt_pay LEFT JOIN debt_history on debt_pay.pay_serial=debt_history.pay_serial WHERE debt_pay.check_out_serial=#{checkOutSerial} and debt_history.id is not null")
     @Results(value = {
             @Result(property = "doTime", column = "debt_history.do_time"),
             @Result(property = "pointOfSale", column = "debt_history.point_of_sale"),

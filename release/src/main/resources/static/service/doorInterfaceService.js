@@ -30,7 +30,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
             popUpService.pop('message');
             return $q.reject();
         }
-        return $http.get('http://' + ip + ':8080/writeDoor?roomId=' + doorIdList.join(',') + '&leaveTimeStr=' + leaveTime + '&num=' + num)
+        return $http.get('http://' + ip + ':8081/writeDoor?roomId=' + doorIdList.join(',') + '&leaveTimeStr=' + leaveTime + '&num=' + num)
     }
 
     function doorRead() {
@@ -40,7 +40,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
             popUpService.pop('message');
             return $q.reject();
         }
-        $http.get('http://' + ip + ':8080/readDoor');
+        $http.get('http://' + ip + ':8081/readDoor');
     }
 
     function doorClear(roomId) {

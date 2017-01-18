@@ -1,6 +1,7 @@
 <div ng-if="pop" ng-controller="rightClickDeskDetailController" class="rightClickBox">
     <ul>
         <button ng-click="cancelMenu()" ng-show="deskDetail.num>0" sz-permission="退菜" class="liButton"><i class="icon-minus-sign"></i>退菜</button>
+        <button ng-click="freeMenu()" ng-show="deskDetail.num>0&&deskDetail.num" sz-permission="赠菜" class="liButton"><i class="icon-hand-left"></i>赠菜</button>
         <!--暂时不用-->
         <!--<button ng-click="showFoodSet()" ng-show="deskDetail.foodSet" class="liButton"><i class="icon-minus-sign"></i>套餐明细</button>-->
         <div class="clear"></div>

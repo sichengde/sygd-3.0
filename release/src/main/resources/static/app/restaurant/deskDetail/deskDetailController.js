@@ -25,6 +25,9 @@ App.controller('deskDetailController', ['$scope', 'popUpService', 'dataService',
     /*初始化已点菜品*/
     function initDeskDetail() {
         var p = {condition: 'desk=' + util.wrapWithBrackets($scope.desk.name) + pointOfSale};
+        if ($scope.deskDetailGroup) {
+            p.otherParam = [1];
+        }
         dataService.initData(['refreshDeskDetailList'], [p])
             .then(function () {
                 $scope.deskDetailAddList = dataService.getDeskDetailList();
@@ -77,6 +80,21 @@ App.controller('deskDetailController', ['$scope', 'popUpService', 'dataService',
         deskDetail.cookRoom = data.cookRoom;
         deskDetail.cargo = data.cargo;
         $scope.deskDetailAddList.push(deskDetail);
+    });
+    /*监听主界面赠菜*/
+    $scope.$on('freeMenu2', function (event, data) {
+        if($scope.deskDetailGroup){
+            messageService.setMessage({type: 'error', content: '菜品聚合模式下不可以赠菜'});
+            popUpService.pop('message');
+            return ;
+        }
+        data.foodName += '/赠菜';
+        data.price = 0;
+        data.needUpdate = true;
+    });
+    /*监听主界面切换菜品聚合*/
+    $scope.$watch('deskDetailGroup',function () {
+        initDeskDetail();
     });
     /*选择折扣*/
     $scope.deskDiscountChange = function () {
