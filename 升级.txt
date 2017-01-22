@@ -506,3 +506,4 @@
                 target_number VARCHAR(20),
                 total_price DOUBLE
             );
+2017-01-22: ALTER TABLE hotel.check_in ADD group_name VARCHAR(20) NULL;

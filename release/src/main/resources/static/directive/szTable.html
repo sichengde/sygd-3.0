@@ -69,7 +69,7 @@
                     <span ng-if="r.selectId">
                         <!--自由输入，不强制选择-->
                         <span ng-if="r.freeSelect">
-                            <input ng-model="item[r.id]" ng-change="updateChoose(item,r)" placeholder="{{r.notNull?'不可为空':''}}" sz-select="selectList[r.selectId]" not-check-sz-select="parse(r.notCheckSzSelect)(item)" sz-field="r.selectListField">
+                            <input ng-model="item[r.id]" ng-change="updateChoose(item,r)" placeholder="{{r.notNull?'不可为空':''}}" sz-select="selectList[r.selectId]" sz-select-width="{{parse(r.szSelectWidth)(item)}}" not-check-sz-select="parse(r.notCheckSzSelect)(item)" sz-field="r.selectListField">
                         </span>
                         <!--弹出输入框进行复选-->
                         <input ng-if="r.popChoose" ng-click="popChoose(item,r)" ng-model="item[r.id]" readonly>
@@ -123,7 +123,7 @@
                     <span ng-if="r.selectId">
                         <!--自由输入，不强制选择-->
                         <span ng-if="r.freeSelect">
-                            <input ng-model="addItem[r.id]" ng-change="addChoose(r)" placeholder="{{r.notNull?'不可为空':''}}" sz-select="selectList[r.selectId]" not-check-sz-select="parse(r.notCheckSzSelect)(addItem)" sz-field="r.selectListField">
+                            <input ng-model="addItem[r.id]" ng-change="addChoose(r)" placeholder="{{r.notNull?'不可为空':''}}" sz-select="selectList[r.selectId]" sz-select-width="{{parse(r.szSelectWidth)(addItem)}}" not-check-sz-select="parse(r.notCheckSzSelect)(addItem)" sz-field="r.selectListField">
                         </span>
                         <!--弹出输入框进行复选-->
                         <input ng-if="r.popChoose" ng-click="popChoose(addItem,r)" ng-model="addItem[r.id]" readonly>

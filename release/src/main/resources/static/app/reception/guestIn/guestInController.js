@@ -17,7 +17,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         {name: '生日', id: 'birthdayTime', date: 'short', width: '140px'},
         {name: '性别', id: 'sex', selectId: '0', width: '60px', default: '男'},
         {name: '民族', id: 'race', width: '50px', default: '汉'},
-        {name: '国籍', id: 'country', width: '50px'},
+        {name: '国籍', id: 'country', width: '50px',selectId:'2',freeSelect:'true',selectListField:'name',szSelectWidth:'100'},
         {name: '证件类型', id: 'cardType', selectId: '1', width: '100px', notNull: 'true', default: '身份证'},
         {name: '证件号码', id: 'cardId', width: '200px', notNull: 'true'},
         {name: '地址', id: 'address', width: '310px'},
@@ -26,6 +26,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     $scope.checkInGuestSelect = [];
     $scope.checkInGuestSelect[0] = dataService.getSexList;
     $scope.checkInGuestSelect[1] = dataService.getCardTypeList;
+    $scope.checkInGuestSelect[2] = readIdCardService.getCountryList();
     $scope.room = receptionService.getChooseRoom();
     webService.post('getBookAlone', $scope.room.category)
         .then(function (r) {

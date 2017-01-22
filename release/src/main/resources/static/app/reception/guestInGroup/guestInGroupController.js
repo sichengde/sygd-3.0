@@ -279,11 +279,11 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             popUpService.pop('message');
             return;
         }
-        if ($scope.checkInGuestList.length == 0) {
+        /*if ($scope.checkInGuestList.length == 0) {
             messageService.setMessage({type: 'error', content: '至少需要一个客人信息'});
             popUpService.pop('message');
             return;
-        }
+        }*/
         if ($scope.checkInGroup.currency == '会员' && !$scope.vip) {
             messageService.setMessage({type: 'error', content: '您选择用会员余额充当押金，但还没有读取会员卡'});
             popUpService.pop('message');
@@ -313,6 +313,16 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                 $scope.checkInGuestList.push({roomId: checkIn.roomId, name: '临时', cardId: '000'});
                 checkIn.totalBed = 1;
             }
+            /*初始化信息*/
+            checkIn.reachTime = $scope.checkInGroup.reachTime;
+            checkIn.leaveTime = $scope.checkInGroup.leaveTime;
+            checkIn.guestSource = $scope.guestSource;
+            checkIn.protocol = $scope.protocol.protocol;
+            if ($scope.company) {
+                checkIn.company = $scope.company.name;
+            }
+            checkIn.vipNumber = $scope.vipNumber;
+            checkIn.groupName=$scope.checkInGroup.name;
         }
         /*ajax对象封装*/
         guestInGroup.checkInList = $scope.checkInList;

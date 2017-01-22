@@ -4,10 +4,15 @@
 App.controller('changeRoomController', ['$scope', 'dataService', 'roomFilter', 'messageService', 'webService', 'receptionService', 'popUpService', 'dateFilter', 'protocolService', 'doorInterfaceService', function ($scope, dataService, roomFilter, messageService, webService, receptionService, popUpService, dateFilter, protocolService, doorInterfaceService) {
     $scope.currentRoom = receptionService.getChooseRoom();
     $scope.editableRoomPrice = dataService.getOtherParamMapValue('可编辑房价') == 'y';
-    dataService.initData(['refreshRoomList'])
-        .then(function () {
-            $scope.roomList = roomFilter(dataService.getRoomList(), dataService.getRoomStateAvailableList(), '全部');
-        });
+    var chooseRoom=popUpService.getParam();//已经选择好的房间
+    if(chooseRoom){
+        $scope.roomList=[chooseRoom];
+    }else {
+        dataService.initData(['refreshRoomList'])
+            .then(function () {
+                $scope.roomList = roomFilter(dataService.getRoomList(), dataService.getRoomStateAvailableList(), '全部');
+            });
+    }
     if (!$scope.editableRoomPrice) {
         dataService.refreshProtocolList();
     } else {//可编辑房价的话初始化目标房价

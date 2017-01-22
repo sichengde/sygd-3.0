@@ -97,23 +97,6 @@
                 </div>
             </div>
         </sz-pane>
-        <!--<sz-pane title="房类出租表">
-            <div class="tableDiv">
-                <form id="roomCategorySaleReport" target="iframeReport" method="post">
-                    <li>
-                        时间：
-                        <input ng-model="beginTime" uib-datepicker-popup type="text" name="beginTime"
-                               value="{{beginTime | date:'yyyy-MM-dd 00:00:00'}}" class="tableTime">
-                    </li>
-                    <li style="margin-left: 0px;">至</li>
-                    <li>
-                        <input ng-model="endTime" uib-datepicker-popup type="text" name="endTime"
-                               value="{{endTime | date:'yyyy-MM-dd 24:00:00'}}" class="tableTime">
-                    </li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="roomCategorySaleReport(beginTime,endTime)" value="预览"></li>
-                </form>
-            </div>
-        </sz-pane>挪到经理查询中了-->
         <sz-pane title="单位销售员汇总">
             <div class="tableDiv">
                 <ul>
@@ -141,6 +124,9 @@
                 </ul>
                 <sz-table ng-if="saleManReportList" fields="saleManReportFields" items="saleManReportList" button="add update delete" items-per-page="20" print="单位销售员挂账汇总" query-message="queryMessageSaleManReport"></sz-table>
             </div>
+        </sz-pane>
+        <sz-pane title="单位占房">
+
         </sz-pane>
         <div class="iframeTs">
             <iframe width="1000" height="800" name="iframeReport" id="iframeReport"></iframe>

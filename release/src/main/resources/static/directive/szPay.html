@@ -23,12 +23,15 @@
                             <span ng-show="r.currencyAdd2=='积分'">查看积分</span><span ng-show="r.currencyAdd2=='余额'">查看余额</span>
                         </a>
                         <a class="fdjy" style="display: none;">
-                          <span ng-show="r.currencyAdd2=='积分'">当前积分：<font class="red">{{r.memberInfo.score}}</font><br>积分可抵：<font class="red">￥{{+r.memberInfo.score*vipScale}}元</font></span>
+                          <span ng-show="r.currencyAdd2=='积分'">当前积分：<font class="red">{{r.memberInfo.score}}</font><br>积分可抵：<font class="red">{{r.memberInfo.score*vipScale | currency :'￥'}}</font></span>
                           <span ng-show="r.currencyAdd2=='余额'">当前余额：<font class="red">￥{{r.memberInfo.remain}}</font></span>
                         </a>
                     </span>
             </p>
-            <p class="fl2" ng-show="r.currency=='转房客'"><span class="lan2">房间号：</span><input type="text" ng-model="r.currencyAdd" sz-select="roomList" style="width: 100px; float: none"></p>
+            <p class="fl2" ng-show="r.currency=='转房客'">
+                <span class="lan2">房间号：</span><input type="text" ng-model="r.currencyAdd" sz-select="roomList" sz-select-width="200" sz-field="'roomId'" style="width: 50px; float: none" ng-change="changeChooseRoom(r)">
+                <span class="lan2">当前余额：</span>{{r.chooseRoomRemain | currency:'￥'}}
+            </p>
             <p class="fl2" ng-show="r.currency=='转单位'">
                 <span class="lan2">单位名称：</span><input type="text" ng-model="r.currencyAdd1" sz-select="companyList" ng-change="changeCompany(r)" style="width: 150px; float: none"></p>
             <p class="fl2" ng-show="r.currency=='转单位'">

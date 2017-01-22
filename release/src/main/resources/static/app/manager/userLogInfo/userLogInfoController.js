@@ -35,6 +35,7 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name: '特殊要求', id: 'important', width: '100px'},
         {name: '贵宾', id: 'vip', width: '80px'},
         {name: '协议公司', id: 'company', filter: 'list', width: '150px'},
+        {name: '团队名称', id: 'groupName', filter: 'list', width: '150px'},
         {name: '开房人员', id: 'userId', width: '100px', filter: 'list', width: '100px'}
     ];
     $scope.checkInIntegrationFields=[

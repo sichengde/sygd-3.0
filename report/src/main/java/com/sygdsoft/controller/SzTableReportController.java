@@ -39,12 +39,17 @@ public class SzTableReportController {
     @RequestMapping(value = "szTableReport")
     public Integer szTableReport(@RequestBody SzTable szTable) throws Exception {
         List<FieldTemplate> fieldTemplateList = szTable.getTemplateList();
-        String[] paramHeaders=szTable.getColumnHeaders();
-        String[] paramOthers=szTable.getParameters();
+        String[] paramHeaders = szTable.getColumnHeaders();
+        String[] paramOthers = szTable.getParameters();
         String format = szTable.getFormat();
         Integer[] widthList = szTable.getWidthList();//每列的宽度都是多少
         Integer totalWidth = szTable.getTotalWidth();
-        JasperDesign design = JRXmlLoader.load("C:/report/szTable.jrxml");
+        JasperDesign design;
+        if (format.equals("pdf")) {
+            design = JRXmlLoader.load("C:/report/szTable.jrxml");
+        } else {
+            design = JRXmlLoader.load("C:/report/szTableXLS.jrxml");
+        }
         Integer pageWidth = design.getColumnWidth();//整个页面的宽度
         Integer totalColumn = widthList.length;
         JRElement[] columnHeaders = design.getColumnHeader().getElements();
@@ -67,9 +72,9 @@ public class SzTableReportController {
         }
         String[] parameters = new String[23];//szTable固定23个参数
         System.arraycopy(paramHeaders, 0, parameters, 0, totalColumn);
-        parameters[20]=paramOthers[0];
-        parameters[21]=paramOthers[1];
-        parameters[22]=paramOthers[2];
+        parameters[20] = paramOthers[0];
+        parameters[21] = paramOthers[1];
+        parameters[22] = paramOthers[2];
         JasperCompileManager.compileReportToFile(design, "C:/report/szTable.jasper");
         return reportService.generateReport(fieldTemplateList, parameters, "szTable", format);
     }

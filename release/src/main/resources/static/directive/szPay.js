@@ -15,7 +15,7 @@ App.directive('szPay', function () {
             dataService.initData(['refreshCurrencyList', 'refreshCompanyList', 'refreshVipList', 'refreshRoomList', 'refreshCompanyLordList', 'refreshFreemanList'], [{condition: 'check_out=1'}, {condition: 'if_debt=\'y\''}, {condition: 'state=\'正常\''}])
                 .then(function () {
                     /*可供选择的币种*/
-                    if(!$scope.currencyList) {
+                    if (!$scope.currencyList) {
                         $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');
                     }
                     $scope.currencyPayList[0].currency = $scope.currencyList[0];
@@ -29,7 +29,7 @@ App.directive('szPay', function () {
                     if ($scope.excludeRoom) {
                         util.deleteFromArray(roomList, 'roomId', $scope.excludeRoom);
                     }
-                    $scope.roomList = util.objectListToString(roomFilter(roomList, ['散客房', '团队房'], '全部'), 'roomId');
+                    $scope.roomList = roomFilter(roomList, ['散客房', '团队房'], '全部');
                 });
             /*读会员卡*/
             $scope.vipScale = dataService.getOtherParamMapValue('积分比率');//先确定好积分比率
@@ -45,10 +45,10 @@ App.directive('szPay', function () {
                                     content: '有效日期为:' + dateFilter(vip.remainTime, 'yyyy-MM-dd') + ',当前时间:' + dateFilter(time, 'yyyy-MM-dd')
                                 });
                                 popUpService.pop('message');
-                            } else if (vip.remain+$scope.vipScale*vip.score<r.money) {//余额不足不能刷
+                            } else if (vip.remain < r.money && $scope.vipScale * vip.score < r.money) {//余额不足不能刷
                                 messageService.setMessage({
                                     type: 'error',
-                                    content: '余额为:' + vip.remain + ',积分可抵:'+$scope.vipScale*vip.score+',当前消费:' + r.money
+                                    content: '余额为:' + vip.remain + ',积分可抵:' + $scope.vipScale * vip.score + ',当前消费:' + r.money
                                 });
                                 popUpService.pop('message');
                             } else {
@@ -63,6 +63,15 @@ App.directive('szPay', function () {
             /*选择会员积分还是余额*/
             $scope.vipPayCategory = function (r) {
                 r.currencyAdd = r.currencyAdd1 + ' ' + r.currencyAdd2;
+            };
+            /*选择房间之后显示余额*/
+            $scope.changeChooseRoom = function (r) {
+                var room=util.getValueByField($scope.roomList,'roomId',r.currencyAdd);
+                if (room.checkInGroup) {
+                    r.chooseRoomRemain = room.checkInGroup.deposit-room.checkInGroup.consume;
+                } else {
+                    r.chooseRoomRemain = room.checkIn.deposit-room.checkIn.consume;
+                }
             };
             /*选择单位之后重新筛选可签单人*/
             $scope.changeCompany = function (r) {
