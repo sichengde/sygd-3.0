@@ -14,8 +14,8 @@ import java.util.List;
  */
 @RestController
 public class RoomStateReportController {
-    @RequestMapping("roomStateReport")
+    /*@RequestMapping("roomStateReport")
     public List<RoomStateReportRow> roomStateReport(@RequestBody ReportJson reportJson){
 
-    }
+    }*/
 }
