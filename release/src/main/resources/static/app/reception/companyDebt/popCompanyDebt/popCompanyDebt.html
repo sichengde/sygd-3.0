@@ -1,0 +1,10 @@
+<div class="tanchuang" style="width: 980px;" ng-if="pop" ng-controller="popCompanyDebtController" drag>
+    <dl class="tctit"><h1>单位挂账明细</h1></dl>
+    <div class="tcDiv">
+        <div class="szSheet">
+            <sz-table fields="companyDebtFields" head="true" button="add update delete" search-condition="condition"></sz-table>
+        </div>
+    </div>
+    <div class="closeBox" ng-click="closePop()">+</div>
+    <div class="drig" drag-handle></div>
+</div>

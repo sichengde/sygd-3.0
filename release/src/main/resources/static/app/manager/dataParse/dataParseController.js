@@ -23,7 +23,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
             })
     };
-    /*客源分析*/
+    /*客源人数分析*/
     $scope.guestSourceParseFields = [
         {name: '客源', id: 'guestSource'},
         {name: '人数', id: 'num'},
@@ -36,6 +36,19 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 $scope.guestSourceParseList = r.guestParseRowList;
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
                 echartService.generateChartCompare(r.guestParseRowList, r.guestParseRowListHistory, 'guestSource', 'totalConsume');
+            })
+    };
+    /*客源房类分析*/
+    $scope.guestSourceRoomCategoryParseFields = [
+        {name: '客源', id: 'guestSource'},
+        {name: '房类', id: 'roomCategory'},
+        {name: '房费总计', id: 'consume'}
+    ];
+    $scope.guestSourceRoomCategoryParseReport = function (beginTime, endTime) {
+        webService.post('guestSourceRoomCategoryParseReport', {beginTime: beginTime, endTime: endTime})
+            .then(function (r) {
+                $scope.guestSourceRoomCategoryParseList = r.guestSourceRoomCategoryRowList;
+                $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
             })
     };
     /*单位预订到达率*/

@@ -8,6 +8,8 @@ import java.util.Date;
 public class CheckInIntegration {
     private String roomId;
     private String roomCategory;
+    private String selfAccount;
+    private String guestSource;
     private Double finalRoomPrice;
     private Date reachTime;
     private Date leaveTime;
@@ -71,5 +73,21 @@ public class CheckInIntegration {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSelfAccount() {
+        return selfAccount;
+    }
+
+    public void setSelfAccount(String selfAccount) {
+        this.selfAccount = selfAccount;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 }

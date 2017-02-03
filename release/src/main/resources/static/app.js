@@ -145,7 +145,13 @@ if(typeof module === "object" && module.exports){
     createDirective(module, 'scrollGlueLeft', left);
     createDirective(module, 'scrollGlueRight', right);
 }(angular));
-var App = angular.module("appMain", ['ngRoute', 'ui.bootstrap','angular-drag','luegg.directives','appIp']);
+agGrid.LicenseManager.setLicenseKey("ag-Grid_EvaluationLicense_100Devs27_January_2018__MTUxNzAxMTIwMDAwMA==8c9dff17620c1f17c7c34cb69061acb6");
+
+// get ag-Grid to create an Angular module and register the ag-Grid directive
+agGrid.initialiseAgGridWithAngular1(angular);
+
+// create your module with ag-Grid as a dependency
+var App = angular.module("appMain", ['ngRoute', 'ui.bootstrap','angular-drag','luegg.directives','appIp','agGrid']);
 App.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.

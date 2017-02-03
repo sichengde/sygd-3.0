@@ -1,5 +1,6 @@
 package com.sygdsoft.service;
 
+import com.sygdsoft.jsonModel.report.CompanyDebtReportRow;
 import com.sygdsoft.mapper.CompanyDebtMapper;
 import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
@@ -21,12 +22,22 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     @Autowired
     CompanyDebtMapper companyDebtMapper;
 
+    /**
+     * 获得单位充值总额
+     */
     public Double getTotalCompanyDeposit(String userId, String currency, Date beginTime, Date endTime) {
         if (userId == null) {
             return companyDebtMapper.getDepositBy(currency, beginTime, endTime);
         } else {
             return companyDebtMapper.getDepositByUser(userId, currency, beginTime, endTime);
         }
+    }
+
+    /**
+     * 获得某个单位某段时间内的挂账款
+     */
+    public Double getDebtByCompanyDate(String company,Date beginTime,Date endTime){
+        return companyDebtMapper.getDebtByCompanyDate(company,beginTime,endTime);
     }
 
     /**
@@ -39,9 +50,16 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     }
 
     /**
-     * 根据销售员和时间获得各个单位的总挂账款
+     * 根据销售员和时间获得各个单位的总消费额
      */
     public List<Company> getTotalDebtBySaleManDate(String saleMan,Date beginTime,Date endTime ){
         return companyDebtMapper.getTotalDebtBySaleManDate(saleMan,beginTime,endTime );
+    }
+
+    /**
+     * 根据时间获得各个单位的总挂账款
+     */
+    public List<CompanyDebtReportRow> getTotalDebtByDate(Date beginTime,Date endTime ){
+        return companyDebtMapper.getTotalDebtByDate(beginTime,endTime);
     }
 }

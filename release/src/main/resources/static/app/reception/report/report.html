@@ -125,8 +125,29 @@
                 <sz-table ng-if="saleManReportList" fields="saleManReportFields" items="saleManReportList" button="add update delete" items-per-page="20" print="单位销售员挂账汇总" query-message="queryMessageSaleManReport"></sz-table>
             </div>
         </sz-pane>
-        <sz-pane title="单位占房">
-
+        <sz-pane title="单位欠款分析">
+            <div class="tableDiv">
+                <ul>
+                    <li>
+                        时间：
+                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li style="margin-left: 0px;">至</li>
+                    <li>
+                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyDebtReport(beginTime,endTime)" value="预览"></li>
+                </ul>
+                <sz-table ng-if="companyDebtReportList" fields="companyDebtReportFields" items="companyDebtReportList" button="add update delete" items-per-page="20" print="单位欠款分析" query-message="queryMessageSaleManReport" item-click="companyDebtReportItemClick(item,id)"></sz-table>
+            </div>
         </sz-pane>
         <div class="iframeTs">
             <iframe width="1000" height="800" name="iframeReport" id="iframeReport"></iframe>
@@ -138,3 +159,4 @@
 <sz-pop-up name="reception/debtPay/debtPay.html"></sz-pop-up>
 <sz-pop-up name="restaurant/deskDetailHistory/deskDetailHistory.html"></sz-pop-up>
 <sz-pop-up name="restaurant/deskPay/deskPay.html"></sz-pop-up>
+<sz-pop-up name="reception/companyDebt/popCompanyDebt/popCompanyDebt.html"></sz-pop-up>

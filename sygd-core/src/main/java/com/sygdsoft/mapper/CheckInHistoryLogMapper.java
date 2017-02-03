@@ -1,6 +1,7 @@
 package com.sygdsoft.mapper;
 
 import com.sygdsoft.jsonModel.GuestParseRow;
+import com.sygdsoft.jsonModel.report.GuestSourceRoomCategoryRow;
 import com.sygdsoft.model.CheckInHistoryLog;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.Param;

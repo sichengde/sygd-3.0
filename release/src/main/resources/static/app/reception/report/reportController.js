@@ -2,7 +2,7 @@
  * Created by 舒展 on 2016-06-21.
  * 报表控制器
  */
-App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'LoginService', '$route', 'webService', 'popUpService', 'dateFilter', '$window','messageService', function ($scope, host, dataService, util, LoginService, $route, webService, popUpService, dateFilter, $window,messageService) {
+App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'LoginService', '$route', 'webService', 'popUpService', 'dateFilter', '$window', 'messageService', function ($scope, host, dataService, util, LoginService, $route, webService, popUpService, dateFilter, $window, messageService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     dataService.refreshPointOfSaleList().then(function () {
@@ -13,10 +13,10 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
             $scope.exchangeUserList = dataService.getExchangeUserList();
             $scope.userList = util.objectListToString(dataService.getUserList(), 'userId');
         });
-    webService.post('sql','SELECT DISTINCT sale_man FROM company WHERE sale_man IS NOT NULL')
+    webService.post('sql', 'SELECT DISTINCT sale_man FROM company WHERE sale_man IS NOT NULL')
         .then(function (r) {
-            $scope.saleManList=r;
-            $scope.saleMan=r[0];
+            $scope.saleManList = r;
+            $scope.saleMan = r[0];
         });
     $scope.userId = LoginService.getUser();
     $scope.chooseExchangeUser = function (r) {
@@ -72,13 +72,18 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                 $scope.moneyIn = r.moneyIn;
                 $scope.moneyOut = r.moneyOut;
                 $scope.depositAll = r.depositAll;
-                $scope.remarkExchangeUser='参与统计结算款:'+$scope.payTotal+',杂单:'+$scope.moneyIn +',冲账:'+$scope.moneyOut+',在店押金:'+$scope.depositAll;
-                $scope.queryMessageExchangeUser=dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss') + '  操作员:' + (userId ? userId : '全部');
+                $scope.remarkExchangeUser = '参与统计结算款:' + $scope.payTotal + ',杂单:' + $scope.moneyIn + ',冲账:' + $scope.moneyOut + ',在店押金:' + $scope.depositAll;
+                $scope.queryMessageExchangeUser = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss') + '  操作员:' + (userId ? userId : '全部');
             })
     };
     /*小表带商品明细*/
     $scope.exchangeUserReportSmall = function (userId, beginTime, endTime, format) {
-        webService.post('exchangeUserReportSmall', {userId: userId, beginTime: beginTime, endTime: endTime, format: format})
+        webService.post('exchangeUserReportSmall', {
+            userId: userId,
+            beginTime: beginTime,
+            endTime: endTime,
+            format: format
+        })
             .then(function (r) {
                 webService.openReport(r);
             })
@@ -100,9 +105,9 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                     });
                 break;
             case'deposit':
-                var conditionUser='';
-                if(userId){
-                    conditionUser='and user_id= '+util.wrapWithBrackets(userId)
+                var conditionUser = '';
+                if (userId) {
+                    conditionUser = 'and user_id= ' + util.wrapWithBrackets(userId)
                 }
                 var p = {condition: ' deposit>0 ' + conditionUser + ' and currency= ' + util.wrapWithBrackets(reportJson.currency) + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime)}
                 webService.post('debtIntegrationGet', p)
@@ -111,9 +116,9 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                     });
                 break;
             case 'cancelDeposit':
-                var conditionUser='';
-                if(userId){
-                    conditionUser='and user_id= '+util.wrapWithBrackets(userId)
+                var conditionUser = '';
+                if (userId) {
+                    conditionUser = 'and user_id= ' + util.wrapWithBrackets(userId)
                 }
                 var p = {condition: ' ((deposit IS NOT NULL AND done_time IS NOT NULL ' + ' and done_time> ' + util.wrapWithBrackets(beginTime) + ' and done_time<' + util.wrapWithBrackets(endTime) + ') or (deposit<0 and done_time IS NULL ' + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime) + ' ))  ' + conditionUser + ' and currency= ' + util.wrapWithBrackets(reportJson.currency)}
                 webService.post('debtIntegrationGet', p)
@@ -252,41 +257,78 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
     /**
      * 房类出租表
      */
-    $scope.roomCategorySaleReport = function (beginTime,endTime) {
-        var post={};
-        post.beginTime=beginTime;
-        post.endTime=endTime;
-        webService.post('roomCategorySaleReport',post)
+    $scope.roomCategorySaleReport = function (beginTime, endTime) {
+        var post = {};
+        post.beginTime = beginTime;
+        post.endTime = endTime;
+        webService.post('roomCategorySaleReport', post)
             .then(function (r) {
-                if(r) {
+                if (r) {
                     webService.openReport(r);
-                }else {
-                    messageService.setMessage({type:'alert',content:'没有数据'});
+                } else {
+                    messageService.setMessage({type: 'alert', content: '没有数据'});
                     popUpService.pop('message');
                 }
             });
         /*document.getElementById('roomCategorySaleReport').action = host + '/roomCategorySaleReport';
-        document.getElementById('roomCategorySaleReport').submit();
-        angular.element("#iframeReport").fadeIn('slow');*/
+         document.getElementById('roomCategorySaleReport').submit();
+         angular.element("#iframeReport").fadeIn('slow');*/
     };
     /**
      * 单位营业员业务报表
      */
     /*表头*/
-    $scope.saleManReportFields=[
-        {id:'name',name:'单位名称'},
-        {id:'consume',name:'消费金额',sum:'true'}
+    $scope.saleManReportFields = [
+        {id: 'name', name: '单位名称'},
+        {id: 'consume', name: '消费金额', sum: 'true'}
     ];
     /*查询*/
-    $scope.saleManReport=function (saleMan, beginTime, endTime) {
-        var post={};
-        post.saleMan=saleMan;
-        post.beginTime=beginTime;
-        post.endTime=endTime;
-        webService.post('saleManReport',post)
+    $scope.saleManReport = function (saleMan, beginTime, endTime) {
+        var post = {};
+        post.saleMan = saleMan;
+        post.beginTime = beginTime;
+        post.endTime = endTime;
+        webService.post('saleManReport', post)
             .then(function (r) {
-                $scope.saleManReportList=r;
-                $scope.queryMessageSaleManReport=dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss') + '  销售员:' + saleMan;
+                $scope.saleManReportList = r;
+                $scope.queryMessageSaleManReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss') + '  销售员:' + saleMan;
             })
-    }
+    };
+    /**
+     * 单位欠款分析
+     */
+    $scope.companyDebtReportFields = [
+        {name: '单位名称', id: 'company'},
+        {name: '期初挂账', id: 'remain'},
+        {name: '本期挂账', id: 'debt'}
+    ];
+    $scope.companyDebtReport = function (beginTime, endTime) {
+        var post = {};
+        post.beginTime = beginTime;
+        post.endTime = endTime;
+        webService.post('companyDebtReport', post)
+            .then(function (r) {
+                $scope.companyDebtReportData = r;
+                $scope.companyDebtReportList = r.companyDebtReportRowList;
+                $scope.queryMessagecompanyDebtReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
+            })
+    };
+    /*点击查看明细*/
+    $scope.companyDebtReportItemClick = function (item, id) {
+        var reportJson = $scope.companyDebtReportData.reportJson;
+        var beginTime = dateFilter(reportJson.beginTime, 'yyyy-MM-dd HH:mm:ss');
+        var endTime = dateFilter(reportJson.endTime, 'yyyy-MM-dd HH:mm:ss');
+        var query={};
+        /*分析表头*/
+        switch (id) {
+            case 'remain':
+                var condition='company='+util.wrapWithBrackets(item.company)+' and do_time> 1990-01-31 and do_time<'+util.wrapWithBrackets(beginTime);
+                popUpService.pop('popCompanyDebt', null, null, condition);
+                break;
+            case'debt':
+                var condition='company='+util.wrapWithBrackets(item.company)+' and do_time>'+util.wrapWithBrackets(beginTime)+' and do_time<'+util.wrapWithBrackets(endTime);
+                popUpService.pop('popCompanyDebt', null, null, condition);
+                break;
+        }
+    };
 }]);

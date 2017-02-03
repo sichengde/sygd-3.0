@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.GuestParseRow;
+import com.sygdsoft.jsonModel.report.GuestSourceRoomCategoryRow;
 import com.sygdsoft.mapper.CheckInHistoryLogMapper;
 import com.sygdsoft.model.CheckInHistoryLog;
 import org.springframework.beans.factory.annotation.Autowired;
