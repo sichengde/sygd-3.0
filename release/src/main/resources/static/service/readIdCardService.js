@@ -281,6 +281,6 @@ App.factory('readIdCardService', ['$http', function ($http) {
     return {
         readIdCard: readIdCard,
         getGuestInfo: getGuestInfo,
-        getCountryList:getCountryList,
+        getCountryList:getCountryList
     }
 }]);
