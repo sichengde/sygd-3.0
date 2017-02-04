@@ -17,25 +17,26 @@
                 {headerName: "Model", field: "model"},
                 {headerName: "Price", field: "price"}
             ];
-
             var rowData = [
                 {make: "Toyota", model: "Celica", price: 35000},
                 {make: "Ford", model: "Mondeo", price: 32000},
                 {make: "Porsche", model: "Boxter", price: 72000}
             ];
-
             $scope.gridOptions = {
                 columnDefs: columnDefs,
                 //angularCompileRows: true,
                 rowData: rowData
             };
-
         }]);
+        myapp.directive('szRepeat',[function () {
+
+        }])
     </script>
 </head>
 <body ng-app="MyFilterApp">
 <div ng-controller="MyFilterController">
-    <div ag-grid="gridOptions" class="ag-fresh" style="height: 100%;"></div>
+    <!--<div ag-grid="gridOptions" class="ag-fresh" style="height: 100%;"></div>-->
+    <div ng-repeat="r in ['1','2']">{{r}}</div>
 </div>
 </body>
 </html>

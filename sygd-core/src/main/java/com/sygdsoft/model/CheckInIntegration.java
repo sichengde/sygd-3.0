@@ -10,6 +10,7 @@ public class CheckInIntegration {
     private String roomCategory;
     private String selfAccount;
     private String guestSource;
+    private String country;
     private Double finalRoomPrice;
     private Date reachTime;
     private Date leaveTime;
@@ -89,5 +90,13 @@ public class CheckInIntegration {
 
     public void setGuestSource(String guestSource) {
         this.guestSource = guestSource;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

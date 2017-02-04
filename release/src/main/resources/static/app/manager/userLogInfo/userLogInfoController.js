@@ -43,10 +43,21 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name:'房型',id:'roomCategory'},
         {name:'房价',id:'finalRoomPrice'},
         {name:'姓名',id:'name'},
+        {name:'国籍',id:'country'},
         {name:'单位',id:'company'},
         {name:'来期',id:'reachTime',filterInit:'today',filter: 'date'},
         {name:'离期',id:'leaveTime',filter: 'date'}
     ];
+    $scope.initRemark = function (data) {
+        var totalForeigner=0;
+        for (var i = 0; i < data.length; i++) {
+            var item = data[i];
+            if(item.country&&item.country!='中国'){
+                totalForeigner++;
+            }
+        }
+        $scope.checkInIntegrationRemark= '外宾人数:'+totalForeigner;
+    };
     $scope.checkOutFields = [
         {name: '主账号', exp: 'groupAccount?groupAccount:selfAccount'},
         {name: '房间号', id: 'roomId'},

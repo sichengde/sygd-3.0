@@ -97,11 +97,8 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
 
     return {
         restrict: 'A',
-        controller: ['$scope', '$compile', function ($scope, $compile) {
-            this.room = $scope.r;
-        }],
         link: function (scope, element, attr, ctr) {
-            var room = ctr.room;
+            var room = scope.r;
             var roomStateEn = roomStateEnFilter(room.state);
             var appendStr = '<ul>' +
                 '<li>' + room.roomId + '</li>' +

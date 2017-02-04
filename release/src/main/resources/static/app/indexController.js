@@ -3,7 +3,7 @@
  * 主页面控制器，初始化常用数据
  */
 
-App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webService', 'popUpService', 'util', 'dataService', 'host', 'messageService', 'hostJquery', function ($scope, $location, LoginService, webService, popUpService, util, dataService, host, messageService, hostJquery) {
+App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webService', 'popUpService', 'util', 'dataService', 'host', 'messageService', 'hostJquery','$cacheFactory', function ($scope, $location, LoginService, webService, popUpService, util, dataService, host, messageService, hostJquery,$cacheFactory) {
     /**
      * 加载就执行的部分，包括数据初始化，登录验证
      */
