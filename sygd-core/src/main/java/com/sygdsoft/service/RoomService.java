@@ -92,7 +92,7 @@ public class RoomService extends BaseService<Room> {
                 List<CheckInGuest> checkInGuestList=room.getCheckInGuestList();
                 for (CheckInGuest checkInGuest : checkInGuestList) {
                     if(timeService.dateToStringShort(checkInGuest.getBirthdayTime()).equals(timeService.getNowShort())){
-                        room.setTodayLeave(true);
+                        room.setBirthday(true);
                     }
                 }
             }
