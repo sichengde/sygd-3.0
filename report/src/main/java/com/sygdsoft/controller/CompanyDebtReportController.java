@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by 舒展 on 2017-02-03.
+ * 单位欠款分析
  */
 @RestController
 public class CompanyDebtReportController {
@@ -31,11 +32,25 @@ public class CompanyDebtReportController {
         CompanyDebtReportData companyDebtReportData = new CompanyDebtReportData();
         companyDebtReportData.setReportJson(reportJson);
         List<CompanyDebtReportRow> companyDebtReportRowList = companyDebtService.getTotalDebtByDate(beginTime, endTime);
-        endTime = beginTime;
-        beginTime = timeService.stringToDateShort("1990-01-31");
+        Date beginTimeHistory = timeService.stringToDateShort("1990-01-31");
+        Date endTimeHistory = beginTime;
         for (CompanyDebtReportRow companyDebtReportRow : companyDebtReportRowList) {
+            String companyName = companyDebtReportRow.getCompany();
             /*设置期初挂账金额*/
-            companyDebtReportRow.setRemain(companyDebtService.getDebtByCompanyDate(companyDebtReportRow.getCompany(), beginTime, endTime));
+            companyDebtReportRow.setRemain(companyDebtService.getDebtByCompanyDate(companyName, beginTimeHistory, endTimeHistory));
+            /*设置本期的发生额*/
+            companyDebtReportRow.setDebtGenerate(companyDebtService.getDebtGenerateByCompanyDate(companyName, beginTime, endTime));
+            /*设置本期回款*/
+            companyDebtReportRow.setBack(companyDebtService.getDebtBackByCompanyDate(companyName, beginTime, endTime));
+            /*设置本期房费*/
+            /*设置本期其他*/
+            CompanyDebtReportRow companyDebtReportRow1 = companyDebtService.getRoomConsumeByCompanyDate(companyName, beginTime, endTime);
+            if (companyDebtReportRow1 != null) {
+                companyDebtReportRow.setRoomConsume(companyDebtReportRow1.getRoomConsume());
+                companyDebtReportRow.setOtherConsume(companyDebtReportRow.getNotNullDebtGenerate() - companyDebtReportRow1.getNotNullRoomConsume());
+            }
+            /*设置期末余额*/
+            companyDebtReportRow.setDebt(companyDebtReportRow.getNotNullDebt()+companyDebtReportRow.getNotNullRemain());
         }
         companyDebtReportData.setCompanyDebtReportRowList(companyDebtReportRowList);
         return companyDebtReportData;

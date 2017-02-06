@@ -107,6 +107,7 @@ public class NightService {
         otherParamService.updateValueByName("上次夜审", timeService.getNowLong());
         /*设置账务时间加一天*/
         otherParamService.updateValueByName("账务日期",timeService.dateToStringShort(timeService.addDay(otherParamService.getValueByName("账务日期"),1)));
+        /*生成房类统计报表*/
         /*清除临时报表缓存*/
         reportService.clear();
     }

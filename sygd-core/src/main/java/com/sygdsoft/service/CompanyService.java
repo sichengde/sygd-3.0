@@ -78,7 +78,7 @@ public class CompanyService extends BaseService<Company>{
      */
     public String companyPay(String company, String lord, Double money, String description, String pointOfSale,String serial) throws Exception {
         Company companyObj=getByName(company);
-        companyObj.setDebt(companyObj.getDebt()+money);
+        companyObj.setDebt(companyObj.getNotNullCompanyDebt()+money);
         update(companyObj);
         companyLordService.addDebt(lord, money);
         CompanyDebt companyDebt = new CompanyDebt();

@@ -29,6 +29,9 @@ public class Company extends BaseEntity{
     public Double getNotNullCompanyPay(){
         return NullJudgement.nullToZero(deposit);
     }
+    public Double getNotNullCompanyDebt(){
+        return NullJudgement.nullToZero(debt);
+    }
 
     /**
      * 自动生成的GAS

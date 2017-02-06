@@ -44,7 +44,22 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
     /**
      * 获得某个单位某段时间内的挂账款(算进支付的)
      */
+    /*正负都算*/
     @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
     Double getDebtByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    /*只算正的*/
+    @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime} and debt>0")
+    @ResultType(Double.class)
+    Double getDebtGenerateByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    /*只算负的*/
+    @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime} and debt<0")
+    @ResultType(Double.class)
+    Double getDebtBackByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
+     * 获得某个单位某段时间内的房费和其他
+     */
+    @Select("SELECT sum(roomConsume) roomConsume FROM (SELECT cd.company, if(sum(consume) > cd.debt, cd.debt, sum(consume)) roomConsume  FROM company_debt cd LEFT JOIN debt_history dh ON cd.pay_serial = dh.pay_serial WHERE cd.do_time>#{beginTime} AND cd.do_time<#{endTime} and dh.point_of_sale='房费' GROUP BY cd.id) total WHERE total.company=#{company} GROUP BY total.company")
+    CompanyDebtReportRow getRoomConsumeByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

@@ -36,10 +36,18 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     /**
      * 获得某个单位某段时间内的挂账款
      */
+    /*正负都算*/
     public Double getDebtByCompanyDate(String company,Date beginTime,Date endTime){
         return companyDebtMapper.getDebtByCompanyDate(company,beginTime,endTime);
     }
-
+    /*只算正的*/
+    public Double getDebtGenerateByCompanyDate(String company,Date beginTime,Date endTime){
+        return companyDebtMapper.getDebtGenerateByCompanyDate(company,beginTime,endTime);
+    }
+    /*只算负的*/
+    public Double getDebtBackByCompanyDate(String company,Date beginTime,Date endTime){
+        return companyDebtMapper.getDebtBackByCompanyDate(company,beginTime,endTime);
+    }
     /**
      * 根据结账序列号删除
      */
@@ -61,5 +69,12 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
      */
     public List<CompanyDebtReportRow> getTotalDebtByDate(Date beginTime,Date endTime ){
         return companyDebtMapper.getTotalDebtByDate(beginTime,endTime);
+    }
+
+    /**
+     * 获得某个单位某段时间内的房费和其他
+     */
+    public CompanyDebtReportRow getRoomConsumeByCompanyDate(String company, Date beginTime,  Date endTime){
+        return companyDebtMapper.getRoomConsumeByCompanyDate(company,beginTime,endTime);
     }
 }
