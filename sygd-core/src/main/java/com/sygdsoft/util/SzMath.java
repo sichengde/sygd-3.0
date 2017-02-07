@@ -10,8 +10,8 @@ import java.text.NumberFormat;
  */
 @Component
 public class SzMath {
-    private DecimalFormat df = new DecimalFormat("##.00%");
-    private DecimalFormat twoDecimal = new DecimalFormat("##.00");
+    private DecimalFormat df = new DecimalFormat("##0.00%");
+    private DecimalFormat twoDecimal = new DecimalFormat("##0.00");
     private NumberFormat nt = NumberFormat.getPercentInstance();
 
     public String getPercent(Double var1, Double var2) {

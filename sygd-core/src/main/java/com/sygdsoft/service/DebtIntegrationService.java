@@ -2,6 +2,7 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.HotelParseLineRow;
 import com.sygdsoft.jsonModel.RoomCategoryLine;
+import com.sygdsoft.jsonModel.report.RoomCategoryRow;
 import com.sygdsoft.mapper.DebtIntegrationMapper;
 import com.sygdsoft.model.DebtIntegration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class DebtIntegrationService extends BaseService<DebtIntegration>{
     /**
      * 根据时间获得房类销售分析
      */
-    public List<DebtIntegration> parseRoomCategoryDebt(Date beginTime, Date endTime){
+    public List<RoomCategoryRow> parseRoomCategoryDebt(Date beginTime, Date endTime){
         return debtIntegrationMapper.parseRoomCategoryDebt(beginTime, endTime);
     }
 

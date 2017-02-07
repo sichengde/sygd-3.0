@@ -1,5 +1,7 @@
 package com.sygdsoft.model;
 
+import com.sygdsoft.jsonModel.report.RoomCategoryRow;
+
 import java.util.List;
 import java.util.Map;
 

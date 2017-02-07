@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,12 +49,16 @@ public class NightService {
     Util util;
     @Autowired
     ReportService reportService;
+    @Autowired
+    RoomStateReportService roomStateReportService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic()throws Exception{
         timeService.setNow();
         /*清除所有的当日锁房*/
-        List<Room> roomList = roomService.get(null);
+        Query query=new Query();
+        query.setOrderByList(new String[]{"category"});
+        List<Room> roomList = roomService.get(query);
         for (Room room : roomList) {
             room.setTodayLock(null);
         }
@@ -103,11 +108,63 @@ public class NightService {
         }
         deskBookService.delete(deskBookList);
         deskBookHistoryService.add(deskBookHistoryList);
+        /*生成房类统计报表*/
+        Date debtDate=timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
+        roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
+        List<RoomStateReport> roomStateReportList=new ArrayList<>();
+        String oldCategory=null;
+        Integer total=0;
+        Integer empty=0;
+        Integer repair=0;
+        Integer self=0;
+        Integer backUp=0;
+        Integer rent=0;
+        for (Room room : roomList) {//roomList在之前已经根据房类排列好了
+            /*新建一行*/
+            if(!room.getCategory().equals(oldCategory)){
+                if(oldCategory!=null){//插入之前的
+                    /*计算重复出租*/
+                    /*计算总计房租*/
+                    RoomStateReport roomStateReport=new RoomStateReport(oldCategory,total, empty, repair, self, backUp, rent,debtDate );
+                    roomStateReportList.add(roomStateReport);
+                    total=0;
+                    empty=0;
+                    repair=0;
+                    self=0;
+                    backUp=0;
+                    rent=0;
+                }
+                oldCategory=room.getCategory();
+            }
+            switch (room.getState()){
+                case "可用房":
+                case "走客房":
+                    empty++;
+                    break;
+                case "团队房":
+                case "散客房":
+                    rent++;
+                    break;
+                case "维修房":
+                    repair++;
+                    break;
+                case "自用房":
+                    self++;
+                    break;
+                case "备用房":
+                    backUp++;
+                    break;
+            }
+            total++;
+        }
+        /*最后一个插入*/
+        RoomStateReport roomStateReport=new RoomStateReport(oldCategory,total, empty, repair, self, backUp, rent,debtDate );
+        roomStateReportList.add(roomStateReport);
+        roomStateReportService.add(roomStateReportList);
         /*设置最近一次夜审时间*/
         otherParamService.updateValueByName("上次夜审", timeService.getNowLong());
         /*设置账务时间加一天*/
         otherParamService.updateValueByName("账务日期",timeService.dateToStringShort(timeService.addDay(otherParamService.getValueByName("账务日期"),1)));
-        /*生成房类统计报表*/
         /*清除临时报表缓存*/
         reportService.clear();
     }

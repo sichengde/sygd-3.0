@@ -2,6 +2,7 @@ package com.sygdsoft.mapper;
 
 import com.sygdsoft.jsonModel.HotelParseLineRow;
 import com.sygdsoft.jsonModel.RoomCategoryLine;
+import com.sygdsoft.jsonModel.report.RoomCategoryRow;
 import com.sygdsoft.util.MyMapper;
 import com.sygdsoft.model.DebtIntegration;
 import org.apache.ibatis.annotations.Param;
@@ -18,8 +19,8 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     /**
      * 根据时间获得房类销售分析
      */
-    @Select("SELECT count(*) count,sum(consume) consume,category,categoryRoom FROM (SELECT debt_integration.category category,consume,room.category categoryRoom from debt_integration LEFT JOIN room ON debt_integration.room_id=room.room_id WHERE debt_integration.category in ('全日房费','小时房费','加收房租') and debt_integration.do_time>#{beginTime} and debt_integration.do_time<#{endTime}) a GROUP BY a.category ,a.categoryRoom ORDER BY categoryRoom")
-    List<DebtIntegration> parseRoomCategoryDebt(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    @Select("SELECT  count(*)     count,  sum(consume) consume,  a.category,  a.categoryRoom,  rsr.total,  rsr.empty,  rsr.repair,  rsr.self,  rsr.backUp,  rsr.rent FROM (SELECT debt_integration.category category, consume, room.category             categoryRoom FROM debt_integration LEFT JOIN room ON debt_integration.room_id = room.room_id WHERE debt_integration.category IN ('全日房费', '小时房费', '加收房租') AND debt_integration.do_time >#{beginTime} and debt_integration.do_time<#{endTime} ) a LEFT JOIN (SELECT category, sum(total) total, sum(empty) empty, sum(repair) repair, sum(self) self, sum(back_up) backUp, sum(rent) rent FROM room_state_report WHERE report_time>=#{beginTime} and report_time<=#{endTime} GROUP BY category) rsr ON rsr.category=a.categoryRoom GROUP BY a.category ,a.categoryRoom ORDER BY categoryRoom")
+    List<RoomCategoryRow> parseRoomCategoryDebt(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 获得时间段内该房类走势
