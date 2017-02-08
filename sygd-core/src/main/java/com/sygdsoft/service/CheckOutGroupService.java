@@ -21,4 +21,5 @@ public class CheckOutGroupService extends BaseService<CheckOutGroup>{
         checkOutGroupQuery.setCheckOutSerial(checkOutSerial);
         return checkOutGroupMapper.selectOne(checkOutGroupQuery);
     }
+
 }

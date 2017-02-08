@@ -156,6 +156,7 @@ public class GuestInController {
             debt.setPointOfSale(pointOfSaleService.FF);
             debt.setDeposit(checkIn.getDeposit());
             debt.setCurrency(checkIn.getCurrency());
+            debt.setGuestSource(checkIn.getGuestSource());
             debt.setDescription("开房押金录入");
             debt.setSelfAccount(serialService.getSelfAccount());
             debt.setRoomId(checkIn.getRoomId());
@@ -190,6 +191,7 @@ public class GuestInController {
                 Debt debt = new Debt();
                 debt.setDoTime(timeService.getNow());
                 debt.setPointOfSale(pointOfSaleService.FF);
+                debt.setGuestSource(checkInGroup.getGuestSource());
                 debt.setDeposit(checkInGroup.getDeposit());
                 debt.setCurrency(checkInGroup.getCurrency());
                 debt.setDescription("团队开房押金录入");

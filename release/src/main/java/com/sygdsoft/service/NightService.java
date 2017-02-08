@@ -51,6 +51,8 @@ public class NightService {
     ReportService reportService;
     @Autowired
     RoomStateReportService roomStateReportService;
+    @Autowired
+    DebtIntegrationService debtIntegrationService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic()throws Exception{
@@ -156,6 +158,12 @@ public class NightService {
                     break;
             }
             total++;
+            /*看看有没有重复出租*/
+            List<DebtIntegration> debtIntegrationList=debtIntegrationService.get(new Query("description=\'凌晨房费\' and room_id="+util.wrapWithBrackets(room.getRoomId()) +" and do_time like "+util.wrapWithBrackets(timeService.dateToStringShort(debtDate)+"%")));
+            if(debtIntegrationList.size()>0){
+                total++;
+                rent++;
+            }
         }
         /*最后一个插入*/
         RoomStateReport roomStateReport=new RoomStateReport(oldCategory,total, empty, repair, self, backUp, rent,debtDate );

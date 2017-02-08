@@ -202,6 +202,17 @@ public class Util {
     }
 
     /**
+     * List转成字符串，带点''，中间逗号隔开，主要用于日志记录，in查询
+     */
+    public String listToStringWithPoint(List<String> stringList){
+        String out="";
+        for (String s : stringList) {
+            out+=this.wrapWithBrackets(s)+",";
+        }
+        return out.substring(0,out.length()-1);
+    }
+
+    /**
      * Array转成字符串，中间逗号隔开，主要用于日志记录，in查询
      */
     public String arrayToString(String[] stringList,boolean Brackets){

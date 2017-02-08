@@ -95,11 +95,12 @@ public class RoomCategorySaleReport {
         RoomCategoryRow roomStateSale=new RoomCategoryRow();
         String lastCategory="";
         Double totalConsumeRow=0.0;//每列一共金额
+        Double totalConsumeRowWithOutAdd=0.0;//每列一共金额(不考虑加收)
         Integer totalCountRow=0;//每列一共卖了多少次
         for (RoomCategoryRow roomCategoryRow : roomCategoryRowList) {
             if(!lastCategory.equals("")){//不等于空的话，把上一条的金额算了
-                roomStateSale.setAveragePrice(szMath.formatTwoDecimal(totalConsumeRow,roomStateSale.getRent()));
-                roomStateSale.setRevper(szMath.formatTwoDecimal(totalConsumeRow,roomStateSale.getTotal()));
+                roomStateSale.setAveragePrice(szMath.formatTwoDecimal(totalConsumeRowWithOutAdd,roomStateSale.getRent()));
+                roomStateSale.setRevper(szMath.formatTwoDecimal(totalConsumeRowWithOutAdd,roomStateSale.getTotal()));
                 roomStateSale.setAverageRent(szMath.formatTwoDecimal(roomStateSale.getRent(),roomStateSale.getTotal()));
                 roomStateSale.setTotalConsume(szMath.formatTwoDecimalReturnDouble(totalConsumeRow));
             }
@@ -110,6 +111,7 @@ public class RoomCategorySaleReport {
                 roomStateSaleList.add(roomStateSale);
             }
             if(roomCategoryRow.getCategory().equals("全日房费")){
+                totalConsumeRowWithOutAdd+=roomCategoryRow.getConsume();
                 totalConsumeRow+=roomCategoryRow.getConsume();
                 totalCountRow+=Integer.valueOf(roomCategoryRow.getCount());
                 roomStateSale.setAllDay(roomCategoryRow.getCount());
@@ -135,8 +137,8 @@ public class RoomCategorySaleReport {
             }
         }
         /*最后一行平均金额在此计算*/
-        roomStateSale.setAveragePrice(szMath.formatTwoDecimal(totalConsumeRow,roomStateSale.getRent()));
-        roomStateSale.setRevper(szMath.formatTwoDecimal(totalConsumeRow,roomStateSale.getTotal()));
+        roomStateSale.setAveragePrice(szMath.formatTwoDecimal(totalConsumeRowWithOutAdd,roomStateSale.getRent()));
+        roomStateSale.setRevper(szMath.formatTwoDecimal(totalConsumeRowWithOutAdd,roomStateSale.getTotal()));
         roomStateSale.setAverageRent(szMath.formatTwoDecimal(roomStateSale.getRent(),roomStateSale.getTotal()));
         roomStateSale.setTotalConsume(szMath.formatTwoDecimalReturnDouble(totalConsumeRow));
         return roomStateSaleList;

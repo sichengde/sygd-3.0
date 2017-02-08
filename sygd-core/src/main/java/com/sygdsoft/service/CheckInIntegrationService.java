@@ -23,4 +23,16 @@ public class CheckInIntegrationService extends BaseService<CheckInIntegration>{
     public List<GuestSourceRoomCategoryRow> guestSourceRoomCategoryParse(Date beginTime, Date endTime){
         return checkInIntegrationMapper.guestSourceRoomCategoryParse(beginTime,endTime);
     }
+    /**
+     * 获得一段时间内的总人数
+     */
+    public Integer getSumNumByDate(Date beginTime,Date endTime){
+        return checkInIntegrationMapper.getSumNumByDate(beginTime,endTime);
+    }
+    /**
+     * 获得一段时间内的外宾人数
+     */
+    public Integer getSumForeignerNumByDate(Date beginTime,Date endTime){
+        return checkInIntegrationMapper.getSumForeignerNumByDate(beginTime,endTime);
+    }
 }

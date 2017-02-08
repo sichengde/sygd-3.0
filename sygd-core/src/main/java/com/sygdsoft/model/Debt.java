@@ -27,6 +27,7 @@ public class Debt extends BaseEntity {
     private String vipNumber;//会员编号，针对于用会员余额作为押金的顾客
     private String category;//账务类别，便于在账务明细中筛选
     private String fromRoom;//从来转入的，针对于转房客，主要用于如果是餐饮的话就是餐饮的结账序列号
+    private String guestSource;//客源
 
     public Debt() {
     }
@@ -49,6 +50,7 @@ public class Debt extends BaseEntity {
         this.vipNumber=debt.getVipNumber();
         this.category=debt.getCategory();
         this.fromRoom=debt.getFromRoom();
+        this.guestSource=debt.getGuestSource();
     }
 
     public Debt(DebtHistory debtHistory){
@@ -69,6 +71,7 @@ public class Debt extends BaseEntity {
         this.vipNumber=debtHistory.getVipNumber();
         this.category=debtHistory.getCategory();
         this.fromRoom=debtHistory.getFromRoom();
+        this.guestSource=debtHistory.getGuestSource();
     }
 
     public Double getNotNullDeposit(){
@@ -216,5 +219,13 @@ public class Debt extends BaseEntity {
 
     public void setFromRoom(String fromRoom) {
         this.fromRoom = fromRoom;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 }

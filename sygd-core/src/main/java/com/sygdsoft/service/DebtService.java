@@ -60,6 +60,7 @@ public class DebtService extends BaseService<Debt>{
     public void addDebt(Debt debt) {
         CheckIn checkIn = checkInService.getByRoomId(debt.getRoomId());
         debt.setDoTime(timeService.getNow());
+        debt.setGuestSource(checkIn.getGuestSource());
         debt.setSelfAccount(checkIn.getSelfAccount());
         debt.setGroupAccount(checkIn.getGroupAccount());
         debtMapper.insert(debt);
@@ -102,7 +103,7 @@ public class DebtService extends BaseService<Debt>{
      */
     public List<Debt> getListByRoomId(String roomId) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id="+roomId);
+        example.createCriteria().andCondition("room_id="+util.wrapWithBrackets(roomId));
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");
@@ -112,7 +113,7 @@ public class DebtService extends BaseService<Debt>{
     /*刨除中间结算的冲账*/
     public List<Debt> getListByRoomIdPure(String roomId) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id="+roomId+" and ifnull(consume,0)>=0");
+        example.createCriteria().andCondition("room_id="+util.wrapWithBrackets(roomId)+" and ifnull(consume,0)>=0");
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");
@@ -142,7 +143,7 @@ public class DebtService extends BaseService<Debt>{
      * 通过条件获得押金数组(不排序，没退过的)
      */
     public List<Debt> getDepositListByRoomList(List<String> roomList) {
-        return debtMapper.getDepositListByRoomList(util.listToString(roomList));
+        return debtMapper.getDepositListByRoomList(util.listToStringWithPoint(roomList));
     }
 
     /**

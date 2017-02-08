@@ -19,6 +19,7 @@ public class CheckInHistory extends BaseEntity {
     private String bed;//床位号
     private String doorId;//绑定的房卡
     private String country;//国籍
+    private Integer num;//来店次数
     @Transient
     private String roomId;
 
@@ -141,5 +142,13 @@ public class CheckInHistory extends BaseEntity {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 }

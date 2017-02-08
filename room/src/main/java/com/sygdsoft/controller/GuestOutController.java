@@ -468,10 +468,12 @@ public class GuestOutController {
             List<String> checkInGuestCardIdList = new ArrayList<>();//准备添加的宾客信息去重
             List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(checkIn.getRoomId());
             List<CheckInHistory> checkInHistoryList = new ArrayList<>();
+            List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
             List<CheckInHistoryLog> checkInHistoryLogList = new ArrayList<>();
-            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryLogList, checkIn.getSelfAccount(), checkInGuestCardIdList);
+            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList,checkInHistoryUpdateList, checkInHistoryLogList, checkIn.getSelfAccount(), checkInGuestCardIdList);
             checkInHistoryLogService.add(checkInHistoryLogList);
             checkInHistoryService.add(checkInHistoryList);
+            checkInHistoryService.update(checkInHistoryUpdateList);
             /*离店房明细*/
             CheckOutRoom checkOutRoom = new CheckOutRoom();
             checkOutRoom.setCheckOutSerial(serialService.getCheckOutSerial());
@@ -493,18 +495,23 @@ public class GuestOutController {
     /**
      * 宾客户籍等转换，返回在店宾客姓名字符串
      */
-    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistoryLog> checkInHistoryLogList, String selfAccount, List<String> checkInGuestCardIdList) throws Exception {
+    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList,List<CheckInHistory> checkInHistoryUpdateList, List<CheckInHistoryLog> checkInHistoryLogList, String selfAccount, List<String> checkInGuestCardIdList) throws Exception {
         String guestName = "";
         for (CheckInGuest checkInGuest : checkInGuestList) {
             CheckIn checkIn = checkInService.getByRoomId(checkInGuest.getRoomId());
             guestName += checkInGuest.getName() + ",";
-            if (checkInHistoryService.getByCardId(checkInGuest.getCardId()) == null) {//如果该宾客没来过，加一条
-                if (checkInGuestCardIdList.indexOf(checkInGuest.getCardId()) == -1) {//信息去重
+            CheckInHistory checkInHistoryOld=checkInHistoryService.getByCardId(checkInGuest.getCardId());//之前来过的
+            if ( checkInHistoryOld== null) {//如果该宾客没来过，加一条
+                if (checkInGuestCardIdList.indexOf(checkInGuest.getCardId()) == -1) {//信息去重，这里只考虑录入时录入错了的情况
                     CheckInHistory checkInHistory = new CheckInHistory(checkInGuest);
                     checkInHistory.setLastTime(timeService.getNow());
+                    checkInHistory.setNum(1);
                     checkInHistoryList.add(checkInHistory);
                     checkInGuestCardIdList.add(checkInGuest.getCardId());
                 }
+            }else {//来过的话更新一下来店次数
+                checkInHistoryOld.setNum(checkInHistoryOld.getNum()+1);
+                checkInHistoryUpdateList.add(checkInHistoryOld);
             }
             CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);//来过没来过的，都在住房记录里加一条
             checkInHistoryLog.setCardId(checkInGuest.getCardId());

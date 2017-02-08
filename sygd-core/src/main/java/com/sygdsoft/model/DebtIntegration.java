@@ -23,6 +23,7 @@ public class DebtIntegration {
     private String bed;//床位号，针对查询客人消费
     private String vipNumber;//会员编号，针对于用会员余额作为押金的顾客
     private String category;//账务类别，便于在账务明细中筛选
+    private String guestSource;//客源
     @Transient
     private String count;
     @Transient
@@ -173,5 +174,13 @@ public class DebtIntegration {
 
     public void setCategoryRoom(String categoryRoom) {
         this.categoryRoom = categoryRoom;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 }

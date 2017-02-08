@@ -41,6 +41,8 @@ public class NightActionTest extends ApplicationTest{
     SzTableReportController szTableReportController;
     @Autowired
     QrCodeUtil qrCodeUtil;
+    @Autowired
+    TimeService timeService;
 
     @Test
     public void nightAction() throws Exception {
@@ -51,6 +53,14 @@ public class NightActionTest extends ApplicationTest{
     @Test
     public void testBarcodeUtil() throws IOException, WriterException {
         qrCodeUtil.generate("哈哈好使了");
+    }
+    @Test
+    public void testQuarter()throws Exception{
+        /*Date beginTime=timeService.getMinMonth(new Date());
+        Date endTime=timeService.getMaxMonth(new Date() );
+        System.out.println(beginTime);
+        System.out.println(endTime);*/
+        System.out.println(timeService.getMonthCN(new Date()));
     }
 
     @Test

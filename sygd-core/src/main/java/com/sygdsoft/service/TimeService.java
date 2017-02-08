@@ -45,7 +45,12 @@ public class TimeService {
         return shortFormat.parse(s);
     }
 
-
+    /**
+     * 加天数
+     * @param date
+     * @param days
+     * @return
+     */
     public Date addDay(Date date, Integer days) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -60,6 +65,29 @@ public class TimeService {
         return c.getTime();
     }
 
+    /**
+     * 加月数
+     */
+    public Date addMonth(String date,Integer months) throws Exception{
+        Calendar c = Calendar.getInstance();
+        c.setTime(this.stringToDateShort(date));
+        c.add(Calendar.MONTH, months);
+        return c.getTime();
+    }
+
+    public Date addMonth(Date date,Integer months) throws Exception{
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MONTH, months);
+        return c.getTime();
+    }
+
+    /**
+     * 加年数
+     * @param date
+     * @param years
+     * @return
+     */
     public Date addYear(Date date, Integer years) {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -166,6 +194,31 @@ public class TimeService {
     }
 
     /**
+     * 获得季首
+     */
+    public Date getMinQuarter(Date date) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.MONTH, (calendar.get(Calendar.MONTH) / 3) * 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return this.getMinTime(calendar.getTime());
+    }
+
+    /**
+     * 获得季末
+     * beginTime:季首
+     */
+    public Date getMaxQuarter(Date date,Date beginTime) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        Calendar startCalendar = Calendar.getInstance();
+        calendar.setTime(date);
+        startCalendar.setTime(beginTime);
+        calendar.set(Calendar.MONTH, ((int) startCalendar.get(Calendar.MONTH) / 3) * 3 + 2);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return this.getMaxTime(calendar.getTime());
+    }
+
+    /**
      * 获得年首
      */
     public Date getMinYear(Date date) throws ParseException {
@@ -185,5 +238,49 @@ public class TimeService {
         return this.getMaxTime(calendar.getTime());
     }
 
-
+    /**
+     * 获得中文月份
+     */
+    public String getMonthCN(Date date)throws Exception{
+        String m=this.dateToStringShort(date).substring(5,7);
+        switch (m){
+            case "01":
+                m="一月";
+                break;
+            case "02":
+                m="二月";
+                break;
+            case "03":
+                m="三月";
+                break;
+            case "04":
+                m="四月";
+                break;
+            case "05":
+                m="五月";
+                break;
+            case "06":
+                m="六月";
+                break;
+            case "07":
+                m="七月";
+                break;
+            case "08":
+                m="八月";
+                break;
+            case "09":
+                m="九月";
+                break;
+            case "10":
+                m="十月";
+                break;
+            case "11":
+                m="十一月";
+                break;
+            case "12":
+                m="十二月";
+                break;
+        }
+        return m;
+    }
 }
