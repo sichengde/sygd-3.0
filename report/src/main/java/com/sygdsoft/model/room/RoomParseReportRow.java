@@ -17,6 +17,7 @@ public class RoomParseReportRow {
     private Integer foreigner;//外宾
     private List<String> income;//收入数组
     private List<String> incomeTitle;//收入数组表头
+    private Integer guestSourceIndex;//从第几位开始客源分析结束
     private String total;
 
     public RoomParseReportRow() {
@@ -100,5 +101,13 @@ public class RoomParseReportRow {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public Integer getGuestSourceIndex() {
+        return guestSourceIndex;
+    }
+
+    public void setGuestSourceIndex(Integer guestSourceIndex) {
+        this.guestSourceIndex = guestSourceIndex;
     }
 }

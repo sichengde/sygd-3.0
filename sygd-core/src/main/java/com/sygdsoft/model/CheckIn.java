@@ -31,6 +31,7 @@ public class CheckIn extends BaseEntity{
     private String roomPriceCategory;//房租方式 hour---小时房，day---日租房
     private String userId;//操作员号
     private String groupName;//团队名称（如果是团队开房的话）
+    private Boolean ifRoom;//
     @Transient
     private String currency;//押金币种，其实没啥用，只是在开房时用到，因为后期补交押金可能会导致跟之前的币种不一样的情况发生
 
@@ -58,6 +59,7 @@ public class CheckIn extends BaseEntity{
         this.pay=checkInHistoryLog.getPay();
         this.roomPriceCategory=checkInHistoryLog.getRoomPriceCategory();
         this.userId=checkInHistoryLog.getUserId();
+        this.ifRoom=checkInHistoryLog.getIfRoom();
     }
 
     /**
@@ -256,5 +258,13 @@ public class CheckIn extends BaseEntity{
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public Boolean getIfRoom() {
+        return ifRoom;
+    }
+
+    public void setIfRoom(Boolean ifRoom) {
+        this.ifRoom = ifRoom;
     }
 }

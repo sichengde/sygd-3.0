@@ -76,6 +76,7 @@ public class DebtService extends BaseService<Debt>{
             debt.setDoTime(timeService.getNow());
             debt.setSelfAccount(checkIn.getSelfAccount());
             debt.setGroupAccount(checkIn.getGroupAccount());
+            debt.setGuestSource(checkIn.getGuestSource());
             this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(),debt.getDeposit());
         }
         debtMapper.insertList(debtList);

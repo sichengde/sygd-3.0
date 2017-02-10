@@ -68,6 +68,6 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     /**
      * 根据营业部门聚合消费
      */
-    @Select("SELECT sum(consume) consume FROM debt_integration WHERE do_time>#{beginTime} AND do_time<#{endTime} GROUP BY point_of_sale")
+    @Select("SELECT sum(consume) consume,count(if(consume<0,NULL ,consume)) count,point_of_sale pointOfSale FROM debt_integration WHERE do_time>#{beginTime} AND do_time<#{endTime} GROUP BY point_of_sale")
     List<DebtIntegration> getSumConsumeByDatePointOfSale(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

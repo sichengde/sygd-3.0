@@ -151,4 +151,6 @@ public class CheckInHistory extends BaseEntity {
     public void setNum(Integer num) {
         this.num = num;
     }
+
+
 }

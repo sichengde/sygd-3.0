@@ -8,6 +8,7 @@ import com.sygdsoft.mapper.BookRoomMapper;
 import com.sygdsoft.mapper.CalendarMapper;
 import com.sygdsoft.model.Calendar;
 import com.sygdsoft.model.CheckInHistory;
+import com.sygdsoft.model.DebtIntegration;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.QrCodeUtil;
 import org.junit.Test;
@@ -43,6 +44,8 @@ public class NightActionTest extends ApplicationTest{
     QrCodeUtil qrCodeUtil;
     @Autowired
     TimeService timeService;
+    @Autowired
+    DebtIntegrationService debtIntegrationService;
 
     @Test
     public void nightAction() throws Exception {
@@ -65,7 +68,7 @@ public class NightActionTest extends ApplicationTest{
 
     @Test
     public void testMapper() throws Exception {
-        deskPayService.getDeskMoneyByCurrencyDateUser(null,null,null,null);
+        List<DebtIntegration> debtIntegrationList=debtIntegrationService.getSumConsumeByDatePointOfSale(timeService.getMinYear(new Date()), timeService.getMaxYear(new Date()));
     }
 
     @Test

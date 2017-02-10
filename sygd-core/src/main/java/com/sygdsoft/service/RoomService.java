@@ -2,10 +2,7 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.RoomMapper;
-import com.sygdsoft.model.Book;
-import com.sygdsoft.model.CheckIn;
-import com.sygdsoft.model.CheckInGuest;
-import com.sygdsoft.model.Room;
+import com.sygdsoft.model.*;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +33,8 @@ public class RoomService extends BaseService<Room> {
     Util util;
     @Autowired
     OtherParamService otherParamService;
+    @Autowired
+    RoomCategoryService roomCategoryService;
 
     /**
      * 更新房态
@@ -71,6 +70,7 @@ public class RoomService extends BaseService<Room> {
      */
     public void setRoomDetail(List<Room> roomList) throws Exception {
         for (Room room : roomList) {
+            /*获取在店户籍*/
             Query query1=new Query("room_id="+util.wrapWithBrackets(room.getRoomId()));
             List<CheckIn> checkInList=checkInService.get(query1);
             Long longRoomDay= Long.valueOf(otherParamService.getValueByName("长包房天数"));
@@ -128,5 +128,14 @@ public class RoomService extends BaseService<Room> {
      */
     public List<Room> getListByRoomIdString(List<String> roomIdList){
         return roomMapper.getListByRoomIdString(util.listToString(roomIdList));
+    }
+
+    /**
+     * 联表查询参与统计的房间
+     */
+    public List<Room> getByIfRoom(){
+        Room roomQuery=new Room();
+        roomQuery.setIfRoom(true);
+        return roomMapper.select(roomQuery);
     }
 }

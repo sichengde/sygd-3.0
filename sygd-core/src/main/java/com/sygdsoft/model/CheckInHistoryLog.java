@@ -28,6 +28,7 @@ public class CheckInHistoryLog extends BaseEntity {
     private String roomPriceCategory;//房租方式 hour---小时房，day---日租房
     private String userId;//操作员号
     private String checkOutSerial;//离店结算序列号
+    private Boolean ifRoom;//
 
     public CheckInHistoryLog() {
     }
@@ -57,6 +58,7 @@ public class CheckInHistoryLog extends BaseEntity {
         this.pay=checkIn.getPay();
         this.roomPriceCategory=checkIn.getRoomPriceCategory();
         this.userId=checkIn.getUserId();
+        this.ifRoom=checkIn.getIfRoom();
     }
 
     public String getCardId() {
@@ -233,5 +235,13 @@ public class CheckInHistoryLog extends BaseEntity {
 
     public void setCheckOutSerial(String checkOutSerial) {
         this.checkOutSerial = checkOutSerial;
+    }
+
+    public Boolean getIfRoom() {
+        return ifRoom;
+    }
+
+    public void setIfRoom(Boolean ifRoom) {
+        this.ifRoom = ifRoom;
     }
 }

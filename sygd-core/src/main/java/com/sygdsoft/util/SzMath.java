@@ -119,4 +119,38 @@ public class SzMath {
         }
         return Double.valueOf(twoDecimal.format(var1 * 1.0 / (var2 * 1.0)));
     }
+
+    public Integer nullToZero(Integer integer){
+        return integer==null?0:integer;
+    }
+    public Double nullToZero(Double d){
+        return d==null?0:d;
+    }
+    public String nullToZero(String d){
+        return d==null?"0.0":d;
+    }
+    public Boolean nullToZero(Boolean d){
+        return d != null;
+    }
+    public String ifNotNullGetString(Double d){
+        if(d!=null){
+            return String.valueOf(d);
+        }else {
+            return null;
+        }
+    }
+    public String ifNotNullGetString(Integer d){
+        if(d!=null){
+            return String.valueOf(d);
+        }else {
+            return null;
+        }
+    }
+    public String ifNotNullGetString(String s){
+        if(s==null){
+            return "";
+        }else {
+            return s;
+        }
+    }
 }

@@ -10,12 +10,11 @@ public class CheckInIntegration {
     private String roomCategory;
     private String selfAccount;
     private String guestSource;
-    private String country;
     private Double finalRoomPrice;
     private Date reachTime;
     private Date leaveTime;
     private String remark;
-    private String name;
+    private Boolean ifRoom;//
 
     public CheckInIntegration() {
     }
@@ -68,13 +67,6 @@ public class CheckInIntegration {
         this.remark = remark;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getSelfAccount() {
         return selfAccount;
@@ -92,11 +84,11 @@ public class CheckInIntegration {
         this.guestSource = guestSource;
     }
 
-    public String getCountry() {
-        return country;
+    public Boolean getIfRoom() {
+        return ifRoom;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setIfRoom(Boolean ifRoom) {
+        this.ifRoom = ifRoom;
     }
 }

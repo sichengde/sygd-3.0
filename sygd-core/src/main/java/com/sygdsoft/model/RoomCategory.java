@@ -21,5 +21,4 @@ public class RoomCategory extends BaseEntity {
     public void setCategory(String category) {
         this.category = category;
     }
-
 }

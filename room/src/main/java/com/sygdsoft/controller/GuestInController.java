@@ -62,6 +62,8 @@ public class GuestInController {
     BookRoomService bookRoomService;
     @Autowired
     ProtocolService protocolService;
+    @Autowired
+    GuestMapCheckInService guestMapCheckInService;
 
     /**
      * 散客开房操作步骤
@@ -81,8 +83,8 @@ public class GuestInController {
         this.debtProcess(guestIn);
         /*转换房态*/
         this.updateRoomStateGuestOut(guestIn);
-        /*生成宾客信息*/
-        checkInGuestService.add(guestIn.getCheckInGuestList());
+        /*生成宾客对应在店表，宾客信息*/
+        this.setGuestMap(guestIn.getCheckInGuestList());
         /*如果有预订信息，则更新预订信息*/
         this.bookProcess(guestIn);
         /*创建操作员日志*/
@@ -103,6 +105,21 @@ public class GuestInController {
                 roomService.updateRoomState(checkIn.getRoomId(), roomService.group);
             }
         }
+    }
+
+    /**
+     * 生成宾客对应在店表
+     */
+    private void setGuestMap(List<CheckInGuest> checkInGuestList) throws Exception {
+        List<GuestMapCheckIn> guestMapCheckInList=new ArrayList<>();
+        for (CheckInGuest checkInGuest : checkInGuestList) {
+            GuestMapCheckIn guestMapCheckIn=new GuestMapCheckIn();
+            guestMapCheckIn.setCardId(checkInGuest.getCardId());
+            guestMapCheckIn.setSelfAccount(checkInService.getSelfAccount(checkInGuest.getRoomId()));
+            guestMapCheckInList.add(guestMapCheckIn);
+        }
+        guestMapCheckInService.add(guestMapCheckInList);
+        checkInGuestService.add(checkInGuestList);
     }
 
     /**

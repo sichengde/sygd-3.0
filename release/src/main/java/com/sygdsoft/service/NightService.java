@@ -53,6 +53,8 @@ public class NightService {
     RoomStateReportService roomStateReportService;
     @Autowired
     DebtIntegrationService debtIntegrationService;
+    @Autowired
+    CheckInService checkInService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic()throws Exception{
@@ -66,7 +68,8 @@ public class NightService {
         }
         roomService.update(roomList);
         /*收房租,房态设置为脏房*/
-        List<CheckIn> checkInList = checkInMapper.selectAll();
+
+        List<CheckIn> checkInList = checkInService.get(new Query("if_room = true"));
         for (CheckIn checkIn : checkInList) {
             if (checkIn.getRoomPriceCategory().equals(roomPriceService.hour)) {//小时房夜审自动转换为日租房
                 checkIn.setRoomPriceCategory(roomPriceService.day);
@@ -121,6 +124,7 @@ public class NightService {
         Integer self=0;
         Integer backUp=0;
         Integer rent=0;
+        roomList=roomService.getByIfRoom();//获得参与统计的房间
         for (Room room : roomList) {//roomList在之前已经根据房类排列好了
             /*新建一行*/
             if(!room.getCategory().equals(oldCategory)){
