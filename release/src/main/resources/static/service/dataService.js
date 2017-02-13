@@ -9,7 +9,7 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
      */
     var sexList = ['男', '女'];//性别数组
     var cardTypeList = ['身份证', '军官证', '护照'];//证件种类
-    var roomStateList = ["可用房", "团队房", "散客房", "走客房", "维修房"];//房间状态列表
+    var roomStateList = ["可用房", "团队房", "散客房", "走客房", "维修房","自用房","备用房"];//房间状态列表
     var getRoomStateInList = ['团队房', '散客房'];//在住的房间状态
     var roomPriceCategory = ["日租房", "小时房","会议房"];//房租方式数组
     var roomPointOfSale = ["房费", "房吧"];

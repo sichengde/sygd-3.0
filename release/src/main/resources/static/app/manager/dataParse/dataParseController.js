@@ -7,11 +7,18 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     $scope.roomCategorySaleFields = [
         {name: '房类', id: 'category'},
         {name: '总数', id: 'total'},
+        {name: '空房', id: 'empty'},
+        {name: '维修', id: 'repair'},
+        {name: '自用', id: 'self'},
+        {name: '备用', id: 'backUp'},
+        {name: '出租', id: 'rent'},
         {name: '全日房', id: 'allDay'},
         {name: '加收房', id: 'addDay'},
         {name: '小时房', id: 'hourRoom'},
         {name: '总计房费', id: 'totalConsume'},
-        {name: '平均房价', id: 'averagePrice'}
+        {name: '平均房价', id: 'averagePrice'},
+        {name: 'REVPER', id: 'revper'},
+        {name: '出租率', id: 'averageRent'}
     ];
     $scope.roomCategorySaleReport = function (beginTime, endTime) {
         postBeginTime = beginTime;

@@ -29,6 +29,155 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         }
     };
     /**
+     * 客房经营状况
+     */
+    var columnDefs = [
+        {
+            headerName: '',
+            marryChildren: true,
+            children: [
+                {headerName: "月份", field: "month"}
+            ]
+        },
+        {
+            headerName: '接待',
+            marryChildren: true,
+            children: [
+                {headerName: "住客率", field: "averageRent"},
+                {headerName: "平均房价", field: "averagePrice"},
+                {headerName: "REVPER", field: "revper"},
+                {headerName: "接待人次", field: "guestNum"},
+                {headerName: "接待团队", field: "groupNum"},
+                {headerName: "外宾", field: "foreigner"}
+            ]
+        },
+        {
+            headerName: '收入',
+            marryChildren: true,
+            children: [
+                {
+                    headerName: '房费',
+                    marryChildren: true,
+                    groupId: 'roomConsume',
+                    children: []
+                }
+            ]
+        }
+    ];
+    var allColumnIds = [
+        'month',
+        'averageRent',
+        'averagePrice',
+        'revper',
+        'guestNum',
+        'groupNum',
+        'foreigner'
+    ];
+    var pointOfSaleIds = [];
+    dataService.initData(['refreshPointOfSaleList', 'refreshGuestSourceList'], [{condition: 'module=\'接待\''}])
+        .then(function () {
+            var guestSourceList = dataService.getGuestSourceList();
+            var totalRoomConsumeValueGetter = '';
+            for (var i = 0; i < guestSourceList.length; i++) {
+                columnDefs[2].children[0].children.push({
+                    headerName: guestSourceList[i].guestSource,
+                    field: guestSourceList[i].guestSource,
+                    columnGroupShow: 'open'
+                });
+                pointOfSaleIds.push(guestSourceList[i].guestSource);
+                totalRoomConsumeValueGetter += 'getValue("' + guestSourceList[i].guestSource + '")+';
+            }
+            totalRoomConsumeValueGetter = totalRoomConsumeValueGetter.substring(0, totalRoomConsumeValueGetter.length - 1);
+            columnDefs[2].children[0].children.push({
+                headerName: '总计',
+                colId: 'totalRoomConsume',
+                valueGetter: totalRoomConsumeValueGetter,
+                volatile: true
+            });
+            pointOfSaleIds.push('totalRoomConsume');
+            var secondPointOfSale = dataService.getPointOfSale()[0].secondPointOfSale.split(' ');
+            var totalPointOfSaleConsumeValueGetter = '';
+            for (var i = 0; i < secondPointOfSale.length; i++) {
+                if (secondPointOfSale[i] == '房费') {
+                    continue;
+                }
+                columnDefs[2].children.push({headerName: secondPointOfSale[i], field: secondPointOfSale[i]});
+                columnDefs[2].children.push({headerName: '次数', field: secondPointOfSale[i] + '次数'});
+                totalPointOfSaleConsumeValueGetter += 'getValue("' + secondPointOfSale[i] + '")+';
+                pointOfSaleIds.push(secondPointOfSale[i]);
+                pointOfSaleIds.push(secondPointOfSale[i] + '次数');
+            }
+            /*未定义*/
+            columnDefs[2].children.push({headerName: "未定义", field: "未定义"});
+            columnDefs[2].children.push({headerName: '次数', field: '未定义次数'});
+            totalPointOfSaleConsumeValueGetter += 'getValue("未定义")+';
+            pointOfSaleIds.push("未定义");
+            pointOfSaleIds.push('未定义次数');
+            totalPointOfSaleConsumeValueGetter += totalRoomConsumeValueGetter;
+            columnDefs[2].children.push({
+                headerName: '总计',
+                colId: 'totalPointOfSaleConsume',
+                valueGetter: totalPointOfSaleConsumeValueGetter,
+                volatile: true
+            });
+            pointOfSaleIds.push('totalPointOfSaleConsume');
+            allColumnIds = allColumnIds.concat(pointOfSaleIds);
+        });
+    $scope.gridOptions = {
+        columnDefs: columnDefs,
+        enableColResize: true,
+        defaultColDef: {
+            editable: true
+        },
+        //angularCompileRows: true,
+        rowData: null,
+        onGridReady: function () {
+            this.columnApi.setColumnGroupOpened('roomConsume', true);
+            this.columnApi.autoSizeColumns(allColumnIds);
+        },
+        localeText: {
+            export: '导出',
+            csvExport: '导出为CSV',
+            excelExport: '导出XLS',
+            copy: '复制',
+            paste: '粘贴',
+            copyWithHeaders: '复制标题',
+            toolPanel: '工具栏'
+        }
+    };
+    $scope.range = '年';
+    $scope.RoomParseReport = function (beginTime, range) {
+        $scope.showRoomParseReport = true;
+        webService.post('RoomParseReport', {
+            date: beginTime,
+            range: range
+        })
+            .then(function (r) {
+                for (var i = 0; i < r.length; i++) {
+                    var row = r[i];
+                    if (row.month == '小计') {//向上翻三个算总和
+                        angular.forEach(r[i - 1], function (value, key) {
+                            if (key == 'month' || key == 'averageRent' || key == 'averagePrice' || key == 'revper') {
+                            } else {
+                                row[key] = r[i - 1][key] + r[i - 2][key] + r[i - 3][key];
+                            }
+                        });
+                        continue;
+                    }
+                    for (var j = 0; j < pointOfSaleIds.length; j++) {
+                        var pointOfSaleId = pointOfSaleIds[j];
+                        var rowIndex = row.incomeTitle.indexOf(pointOfSaleId);
+                        if (rowIndex == -1) {
+                            row[pointOfSaleId] = 0;
+                        } else {
+                            row[pointOfSaleId] = parseFloat(row.income[rowIndex]);
+                        }
+                    }
+                }
+                $scope.gridOptions.api.setRowData(r);
+            })
+    };
+    /**
      * 实时房态表
      */
     $scope.realRoomState = function () {
@@ -299,8 +448,12 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
      */
     $scope.companyDebtReportFields = [
         {name: '单位名称', id: 'company'},
-        {name: '期初挂账', id: 'remain'},
-        {name: '本期挂账', id: 'debt'}
+        {name: '期初余额', id: 'remain'},
+        {name: '本期发生额', id: 'debtGenerate'},
+        {name: '本期房费', id: 'roomConsume'},
+        {name: '其他', id: 'otherConsume'},
+        {name: '本期回款', id: 'back'},
+        {name: '期末余额', id: 'debt'}
     ];
     $scope.companyDebtReport = function (beginTime, endTime) {
         var post = {};
@@ -310,7 +463,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
             .then(function (r) {
                 $scope.companyDebtReportData = r;
                 $scope.companyDebtReportList = r.companyDebtReportRowList;
-                $scope.queryMessagecompanyDebtReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
+                $scope.queryMessageCompanyDebtReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
             })
     };
     /*点击查看明细*/
@@ -318,15 +471,15 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         var reportJson = $scope.companyDebtReportData.reportJson;
         var beginTime = dateFilter(reportJson.beginTime, 'yyyy-MM-dd HH:mm:ss');
         var endTime = dateFilter(reportJson.endTime, 'yyyy-MM-dd HH:mm:ss');
-        var query={};
+        var query = {};
         /*分析表头*/
         switch (id) {
             case 'remain':
-                var condition='company='+util.wrapWithBrackets(item.company)+' and do_time> 1990-01-31 and do_time<'+util.wrapWithBrackets(beginTime);
+                var condition = 'company=' + util.wrapWithBrackets(item.company) + ' and do_time> 1990-01-31 and do_time<' + util.wrapWithBrackets(beginTime);
                 popUpService.pop('popCompanyDebt', null, null, condition);
                 break;
             case'debt':
-                var condition='company='+util.wrapWithBrackets(item.company)+' and do_time>'+util.wrapWithBrackets(beginTime)+' and do_time<'+util.wrapWithBrackets(endTime);
+                var condition = 'company=' + util.wrapWithBrackets(item.company) + ' and do_time>' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime);
                 popUpService.pop('popCompanyDebt', null, null, condition);
                 break;
         }

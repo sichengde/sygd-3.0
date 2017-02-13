@@ -1,5 +1,6 @@
 .mainRoomState {
-    height: 100%;
+    /*height: 100%;*/
+    padding-bottom: 40px;
 }
 .mainRoomState ul {
     position: relative;
@@ -135,6 +136,8 @@
 .mainRoomState ul li.L { background: url("../../images/ftpic.png") no-repeat -193px 5px; background-size: 550px; margin-left: 5px;}/*走客房*/
 .mainRoomState ul li.X { background: url("../../images/ftpic.png") no-repeat -243px 12px; background-size: 550px;}/*维修房*/
 .mainRoomState ul li.H { background: url("../../images/ftpic.png") no-repeat -450px 5px; background-size: 550px;}/*钟点房*/
+.mainRoomState ul li.M { background: url("../../images/zyf.png") no-repeat 0px 3px; background-size: 50px;}/*自用房*/
+.mainRoomState ul li.B { background: url("../../images/byf.png") no-repeat 0px 3px; background-size: 50px;}/*备用房*/
 .mainRoomState ul li.icon-czkf { background: url("../../images/ftpic.png") no-repeat -520px 0px; background-size: 550px;}/*常驻客房*/
 .mainRoomState ul li.icon-mds { background: url("../../images/ftpic.png") no-repeat -585px 0px; background-size: 550px;}/*没打扫*/
 .mainRoomState ul li.icon-zyf { background: url("../../images/ftpic.png") no-repeat -645px 3px; background-size: 550px;}/*自用房*/
@@ -179,6 +182,8 @@
 .roomStateLabel p i.icon-czkf { background-position: -255px 7px;}/*常驻客房*/
 .roomStateLabel p i.icon-mds { background-position: -285px 7px;}/*没打扫*/
 .roomStateLabel p i.icon-zyf { background-position: -315px 9px;}/*自用房*/
+.roomStateLabel p i.M { background: url("../../images/zyf.png") no-repeat; background-size: 30px; margin-top: 8px;}/*自用房*/
+.roomStateLabel p i.B { background: url("../../images/byf.png") no-repeat; background-size: 30px; margin-top: 8px;}/*备用房*/
 .roomStateLabel p i.icon-ylbz { background-position: -270px 14px; background-size: 500px;}/*预离标志*/
 .roomStateLabel p i.icon-zfbz {
     background-position: -270px -20px;

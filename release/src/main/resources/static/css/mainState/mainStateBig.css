@@ -1,7 +1,7 @@
 .mainRoomState {
-    height: 100%;
+    /*height: 100%;*/
     margin-left: 20px;
-    padding-bottom: 30px;
+    padding-bottom: 40px;
 }
 .mainRoomState ul {
     position: relative;

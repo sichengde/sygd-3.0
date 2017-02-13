@@ -1,7 +1,7 @@
 .mainRoomState {
-    height: 100%;
+    /*height: 100%;*/
     margin-left: 20px;
-    padding-bottom: 30px;
+    padding-bottom: 40px;
 }
 .mainRoomState ul {
     position: relative;
@@ -32,7 +32,6 @@
     float: left;
     margin: 5px 15px 15px 0px;
     padding: 5px 5px;
-    cursor: pointer;
     border: 1px solid #fff;
     background: #e3e3e3;
     border-radius: 5px;
@@ -40,7 +39,15 @@
     -moz-border-radius: 5px;
     line-height: 20px;
     position: relative;
+    cursor: pointer;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+
 }
+
 .roomState.hover:after {
     width: 138px;
     height: 125px;
@@ -133,6 +140,8 @@ text-align: center; color: #fff; border:0px; margin: 0px 5px;
 .mainRoomState ul li.G { background: url("../../images/ftpic.png") no-repeat -1px 0px; margin-left: 5px;}/*团队占房*/
 .mainRoomState ul li.S{ background: url("../../images/ftpic.png") no-repeat -65px 0px; margin-left: 5px;}/*散客占房*/
 .mainRoomState ul li.V { background: url("../../images/ftpic.png") no-repeat -130px 0px; margin-left: 7px;}/*可用房*/
+.mainRoomState ul li.M { background: url("../../images/zyf.png") no-repeat; background-size: 60px;}/*自用房*/
+.mainRoomState ul li.B { background: url("../../images/byf.png") no-repeat; background-size: 60px;}/*备用房*/
 .mainRoomState ul li.R { background: url("../../images/ftpic.png") no-repeat -185px 0px}/*预订房*/
 .mainRoomState ul li.L { background: url("../../images/ftpic.png") no-repeat -247px 0px; margin-left: 5px;}/*走客房*/
 .mainRoomState ul li.X { background: url("../../images/ftpic.png") no-repeat -320px 7px}/*维修房*/
@@ -172,6 +181,8 @@ text-align: center; color: #fff; border:0px; margin: 0px 5px;
 .roomStateLabel p i { width: 33px; height: 35px; float: left; display: block; background: url("../../images/ftpic.png") no-repeat left;
 background-size: 350px; font-size: 20px; line-height: 35px; text-align: center; text-shadow: none;
 }
+.roomStateLabel p i.M { background: url("../../images/zyf.png") no-repeat; background-size: 30px; margin-top: 8px;}/*自用房*/
+.roomStateLabel p i.B { background: url("../../images/byf.png") no-repeat; background-size: 30px; margin-top: 8px;}/*备用房*/
 .roomStateLabel p i.icon-tdf { background-position: 0px 7px;}/*团队占房*/
 .roomStateLabel p i.icon-skf{ background-position: -32px 7px;}/*散客占房*/
 .roomStateLabel p i.icon-kyf { background-position: -63px 7px;}/*可用房*/

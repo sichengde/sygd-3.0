@@ -50,15 +50,13 @@
                                    ng-repeat="r in roomShowList">{{r.roomId}}</a>
                                 <div class="clear"></div>
                             </div>
-                            <div class="button chooseRoom" style="float: right; margin:0px 0px 0px 10px;padding:0px; border: 0;">
-                                <input type="button" ng-click="clearList()" value="清空选择">
-                            </div>
                             <div class="clear"></div>
                         </div>
+                        <div class="button chooseRoom" style="float: left; margin-left: 0px; padding:0px; border: 0;">
+                            <input type="button" ng-click="clearList()" value="清空选择">
+                        </div>
+                        <div style="float: left; height: 42px; line-height: 30px; margin-top: 20px;" ng-show="book"><font style="color: #cc0000">只显示该预定的可用房 </font><input type="checkbox" ng-model="onlyBook" ng-change="onlyBookChanged()"></div>
                     </td>
-                </tr>
-                <tr ng-show="book">
-                    <td colspan="4" style="text-align: left">只显示该预定     的可用房<input type="checkbox" ng-model="onlyBook" ng-change="onlyBookChanged()"></td>
                 </tr>
                 <tr>
                     <td colspan="4" style="text-align: left"><div class="tswz">*注：单击选择入住房，再次单击取消入住房</div></td>
@@ -70,7 +68,7 @@
         <!-- right begin -->
         <div class="checkInDiv">
             <!-- 团队信息录入begin -->
-            <div class="checkInEnter">
+            <div class="checkInEnter" style="margin-top: 0px;">
                 <ul>
                     <li>
                         <label>团名：</label>
@@ -162,7 +160,7 @@
             <div class="szSheet">
                 <sz-tab>
                     <sz-pane title="入住信息">
-                        <div sz-easy-width style="width: 700px" class="huang">
+                        <div sz-easy-width style="width: 500px" class="huang">
                             <sz-table fields="checkInFields" items="checkInList" button="add delete {{editableRoomPrice?'':'update'}}"></sz-table>
                         </div>
                     </sz-pane>

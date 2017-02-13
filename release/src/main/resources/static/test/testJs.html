@@ -1,30 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="../angular.js"></script>
+    <script src="../otherJS/ag-grid-dist/ag-grid.js"></script>
+    <script src="../otherJS/ag-grid-enterprise-dist/ag-grid-enterprise.js"></script>
     <script>
-        angular.module('app', [])
-                .controller('ctr', function ($scope,$http) {
-                    $scope.post = function () {
-                        return $http.get('http://10.1.31.153:8080/writeDoor?roomId=207&leaveTimeStr=20170114140000&num=1')
-                            .then(
-                                function (response) {
-                                    $scope.r=response.data;
-                                },
-                                function (errResponse) {
-                                    handleException(errResponse.data);
-                                    return $q.reject();
-                                }
-                            );
-                    };
-                })
+        var columnDefs = [
+            {headerName: "Owner", field: "owner"},
+            {headerName: "Make", field: "make", cellRenderer: timestampCellRenderer},
+            {headerName: "Model", field: "model", cellRenderer: timestampCellRenderer},
+            {headerName: "Price", field: "price"}
+        ];
+
+        var owners = ['Niall','Brian','Eamon','Kevin','Jillian'];
+        var cars = [
+            {make: "Toyota", model: "Celica", price: 35000},
+            {make: "Ford", model: "Mondeo", price: 32000},
+            {make: "Porsche", model: "Boxter", price: 72000}
+        ];
+        var rowData = [];
+
+        // a cell renderer that also prints the time, so we know when the cell was rendered
+        function timestampCellRenderer(params) {
+            return params.value + ' <span style="font-size: 10px; color: grey;">' + new Date().getTime() + '</span>';
+        }
+
+        owners.forEach( function(ownerName) {
+            cars.forEach( function(car) {
+                rowData.push({
+                    owner: ownerName,
+                    make: car.make,
+                    model: car.model,
+                    price: car.price
+                });
+            });
+        });
+
+        var gridOptions = {
+            columnDefs: columnDefs,
+            rowData: rowData
+        };
+
+        function onRefreshAll() {
+            gridOptions.api.refreshView();
+        }
+
+        function onDoubleNiall() {
+            // at the end of the update below, this array will
+            // have all of the items that we updated
+            var updatedNodes = [];
+            // look for all the 'Jillian' nodes
+            gridOptions.api.forEachNode( function(node) {
+                var data = node.data;
+                if (data.owner == 'Niall') {
+                    // we found a Jilly node!!!
+                    data.price *= 2;
+                    updatedNodes.push(node);
+                }
+            });
+            // now tell the grid it needs refresh all these rows
+            gridOptions.api.refreshCells(updatedNodes, ['price']);
+        }
+
+        function onDoubleJillian() {
+            // at the end of the update below, this array will
+            // have all of the items that we updated
+            var updatedNodes = [];
+            // look for all the 'Jillian' nodes
+            gridOptions.api.forEachNode( function(node) {
+                var data = node.data;
+                if (data.owner == 'Jillian') {
+                    // we found a Jilly node!!!
+                    data.price *= 2;
+                    updatedNodes.push(node);
+                }
+            });
+            // now tell the grid it needs refresh all these rows
+            gridOptions.api.refreshRows(updatedNodes);
+        }
+
+        // setup the grid after the page has finished loading
+        document.addEventListener('DOMContentLoaded', function() {
+            var gridDiv = document.querySelector('#myGrid');
+            new agGrid.Grid(gridDiv, gridOptions);
+        });
     </script>
 </head>
-<body ng-controller="ctr">
-<button ng-click="post()">asd</button>
-{{r.name}}
-{{r.sex}}
+<body>
+<div style="height: 6%;">
+    <button onclick="onRefreshAll()">Refresh All</button>
+    <button onclick="onDoubleJillian()">Double Jillian</button>
+    <button onclick="onDoubleNiall()">Double Niall</button>
+</div>
+<div style="height: 1000px;" id="myGrid" class="ag-fresh"></div>
+
 </body>
 </html>

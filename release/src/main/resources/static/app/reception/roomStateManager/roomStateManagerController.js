@@ -4,7 +4,7 @@
 App.controller('roomStateManagerController', ['$scope', '$interval', 'dataService', 'util', 'roomFilter', 'webService', 'messageService', 'receptionService', 'popUpService', function ($scope, $interval, dataService, util, roomFilter, webService, messageService, receptionService, popUpService) {
     function refresh() {
         $scope.roomChooseList = [];
-        $scope.roomStateList = ['可用房', '走客房', '维修房'];
+        $scope.roomStateList = ['可用房', '走客房', '维修房',"自用房","备用房"];
         $scope.roomState = $scope.roomStateList[0];
         dataService.initData(['refreshRoomList'])
             .then(function () {
@@ -73,7 +73,12 @@ App.controller('roomStateManagerController', ['$scope', '$interval', 'dataServic
                     item.repairReason = $scope.repairReason;
                     item.repairTime = $scope.repairTime;
                 }
-            })
+                if($scope.targetState=='自用房'||$scope.targetState=='备用房'){
+                    item.ifRoom=false;
+                }else {
+                    item.ifRoom=true;
+                }
+            });
             webService.post('roomUpdate', $scope.roomChooseList)
                 .then(function () {
                     messageService.actionSuccess();

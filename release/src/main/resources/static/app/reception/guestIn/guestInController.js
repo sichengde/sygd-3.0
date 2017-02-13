@@ -205,6 +205,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         checkIn.important = $scope.important;
         checkIn.remark = $scope.remark;
         checkIn.finalRoomPrice = $scope.protocol.roomPrice;
+        checkIn.ifRoom=$scope.room.ifRoom;
         if ($scope.roomPriceEditable) {
             $scope.protocol.protocol = $scope.room.roomId + $scope.protocol.protocol;
             $scope.protocol.special = 'y';

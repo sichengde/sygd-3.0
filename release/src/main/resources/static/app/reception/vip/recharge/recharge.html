@@ -2,7 +2,7 @@
     <div class="littlePop" drag>
         <div class="littlePopBox">
             <h1>会员充值</h1>
-            <p class="tagp"><span>会员卡号：</span>{{vipRecharge.vipNumber}}</p>
+            <p class="tagp"><span>会员卡号：</span><span style="text-align: left">{{vipRecharge.vipNumber}}</span></p>
             <p class="tagp"><span>充值金额：</span><input type="text" placeholder="请输入充值金额" style="float: none; width: 150px;" ng-model="vipRecharge.money"></p>
             <p class="tagp"><span>抵用金额：</span><input type="text" placeholder="不可为空" style="float: none; width: 150px;" ng-model="vipRecharge.deserve"></p>
             <p class="tagp"><sz-pay></sz-pay></p>

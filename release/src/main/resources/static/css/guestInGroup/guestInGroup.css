@@ -17,6 +17,8 @@
     line-height: 24px;
     font-weight:normal;
 }
+.checkInEnter>ul>li>input[type=text] { width: 120px;}
+.checkInEnter>ul>li>select { width: 131px;}
 
 
 .szSheet .tableTabBox,.detailTable { padding: 10px 10px; padding-bottom: 20px; border: 1px solid #ddd; background: #f1f1f1; min-height: 230px; margin: 50px 0px 0px 0px; position: relative}

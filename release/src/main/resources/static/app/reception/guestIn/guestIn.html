@@ -10,7 +10,7 @@
         </dl>
         <table class="tableBordernone" style="margin-top: 5px;">
             <tr>
-                <td>房间类别：</td>
+                <td style="width: 100px">房间类别：</td>
                 <td ng-bind="room.category"></td>
                 <td>房间号码：</td>
                 <td>{{room.roomId}}</td>
@@ -84,7 +84,7 @@
                 </td>
             </tr>
         </table>
-        <div class="tsRightDiv" style="width:960px">
+        <div class="tsRightDiv">
             <sz-table fields="checkInGuestFields" items="checkInGuestList" select-list="checkInGuestSelect"
                       sz-not-null button="update" right-click="rightClickGuest"></sz-table>
         </div>
@@ -107,8 +107,8 @@
             </tr>
             <tr>
                 <td>备注：</td>
-                <td colspan="5">
-                    <textarea style="width: 735px; height: 50px;" ng-model="remark"></textarea>
+                <td colspan="3">
+                    <textarea style="width: 490px; height: 50px;" ng-model="remark"></textarea>
                 </td>
             </tr>
         </table>
