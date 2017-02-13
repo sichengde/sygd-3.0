@@ -12,7 +12,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '别名', id: 'alias', width: '100px'},
         {name: '单位类别', id: 'category', selectId: '1', width: '130px'},
         {name: '价格协议', id: 'protocol', selectId: '0', width: '170px'},
-        {name: '挂账款', id: 'debt', static: 'true', width: '100px'},
+        {name: '挂账款', id: 'debt', static: 'true', width: '100px',default:'0'},
         /*        {name:'预付款',id:'deposit',static:'true',width:'100px'},
          {name:'余额',exp:'deposit-debt',static:'true',width:'100px'},*/
         {name: '有效日期', id: 'limitTime', width: '100px', date: 'short'},
