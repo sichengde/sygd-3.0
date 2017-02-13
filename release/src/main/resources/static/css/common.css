@@ -203,7 +203,7 @@ button.hover { background: #a14e04; color: #fff}
 #np-pop-iframe-print {width: 100%; z-index: 9999; position: fixed; top: 0px; left: 0px; border: none; overflow: hidden; height: 100%;}
 
 /*错误提示泡泡*/
-.tsRightDiv { position: relative}
+.tsRightDiv { position: relative; width: 100%}
 .tsRightDiv .submitTishi { right: 0px; left: auto}
 .submitTishi{
     position: absolute;

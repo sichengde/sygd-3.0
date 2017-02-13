@@ -20,7 +20,7 @@
             <tr>
                 <td>
                     <span style=" width: 80px; text-align: right; display: block; float: left; margin-top: 15px;">占房信息：</span>
-                    <div class="checkInRoom" style="margin-left: 80px;">
+                    <div class="checkInRoomJZ" style="margin-left: 80px;">
                         <a class="roomID {{r.hover}}" ng-click="toggleRoom(r,$event.shiftKey)" ng-repeat="r in checkInList" sz-hover-room>
                             {{r.roomId}}
                             <div class="hoverDiv">
@@ -50,8 +50,8 @@
                     <th style="width: 88px">消费</th>
                     <th style="width: 88px">押金</th>
                     <th style="width: 106px">支付方式</th>
-                    <th style="width: 132px">入账时间</th>
-                    <th style="width: 176px">备注</th>
+                    <th style="width: 176px">入账时间</th>
+                    <th style="width: 132px">备注</th>
                     <th style="width: 16px" ng-show="debtPayMiddleMode"></th>
                 </tr>
                 </thead>
@@ -62,8 +62,8 @@
                     <td style="width: 88px" ng-bind="r.consume|currency"></td>
                     <td style="width: 88px" ng-bind="r.deposit|currency"></td>
                     <td style="width: 106px" ng-bind="r.currency"></td>
-                    <td style="width: 132px" ng-bind="r.doTime | date:'yyyy-MM-dd HH:mm:ss'"></td>
-                    <td style="width: 176px" ng-bind="r.remark"></td>
+                    <td style="width: 176px" ng-bind="r.doTime | date:'yyyy-MM-dd HH:mm:ss'"></td>
+                    <td style="width: 132px" ng-bind="r.remark"></td>
                     <td style="width: 16px" ng-show="debtPayMiddleMode"><input ng-show="r.consume>0" type="checkbox" ng-model="r.choose" ng-change="chooseMiddleDebt(r)"></td>
                 </tr>
                 </tbody>
@@ -101,10 +101,10 @@
                 <input type="button" class="sbe" value="消费挂账" ng-click="otherConsume()">
                 <input type="button" class="sbe" value="退押金" ng-click="cancelDeposit()">
                 <input type="button" class="sbe" value="转哑房" ng-click="guestOutLost()">
-                <input type="button" class="sbe" value="中间结算" ng-click="debtPayMiddle()">
             </div>
             <div class="fr">
                 <button class="sbe" sz-submit sz-permission="结账" sz-one-click="guestOutAction()">结账</button>
+                <input type="button" class="sbe" value="中间结算" ng-click="debtPayMiddle()">
                 <input type="button" class="sbe" value="明细打印" ng-click="guestOutQuery()">
             </div>
         </dl>

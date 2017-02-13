@@ -98,7 +98,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                 }
             }
         } else {
-            var roomCategory = util.getValueByField($scope.roomList, 'roomId', r.roomId).category;
+            var room=util.getValueByField($scope.roomList, 'roomId', r.roomId);
             if (util.deleteFromArray($scope.checkInList, 'roomId', r.roomId)) {
                 r.hover = null;
             } else {
@@ -119,7 +119,8 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
                 checkIn.roomPriceCategory = $scope.roomPriceCategory;
                 checkIn.userId = LoginService.getUser();
                 /*用于前端显示的值，后端不会接收*/
-                checkIn.roomCategory = roomCategory;
+                checkIn.roomCategory = room.category;
+                checkIn.ifRoom = room.ifRoom;
                 $scope.checkInList.push(checkIn);
             }
         }

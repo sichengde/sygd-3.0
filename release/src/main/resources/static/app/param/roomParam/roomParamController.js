@@ -28,13 +28,15 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
     ];
 
     /*房间类别*/
-    $scope.roomFields = [{name: '房号', id: 'roomId', notNull: 'true', width: '130px'},
+    $scope.roomFields = [
+        {name: '房号', id: 'roomId', notNull: 'true', width: '130px'},
         {name: '楼区', id: 'area', width: '80px', copy: true},
         {name: '楼层', id: 'floor', width: '80px', copy: true},
         {name: '房类', id: 'category', selectId: '0', width: '180px', copy: true},
         {name: '房价', id: 'price', width: '130px', copy: true},
         {name: '早餐', id: 'breakfast', width: '80px', copy: true},
         {name: '床位数量', id: 'totalBed', width: '100px', copy: true},
+        {name: '属于房间', id: 'ifRoom', width: '100px', copy: true,boolean:'true'},
         {id: 'state', width: '80px', copy: true, default: '可用房'}
     ];
     /*0是房间类别，1是房租方式*/

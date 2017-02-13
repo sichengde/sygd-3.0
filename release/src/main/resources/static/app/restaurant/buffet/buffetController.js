@@ -29,7 +29,7 @@ App.controller('buffetController',['$scope','dataService','LoginService','webSer
             .then(function () {
                 messageService.actionSuccess();
                 /*数据归零*/
-                $scope.todayTotalNum+=num;
+                $scope.todayTotalNum=$scope.todayTotalNum*1+num*1;
                 $scope.num=1;
                 $scope.currencyPayList[0] = {};
                 $scope.currencyPayList[0].currency = $scope.currencyList[0];

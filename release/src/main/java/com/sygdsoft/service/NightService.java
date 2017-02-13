@@ -62,6 +62,7 @@ public class NightService {
         /*清除所有的当日锁房*/
         Query query=new Query();
         query.setOrderByList(new String[]{"category"});
+        query.setCondition("if_room=true");
         List<Room> roomList = roomService.get(query);
         for (Room room : roomList) {
             room.setTodayLock(null);
@@ -124,7 +125,6 @@ public class NightService {
         Integer self=0;
         Integer backUp=0;
         Integer rent=0;
-        roomList=roomService.getByIfRoom();//获得参与统计的房间
         for (Room room : roomList) {//roomList在之前已经根据房类排列好了
             /*新建一行*/
             if(!room.getCategory().equals(oldCategory)){

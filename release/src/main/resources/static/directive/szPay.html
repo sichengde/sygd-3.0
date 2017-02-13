@@ -1,4 +1,4 @@
-<table style="padding: 0px!important; margin: 0px;">
+<table style="padding: 0px!important; margin: 0px;" class="tagtable">
     <tr ng-repeat="r in currencyPayList">
         <td style="width: 100px; text-align: right">
             <button ng-click="deleteCurrency(r)" ng-show="$index>0" class="add" title="删除">-</button>
@@ -8,9 +8,9 @@
             <select ng-options="x for x in currencyList" ng-model="r.currency" ng-change="r.currencyAdd=null;r.currencyAdd1=null;r.currencyAdd2=null;">
             </select>
         </td>
-        <td colspan="4" style="width: 690px">
+        <td colspan="4" class="xtc" style="width: 690px">
             <p class="fl2" ng-show="currencyPayList.length>1"><span class="lan">分单金额：</span>￥<input type="text" ng-model="r.money" ng-dblclick="calculateRemainMoney(r)" ng-init="currencyPayList.length>1?r.money=0:null" style="width: 50px; float: none"></p>
-            <p class="fl2" ng-show="r.currency=='会员'" style="text-align: left">
+            <p class="fl2 hy" ng-show="r.currency=='会员'" style="text-align: left">
                 <a class="icon-credit-card yellow" sz-read-key="r.idNumber" enter-method="readCard(r)" read-param="r"
                    style=" margin-right: 5px; cursor: pointer">读会员卡</a>
 
@@ -33,9 +33,9 @@
                 <span class="lan2">当前余额：</span>{{r.chooseRoomRemain | currency:'￥'}}
             </p>
             <p class="fl2" ng-show="r.currency=='转单位'">
-                <span class="lan2">单位名称：</span><input type="text" ng-model="r.currencyAdd1" sz-select="companyList" ng-change="changeCompany(r)" style="width: 150px; float: none"></p>
+                <span class="lan2">单位名称：</span><input type="text" ng-model="r.currencyAdd1" sz-select="companyList" ng-change="changeCompany(r)" style="width: 130px; float: none"></p>
             <p class="fl2" ng-show="r.currency=='转单位'">
-                <span class="lan2">签单人：</span><input type="text" ng-model="r.currencyAdd2" sz-select="r.companyLordListShow" ng-change="changeCompanyLord(r)" style="width: 100px; float: none">
+                <span class="lan2">签单人：</span><input type="text" ng-model="r.currencyAdd2" sz-select="r.companyLordListShow" ng-change="changeCompanyLord(r)" style="width: 80px; float: none">
             </p>
             <p class="fl2" ng-show="r.currency=='宴请'">
                 <span class="lan2">签单人：</span><input type="text" ng-model="r.currencyAdd1" sz-select="freemanList" style="width: 100px; float: none" ng-blur="integration(r)">

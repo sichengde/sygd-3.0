@@ -67,7 +67,7 @@ input[disabled=disabled],select[disabled=disabled]{
 }
 
 #tanchuang { position:absolute; width: 100%; height: 100%; top:0px; bottom: 0px; left: 0px; right:0px; z-index: 9999; background: rgba(0,0,0,0.5)}
-.bgblack,.bgblack2,.szPopUpBg,.szPopUpBg2 { width: 100%; height: 100%; top:0px; right:0px; left: 0px; bottom: 0px; background: rgba(0,0,0,0.2); position:absolute; z-index: 980; display: block}
+.bgblack,.bgblack2,.szPopUpBg,.szPopUpBg2 { width: 100%; height: 100%; top:0px; right:0px; left: 0px; bottom: 0px; background: rgba(0,0,0,0.2); position:fixed; z-index: 980; display: block}
 .bgblack2 { z-index: 996}
 .szPopUpBg { background: none; z-index: 998}
 .szPopUpBg2 { background: none;z-index: 989; position: fixed}
@@ -104,9 +104,25 @@ input[disabled=disabled],select[disabled=disabled]{
     box-shadow: inset 0px 0px 8px #bbb;
     border: 1px solid #bbb;
 }
-.littlePop .littlePopBox { border: 2px solid #ccc; text-align: center; position: relative; padding: 40px 20px;}
+.littlePop .littlePopBox { border: 2px solid #ccc; text-align: center; position: relative; padding: 30px 10px;}
 .littlePop .littlePopBox .tagp { text-align: left; float: left}
-.littlePop .littlePopBox .tagp span { width: 100px; text-align: right; display: inline-block;}
+.littlePop .littlePopBox .tagp>span { width: 100px; text-align: right; display: inline-block;}
+.tagp .hy>a {
+    float: left;
+    width: 100px;
+    text-align: right;
+    margin-bottom: 10px;}
+.tagp .hy>span {
+    float: left;
+    width: 380px;
+    display: inline-block;
+    text-align: center;}
+.tagp .xtc { width: 380px!important;}
+.tagp .zdw1 { width: 120px!important;}
+.tagp .zdw2 { width: 80px!important;}
+.tagp .tagtable>tbody>tr>td {
+    float: left;
+    margin-bottom: 10px;}
 .littlePop h1 { text-align: center; line-height: 50px; font-size: 20px; color: #1c73d5; position: absolute;
     width: 100px; height: 50px; background: #f1f1f1;top: -50px; left: 50%; margin-left: -50px;}
 
@@ -198,7 +214,7 @@ table tr td:last-child{ border-right: none}
 .tableBorderaaa { border:5px solid #fff;background: #f1eae1;
     -webkit-box-shadow: 1px 1px 0px #bbb;
     -moz-box-shadow: 1px 1px 0px #bbb;
-    box-shadow: 1px 1px 0px #bbb; margin-top: 20px; width: 960px;}
+    box-shadow: 1px 1px 0px #bbb; margin-top: 20px;}
 .tableBorderaaa td { border-bottom: 1px solid #fff; padding: 5px 5px 5px 0px; height: 25px; line-height: 25px;}
 .tableBorderaaa td:nth-child(odd) { width: 75px; text-align: right;}
 .tableBorderaaa td:nth-child(even){ text-align: left}
@@ -206,7 +222,7 @@ table tr td:last-child{ border-right: none}
 .tableBordernone { border:5px solid #fff;background: #e1eaff;
     -webkit-box-shadow: 1px 1px 0px #bbb;
     -moz-box-shadow: 1px 1px 0px #bbb;
-    box-shadow: 1px 1px 0px #bbb; margin-top: 20px; width: 960px;}
+    box-shadow: 1px 1px 0px #bbb; margin-top: 20px;}
 .tableBordernone td { border-bottom: 1px solid #fff; padding: 5px 5px 5px 0px; height: 25px; line-height: 25px; position: relative }
 .tableBordernone td:nth-child(odd) { width: 75px; text-align: right;}
 .tableBordernone td:nth-child(even){ text-align: left}
@@ -214,7 +230,7 @@ table tr td:last-child{ border-right: none}
 .tableBorderfff { border: 5px solid #fff; background: #e1e1e1;
     -webkit-box-shadow: 1px 1px 0px #bbb;
     -moz-box-shadow: 1px 1px 0px #bbb;
-    box-shadow: 1px 1px 0px #bbb; margin-top: 20px; width: 960px;}
+    box-shadow: 1px 1px 0px #bbb; margin-top: 20px;}
 .tableBorderfff td { border-bottom: 1px solid #c1c1c1; padding: 5px 5px 5px 0px; height: 25px; line-height: 25px;}
 .tableBorderfff td:nth-child(even){ text-align: left}
 .tableBorderfff tr:last-child td { border: none}
@@ -261,7 +277,8 @@ table tr td:last-child{ border-right: none}
 /*房号样式*/
 .tanchuang .checkInRoom { height: auto; /*overflow: visible;*/ padding: 0px;}
 .checkInRoom { max-height: 380px; overflow-y: auto; padding: 0px; margin: 10px;}
-.checkInRoom .roomID,.checkInRoomC .roomID,.roomIdBox { width: 60px; height: 30px; line-height: 30px; text-align: center; border: 1px solid #fff; background: #e5e5e5;
+.checkInRoomJZ { max-height: 380px; padding: 0px; margin: 10px;}/*客人结账*/
+.checkInRoom .roomID,.checkInRoomC .roomID,.roomIdBox,.checkInRoomJZ .roomID { width: 60px; height: 30px; line-height: 30px; text-align: center; border: 1px solid #fff; background: #e5e5e5;
     -webkit-border-radius:3px;
     -moz-border-radius:3px;
     border-radius:3px;
@@ -274,8 +291,8 @@ table tr td:last-child{ border-right: none}
     color:#3e5797; font-weight: normal; font-size: 14px;cursor: pointer; position: relative;
 }
 .roomIdBox { width: 100px; height: 50px; font-size: 12px; line-height: 25px;}
-.checkInRoom .roomID:hover,.checkInRoomC .roomID:hover { cursor: pointer}
-.checkInRoom .roomID.hover,.checkInRoomC .roomID.hover,.roomIdBox.hover  { background:#a14e04; color: #fff; cursor: pointer }
+.checkInRoom .roomID:hover,.checkInRoomC .roomID:hover,.checkInRoomJZ .roomID:hover { cursor: pointer}
+.checkInRoom .roomID.hover,.checkInRoomC .roomID.hover,.roomIdBox.hover,.checkInRoomJZ .roomID.hover  { background:#a14e04; color: #fff; cursor: pointer }
 .chooseRoom { margin-left: 18px; line-height: 24px; max-height: 50px; overflow-y: auto; font-size: 14px; padding-bottom: 10px; display: none}
 .chooseRoom b { font-weight: bold; float: left; height: 100%;}
 .chooseRoom a { float: left; padding: 0px 5px; height: 24px; line-height: 24px; color:#a14e04}
@@ -298,7 +315,7 @@ table tr td:last-child{ border-right: none}
     -o-border-radius: 5px;
     padding: 10px; text-align: left; color: #333; line-height: 20px;}
 .roomID .hoverDiv:before {position:absolute; bottom:-8px; left:10px;display: inline-block;border-right: 8px solid transparent;border-top: 8px solid #ccc;border-left: 8px solid transparent;border-top-color: #fff;content: '';}
-.roomID .hoverDiv .htit { float: left; height: 100%; text-align: right; width: 50px; display: block}
+.roomID .hoverDiv .htit:nth-child(odd) { float: left; height: 100%; text-align: right; width: 50px; display: block}
 
 
 
@@ -606,16 +623,20 @@ left:65px; top:0px; font-weight:normal;
 
 @media screen and (max-height:769px) {
     .tanchuang { top:10px;}
-    .tanchuang .tcDiv { max-height: 600px; overflow-x: hidden; overflow-y: auto;}
+    .tanchuang .tcDiv { max-height: 500px; overflow-x: hidden; overflow-y: auto;}
     .tsPop p {  max-height: 250px;}
 
 }
 @media screen and (max-width: 1366px){
+    .tanchuang { width: 880px; margin-left: -70px;}
     .tsPop { width: 35%;left: 31%; right: 31%}
     .tsPop p { padding-left: 100px; font-size: 18px; line-height: 30px;}
     .chooseBox,.errorBox,.infoBox,.alterBox { background-position: 20px 50%;}
+    .littlePop { margin-left: -100px;}
 }
-@media screen and (max-width:1024px){
+
+@media screen and (max-width:1028px){
+    .tanchuang { margin-left: -160px;}
     .tsPop { width: 38%; left: 30%; right: 30%}
     .tsPop p { padding-left: 10px; padding-right: 10px; font-size: 16px; line-height: 25px;}
     .chooseBox,.errorBox,.infoBox,.alterBox { padding-top: 10px; background-position: center 10px;}
