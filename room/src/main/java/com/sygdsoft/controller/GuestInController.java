@@ -376,7 +376,7 @@ public class GuestInController {
         Debt debt = new Debt();
         debt.setRoomId(roomId);
         debt.setCurrency(currency);
-        debt.setPointOfSale(pointOfSaleService.YF);
+        debt.setPointOfSale(pointOfSaleService.FF);
         debt.setDescription("押金单独补录");
         debt.setDeposit(Double.valueOf(money));
         debt.setVipNumber(currencyAdd);

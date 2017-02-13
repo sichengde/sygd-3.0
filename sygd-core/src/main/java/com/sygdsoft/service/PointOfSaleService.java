@@ -22,8 +22,6 @@ public class PointOfSaleService extends BaseService<PointOfSale>{
 
     public final String FF = "房费";
     public final String FB = "房吧";
-    public final String DH = "电话费";
-    public final String YF = "预付";
     @Autowired
     PointOfSaleMapper pointOfSaleMapper;
 

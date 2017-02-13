@@ -97,8 +97,6 @@
                                 <jsSourceFile>otherJS/Chart.bundle.min.js</jsSourceFile>
                                 <jsSourceFile>otherJS/echarts-source.js</jsSourceFile>
                                 <jsSourceFile>angular.js</jsSourceFile>
-                                <jsSourceFile>otherJS/ag-grid-dist/ag-grid.js</jsSourceFile>
-                                <jsSourceFile>otherJS/ag-grid-enterprise-dist/ag-grid-enterprise.js</jsSourceFile>
                                 <jsSourceFile>angular-route.js</jsSourceFile>
                                 <jsSourceFile>angular-locale_zh-cn.js</jsSourceFile>
                                 <jsSourceFile>angular-ui-1.3.2.js</jsSourceFile>
