@@ -133,7 +133,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         rowData: null,
         onGridReady: function () {
             this.columnApi.setColumnGroupOpened('roomConsume', true);
-            this.columnApi.autoSizeColumns(allColumnIds);
+            /*this.columnApi.autoSizeColumns(allColumnIds);*/
         },
         localeText: {
             export: '导出',

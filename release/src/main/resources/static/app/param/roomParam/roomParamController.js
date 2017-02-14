@@ -5,7 +5,10 @@
 App.controller('paramList1Controller', ['$scope', 'dataService', 'util', function ($scope, dataService, util) {
     $scope.companyCategoryFields = [{name: '单位种类', id: 'category', notNull: 'true'}];
     $scope.roomCategoryFields = [{name: '房间类别', id: 'category', notNull: 'true'}];
-    $scope.guestSourceFields = [{name: '客源', id: 'guestSource', notNull: 'true'}];
+    $scope.guestSourceFields = [
+        {name: '客源', id: 'guestSource', notNull: 'true'},
+        {name: '客源归类', id: 'countCategory'}
+    ];
     $scope.roomPriceAddFields = [
         {name: '时间节点', id: 'timeLimit', width: '120px'},
         {name: '房价倍率', id: 'roomAddByMultiple', width: '120px'},

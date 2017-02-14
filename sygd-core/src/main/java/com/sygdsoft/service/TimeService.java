@@ -1,5 +1,6 @@
 package com.sygdsoft.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -20,6 +21,8 @@ public class TimeService {
     public SimpleDateFormat numberShortFormat = new SimpleDateFormat("yyMMdd");
     public SimpleDateFormat serialFormat = new SimpleDateFormat("yyMMddHH");
     public SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+    private Integer adjustDay=0;
+
 
     public TimeService() {
     }
@@ -282,5 +285,20 @@ public class TimeService {
                 break;
         }
         return m;
+    }
+
+    public Integer getAdjustDay() {
+        return adjustDay;
+    }
+
+    public void setAdjustDay(Integer adjustDay) {
+        this.adjustDay = adjustDay;
+    }
+
+    public Date adjustDay(Date date) throws Exception {
+        if(adjustDay!=0){
+            date=this.addDay(this.addMonth(date,-1),adjustDay);
+        }
+        return date;
     }
 }

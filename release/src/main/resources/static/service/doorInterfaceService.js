@@ -30,7 +30,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
             popUpService.pop('message');
             return $q.reject();
         }
-        return $http.get('http://' + ip + ':8081/writeDoor?roomId=' + doorIdList.join(',') + '&leaveTimeStr=' + leaveTime + '&num=' + num)
+        return $http.get('http://' + ip + ':8081/writeDoor?roomId='+roomIdList.join(',')+'&doorId=' + doorIdList.join(',') + '&leaveTimeStr=' + leaveTime + '&num=' + num)
     }
 
     function doorRead() {
@@ -40,7 +40,31 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
             popUpService.pop('message');
             return $q.reject();
         }
-        $http.get('http://' + ip + ':8081/readDoor');
+        $http.get('http://' + ip + ':8081/readDoor')
+            .then(function (r) {
+                var doorIdMap = util.listToMapByField(dataService.getInterfaceDoorList(), 'roomId');
+                var doorId=r.data.doorId;
+                var date=r.data.date;
+                var roomId=doorIdMap[doorId];
+                /*说明门锁接口读不出来时间，所以只能通过在店户籍粗略查找*/
+                if(date=='false'){
+                    var query={condition:'room_id='+util.wrapWithBrackets(roomId)}
+                    dataService.refreshCheckInList(query)
+                        .then(function (ci) {
+                            if(ci[0]){
+                                date=dateFilter(ci[0].leaveTime,'yyyy-MM-dd HH:00:00');
+                                messageService.setMessage({type:'alert',content:'房号:'+roomId+'||有效期:'+date});
+                                popUpService.pop('message');
+                            }else {
+                                messageService.setMessage({type:'alert',content:'房号:'+roomId});
+                                popUpService.pop('message');
+                            }
+                        })
+                }else {
+                    messageService.setMessage({type:'alert',content:'房号:'+roomId+'||有效期:'+date});
+                    popUpService.pop('message');
+                }
+            })
     }
 
     function doorClear(roomId) {

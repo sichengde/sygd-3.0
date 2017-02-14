@@ -30,5 +30,9 @@ App.controller('rightClickRoomController', ['$scope', 'popUpService', 'reception
             .then(function () {
                 popUpService.close('rightClickRoom');
             })
+    };
+    /*客人换房*/
+    $scope.changeRoom=function () {
+        popUpService.pop('changeRoom');
     }
 }]);

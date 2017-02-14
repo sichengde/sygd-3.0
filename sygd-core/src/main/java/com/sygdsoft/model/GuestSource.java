@@ -6,6 +6,7 @@ package com.sygdsoft.model;
  */
 public class GuestSource extends BaseEntity {
     private String guestSource;//客源名称
+    private String countCategory;//统计分类
 
     public GuestSource() {
     }
@@ -20,5 +21,13 @@ public class GuestSource extends BaseEntity {
 
     public void setGuestSource(String guestSource) {
         this.guestSource = guestSource;
+    }
+
+    public String getCountCategory() {
+        return countCategory;
+    }
+
+    public void setCountCategory(String countCategory) {
+        this.countCategory = countCategory;
     }
 }

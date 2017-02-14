@@ -63,7 +63,9 @@ public class NightActionTest extends ApplicationTest{
         Date endTime=timeService.getMaxMonth(new Date() );
         System.out.println(beginTime);
         System.out.println(endTime);*/
-        System.out.println(timeService.getMonthCN(new Date()));
+        Date a=timeService.getMinMonth(new Date());
+        timeService.setAdjustDay(20);
+        System.out.println(timeService.adjustDay(a));
     }
 
     @Test
@@ -93,6 +95,5 @@ public class NightActionTest extends ApplicationTest{
         Calendar calendar=new Calendar();
         calendar.setDate(new Date("2015-01-01"));
     }
-
 
 }

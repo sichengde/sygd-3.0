@@ -41,6 +41,8 @@ public class RoomParseReportController {
     GroupIntegrationService groupIntegrationService;
     @Autowired
     GuestSourceService guestSourceService;
+    @Autowired
+    OtherParamService otherParamService;
     private Integer rentSubmit;
     private Integer totalSubmit;
     private Double consumeSubmit;
@@ -51,10 +53,16 @@ public class RoomParseReportController {
         Date beginTime;
         Date endTime;
         List<RoomParseReportRow> roomParseReportRowList = new ArrayList<>();
+        try {
+            timeService.setAdjustDay(Integer.valueOf(otherParamService.getValueByName("会计月度"))-1);
+        } catch (NumberFormatException e) {
+            throw new Exception("会计月度定义有误");
+        }
         switch (roomParseReportQuery.getRange()) {
             case "月":
                 /*分为3个10天*/
                 beginTime = timeService.getMinMonth(date);
+                beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addDay(beginTime, 10);
                 this.clearSubmit();
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "上旬");
@@ -63,12 +71,14 @@ public class RoomParseReportController {
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "中旬");
                 beginTime = endTime;
                 endTime = timeService.getMaxMonth(endTime);
+                endTime=timeService.adjustDay(endTime);
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "下旬");
                 this.parseSubmit(roomParseReportRowList);
                 break;
             case "季":
                 /*分为3个月，每个月3个10天*/
                 beginTime = timeService.getMinQuarter(date);
+                beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addDay(beginTime, 10);
                 this.clearSubmit();
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "上旬");
@@ -77,9 +87,12 @@ public class RoomParseReportController {
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "中旬");
                 beginTime = endTime;
                 endTime = timeService.getMaxMonth(endTime);
+                endTime=timeService.adjustDay(endTime);
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "下旬");
                 this.parseSubmit(roomParseReportRowList);
+
                 beginTime = endTime;
+                beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addDay(beginTime, 10);
                 this.clearSubmit();
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "上旬");
@@ -88,9 +101,12 @@ public class RoomParseReportController {
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "中旬");
                 beginTime = endTime;
                 endTime = timeService.getMaxMonth(endTime);
+                endTime=timeService.adjustDay(endTime);
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "下旬");
                 this.parseSubmit(roomParseReportRowList);
+
                 beginTime = endTime;
+                beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addDay(beginTime, 10);
                 this.clearSubmit();
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "上旬");
@@ -98,6 +114,7 @@ public class RoomParseReportController {
                 endTime = timeService.addDay(beginTime, 10);
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "中旬");
                 beginTime = endTime;
+                endTime=timeService.adjustDay(endTime);
                 endTime = timeService.getMaxMonth(endTime);
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime) + "下旬");
                 this.parseSubmit(roomParseReportRowList);
@@ -105,6 +122,7 @@ public class RoomParseReportController {
             case "年":
                 /*分为4个季度，每个季度3个月*/
                 beginTime = timeService.getMinYear(date);
+                beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addMonth(beginTime, 1);
                 this.clearSubmit();
                 this.parseData(beginTime, endTime, roomParseReportRowList, timeService.getMonthCN(beginTime));
@@ -191,4 +209,5 @@ public class RoomParseReportController {
         roomParseReportRow.setRevper(szMath.formatTwoDecimal(this.consumeSubmit, this.rentSubmit));//设置REVPER
         roomParseReportRowList.add(roomParseReportRow);
     }
+
 }
