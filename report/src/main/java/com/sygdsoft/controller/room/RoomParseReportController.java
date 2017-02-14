@@ -21,7 +21,7 @@ import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 
 /**
  * Created by 舒展 on 2017-02-08.
- * 客房经营状况
+ * 客房经营分析
  */
 @RestController
 public class RoomParseReportController {
