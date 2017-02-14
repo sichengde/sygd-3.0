@@ -59,6 +59,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                     headerName: '房费',
                     marryChildren: true,
                     groupId: 'roomConsume',
+                    openByDefault: true,
                     children: []
                 }
             ]
@@ -74,27 +75,59 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         'foreigner'
     ];
     var pointOfSaleIds = [];
-    dataService.initData(['refreshPointOfSaleList', 'refreshGuestSourceList'], [{condition: 'module=\'接待\''}])
+    dataService.initData(['refreshPointOfSaleList', 'refreshGuestSourceList'], [{condition: 'module=\'接待\''},{orderByList:['countCategory']}])
         .then(function () {
+            /*统计房费客源明细*/
             var guestSourceList = dataService.getGuestSourceList();
             var totalRoomConsumeValueGetter = '';
+            var lastCategory='';
+            var totalStr='';
+            var guestSourceCategory;
             for (var i = 0; i < guestSourceList.length; i++) {
-                columnDefs[2].children[0].children.push({
-                    headerName: guestSourceList[i].guestSource,
-                    field: guestSourceList[i].guestSource,
+                var guestSource=guestSourceList[i].guestSource;
+                var countCategory=guestSourceList[i].countCategory;
+                if(countCategory!=lastCategory){
+                    if(lastCategory!=''){
+                        totalStr = totalStr.substring(0, totalStr.length - 1);
+                        guestSourceCategory.children.push({
+                            headerName: '总计',
+                            valueGetter: totalStr
+                        });
+                        totalStr='';
+                    }
+                    guestSourceCategory={
+                        headerName:countCategory,
+                        marryChildren: true,
+                        groupId: countCategory,
+                        columnGroupShow: 'open',
+                        openByDefault: true,
+                        children:[]
+                    };
+                    columnDefs[2].children[0].children.push(guestSourceCategory);
+                    lastCategory=countCategory;
+                }
+                guestSourceCategory.children.push({
+                    headerName: guestSource,
+                    field: guestSource,
                     columnGroupShow: 'open'
                 });
                 pointOfSaleIds.push(guestSourceList[i].guestSource);
                 totalRoomConsumeValueGetter += 'getValue("' + guestSourceList[i].guestSource + '")+';
+                totalStr += 'getValue("' + guestSourceList[i].guestSource + '")+';
             }
+            totalStr = totalStr.substring(0, totalStr.length - 1);
+            guestSourceCategory.children.push({
+                headerName: '总计',
+                valueGetter: totalStr
+            });
             totalRoomConsumeValueGetter = totalRoomConsumeValueGetter.substring(0, totalRoomConsumeValueGetter.length - 1);
             columnDefs[2].children[0].children.push({
                 headerName: '总计',
                 colId: 'totalRoomConsume',
-                valueGetter: totalRoomConsumeValueGetter,
-                volatile: true
+                valueGetter: totalRoomConsumeValueGetter
             });
             pointOfSaleIds.push('totalRoomConsume');
+            /*统计其他营业部门*/
             var secondPointOfSale = dataService.getPointOfSale()[0].secondPointOfSale.split(' ');
             var totalPointOfSaleConsumeValueGetter = '';
             for (var i = 0; i < secondPointOfSale.length; i++) {
@@ -132,7 +165,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         //angularCompileRows: true,
         rowData: null,
         onGridReady: function () {
-            this.columnApi.setColumnGroupOpened('roomConsume', true);
+            /*this.columnApi.setColumnGroupOpened('roomConsume', true);*/
             /*this.columnApi.autoSizeColumns(allColumnIds);*/
         },
         localeText: {
@@ -146,6 +179,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         }
     };
     $scope.range = '年';
+    $scope.showRoomParseReport=false;
     $scope.RoomParseReport = function (beginTime, range) {
         $scope.showRoomParseReport = true;
         webService.post('RoomParseReport', {
@@ -176,6 +210,12 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                 }
                 $scope.gridOptions.api.setRowData(r);
             })
+    };
+    $scope.RoomParseReportExport=function () {
+        $scope.gridOptions.api.exportDataAsExcel({
+            columnGroups: true,
+            skipGroups:false
+        });
     };
     /**
      * 实时房态表

@@ -36,7 +36,7 @@
             </div>
         </sz-pane>
         <sz-pane title="客房经营状况">
-            <div ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>
+            <div ng-show="showRoomParseReport" ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>
             <div class="tableDiv">
                 <ul>
                     <li>
@@ -51,6 +51,7 @@
                         </div>
                     </li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(beginTime,range)" value="预览"></li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReportExport()" value="导出xls"></li>
                 </ul>
             </div>
         </sz-pane>

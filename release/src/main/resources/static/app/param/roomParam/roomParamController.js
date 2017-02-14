@@ -7,7 +7,7 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
     $scope.roomCategoryFields = [{name: '房间类别', id: 'category', notNull: 'true'}];
     $scope.guestSourceFields = [
         {name: '客源', id: 'guestSource', notNull: 'true'},
-        {name: '客源归类', id: 'countCategory'}
+        {name: '客源归类', id: 'countCategory',notNull: 'true'}
     ];
     $scope.roomPriceAddFields = [
         {name: '时间节点', id: 'timeLimit', width: '120px'},
