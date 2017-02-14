@@ -19,7 +19,7 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
      * 获得单位支付/充值
      */
     /*操作员，时间，币种*/
-    @Select("select -sum(debt) from company_debt where debt<0 user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
+    @Select("select -sum(debt) from company_debt where debt<0 and user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
     Double getDepositByUser(@Param("userId")String userId, @Param("currency")String currency, @Param("beginTime") Date beginTime, @Param("endTime")Date endTime);
 
