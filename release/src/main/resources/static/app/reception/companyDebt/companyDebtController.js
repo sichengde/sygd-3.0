@@ -64,7 +64,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '操作时间', id: 'doTime', desc: '0'},
         {name: '操作员号', id: 'userId'}
     ];
-    $scope.condition = 'ifDebt=\'y\'';
+    $scope.condition = 'if_debt=\'y\'';
     $scope.companySelectList = [];
     $scope.companyLordSelectList = [];
     /*挂账明细默认不显示*/

@@ -20,7 +20,7 @@ App.controller('roomShopInController', ['$scope', 'dataService', 'receptionServi
     ];
     $scope.chooseItemList = [];
     $scope.totalMoney = 0;
-    $scope.condition = 'pointOfSale=\'房吧\'';
+    $scope.condition = 'point_of_sale=\'房吧\'';
     $scope.chooseItem = saleService.chooseItem;
     $scope.calculateMoney = saleService.calculateMoney;
 

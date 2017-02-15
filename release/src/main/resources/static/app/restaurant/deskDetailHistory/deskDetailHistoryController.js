@@ -33,6 +33,6 @@ App.controller('deskDetailHistoryController', ['$scope', 'popUpService', 'util',
                 var deskInHistory=dataService.getDeskInHistoryList()[0];
                 $scope.deskPayRemark='总金额:'+deskInHistory.totalPrice+'  实收款:'+deskInHistory.finalPrice
             });
-        $scope.deskPayCondition = 'ckSerial=' + util.wrapWithBrackets($scope.param.ckSerial);
+        $scope.deskPayCondition = 'ck_serial=' + util.wrapWithBrackets($scope.param.ckSerial);
     }
 }]);

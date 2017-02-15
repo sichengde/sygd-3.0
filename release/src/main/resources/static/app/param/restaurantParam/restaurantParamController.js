@@ -44,7 +44,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
             {name: '座位数', id: 'seat', notNull: 'true'},
             {id: 'pointOfSale', default: pointOfSale}
         ];
-        $scope.deskCondition = 'pointOfSale=' + util.wrapWithBrackets(pointOfSale);
+        $scope.deskCondition = 'point_of_sale=' + util.wrapWithBrackets(pointOfSale);
     };
     /*侦听切换，随时更新szTable内容，类别定义*/
     $scope.chooseItemSaleCount = function (pointOfSale) {
@@ -57,7 +57,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
             {name: '品种类别', id: 'name', width: '200px'},
             {name: '厨房', id: 'cookRoom', selectId: '2',  width: '200px'}
         ];
-        $scope.saleCountCondition = 'firstPointOfSale=' + util.wrapWithBrackets(pointOfSale);
+        $scope.saleCountCondition = 'first_point_of_sale=' + util.wrapWithBrackets(pointOfSale);
     };
     /*侦听切换，随时更新szTable内容，菜谱定义*/
     $scope.chooseItemMenu = function (pointOfSale) {
@@ -74,7 +74,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
             {name: '库房货物', id: 'cargo', width: '200px', filter: 'list', boolean: true},
             {name: '厨房', id: 'cookRoom', width: '200px', filter: 'input', copy: 'true',popChoose: 'true', selectId: '1'}
         ];
-        $scope.menuCondition = 'pointOfSale=' + util.wrapWithBrackets(pointOfSale);
+        $scope.menuCondition = 'point_of_sale=' + util.wrapWithBrackets(pointOfSale);
         var p2 = {condition: 'first_point_of_sale=' + util.wrapWithBrackets(pointOfSale)};
         dataService.initData(['refreshSaleCountList'], [p2])
             .then(function () {
@@ -89,7 +89,7 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
             {id: 'foodName', name: '菜品', selectId: '1', freeSelect: 'true', selectListField: 'name'},
             {id: 'foodNum', name: '数量', notNull: 'true'}
         ];
-        $scope.foodSetCondition = 'pointOfSale=' + util.wrapWithBrackets(pointOfSale);
+        $scope.foodSetCondition = 'point_of_sale=' + util.wrapWithBrackets(pointOfSale);
         dataService.refreshMenuList({condition: 'point_of_sale=' + util.wrapWithBrackets(pointOfSale) + ' and food_set=true'})
             .then(function (r) {
                 $scope.selectListFoodSet[0] = util.objectListToString(r, 'name');

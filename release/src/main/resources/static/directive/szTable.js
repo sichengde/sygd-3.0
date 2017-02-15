@@ -259,10 +259,10 @@ App.directive('szTable', ['$filter', function ($filter) {
                     if (condition && !$scope.searchCondition) {
                         p.condition = util.parseSearch(condition, $scope.fields);
                     } else if ($scope.searchCondition && !condition) {
-                        p.condition = util.parseSearch($scope.searchCondition, $scope.fields);
+                        p.condition = $scope.searchCondition;
                     }
                     if (condition && $scope.searchCondition) {
-                        p.condition = condition + ' and ' + util.parseSearch($scope.searchCondition, $scope.fields);
+                        p.condition = condition + ' and ' + $scope.searchCondition;
                     }
                     if ($scope.maxNum) {
                         p.num = $scope.maxNum;

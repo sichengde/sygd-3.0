@@ -14,7 +14,7 @@ App.controller('deskStateController', ['$scope', 'dataService', 'util', 'LoginSe
     dataService.refreshDeskDiscountList();
     /*获取预定信息*/
     dataService.refreshDeskBookList();
-    $scope.menuCondition = 'pointOfSale=' + util.wrapWithBrackets(LoginService.getPointOfSale());
+    $scope.menuCondition = 'point_of_sale=' + util.wrapWithBrackets(LoginService.getPointOfSale());
     /*弹出明细*/
     $scope.deskIn = function (desk) {
         $scope.$broadcast('desk', desk);

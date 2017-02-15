@@ -1,4 +1,5 @@
 App.controller('popCompanyDebtController', ['$scope', 'popUpService', function ($scope, popUpService) {
+    /*等待核对*/
     $scope.condition = popUpService.getParam();
     $scope.companyDebtFields = [
         {name: '单位名称', id: 'company', width: '230px'},

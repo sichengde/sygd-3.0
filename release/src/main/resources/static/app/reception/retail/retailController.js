@@ -17,7 +17,7 @@ App.controller('retailController', ['$scope', '$interval', 'util', 'popUpService
         {name: '价格', id: 'price', width: '70px', static: 'true'},
         {name: '数量', id: 'num', width: '70px'}
     ];
-    $scope.condition = "pointOfSale='房吧'";
+    $scope.condition = "point_of_sale='房吧'";
     $scope.chooseItem = saleService.chooseItem;
     $scope.calculateMoney = saleService.calculateMoney;
     $scope.name = '';
