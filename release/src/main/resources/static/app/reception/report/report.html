@@ -55,18 +55,6 @@
                 </ul>
             </div>
         </sz-pane>
-        <sz-pane title="客房销售统计">
-            <div class="tableDiv">
-                <ul>
-                    <li>
-                        日期：
-                        <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
-                    </li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(beginTime,range)" value="预览"></li>
-                </ul>
-                <sz-table ng-if="dailyReportList" fields="dailyReportFields" items="dailyReportList" button="add update delete" items-per-page="20" item-click="dailyReportItemClick(item,id)"></sz-table>
-            </div>
-        </sz-pane>
         <sz-pane title="借贷平衡表">
             <div class="tableDiv">
                 <ul>
@@ -87,9 +75,8 @@
                         </div>
                     </li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="dailyReport(beginTime,endTime,'pdf')" value="预览"></li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="dailyReport(beginTime,endTime,'xls')" value="导出excel">
                 </ul>
-                <sz-table ng-if="dailyReportList" fields="dailyReportFields" items="dailyReportList" button="add update delete" items-per-page="20" item-click="dailyReportItemClick(item,id)"></sz-table>
+                <sz-table ng-if="dailyReportList" fields="dailyReportFields" items="dailyReportList" button="add update delete" items-per-page="20" item-click="dailyReportItemClick(item,id)" print="借贷平衡表"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="实时房态表">

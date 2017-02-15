@@ -127,7 +127,7 @@ public class SzMath {
         return d==null?0:d;
     }
     public String nullToZero(String d){
-        return d==null?"0.0":d;
+        return d==null?"0":d;
     }
     public Boolean nullToZero(Boolean d){
         return d != null;

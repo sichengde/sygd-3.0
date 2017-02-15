@@ -13,7 +13,7 @@
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="roomCategorySaleReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
                 <li>平均房价不考虑加收和小时房费，冲账不算次数</li>
             </div>
-            <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage"></sz-table>
+            <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage" remark="roomCategorySaleRemark"></sz-table>
         </sz-pane>
         <sz-pane title="客源人数分析">
             <div class="tableDiv">

@@ -26,6 +26,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         webService.post('roomCategorySaleReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
                 $scope.roomCategorySaleList = r.roomCategoryRowList;
+                $scope.roomCategorySaleRemark=r.remark;
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
                 echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
             })

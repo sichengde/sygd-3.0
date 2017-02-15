@@ -17,7 +17,7 @@ import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 
 /**
  * Created by 舒展 on 2016-07-11.
- * 每日经营情况总览表
+ * 借贷平衡表
  */
 @RestController
 public class DailyReportController {

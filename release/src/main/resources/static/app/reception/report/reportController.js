@@ -361,7 +361,6 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                 }
                 $scope.dailyReportFields.push({name: '合计', id: 'total'});
                 $scope.dailyReportList = r;
-                $window.open(host + "/receipt/" + r[0].reportJson.reportIndex);
             });
     };
     $scope.dailyReportItemClick = function (item, id) {

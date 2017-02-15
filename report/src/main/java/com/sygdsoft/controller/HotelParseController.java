@@ -46,10 +46,10 @@ public class HotelParseController {
             switch (module) {
                 case "接待":
                     /*一行一行填写*/
-                    hotelParseRowList.add(this.getHotelSumByPointOfSale("接待"));
-                    hotelParseRowList.add(this.getHotelSumByPointOfSale("房费"));
-                    hotelParseRowList.add(this.getHotelSumByPointOfSale("房吧"));
-                    hotelParseRowList.add(this.getHotelSumByPointOfSale("零售"));
+                    String[] secondPointOfSales=pointOfSale.getSecondPointOfSale().split(" ");
+                    for (String secondPointOfSale : secondPointOfSales) {
+                        hotelParseRowList.add(this.getHotelSumByPointOfSale(secondPointOfSale));
+                    }
                     break;
                 case "餐饮":
                     String[] secondPointOfSaleList = pointOfSale.getSecondPointOfSale().split(" ");

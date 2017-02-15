@@ -11,6 +11,7 @@ import java.util.Map;
 public class RoomCategoryParse {
     private List<RoomCategoryRow> roomCategoryRowList;
     private List<RoomCategoryRow> roomCategoryRowHistoryList;
+    private String remark;//备注显示接待宾客，团队，vip，外宾
     private Map roomCategoryMap;
 
     public RoomCategoryParse() {
@@ -38,5 +39,13 @@ public class RoomCategoryParse {
 
     public void setRoomCategoryRowHistoryList(List<RoomCategoryRow> roomCategoryRowHistoryList) {
         this.roomCategoryRowHistoryList = roomCategoryRowHistoryList;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
