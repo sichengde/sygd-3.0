@@ -71,6 +71,7 @@
                         <configuration>
                             <webappSourceDir>${project.basedir}/src/main/resources</webappSourceDir>
                             <webappTargetDir>${project.build.directory}/classes</webappTargetDir>
+                            <closureLanguage>ECMASCRIPT5</closureLanguage>
                             <jsSourceDir>static</jsSourceDir>
                             <jsFinalFile>app-main.js</jsFinalFile>
                             <cssSourceDir>static/css</cssSourceDir>
@@ -96,6 +97,8 @@
                                 <jsSourceFile>otherJS/styleswitch.js</jsSourceFile>
                                 <jsSourceFile>otherJS/Chart.bundle.min.js</jsSourceFile>
                                 <jsSourceFile>otherJS/echarts-source.js</jsSourceFile>
+                                <jsSourceFile>otherJS/ag-grid-dist/ag-grid.js</jsSourceFile>
+                                <jsSourceFile>otherJS/ag-grid-enterprise-dist/ag-grid-enterprise.js</jsSourceFile>
                                 <jsSourceFile>angular.js</jsSourceFile>
                                 <jsSourceFile>angular-route.js</jsSourceFile>
                                 <jsSourceFile>angular-locale_zh-cn.js</jsSourceFile>
@@ -117,7 +120,7 @@
                             <goal>minify</goal>
                         </goals>
                     </execution>
-                    <execution>
+                    <!--<execution>
                         <id>app-mobile</id>
                         <configuration>
                             <webappSourceDir>${project.basedir}/src/main/resources</webappSourceDir>
@@ -147,7 +150,7 @@
                         <goals>
                             <goal>minify</goal>
                         </goals>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
             <plugin>
