@@ -10,6 +10,7 @@ import java.util.List;
 public class GuestParse {
     private List<GuestParseRow> guestParseRowList;
     private List<GuestParseRow> guestParseRowListHistory;
+    private String remark;
 
     public GuestParse() {
     }
@@ -28,5 +29,13 @@ public class GuestParse {
 
     public void setGuestParseRowListHistory(List<GuestParseRow> guestParseRowListHistory) {
         this.guestParseRowListHistory = guestParseRowListHistory;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

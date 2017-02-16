@@ -17,7 +17,7 @@ public interface CheckInHistoryLogMapper extends MyMapper<CheckInHistoryLog> {
     /**
      * 获得时间段内客源消费情况
      */
-    @Select("SELECT sum(consume) totalConsume,count(*) num,format(sum(consume)/count(*),2) averageConsume,guest_source guestSource FROM check_in_history_log WHERE leave_time>#{beginTime} AND leave_time<#{endTime} GROUP BY guest_source")
+    @Select("SELECT sum(consume) totalConsume,count(*) num,format(sum(consume)/count(*),2) averageConsume,guest_source guestSource FROM check_in_integration WHERE leave_time>#{beginTime} AND leave_time<#{endTime} GROUP BY guest_source")
     List<GuestParseRow> guestSourceParse(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
 }

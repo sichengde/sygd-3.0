@@ -4,10 +4,7 @@ import com.sygdsoft.model.DebtIntegration;
 import com.sygdsoft.model.GuestParse;
 import com.sygdsoft.model.GuestRoomCategoryParse;
 import com.sygdsoft.model.ReportJson;
-import com.sygdsoft.service.CheckInHistoryLogService;
-import com.sygdsoft.service.CheckInIntegrationService;
-import com.sygdsoft.service.DebtIntegrationService;
-import com.sygdsoft.service.TimeService;
+import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2016/11/26 0026.
+ * 客源分析
  */
 @RestController
 public class GuestParseController {
@@ -27,9 +25,11 @@ public class GuestParseController {
     CheckInHistoryLogService checkInHistoryLogService;
     @Autowired
     CheckInIntegrationService checkInIntegrationService;
+    @Autowired
+    GuestIntegrationService guestIntegrationService;
 
     @RequestMapping(value = "guestSourceParseReport")
-    public GuestParse guestSourceParseReport(@RequestBody ReportJson reportJson) {
+    public GuestParse guestSourceParseReport(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         Date beginTimeHistory = timeService.addYear(beginTime, -1);
@@ -37,6 +37,8 @@ public class GuestParseController {
         GuestParse guestParse = new GuestParse();
         guestParse.setGuestParseRowList(checkInHistoryLogService.guestSourceParse(beginTime, endTime));
         guestParse.setGuestParseRowListHistory(checkInHistoryLogService.guestSourceParse(beginTimeHistory, endTimeHistory));
+        String remark="本地客人:"+guestIntegrationService.getLocalGuestSum()+",外地客人:"+guestIntegrationService.getOtherGuestSum();
+        guestParse.setRemark(remark);
         return guestParse;
     }
 

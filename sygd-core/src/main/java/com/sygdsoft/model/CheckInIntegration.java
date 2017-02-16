@@ -11,6 +11,7 @@ public class CheckInIntegration {
     private String selfAccount;
     private String guestSource;
     private Double finalRoomPrice;
+    private Double consume;
     private Date reachTime;
     private Date leaveTime;
     private String remark;
@@ -90,5 +91,13 @@ public class CheckInIntegration {
 
     public void setIfRoom(Boolean ifRoom) {
         this.ifRoom = ifRoom;
+    }
+
+    public Double getConsume() {
+        return consume;
+    }
+
+    public void setConsume(Double consume) {
+        this.consume = consume;
     }
 }

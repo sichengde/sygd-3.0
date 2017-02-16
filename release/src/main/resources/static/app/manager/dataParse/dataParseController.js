@@ -34,7 +34,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     /*客源人数分析*/
     $scope.guestSourceParseFields = [
         {name: '客源', id: 'guestSource'},
-        {name: '人数', id: 'num'},
+        {name: '开房', id: 'num'},
         {name: '平均消费', id: 'averageConsume'},
         {name: '消费总计', id: 'totalConsume'}
     ];
@@ -43,6 +43,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             .then(function (r) {
                 $scope.guestSourceParseList = r.guestParseRowList;
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
+                $scope.guestSourceParseRemark=r.remark;
                 echartService.generateChartCompare(r.guestParseRowList, r.guestParseRowListHistory, 'guestSource', 'totalConsume');
             })
     };
