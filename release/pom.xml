@@ -173,6 +173,7 @@
                         <exclude>**/otherJS/echarts-source.js</exclude>
                         <exclude>**/angular.js</exclude>
                         <exclude>**/angular-route.js</exclude>
+                        <exclude>**/angular-scroll.js</exclude>
                         <exclude>**/angular-locale_zh-cn.js</exclude>
                         <exclude>**/angular-ui-1.3.2.js</exclude>
                         <exclude>**/angular-drag.js</exclude>
