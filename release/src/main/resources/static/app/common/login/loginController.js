@@ -129,6 +129,11 @@ App.controller('LoginController', ['$scope', 'LoginService', 'dataService', 'uti
                         break;
                     }//判断该操作员是否有该模块主页的权限，有的话就跳转，没有的话依次查找知道最近的权限
                 }
+                if(i==moduleList.length){//没有一个权限，则查看特殊页面
+                    if(permission.indexOf('厨打划单') > -1){
+                        webService.redirect('cookPrintHelper');
+                    }
+                }
                 emitThree();
                 localStorage.setItem('ip',r.data);
             });

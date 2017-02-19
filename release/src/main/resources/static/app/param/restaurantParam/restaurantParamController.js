@@ -81,6 +81,21 @@ App.controller('restaurantParamController', ['$scope', 'dataService', 'util', 'L
                 $scope.selectListMenu[0] = util.objectListToString(dataService.getSaleCountList(), 'name');
             });
     };
+    /*菜谱成本定义*/
+    $scope.menuCostSelectList=[];
+    $scope.menuCostFields=[
+        {name:'菜品名称',id:'food',copy:'true',selectId:'0',freeSelect:'true',selectListField:'name'},
+        {name:'货品名称',id:'cargo',selectId:'1',freeSelect:'true',selectListField:'name'},
+        {name:'数量',id:'num'}
+    ];
+    dataService.refreshMenuList()
+        .then(function (r) {
+            $scope.menuCostSelectList[0]=r;
+        });
+    dataService.refreshCargoList()
+        .then(function (r) {
+            $scope.menuCostSelectList[1]=r;
+        });
     /*套餐定义*/
     $scope.chooseFoodSet = function (pointOfSale) {
         $scope.foodSetFields = [

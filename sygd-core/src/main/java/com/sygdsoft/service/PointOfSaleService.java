@@ -49,9 +49,11 @@ public class PointOfSaleService extends BaseService<PointOfSale>{
     /**
      * 获得餐饮模块的所有营业部门
      */
-    public List<PointOfSale> getByModule(){
+    public List<PointOfSale> getByModule(String module){
         PointOfSale pointOfSaleQuery=new PointOfSale();
-        pointOfSaleQuery.setModule("餐饮");
+        pointOfSaleQuery.setModule(module);
         return pointOfSaleMapper.select(pointOfSaleQuery);
     }
+
+
 }

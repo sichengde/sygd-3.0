@@ -1529,6 +1529,23 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 菜品成本明细
+     */
+    var menuCostList;
+    function refreshMenuCostList(p) {
+        p = p || {};
+        return webService.post('menuCostGet', p)
+            .then(function (d) {
+                menuCostList = d;
+                return d;
+            })
+    }
+
+    function getMenuCostList() {
+        return menuCostList;
+    }
+
+    /**
      * 公共方法，获取之类的
      */
     var refreshed;
@@ -1739,6 +1756,8 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getCheckInIntegrationList:getCheckInIntegrationList,
         refreshInterfaceDoorList:refreshInterfaceDoorList,
         getInterfaceDoorList:getInterfaceDoorList,
+        refreshMenuCostList:refreshMenuCostList,
+        getMenuCostList:getMenuCostList,
         initData: initData
     }
 }]);

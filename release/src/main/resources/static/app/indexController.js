@@ -185,11 +185,12 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
 
     /*用户关闭/刷新浏览器模块*/
     window.onbeforeunload = function () {
+        //webService.post('userOut',{user: LoginService.getUser(), module: LoginService.getModule()});
         logOut();
     };
     function logOut() {
         $.ajax({
-            url: hostJquery + '/userOut',
+            url: hostJquery+'/userOut',
             type: 'post',
             data: {user: LoginService.getUser(), module: LoginService.getModule()},
             success: function (data) {

@@ -20,6 +20,8 @@ public class DeskInController {
 
     @RequestMapping(value = "deskInGet")
     public List<DeskIn> deskInGet(@RequestBody Query query) throws Exception {
-        return deskInService.get(query);
+        List<DeskIn> deskInList=deskInService.get(query);
+        deskInService.setDeskDetail(deskInList);
+        return deskInList;
     }
 }

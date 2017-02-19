@@ -238,6 +238,9 @@ App.config(['$routeProvider',
         }).when('/otherTools', {//餐饮其他工具
             templateUrl: 'restaurant/deskOtherTools/deskOtherTools.html',
             controller:'deskOtherToolsController'
+        }).when('/cookPrintHelper', {//餐饮厨打划单模块
+            templateUrl: 'restaurant/cookPrintHelper/cookPrintHelper.html',
+            controller:'cookPrintHelperController'
         }).when('/sauna',{//-------------------------------------桑拿模块-------------------------------------盘态图
             templateUrl:'sauna/saunaState/saunaState.html',
             controller:'saunaStateController'

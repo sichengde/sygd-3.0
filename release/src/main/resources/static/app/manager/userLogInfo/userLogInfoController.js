@@ -38,6 +38,17 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name: '团队名称', id: 'groupName', filter: 'list', width: '150px'},
         {name: '开房人员', id: 'userId', width: '100px', filter: 'list', width: '100px'}
     ];
+    $scope.checkInGuestFields=[
+        {id:'cardId',name:'身份证号'},
+        {id:'cardType',name:'证件种类'},
+        {id:'name',name:'姓名'},
+        {id:'birthdayTime',name:'生日'},
+        {id:'sex',name:'性别'},
+        {id:'race',name:'种族'},
+        {id:'address',name:'地址'},
+        {id:'phone',name:'联系电话'},
+        {id:'country',name:'国籍'}
+    ];
     $scope.checkInIntegrationFields=[
         {name:'房号',id:'roomId'},
         {name:'房型',id:'roomCategory'},

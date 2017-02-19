@@ -25,6 +25,7 @@ public class DeskDetail extends BaseEntity {
     private Boolean foodSet;//是否是套餐
     private Boolean cargo;//是否是货物
     private Boolean storageDone;//自动出库是否统计完成
+    private Boolean cooked;//是否做了，用于厨房电子划菜
     @Transient
     private boolean needUpdate;//更新的菜品
     @Transient
@@ -274,5 +275,13 @@ public class DeskDetail extends BaseEntity {
 
     public void setStorageDone(Boolean storageDone) {
         this.storageDone = storageDone;
+    }
+
+    public Boolean getCooked() {
+        return cooked;
+    }
+
+    public void setCooked(Boolean cooked) {
+        this.cooked = cooked;
     }
 }

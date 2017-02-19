@@ -168,7 +168,7 @@ public class StorageOutController {
         storageOutDetailListDirect = new ArrayList<>();//直拨出库
         storageOutSerial = null;
         storageOutSerialDirect = null;
-        List<PointOfSale> pointOfSaleList= pointOfSaleService.getByModule();
+        List<PointOfSale> pointOfSaleList= pointOfSaleService.getByModule("餐饮");
         for (PointOfSale ofSale : pointOfSaleList) {
             house=ofSale.getHouse();
             if(house==null){//该销售点没有定义仓库

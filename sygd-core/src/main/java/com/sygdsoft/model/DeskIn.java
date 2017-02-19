@@ -1,6 +1,8 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2016-09-13.
@@ -12,6 +14,8 @@ public class DeskIn extends BaseEntity{
     private Double consume;//消费
     private String userId;
     private String pointOfSale;
+    @Transient
+    private List<DeskDetail> deskDetailList;
 
     public DeskIn() {
     }
@@ -70,5 +74,13 @@ public class DeskIn extends BaseEntity{
 
     public void setPointOfSale(String pointOfSale) {
         this.pointOfSale = pointOfSale;
+    }
+
+    public List<DeskDetail> getDeskDetailList() {
+        return deskDetailList;
+    }
+
+    public void setDeskDetailList(List<DeskDetail> deskDetailList) {
+        this.deskDetailList = deskDetailList;
     }
 }
