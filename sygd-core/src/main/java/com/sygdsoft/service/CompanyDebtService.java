@@ -23,13 +23,13 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     CompanyDebtMapper companyDebtMapper;
 
     /**
-     * 获得单位充值总额
+     * 获得单位结算总额
      */
     public Double getTotalCompanyDeposit(String userId, String currency, Date beginTime, Date endTime) {
         if (userId == null) {
-            return companyDebtMapper.getDepositBy(currency, beginTime, endTime);
+            return companyDebtMapper.getDebt(currency, beginTime, endTime);
         } else {
-            return companyDebtMapper.getDepositByUser(userId, currency, beginTime, endTime);
+            return companyDebtMapper.getDebt(userId, currency, beginTime, endTime);
         }
     }
 

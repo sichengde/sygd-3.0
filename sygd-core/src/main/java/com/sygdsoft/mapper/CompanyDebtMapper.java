@@ -21,18 +21,23 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
     /*操作员，时间，币种*/
     @Select("select -sum(debt) from company_debt where debt<0 and user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
-    Double getDepositByUser(@Param("userId")String userId, @Param("currency")String currency, @Param("beginTime") Date beginTime, @Param("endTime")Date endTime);
+    Double getDebt(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间，币种*/
     @Select("select -sum(debt) from company_debt where debt<0 and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
-    Double getDepositBy(@Param("currency")String currency, @Param("beginTime") Date beginTime, @Param("endTime")Date endTime);
+    Double getDebt(@Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /*只有时间*/
+    @Select("select -sum(debt) from company_debt where debt<0 and do_time>#{beginTime} and do_time<#{endTime}")
+    @ResultType(Double.class)
+    Double getDebt(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 根据销售员和时间获得各个单位的总消费额
      */
     @Select("SELECT c.name name,sum(dp.debt_money) consume FROM debt_pay dp LEFT JOIN company c  ON c.name=dp.company WHERE c.sale_man=#{saleMan} and done_time>#{beginTime} and done_time<#{endTime} GROUP BY c.name")
-    List<Company> getTotalDebtBySaleManDate(@Param("saleMan")String saleMan, @Param("beginTime")Date beginTime, @Param("endTime")Date endTime);
+    List<Company> getTotalDebtBySaleManDate(@Param("saleMan") String saleMan, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 根据时间获得各个单位的总挂账款
@@ -48,10 +53,12 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
     @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
     Double getDebtByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
     /*只算正的*/
     @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime} and debt>0")
     @ResultType(Double.class)
     Double getDebtGenerateByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
     /*只算负的*/
     @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime} and debt<0")
     @ResultType(Double.class)

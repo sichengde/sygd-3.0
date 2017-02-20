@@ -29,7 +29,7 @@ public class VipIntegrationService extends BaseService<VipIntegration> {
         if (userId == null) {
             return vipIntegrationMapper.getPay(currency, beginTime, endTime);
         } else {
-            return vipIntegrationMapper.getPayByUser(userId, currency, beginTime, endTime);
+            return vipIntegrationMapper.getPay(userId, currency, beginTime, endTime);
         }
     }
 

@@ -25,12 +25,17 @@ public interface VipIntegrationMapper extends MyMapper<VipIntegration> {
     /*操作员，时间段，币种*/
     @Select("select sum(pay) pay from vip_integration where user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
-    Double getPayByUser(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    Double getPay(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间段，币种*/
     @Select("select sum(pay) pay from vip_integration where currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
     Double getPay(@Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /*时间段*/
+    @Select("select sum(pay) pay from vip_integration where do_time>#{beginTime} and do_time<#{endTime}")
+    @ResultType(Double.class)
+    Double getPay(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 获取会员抵用金额
