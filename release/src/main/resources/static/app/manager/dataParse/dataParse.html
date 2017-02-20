@@ -26,7 +26,6 @@
                     <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
                 </li>
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="guestSourceParseReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
-                <li>说明：以结账时间为 准</li>
             </div>
             <div style="width: 600px">
                 <sz-table fields="guestSourceParseFields" items="guestSourceParseList" button="add delete update" print="客源人数分析" ng-if="guestSourceParseList" query-message="queryMessage" remark="guestSourceParseRemark"></sz-table>
@@ -43,7 +42,6 @@
                     <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
                 </li>
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="guestSourceRoomCategoryParseReport(beginTime,endTime)" value="预览"></li>
-                <li>说明：以结账时间为 准</li>
             </div>
             <div style="width: 600px">
                 <sz-table fields="guestSourceRoomCategoryParseFields" items="guestSourceRoomCategoryParseList" button="add delete update" print="客源房类分析" ng-if="guestSourceRoomCategoryParseList" query-message="queryMessage"></sz-table>

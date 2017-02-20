@@ -5,6 +5,7 @@ App.controller('rightClickMenuController',['$scope','popUpService','webService',
     $scope.menu=popUpService.getParam();
     $scope.sellOut=function () {
         $scope.menu.sellOut=true;
+        $scope.menu.remain=$scope.num;
         webService.post('menuUpdate',[$scope.menu])
             .then(function () {
                 popUpService.close('rightClickMenu');

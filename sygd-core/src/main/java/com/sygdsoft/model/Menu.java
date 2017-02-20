@@ -18,9 +18,18 @@ public class Menu extends BaseEntity {
     private Boolean foodSet;//是否是套餐
     private Boolean cargo;//库存货品
     private Double cost;//成本
+    private Integer remain;//剩余
 
 
     public Menu() {
+    }
+
+    public Integer getNotNullRemain(){
+        if(remain==null){
+            return 0;
+        }else {
+            return remain;
+        }
     }
 
     public String getName() {
@@ -117,5 +126,13 @@ public class Menu extends BaseEntity {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public Integer getRemain() {
+        return remain;
+    }
+
+    public void setRemain(Integer remain) {
+        this.remain = remain;
     }
 }

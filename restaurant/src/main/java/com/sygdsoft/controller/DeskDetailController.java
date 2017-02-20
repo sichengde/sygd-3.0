@@ -40,6 +40,8 @@ public class DeskDetailController {
     FoodSetService foodSetService;
     @Autowired
     CookRoomService cookRoomService;
+    @Autowired
+    MenuService menuService;
 
     @RequestMapping(value = "deskDetailGet")
     public List<DeskDetail> deskDetailGet(@RequestBody Query query) throws Exception {
@@ -113,6 +115,8 @@ public class DeskDetailController {
             logAction = "修改菜品：" + deskDetail.getDesk();
         }
         deskDetailService.add(deskDetailInsert);
+        /*统计沽清*/
+        menuService.setRemain(deskDetailInsert);
         deskDetailService.update(deskDetailUpdate);
         userLogService.addUserLog(logAction, userLogService.desk, userLogService.deskDetailIn,deskIn.getDesk());
         /*进行厨房打印*/
