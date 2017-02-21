@@ -27,7 +27,7 @@ public class VipIntegrationService extends BaseService<VipIntegration> {
      */
     public Double getTotalPayTimeZone(String userId, String currency, Date beginTime, Date endTime) {
         if (userId == null) {
-            return vipIntegrationMapper.getPay(currency, beginTime, endTime);
+            return vipIntegrationMapper.getPay(null,currency, beginTime, endTime);
         } else {
             return vipIntegrationMapper.getPay(userId, currency, beginTime, endTime);
         }

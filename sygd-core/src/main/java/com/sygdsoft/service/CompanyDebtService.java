@@ -27,7 +27,7 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
      */
     public Double getTotalCompanyDeposit(String userId, String currency, Date beginTime, Date endTime) {
         if (userId == null) {
-            return companyDebtMapper.getDebt(currency, beginTime, endTime);
+            return companyDebtMapper.getDebt(null,currency, beginTime, endTime);
         } else {
             return companyDebtMapper.getDebt(userId, currency, beginTime, endTime);
         }

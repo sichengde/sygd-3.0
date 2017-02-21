@@ -3,10 +3,12 @@ package com.sygdsoft.mapper;
 import com.sygdsoft.jsonModel.report.CompanyDebtReportRow;
 import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
+import com.sygdsoft.sqlProvider.CompanyDebtSql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.Date;
 import java.util.List;
@@ -19,19 +21,9 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
      * 获得单位支付/充值
      */
     /*操作员，时间，币种*/
-    @Select("select -sum(debt) from company_debt where debt<0 and user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
+    @SelectProvider(type = CompanyDebtSql.class, method = "getDebt")
     @ResultType(Double.class)
     Double getDebt(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /*时间，币种*/
-    @Select("select -sum(debt) from company_debt where debt<0 and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getDebt(@Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /*只有时间*/
-    @Select("select -sum(debt) from company_debt where debt<0 and do_time>#{beginTime} and do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getDebt(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 根据销售员和时间获得各个单位的总消费额
