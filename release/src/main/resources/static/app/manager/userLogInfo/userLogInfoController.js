@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-06-15.
  */
-App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 'util', '$route', function ($scope, dataService, dateFilter, util, $route) {
+App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 'util', '$route','webService', function ($scope, dataService, dateFilter, util, $route,webService) {
     var module;
     if ($route.current.params.param == 'reception') {
         module='接待';
@@ -36,7 +36,7 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name: '贵宾', id: 'vip', width: '80px'},
         {name: '协议公司', id: 'company', filter: 'list', width: '150px'},
         {name: '团队名称', id: 'groupName', filter: 'list', width: '150px'},
-        {name: '开房人员', id: 'userId', width: '100px', filter: 'list', width: '100px'}
+        {name: '开房人员', id: 'userId', width: '100px', filter: 'list'}
     ];
     $scope.checkInGuestFields=[
         {id:'cardId',name:'身份证号'},
@@ -57,7 +57,9 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name:'国籍',id:'country'},
         {name:'单位',id:'company'},
         {name:'来期',id:'reachTime',filterInit:'today',filter: 'date'},
-        {name:'离期',id:'leaveTime',filter: 'date'}
+        {name:'离期',id:'leaveTime',filter: 'date'},
+        {name: '开房人员', id: 'userId',filter: 'list'},
+        {name: '是否在住', id: 'ifIn',filter: 'list',boolean: true}
     ];
     $scope.initRemark = function (data) {
         var totalForeigner=0;
@@ -124,6 +126,12 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
     $scope.checkOutRoomCondition = 'id=-1';
     $scope.chooseCheckIn = function (d) {
         $scope.checkInGuestCondition = 'room_id=' + util.wrapWithBrackets(d.roomId);
+    };
+    $scope.chooseCheckInIntegration=function (d) {
+        dataService.refreshCheckInGuestList({condition:'room_id=' + util.wrapWithBrackets(d.roomId)})
+            .then(function (r) {
+
+            })
     };
     $scope.chooseCheckOut = function (d) {
         $scope.checkOutRoomCondition = 'check_out_serial=' + util.wrapWithBrackets(d.checkOutSerial);

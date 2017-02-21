@@ -48,23 +48,23 @@ public class RoomController {
     @RequestMapping(value = "roomAdd")
     public void roomAdd(@RequestBody Room room) throws Exception {
         /*增加的房间可以通过' - '来指定区间*/
-        String[] roomRange=room.getRoomId().split("-");
-        if(roomRange.length>1){//这是一个区间
+        String[] roomRange = room.getRoomId().split("-");
+        if (roomRange.length > 1) {//这是一个区间
             String prefix = Pattern.compile("[0-9]").matcher(roomRange[0]).replaceAll("");//前缀
-            String roomIdMinString=Pattern.compile("[^0-9]").matcher(roomRange[0]).replaceAll("");
+            String roomIdMinString = Pattern.compile("[^0-9]").matcher(roomRange[0]).replaceAll("");
             /*计算一下数字位数*/
-            Integer length=roomIdMinString.length();
-            Integer roomIdMin= Integer.valueOf(roomIdMinString);//最小数
-            Integer roomIdMax= Integer.valueOf(Pattern.compile("[^0-9]").matcher(roomRange[1]).replaceAll(""));//最大数
-            List<Room> roomList=new ArrayList<>();
-            Integer range=roomIdMax-roomIdMin;
-            for (int i = 0; i < range+1; i++) {
-                Room roomTmp=new Room(room);
-                roomTmp.setRoomId(String.format(prefix+"%0"+length+"d",roomIdMin+i));
+            Integer length = roomIdMinString.length();
+            Integer roomIdMin = Integer.valueOf(roomIdMinString);//最小数
+            Integer roomIdMax = Integer.valueOf(Pattern.compile("[^0-9]").matcher(roomRange[1]).replaceAll(""));//最大数
+            List<Room> roomList = new ArrayList<>();
+            Integer range = roomIdMax - roomIdMin;
+            for (int i = 0; i < range + 1; i++) {
+                Room roomTmp = new Room(room);
+                roomTmp.setRoomId(String.format(prefix + "%0" + length + "d", roomIdMin + i));
                 roomList.add(roomTmp);
             }
             roomService.add(roomList);
-        }else {
+        } else {
             roomService.add(room);
         }
     }
@@ -115,11 +115,13 @@ public class RoomController {
         if (otherParamService.getValueByName("可编辑房价").equals("y")) {//如果是可编辑房价的话，还要考虑房价协议名称的问题
             /*房价协议表先更新*/
             Protocol needUpdate = protocolService.getByNameTemp(checkIn.getProtocol());
-            String newProtocol = checkIn.getProtocol().replaceFirst(srcRoomId, dstRoomId);
-            needUpdate.setProtocol(newProtocol);
-            needUpdate.setRoomPrice(dstRoom.getPrice());
-            protocolService.update(needUpdate);
-            checkIn.setProtocol(newProtocol);
+            if (needUpdate != null) {//团队开房的话就没有生成新的协议
+                String newProtocol = checkIn.getProtocol().replaceFirst(srcRoomId, dstRoomId);
+                needUpdate.setProtocol(newProtocol);
+                needUpdate.setRoomPrice(dstRoom.getPrice());
+                protocolService.update(needUpdate);
+                checkIn.setProtocol(newProtocol);
+            }
         }
         checkInService.update(checkIn);
         /*更新宾客信息*/
@@ -134,14 +136,15 @@ public class RoomController {
             debt.setRoomId(dstRoomId);
         }
         debtService.update(debtList);
-        userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom,null);
+        userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom, null);
     }
+
     /**
      * 转入现有团队
      */
     @RequestMapping(value = "guestToGroup")
     @Transactional(rollbackFor = Exception.class)
-    public void guestToGroup(@RequestBody Room room)throws Exception{
+    public void guestToGroup(@RequestBody Room room) throws Exception {
         /*更新在店户籍*/
         checkInService.update(room.getCheckIn());
         /*更新房间状态*/
@@ -164,7 +167,7 @@ public class RoomController {
         String inRoomId = "";//在住房打扫
         Integer leaveRoom = 0;
         Integer inRoom = 0;
-        String roomString="";
+        String roomString = "";
         for (Room room : roomList) {
             room.setDirty(false);
             if (room.getState().equals(roomService.leave)) {
@@ -175,9 +178,9 @@ public class RoomController {
                 inRoomId += room.getRoomId() + ",";
                 inRoom++;
             }
-            roomString+=",";
+            roomString += ",";
         }
-        roomString=roomString.substring(0,roomString.length()-1);
+        roomString = roomString.substring(0, roomString.length() - 1);
         roomService.update(roomList);
         CleanRoom cleanRoom = new CleanRoom();
         cleanRoom.setDoTime(timeService.getNow());
@@ -195,6 +198,6 @@ public class RoomController {
             cleanRoom.setNum(inRoom);
             cleanRoomService.add(cleanRoom);
         }
-        userLogService.addUserLog("客房清扫:"+roomString, userLogService.reception, userLogService.cleanRoom,roomString);
+        userLogService.addUserLog("客房清扫:" + roomString, userLogService.reception, userLogService.cleanRoom, roomString);
     }
 }

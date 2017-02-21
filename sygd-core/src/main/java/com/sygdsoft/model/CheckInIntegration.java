@@ -15,7 +15,9 @@ public class CheckInIntegration {
     private Date reachTime;
     private Date leaveTime;
     private String remark;
+    private String userId;
     private Boolean ifRoom;//
+    private Boolean ifIn;//是否在住
 
     public CheckInIntegration() {
     }
@@ -99,5 +101,21 @@ public class CheckInIntegration {
 
     public void setConsume(Double consume) {
         this.consume = consume;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Boolean getIfIn() {
+        return ifIn;
+    }
+
+    public void setIfIn(Boolean ifIn) {
+        this.ifIn = ifIn;
     }
 }

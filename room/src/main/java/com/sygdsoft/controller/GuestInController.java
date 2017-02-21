@@ -153,6 +153,8 @@ public class GuestInController {
         Protocol protocol = guestIn.getProtocol();
         if (protocol != null) {
             protocol.setId(null);
+            /*以防万一，先删除之前的，按理说不应该有*/
+            protocolService.deleteByName(protocol.getProtocol());
             protocolService.add(protocol);
         }
     }

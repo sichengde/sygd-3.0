@@ -10,16 +10,26 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @SzMapper(id = "protocol")
-public class ProtocolService extends BaseService<Protocol>{
+public class ProtocolService extends BaseService<Protocol> {
     @Autowired
     ProtocolMapper protocolMapper;
+
     /**
      * 通过房价协议名获得唯一协议（针对于自定义房价）
      */
-    public Protocol getByNameTemp(String protocolName){
-        Protocol protocolQuery=new Protocol();
+    public Protocol getByNameTemp(String protocolName) {
+        Protocol protocolQuery = new Protocol();
         protocolQuery.setProtocol(protocolName);
         protocolQuery.setTemp(true);
         return protocolMapper.selectOne(protocolQuery);
+    }
+
+    /**
+     * 通过协议名称删除
+     */
+    public void deleteByName(String protocolName) {
+        Protocol protocolQuery = new Protocol();
+        protocolQuery.setProtocol(protocolName);
+        protocolMapper.delete(protocolQuery);
     }
 }

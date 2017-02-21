@@ -4,8 +4,8 @@
         <dl class="tcTopName" ng-show="roomBookList.length>0">
             预定转入住：
             <select style="width: 112px; float: none" ng-model="book" ng-options="x.name for x in roomBookList " ng-change="chooseBook(book)">
-            <option>选择预订名称</option>
-             </select>
+                <option>选择预订名称</option>
+            </select>
             <span ng-repeat="bookMoney in book.bookMoneyList">&nbsp;订金：￥{{bookMoney.subscription+'/'+bookMoney.currency}}</span>
         </dl>
         <table class="tableBordernone" style="margin-top: 5px;">
@@ -71,8 +71,9 @@
                     <span ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'"><input type="text" ng-model="protocol.roomPrice" style="width: 92px; float: none"></span>
                     <span ng-show="roomPriceEditable&&protocol.roomPriceCategory=='小时房'">￥{{protocol.roomPrice+'+'+protocol.stepPrice}}*n</span>
                 <td ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'" style="width: 90px; text-align: right">
-                早餐：
+                    早餐：
                 </td>
+                <td ng-show="!roomPriceEditable" style="width: 90px"></td>
                 <td ng-show="roomPriceEditable&&protocol.roomPriceCategory!='小时房'" style="text-align: left">
                     <input type="text" ng-model="protocol.breakfast" style="width: 50px;">&nbsp;份
                 </td>
@@ -118,7 +119,7 @@
                 <input type="checkbox" ng-model="mainGuest">是否贵宾
             </div>
             <div class="fr">
-                <button ng-click="guestInAction()" sz-submit sz-permission="开房">确认付款</button>
+                <button sz-one-click="guestInAction()" sz-submit sz-permission="开房">确认付款</button>
             </div>
         </dl>
     </div>

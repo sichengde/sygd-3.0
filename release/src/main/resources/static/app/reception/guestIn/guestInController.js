@@ -17,7 +17,15 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         {name: '生日', id: 'birthdayTime', date: 'short', width: '140px'},
         {name: '性别', id: 'sex', selectId: '0', width: '60px', default: '男'},
         {name: '民族', id: 'race', width: '50px', default: '汉'},
-        {name: '国籍', id: 'country', width: '50px',selectId:'2',freeSelect:'true',selectListField:'name',szSelectWidth:'100'},
+        {
+            name: '国籍',
+            id: 'country',
+            width: '50px',
+            selectId: '2',
+            freeSelect: 'true',
+            selectListField: 'name',
+            szSelectWidth: '100'
+        },
         {name: '证件类型', id: 'cardType', selectId: '1', width: '100px', notNull: 'true', default: '身份证'},
         {name: '证件号码', id: 'cardId', width: '200px', notNull: 'true'},
         {name: '地址', id: 'address', width: '310px'},
@@ -148,7 +156,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         } else {
             if (!$scope.vip) {//没有会员信息，有宾客信息，查找会员身份证号
                 $scope.vip = angular.copy(util.getValueByField(dataService.getVipList(), 'cardId', newValue.cardId));
-                if($scope.vip) {
+                if ($scope.vip) {
                     $scope.vip.cardIdAdd = true;//通过身份证添加的
                 }
             }
@@ -205,13 +213,13 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         checkIn.important = $scope.important;
         checkIn.remark = $scope.remark;
         checkIn.finalRoomPrice = $scope.protocol.roomPrice;
-        checkIn.ifRoom=$scope.room.ifRoom;
+        checkIn.ifRoom = $scope.room.ifRoom;
         if ($scope.roomPriceEditable) {
-            $scope.protocol.protocol = $scope.room.roomId + $scope.protocol.protocol;
-            $scope.protocol.special = 'y';
-            $scope.protocol.temp = true;
-            checkIn.protocol = $scope.protocol.protocol;
-            protocol = $scope.protocol;
+            protocol = angular.copy($scope.protocol);
+            protocol.protocol = $scope.room.roomId + $scope.protocol.protocol;
+            protocol.special = 'y';
+            protocol.temp = true;
+            checkIn.protocol = protocol.protocol;
         } else {
             checkIn.protocol = $scope.protocol.protocol;
         }
@@ -230,7 +238,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         guestIn.checkInGuestList = $scope.checkInGuestList;
         guestIn.book = $scope.book;
         guestIn.protocol = protocol;
-        webService.post('guestIn', guestIn)
+        return webService.post('guestIn', guestIn)
             .then(function (d) {
                 /*弹出打印预览界面*/
                 if (d != -1) {
@@ -248,9 +256,6 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                         localStorage.setItem('guestInGuestSourceIndex', $scope.guestSourceList.indexOf($scope.guestSource));
                     })
             });
-        watch();
-        watch2();
-        watchGuest();
     };
     /*点击阴影关闭,注销相关watch*/
     $scope.closePop = function () {

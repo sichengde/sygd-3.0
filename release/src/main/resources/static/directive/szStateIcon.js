@@ -76,7 +76,7 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
             }
         }
         if (room.state == '维修房') {
-            var reachTime = dateFilter(room.repairTime, 'yyyy-MM-dd HH:mm:ss');
+            var repairTime = dateFilter(room.repairTime, 'yyyy-MM-dd HH:mm:ss');
             out2 += '<li><b>维修原因：' + room.repairReason + '}}</b></li>' +
                 '<li><b>预计完工：' + repairTime + '</b></li>';
         }

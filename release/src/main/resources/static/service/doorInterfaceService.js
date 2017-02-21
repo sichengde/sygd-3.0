@@ -42,7 +42,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
         }
         $http.get('http://' + ip + ':8081/readDoor')
             .then(function (r) {
-                var doorIdMap = util.listToMapByField(dataService.getInterfaceDoorList(), 'roomId');
+                var doorIdMap = util.listToMapByField(dataService.getInterfaceDoorList(), 'doorId');
                 var doorId=r.data.doorId;
                 var date=r.data.date;
                 var roomId=doorIdMap[doorId];
