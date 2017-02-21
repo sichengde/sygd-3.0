@@ -6,6 +6,7 @@ import com.sygdsoft.controller.NightController;
 import com.sygdsoft.controller.SzTableReportController;
 import com.sygdsoft.mapper.BookRoomMapper;
 import com.sygdsoft.mapper.CalendarMapper;
+import com.sygdsoft.mapper.GuestMapCheckInMapper;
 import com.sygdsoft.model.Calendar;
 import com.sygdsoft.model.CheckInHistory;
 import com.sygdsoft.model.DebtIntegration;
@@ -46,6 +47,8 @@ public class NightActionTest extends ApplicationTest{
     TimeService timeService;
     @Autowired
     DebtIntegrationService debtIntegrationService;
+    @Autowired
+    GuestMapCheckInMapper guestMapCheckInMapper;
 
     @Test
     public void nightAction() throws Exception {
@@ -70,7 +73,7 @@ public class NightActionTest extends ApplicationTest{
 
     @Test
     public void testMapper() throws Exception {
-        List<DebtIntegration> debtIntegrationList=debtIntegrationService.getSumConsumeByDatePointOfSale(timeService.getMinYear(new Date()), timeService.getMaxYear(new Date()));
+        List<String> a=guestMapCheckInMapper.getHistoryRoomPriceByCardId("3123123123123123","普通标间");
     }
 
     @Test

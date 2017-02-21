@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.mapper.GuestMapCheckInMapper;
+import com.sygdsoft.model.CheckInHistoryLog;
 import com.sygdsoft.model.GuestMapCheckIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,20 @@ public class GuestMapCheckInService extends BaseService<GuestMapCheckIn>{
         GuestMapCheckIn guestMapCheckIn=new GuestMapCheckIn();
         guestMapCheckIn.setSelfAccount(selfAccount);
         return guestMapCheckInMapper.select(guestMapCheckIn);
+    }
+    /**
+     * 通过身份证号获得列表
+     */
+    public List<GuestMapCheckIn> getByCardId(String cardId){
+        GuestMapCheckIn guestMapCheckIn=new GuestMapCheckIn();
+        guestMapCheckIn.setCardId(cardId);
+        return guestMapCheckInMapper.select(guestMapCheckIn);
+    }
+
+    /**
+     * 通过身份证号和房类获取上次开房房价
+     */
+    public List<String> getHistoryRoomPriceByCardId(String cardId , String roomCategory){
+        return guestMapCheckInMapper.getHistoryRoomPriceByCardId(cardId, roomCategory);
     }
 }

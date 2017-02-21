@@ -28,6 +28,11 @@ public class CheckInHistoryController {
         return checkInHistoryService.get(query);
     }
 
+    /**
+     * 通过自付账号获取历史宾客
+     * @param selfAccount 自付账号
+     * @return 历史宾客数组
+     */
     @RequestMapping(value = "checkInHistoryGetBySelfAccount")
     public List<CheckInHistory> checkInHistoryGetBySelfAccount(@RequestBody String selfAccount){
         List<GuestMapCheckIn> guestMapCheckInList=guestMapCheckInService.getBySelfAccount(selfAccount);
@@ -36,5 +41,20 @@ public class CheckInHistoryController {
             checkInHistoryList.add(checkInHistoryService.getByCardId(guestMapCheckIn.getCardId()));
         }
         return checkInHistoryList;
+    }
+
+    /**
+     * 通过身份证号和房类获取上次开房房价
+     */
+    @RequestMapping(value = "getHistoryRoomPriceByCardId")
+    public String getHistoryRoomPriceByCardId(@RequestBody List<String> param){
+        String cardId=param.get(0);
+        String roomCategory=param.get(1);
+        List<String> guestMapCheckInList=guestMapCheckInService.getHistoryRoomPriceByCardId(cardId,roomCategory);
+        if(guestMapCheckInList.size()>0){
+            return guestMapCheckInList.get(0);
+        }else {
+            return "";
+        }
     }
 }

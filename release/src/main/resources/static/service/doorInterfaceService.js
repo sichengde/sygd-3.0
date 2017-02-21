@@ -61,7 +61,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
                             }
                         })
                 }else {
-                    messageService.setMessage({type:'alert',content:'房号:'+roomId+'||有效期:'+date});
+                    messageService.setMessage({type:'alert',content:'房号:'+roomId+' 有效期:'+date});
                     popUpService.pop('message');
                 }
             })

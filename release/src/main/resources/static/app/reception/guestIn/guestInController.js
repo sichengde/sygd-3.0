@@ -118,12 +118,22 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         readIdCardService.readIdCard()
             .then(function (guestInfo) {
                 if (guestInfo) {
+                    /*客史会员开房*/
                     if (dataService.getOtherParamMapValue("客史会员") == 'y' && vipNumberList.indexOf(guestInfo.cardId) > -1) {
                         messageService.setMessage({content: '该宾客之前来过，是否启用客史房价'});
                         messageService.actionChoose()
                             .then(function () {
                                 $scope.vip = util.getValueByField(dataService.getVipList(), 'vipNumber', guestInfo.cardId);
                             })
+                    } else {
+                        /*普通客史提示*/
+                        webService.post('getHistoryRoomPriceByCardId',[guestInfo.cardId,$scope.room.category])
+                            .then(function (r) {
+                                if(r){
+                                    messageService.setMessage({content: '该宾客上次使用:'+$scope.room.category+'的房价为'+r,type:'alert'});
+                                    popUpService.pop('message');
+                                }
+                            });
                     }
                     $scope.checkInGuestList.push(guestInfo);
                 }
