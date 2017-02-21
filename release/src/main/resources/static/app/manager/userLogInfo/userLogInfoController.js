@@ -53,9 +53,6 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name:'房号',id:'roomId'},
         {name:'房型',id:'roomCategory'},
         {name:'房价',id:'finalRoomPrice'},
-        {name:'姓名',id:'name'},
-        {name:'国籍',id:'country'},
-        {name:'单位',id:'company'},
         {name:'来期',id:'reachTime',filterInit:'today',filter: 'date'},
         {name:'离期',id:'leaveTime',filter: 'date'},
         {name: '开房人员', id: 'userId',filter: 'list'},
@@ -127,11 +124,18 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
     $scope.chooseCheckIn = function (d) {
         $scope.checkInGuestCondition = 'room_id=' + util.wrapWithBrackets(d.roomId);
     };
-    $scope.chooseCheckInIntegration=function (d) {
-        dataService.refreshCheckInGuestList({condition:'room_id=' + util.wrapWithBrackets(d.roomId)})
-            .then(function (r) {
-
-            })
+    $scope.chooseCheckInIntegration=function (checkInIntegration) {
+        if(checkInIntegration.ifIn) {
+            dataService.refreshCheckInGuestList({condition: 'room_id=' + util.wrapWithBrackets(checkInIntegration.roomId)})
+                .then(function (r) {
+                    $scope.checkInGuestList = r;
+                })
+        }else {
+            webService.post('checkInHistoryGetBySelfAccount',checkInIntegration.selfAccount)
+                .then(function (r) {
+                    $scope.checkInGuestList = r;
+                })
+        }
     };
     $scope.chooseCheckOut = function (d) {
         $scope.checkOutRoomCondition = 'check_out_serial=' + util.wrapWithBrackets(d.checkOutSerial);
