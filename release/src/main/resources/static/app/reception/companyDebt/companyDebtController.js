@@ -25,7 +25,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
     $scope.companyLordFields = [
         {name: '单位名称', id: 'company', selectId: '0', width: '40%'},
         {name: '签单人名称', id: 'name', width: '40%'},
-        {name: '挂账款', id: 'debt', static: 'true'}
+        {name: '挂账款', id: 'debt', static: 'true',default:'0'}
     ];
 
     //账务明细

@@ -105,8 +105,8 @@ public class DebtController {
         debt.setCategory(debtService.roomShopIn);
         debtService.addDebt(debt);
         /*创建房吧明细账务*/
-        List<RoomShopDetail> roomShopDetailList=roomShopIn.getRoomShopDetailList();
-        String selfAccount=checkInService.getSelfAccount(roomId);
+        List<RoomShopDetail> roomShopDetailList = roomShopIn.getRoomShopDetailList();
+        String selfAccount = checkInService.getSelfAccount(roomId);
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
             roomShopDetail.setDoTime(timeService.getNow());
             roomShopDetail.setUserId(userService.getCurrentUser());
@@ -132,7 +132,7 @@ public class DebtController {
         }
         timeService.setNow();
         debtService.addDebt(debt);
-        userLogService.addUserLog("杂单冲账:" + debt.getRoomId() + " 金额:" + debt.getConsume(), userLogService.reception, userLogService.ZC,debt.getSelfAccount());
+        userLogService.addUserLog("杂单冲账:" + debt.getRoomId() + " 金额:" + debt.getConsume(), userLogService.reception, userLogService.ZC, debt.getSelfAccount());
         /*创建杂单报表
         * 1.操作员
         * 2.金额
@@ -144,26 +144,33 @@ public class DebtController {
         * 8.房号
         * 9.床位
         * */
-        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getConsume()), timeService.getNowLong(), debt.getPointOfSale(), debt.getDescription(), msg, otherParamService.getValueByName("酒店名称"), debt.getRoomId(), debt.getBed()}, "otherConsume","pdf");
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getConsume()), timeService.getNowLong(), debt.getPointOfSale(), debt.getDescription(), msg, otherParamService.getValueByName("酒店名称"), debt.getRoomId(), debt.getBed()}, "otherConsume", "pdf");
     }
 
     /**
      * 杂单冲账(单位)
      */
-    /*public Integer addOtherConsumeCompany(@RequestBody DebtHistory debtHistory) throws Exception {
+    @RequestMapping(value = "otherConsumeCompany")
+    @Transactional
+    public Integer addOtherConsumeCompany(@RequestBody DebtHistory debtHistory) throws Exception {
         serialService.setPaySerial();
         timeService.setNow();
-        String currency=debtHistory.getCurrency();
-        String currencyAdd=debtHistory.getCurrencyAdd();
-        Double money=debtHistory.getConsume();
-        *//*生成一条结账记录*//*
+        /*提取单位信息*/
+        String company = debtHistory.getCurrency();
+        String companyLord = debtHistory.getCurrencyAdd();
+        debtHistory.setCurrency("挂账");
+        debtHistory.setCurrencyAdd(null);
+        debtHistory.setPaySerial(serialService.getPaySerial());
+        debtHistory.setUserId(userService.getCurrentUser());
+        Double money = debtHistory.getConsume();
+        /*生成一条结账记录*/
         DebtPay debtPay = new DebtPay();
         debtPay.setPaySerial(serialService.getPaySerial());
         debtPay.setDebtMoney(money);
-        debtPay.setCurrency(currency);
-        debtPay.setCurrencyAdd(currencyAdd);
+        debtPay.setCurrency("转单位");
+        debtPay.setCurrencyAdd(company + " " + companyLord);
         debtPay.setDoneTime(debtHistory.getDoneTime());
-        debtPay.setDebtCategory("商品零售");
+        debtPay.setDebtCategory(debtHistory.getCategory());
         debtPay.setDescription(debtHistory.getDescription());
         debtPay.setPointOfSale(debtHistory.getPointOfSale());
         debtPay.setUserId(debtHistory.getUserId());
@@ -171,8 +178,10 @@ public class DebtController {
         debtPayService.add(debtPay);
         debtHistoryService.add(debtHistory);
         timeService.setNow();
-        userLogService.addUserLog("杂单冲账单位:" + debt.getRoomId() + " 金额:" + debt.getConsume(), userLogService.reception, userLogService.ZC,debt.getSelfAccount());
-        *//*创建杂单报表
+        userLogService.addUserLog("杂单冲账单位:" + company + " 金额:" + money, userLogService.reception, userLogService.ZC, serialService.getPaySerial());
+        /*判断币种*/
+        debtPayService.parseCurrency("转单位", company + " " + companyLord, money, null, null, debtHistory.getCategory(), serialService.getPaySerial(), "接待");
+        /*创建杂单报表
         * 1.操作员
         * 2.金额
         * 3.时间
@@ -180,11 +189,11 @@ public class DebtController {
         * 5.备注
         * 6.杂单还是冲账
         * 7.酒店名称
-        * 8.房号
+        * 8.房号/单位
         * 9.床位
-        * *//*
-        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getConsume()), timeService.getNowLong(), debt.getPointOfSale(), debt.getDescription(), msg, otherParamService.getValueByName("酒店名称"), debt.getRoomId(), debt.getBed()}, "otherConsume","pdf");
-    }*/
+        * */
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(money), timeService.getNowLong(), debtHistory.getPointOfSale(), debtHistory.getDescription(), debtHistory.getCategory(), otherParamService.getValueByName("酒店名称"), company + "/" + companyLord,}, "otherConsume", "pdf");
+    }
 
     /**
      * 商品零售，记入账务历史,和结账列表
@@ -194,10 +203,10 @@ public class DebtController {
     public Integer retailIn(@RequestBody RetailIn retailIn) throws Exception {
         serialService.setPaySerial();
         timeService.setNow();
-        DebtHistory debtHistory=retailIn.getDebtHistory();
-        String currency=debtHistory.getCurrency();
-        String currencyAdd=debtHistory.getCurrencyAdd();
-        Double money=debtHistory.getConsume();
+        DebtHistory debtHistory = retailIn.getDebtHistory();
+        String currency = debtHistory.getCurrency();
+        String currencyAdd = debtHistory.getCurrencyAdd();
+        Double money = debtHistory.getConsume();
         /*生成一条结账记录*/
         DebtPay debtPay = new DebtPay();
         debtPay.setPaySerial(serialService.getPaySerial());
@@ -213,9 +222,9 @@ public class DebtController {
         debtPayService.add(debtPay);
         debtHistoryService.add(debtHistory);
         /*判断币种*/
-        debtPayService.parseCurrency(currency, currencyAdd, money, null,null,"商品零售",serialService.getPaySerial(),"接待");
+        debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "商品零售", serialService.getPaySerial(), "接待");
         /*创建房吧明细账务*/
-        List<RoomShopDetail> roomShopDetailList=retailIn.getRoomShopDetailList();
+        List<RoomShopDetail> roomShopDetailList = retailIn.getRoomShopDetailList();
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
             roomShopDetail.setDoTime(timeService.getNow());
             roomShopDetail.setPaySerial(serialService.getPaySerial());
@@ -243,7 +252,7 @@ public class DebtController {
             var.setField1(s);
             templateList.add(var);
         }
-        return reportService.generateReport(templateList, new String[]{userService.getCurrentUser(), String.valueOf(debtHistory.getConsume()), timeService.getNowLong(), debtHistory.getDescription(), serialService.getPaySerial(), debtHistory.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail","pdf");
+        return reportService.generateReport(templateList, new String[]{userService.getCurrentUser(), String.valueOf(debtHistory.getConsume()), timeService.getNowLong(), debtHistory.getDescription(), serialService.getPaySerial(), debtHistory.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
     }
 
 }

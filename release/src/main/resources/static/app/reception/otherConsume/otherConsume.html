@@ -1,8 +1,8 @@
-<div class="tanchuang" style="width: 800px; left: 25%; margin-top:-200px; top:50%; z-index: 997" ng-controller="OtherConsumeController"  ng-if="pop" drag>
+<div class="tanchuang" style="width: 800px; left: 25%; margin-top:-200px; top:50%; z-index: 997" ng-controller="OtherConsumeController" ng-if="pop" drag>
     <dl class="tctit"><h1>消费挂账</h1></dl>
     <div class="tcDiv">
         <dl class="tcTopName">
-            {{company.name?'单位':'房号'}}
+            <span>{{company.name?'单位':'房号'}}</span>
             <span ng-bind="company.name?company.name:room.roomId"></span>
         </dl>
         <table class="tableBorderfff" style="width: 800px; margin-top: 5px;">
@@ -23,7 +23,9 @@
             </tr>
             <tr>
                 <td>备注：</td>
-                <td colspan="7"><input type="text" style="width: 630px;" ng-model="remark"></td>
+                <td colspan="3"><input type="text" style="width: 350px;" ng-model="remark"></td>
+                <td>{{company.name?'签单人':''}}</td>
+                <td><input ng-show="company.name" style="width: 100px;" type="text" ng-model="companyLord" sz-select="companyLordListShow"></td>
             </tr>
         </table>
         <dl class="button">
