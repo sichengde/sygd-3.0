@@ -36,6 +36,8 @@ public class RoomCategorySaleReport {
     CheckInIntegrationService checkInIntegrationService;
     @Autowired
     GroupIntegrationService groupIntegrationService;
+    @Autowired
+    RoomStateReportService roomStateReportService;
 
     /**
      * 结束日期时间要设置为24:00:00
@@ -53,6 +55,11 @@ public class RoomCategorySaleReport {
             if(roomCategoryRowList.get(0).getTotal()==null){
                 return null;
             }
+        }
+        /*效验roomStateReport表中有没有数据*/
+        RoomStateReport roomStateReport=roomStateReportService.getSumByDate(beginTime, endTime);
+        if(roomStateReport==null){
+            return null;
         }
         Date beginTimeHistory = timeService.addYear(beginTime, -1);
         Date endTimeHistory = timeService.addYear(endTime, -1);

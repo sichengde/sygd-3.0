@@ -27,6 +27,7 @@ App.controller('guestInfoController', ['$scope', 'webService', 'dataService','ut
                         if (extended.bed != 1) {//随行客人不计算押金和消费
                             extended.consume = 0;
                             extended.deposit = 0;
+                            extended=angular.copy(extended);
                         }
                         $scope.checkInAndGuestList.push(extended);
                     }

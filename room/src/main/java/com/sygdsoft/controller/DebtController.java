@@ -117,11 +117,11 @@ public class DebtController {
     }
 
     /**
-     * 杂单冲账
+     * 杂单冲账(客房)
      */
-    @RequestMapping(value = "otherConsume")
+    @RequestMapping(value = "otherConsumeRoom")
     @Transactional
-    public Integer addOtherConsume(@RequestBody Debt debt) throws Exception {
+    public Integer addOtherConsumeRoom(@RequestBody Debt debt) throws Exception {
         String msg;
         if (debt.getConsume() > 0) {
             msg = "杂单";
@@ -146,6 +146,45 @@ public class DebtController {
         * */
         return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getConsume()), timeService.getNowLong(), debt.getPointOfSale(), debt.getDescription(), msg, otherParamService.getValueByName("酒店名称"), debt.getRoomId(), debt.getBed()}, "otherConsume","pdf");
     }
+
+    /**
+     * 杂单冲账(单位)
+     */
+    /*public Integer addOtherConsumeCompany(@RequestBody DebtHistory debtHistory) throws Exception {
+        serialService.setPaySerial();
+        timeService.setNow();
+        String currency=debtHistory.getCurrency();
+        String currencyAdd=debtHistory.getCurrencyAdd();
+        Double money=debtHistory.getConsume();
+        *//*生成一条结账记录*//*
+        DebtPay debtPay = new DebtPay();
+        debtPay.setPaySerial(serialService.getPaySerial());
+        debtPay.setDebtMoney(money);
+        debtPay.setCurrency(currency);
+        debtPay.setCurrencyAdd(currencyAdd);
+        debtPay.setDoneTime(debtHistory.getDoneTime());
+        debtPay.setDebtCategory("商品零售");
+        debtPay.setDescription(debtHistory.getDescription());
+        debtPay.setPointOfSale(debtHistory.getPointOfSale());
+        debtPay.setUserId(debtHistory.getUserId());
+        debtHistory.setPaySerial(serialService.getPaySerial());
+        debtPayService.add(debtPay);
+        debtHistoryService.add(debtHistory);
+        timeService.setNow();
+        userLogService.addUserLog("杂单冲账单位:" + debt.getRoomId() + " 金额:" + debt.getConsume(), userLogService.reception, userLogService.ZC,debt.getSelfAccount());
+        *//*创建杂单报表
+        * 1.操作员
+        * 2.金额
+        * 3.时间
+        * 4.消费项目
+        * 5.备注
+        * 6.杂单还是冲账
+        * 7.酒店名称
+        * 8.房号
+        * 9.床位
+        * *//*
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getConsume()), timeService.getNowLong(), debt.getPointOfSale(), debt.getDescription(), msg, otherParamService.getValueByName("酒店名称"), debt.getRoomId(), debt.getBed()}, "otherConsume","pdf");
+    }*/
 
     /**
      * 商品零售，记入账务历史,和结账列表

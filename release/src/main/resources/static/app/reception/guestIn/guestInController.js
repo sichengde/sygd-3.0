@@ -47,7 +47,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     $scope.roomPriceEditable = dataService.getOtherParamMapValue('可编辑房价') == 'y';
     var vipNumberList = [];//会员数组
     var p1 = {condition: 'check_in=1'};
-    dataService.initData(['refreshCurrencyList', 'refreshProtocolList', 'refreshTimeNow', 'refreshGuestSourceList', 'refreshCompanyList', 'refreshVipList'], [p1])
+    dataService.initData(['refreshCurrencyList', 'refreshTimeNow', 'refreshGuestSourceList', 'refreshCompanyList'], [p1])
         .then(function () {
             /*可选的证件类型*/
             $scope.cardCategoryList = dataService.getCardTypeList;
