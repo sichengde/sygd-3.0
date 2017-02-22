@@ -1,14 +1,18 @@
-<div ng-if="pop" ng-controller="companyPayController">
-    <div class="littlePop" drag>
-        <div class="littlePopBox">
-            <h1>单位结算</h1>
-            <p class="tagp"><span>单位名称：</span>{{company}}</p>
-            <p class="tagp"><span>结算金额：</span><input type="text" style="float: none; width: 180px;" ng-model="total"></p>
-            <p class="tagp"><sz-pay></sz-pay></p>
-            <div class="clear"></div>
-            <button style="margin-top: 20px;" ng-click="submit()">确认支付</button>
-        </div>
-        <div class="closeBox" ng-click="closePop('companyPay')">+</div>
-        <div class="drig" drag-handle></div>
+<div class="tanchuang" style="width: 980px;" ng-if="pop" ng-controller="companyPayController" drag>
+    <dl class="tctit"><h1>消费明细</h1></dl>
+    <div class="tcDiv">
+        <h1>单位结算</h1>
+        <p class="tagp"><span>单位名称：</span>{{company}}</p>
+        <p class="tagp"><span>结算金额：</span><input type="text" style="float: none; width: 180px;" ng-model="total"></p>
+        <p class="tagp"><span>支付金额：</span><input type="text" style="float: none; width: 180px;" ng-model="pay"></p>
+        <p class="tagp">
+            <sz-pay></sz-pay>
+        </p>
+        <div class="clear"></div>
+        <button style="margin-top: 20px;" ng-click="submit()">确认支付</button>
+        <h1>账务明细</h1>
+        <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt" deep-search="true"></sz-table>
     </div>
+    <div class="closeBox" ng-click="closePop('companyPay')">+</div>
+    <div class="drig" drag-handle></div>
 </div>
