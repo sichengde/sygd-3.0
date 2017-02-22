@@ -23,9 +23,11 @@ App.controller('guestInfoController', ['$scope', 'webService', 'dataService','ut
                 for (var j = 0; j < checkInGuestList.length; j++) {
                     var checkInGuest = checkInGuestList[j];
                     if (roomId == checkInGuest.roomId) {
-                        var extended = angular.extend(checkIn, checkInGuest);
-                        if (extended.bed != 1) {//随行客人不计算押金和消费
-                            extended=angular.copy(extended);
+                        var extended;
+                        if(checkInGuest.bed==1){
+                            extended = angular.extend(checkIn, checkInGuest);
+                        }else {
+                            extended=angular.extend(angular.copy(checkIn),checkInGuest);
                             extended.consume = 0;
                             extended.deposit = 0;
                         }

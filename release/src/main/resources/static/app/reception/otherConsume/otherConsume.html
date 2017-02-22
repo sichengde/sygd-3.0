@@ -2,8 +2,8 @@
     <dl class="tctit"><h1>消费挂账</h1></dl>
     <div class="tcDiv">
         <dl class="tcTopName">
-            房号：
-            <span ng-bind="room.roomId"></span>
+            {{company.name?'单位':'房号'}}
+            <span ng-bind="company.name?company.name:room.roomId"></span>
         </dl>
         <table class="tableBorderfff" style="width: 800px; margin-top: 5px;">
             <tr>

@@ -3,7 +3,7 @@
  */
 App.controller('OtherConsumeController', ['$scope', 'webService', 'dataService', 'receptionService', 'popUpService', 'host', function ($scope, webService, dataService, receptionService, popUpService, host) {
     var debt = {};
-
+    $scope.company=popUpService.getParam();
     $scope.room = receptionService.getChooseRoom();
     dataService.refreshPointOfSaleList({condition: 'module=\'接待\''})
         .then(function (r) {
