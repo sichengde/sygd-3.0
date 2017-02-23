@@ -11,14 +11,9 @@ public class CompanyDebt extends BaseEntity{
     private String lord;//签单人代码
     private String paySerial;//结账序列号
     private Double debt;//单位挂账
-    private Double deposit;//单位存款(作废)
-    private Double pay;//结算款(作废)
     private Double currentRemain;//这笔账进行完之后当前的剩余结账款
-    private String category;//操作种类
     private Date doTime;//操作时间
     private String userId;//操作员号
-    private String currency;//币种，单位结算用的
-    private String currencyAdd;//币种额外信息
     private String description;//备注，描述
     private String pointOfSale;//营业部门
 
@@ -57,28 +52,12 @@ public class CompanyDebt extends BaseEntity{
         this.debt = debt;
     }
 
-    public Double getDeposit() {
-        return deposit;
+    public Double getCurrentRemain() {
+        return currentRemain;
     }
 
-    public void setDeposit(Double deposit) {
-        this.deposit = deposit;
-    }
-
-    public Double getPay() {
-        return pay;
-    }
-
-    public void setPay(Double pay) {
-        this.pay = pay;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCurrentRemain(Double currentRemain) {
+        this.currentRemain = currentRemain;
     }
 
     public Date getDoTime() {
@@ -97,14 +76,6 @@ public class CompanyDebt extends BaseEntity{
         this.userId = userId;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -113,27 +84,11 @@ public class CompanyDebt extends BaseEntity{
         this.description = description;
     }
 
-    public String getCurrencyAdd() {
-        return currencyAdd;
-    }
-
-    public void setCurrencyAdd(String currencyAdd) {
-        this.currencyAdd = currencyAdd;
-    }
-
     public String getPointOfSale() {
         return pointOfSale;
     }
 
     public void setPointOfSale(String pointOfSale) {
         this.pointOfSale = pointOfSale;
-    }
-
-    public Double getCurrentRemain() {
-        return currentRemain;
-    }
-
-    public void setCurrentRemain(Double currentRemain) {
-        this.currentRemain = currentRemain;
     }
 }

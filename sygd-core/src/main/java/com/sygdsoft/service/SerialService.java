@@ -27,6 +27,7 @@ public class SerialService {
     private String storageInSerial;//库存入库序列号
     private String saunaGroupSerial;//桑拿结算序列号
     private String saunaOutSerial;//桑拿团队手牌序列号
+    private String companyPaySerial;//单位结算序列号
 
     public SerialService() {
     }
@@ -73,6 +74,10 @@ public class SerialService {
 
     public String getSaunaOutSerial() {
         return saunaOutSerial;
+    }
+
+    public String getCompanyPaySerial() {
+        return companyPaySerial;
     }
 
     public String setPaySerial() {
@@ -194,8 +199,21 @@ public class SerialService {
         return saunaOutSerial;
     }
 
+    public String setCompanyPaySerial() {
+        timeService.setNow();
+        serial = serialMapper.selectAll().get(0);
+        this.companyPaySerial = "cp" + timeService.getSerialShort() + serial.getCompanyPaySerial();
+        serial.setCompanyPaySerial(String.format("%03d", Integer.valueOf(serial.getCompanyPaySerial()) + 1));
+        serialMapper.updateByPrimaryKey(serial);
+        return companyPaySerial;
+    }
+
     public void setSaunaOutSerial(String saunaOutSerial) {
         this.saunaOutSerial = saunaOutSerial;
+    }
+
+    public void setCompanyPaySerial(String companyPaySerial) {
+        this.companyPaySerial = companyPaySerial;
     }
 
     public String setSaunaGroupSerial() {
@@ -228,6 +246,7 @@ public class SerialService {
         serial.setStorageInSerial("001");
         serial.setStorageOutSerial("001");
         serial.setSaunaOutSerial("001");
+        serial.setCompanyPaySerial("001");
         serial.setSaunaGroupSerial("001");
         serialMapper.updateByPrimaryKey(serial);
     }

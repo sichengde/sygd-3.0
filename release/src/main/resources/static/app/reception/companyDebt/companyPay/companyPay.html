@@ -1,17 +1,44 @@
 <div class="tanchuang" style="width: 980px;" ng-if="pop" ng-controller="companyPayController" drag>
-    <dl class="tctit"><h1>消费明细</h1></dl>
+    <dl class="tctit"><h1>单位结算</h1></dl>
     <div class="tcDiv">
-        <h1>单位结算</h1>
-        <p class="tagp"><span>单位名称：</span>{{company}}</p>
-        <p class="tagp"><span>结算金额：</span><input type="text" style="float: none; width: 180px;" ng-model="total"></p>
-        <p class="tagp"><span>支付金额：</span><input type="text" style="float: none; width: 180px;" ng-model="pay"></p>
-        <p class="tagp">
-            <sz-pay></sz-pay>
-        </p>
+        <dl class="tcTopName">单位名称：<span style="margin-right: 10px;">{{company}}</span> 单位欠款{{totalDebt}}</dl>
+        <table class="tableBordernone" style="margin-top: 5px;">
+            <tr>
+                <td class="ppp">
+                    <p ng-show="payBy=='按明细结'"><span>应付金额：</span>{{'1000'}}</p>
+                    <p><span>实付金额：</span><input type="text" style="float: none; width: 180px;" ng-model="pay"></p>
+                    <div class="btn-group">
+                        <label class="btn btn-primary" ng-model="payBy" uib-btn-radio="'按明细结'" uncheckable>按明细结</label>
+                        <label class="btn btn-primary" ng-model="payBy" uib-btn-radio="'定额结算'" uncheckable>定额结算</label>
+                    </div>
+                    <ul ng-show="payBy=='按明细结'">
+                        <li>
+                            时间：
+                            <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
+                            <div class="timeSfm" style="float: right">
+                                <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
+                                                show-seconds="true"></uib-timepicker>
+                            </div>
+                        </li>
+                        <li style="margin-left: 0px;">至</li>
+                        <li>
+                            <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
+                            <div class="timeSfm" style="float: right">
+                                <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
+                                                show-seconds="true"></uib-timepicker>
+                            </div>
+                        </li>
+                    </ul>
+                    <input type="button" ng-click="showDetail()" value="查询明细">
+                    <sz-table ng-if="companyDebtList" fields="companyDebtFields" items="companyDebtList" button="add update delete" head="true" right-click="rightClickCompanyDebt"></sz-table>
+                    <p>
+                        <sz-pay></sz-pay>
+                    </p>
+                </td>
+            </tr>
+        </table>
         <div class="clear"></div>
         <button style="margin-top: 20px;" ng-click="submit()">确认支付</button>
-        <h1>账务明细</h1>
-        <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt" deep-search="true"></sz-table>
     </div>
     <div class="closeBox" ng-click="closePop('companyPay')">+</div>
     <div class="drig" drag-handle></div>

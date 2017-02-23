@@ -16,6 +16,7 @@ public class Serial extends BaseEntity{
     private String storageInSerial;//库存入库序列号
     private String saunaGroupSerial;//桑拿结算序列号
     private String saunaOutSerial;//桑拿团队手牌序列号
+    private String companyPaySerial;//单位结算序列号
 
     public Serial() {
     }
@@ -106,5 +107,13 @@ public class Serial extends BaseEntity{
 
     public void setSaunaOutSerial(String saunaOutSerial) {
         this.saunaOutSerial = saunaOutSerial;
+    }
+
+    public String getCompanyPaySerial() {
+        return companyPaySerial;
+    }
+
+    public void setCompanyPaySerial(String companyPaySerial) {
+        this.companyPaySerial = companyPaySerial;
     }
 }

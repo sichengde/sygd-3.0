@@ -7,3 +7,4 @@
 7、companyDebt增加一列currencyAdd，之前的currency如果是“转单位/贵德科技”，则要把贵德科技放在currencyAdd里，currency只有转单位
 8，debt和debtHistory里均增加了guestSource统计客源，升级后可以都默认设置为散客
 9、杂散参数新增客史提示，开房时提示上次开房房价
+10、serial表新加一列companyPaySerial

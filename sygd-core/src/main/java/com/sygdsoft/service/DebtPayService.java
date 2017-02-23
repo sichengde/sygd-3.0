@@ -183,7 +183,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 } catch (Exception e) {
                     throw new Exception("请输入签单单位和签单人");
                 }
-                changeDebt += companyService.companyPay(company, lord, money,description,pointOfSale,paySerial);
+                changeDebt += companyService.companyAddDebt(company, lord, money,description,pointOfSale,paySerial);
                 break;
             case "宴请"://转宴请
                 String name;

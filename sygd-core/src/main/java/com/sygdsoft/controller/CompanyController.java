@@ -4,6 +4,8 @@ import com.sygdsoft.jsonModel.CompanyPost;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
+import com.sygdsoft.model.CompanyDebtHistory;
+import com.sygdsoft.model.CompanyPay;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
@@ -32,6 +35,12 @@ public class CompanyController {
     UserService userService;
     @Autowired
     ReportService reportService;
+    @Autowired
+    SerialService serialService;
+    @Autowired
+    CompanyPayService companyPayService;
+    @Autowired
+    CompanyDebtHistoryService companyDebtHistoryService;
 
     @RequestMapping(value = "companyGet")
     public List<Company> companyGet(@RequestBody Query query) throws Exception {
@@ -84,8 +93,12 @@ public class CompanyController {
     @Transactional(rollbackFor = Exception.class)
     public Integer companyPay(@RequestBody CompanyPost companyPost) throws Exception {
         timeService.setNow();
+        serialService.setCompanyPaySerial();
         String companyName = companyPost.getCompanyName();
-        Double total = companyPost.getTotal();
+        String remark = companyPost.getRemark();
+        Double debt = companyPost.getDebt();
+        Double pay = companyPost.getPay();
+        List<CompanyDebt> companyDebtList=companyPost.getCompanyDebtList();
         String currency = companyPost.getCurrencyPost().getCurrency();
         String currencyAdd = companyPost.getCurrencyPost().getCurrencyAdd();
         /*更新单位金额*/
@@ -93,53 +106,37 @@ public class CompanyController {
         if(company==null){
             throw new Exception("该单位不存在");
         }
-        company.setDebt(company.getDebt()-total);
+        company.setDebt(company.getDebt()-debt);
         companyService.update(company);
-        /*插入一条账务*/
-        CompanyDebt companyDebt = new CompanyDebt();
-        companyDebt.setCompany(companyName);
-        companyDebt.setDebt(-total);
-        companyDebt.setDoTime(timeService.getNow());
-        companyDebt.setUserId(userService.getCurrentUser());
-        companyDebt.setCategory("应收结算");
-        companyDebt.setCurrency(currency);
-        companyDebt.setCurrencyAdd(currencyAdd);
-        companyDebt.setCurrentRemain(company.getDebt());
-        companyDebtService.add(companyDebt);
-        userLogService.addUserLog("单位名称:" + companyName + " 结算:" + total, userLogService.company, userLogService.companyPay,companyName);
+        /*生成结账记录*/
+        CompanyPay companyPay=new CompanyPay();
+        companyPay.setRemark(remark);
+        companyPay.setCurrencyAdd(currencyAdd);
+        companyPay.setCurrency(currency);
+        companyPay.setCompanyPaySerial(serialService.getCompanyPaySerial());
+        companyPay.setDebt(debt);
+        companyPay.setPay(pay);
+        companyPay.setDoneTime(timeService.getNow());
+        companyPayService.add(companyPay);
+        /*删除之前的单位账*/
+        companyDebtService.delete(companyDebtList);
+        /*添加进历史*/
+        List<CompanyDebtHistory> companyDebtHistoryList=new ArrayList<>();
+        CompanyDebtHistory companyDebtHistory;
+        for (CompanyDebt companyDebt : companyDebtList) {
+            companyDebtHistory=new CompanyDebtHistory(companyDebt);
+            companyDebtHistory.setDoneTime(timeService.getNow());
+            companyDebtHistory.setCompanyPaySerial(serialService.getCompanyPaySerial());
+        }
+        companyDebtHistoryService.add(companyDebtHistoryList);
+        userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt,"实付："+pay, userLogService.company, userLogService.companyPay,companyName);
         /*生成结算报表
         * 1.单位名称
         * 2.结算金额
         * 3.操作员
         * 4.币种信息
+        * 5.实付金额
         * */
-        return reportService.generateReport(null, new String[]{companyName, ifNotNullGetString(total), userService.getCurrentUser(),currency+"/"+currencyAdd}, "companyPay", "pdf");
-    }
-
-    /**
-     * 预付
-     *
-     * @param params 1：单位名。2：金额。3.币种
-     * @return
-     */
-    @RequestMapping(value = "companyDeposit")
-    @Transactional(rollbackFor = Exception.class)
-    public void companyDeposit(@RequestBody List<String> params) throws Exception {
-        timeService.setNow();
-        String companyName = params.get(0);
-        Double deposit = Double.valueOf(params.get(1));
-        String currency = params.get(2);
-        /*更新单位充值金额*/
-        companyService.addDeposit(companyName, deposit);
-        /*单位账务中插入一条记录*/
-        CompanyDebt companyDebt = new CompanyDebt();
-        companyDebt.setCompany(companyName);
-        companyDebt.setDeposit(deposit);
-        companyDebt.setDoTime(timeService.getNow());
-        companyDebt.setUserId(userService.getCurrentUser());
-        companyDebt.setCategory(companyDebtService.deposit);
-        companyDebt.setCurrency(currency);
-        companyDebtService.add(companyDebt);
-        userLogService.addUserLog("单位名称:" + companyName + " 支付:" + deposit, userLogService.company, userLogService.companyDeposit,companyName);
+        return reportService.generateReport(null, new String[]{companyName, ifNotNullGetString(debt), userService.getCurrentUser(),currency+"/"+currencyAdd,ifNotNullGetString(pay)}, "companyPay", "pdf");
     }
 }

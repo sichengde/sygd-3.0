@@ -76,7 +76,7 @@ public class CompanyService extends BaseService<Company>{
     /**
      * 结算时币种为单位（离店结算，商品零售）
      */
-    public String companyPay(String company, String lord, Double money, String description, String pointOfSale,String serial) throws Exception {
+    public String companyAddDebt(String company, String lord, Double money, String description, String pointOfSale,String serial) throws Exception {
         Company companyObj=getByName(company);
         companyObj.setDebt(companyObj.getNotNullCompanyDebt()+money);
         update(companyObj);
@@ -88,7 +88,6 @@ public class CompanyService extends BaseService<Company>{
         companyDebt.setDebt(money);
         companyDebt.setDoTime(timeService.getNow());
         companyDebt.setUserId(userService.getCurrentUser());
-        companyDebt.setCategory("单位挂账");
         companyDebt.setDescription(description);
         companyDebt.setPointOfSale(pointOfSale);
         companyDebt.setCurrentRemain(companyObj.getDebt());
