@@ -7,15 +7,13 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
     $scope.totalDebt = company.debt;
     $scope.currencyPayList = [];//sz-pay
     $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
-    $scope.initConditionCompany = 'company=' + util.wrapWithBrackets(company.name) + ' and ifnull(paid,false) = false and category=\'单位挂账\'';
     $scope.payBy = '定额结算';
     //账务明细
     $scope.companyDebtFields = [
         {name: '单位名称', id: 'company', width: '230px'},
         {name: '签单人', id: 'lord', width: '100px'},
-        {name: '记账时间', id: 'doTime', date: 'true', width: '100px', desc: '0', filter: 'date'},
+        {name: '记账时间', id: 'doTime', date: 'true', width: '100px', desc: '0'},
         {name: '挂账款', id: 'debt', width: '100px', sum: 'true'},
-        {name: '操作类别', id: 'category', width: '150px'},
         {name: '结账流水号', id: 'paySerial', width: '150px'},
         {name: '备注', id: 'description', width: '150px'},
         {name: '营业部门', id: 'pointOfSale', width: '150px'},
@@ -36,10 +34,22 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
             var companyPost = {};
             companyPost.companyName = $scope.company;
             companyPost.total = $scope.pay;
+            var pay=$scope.pay;//避免二次修改
             companyPost.currencyPost = $scope.currencyPayList[0];
             webService.post('getNotPaidDebt',companyPost)
+                .then(function (r) {
+                    var totalDebt=0.0;
+                    for (var i = 0; i < r.length; i++) {
+                        var companyDebt = r[i];
+                        totalDebt+=companyDebt.debt;
+                    }
+                    $scope.companyDebtList=r;
+                })
         } else {
-
+            dataService.refreshCompanyDebtList({condition:'company=' + util.wrapWithBrackets(company.name)})
+                .then(function (r) {
+                    $scope.companyDebtList=r;
+                })
         }
     };
     $scope.submit = function () {

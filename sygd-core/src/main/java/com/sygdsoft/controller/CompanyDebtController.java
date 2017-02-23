@@ -28,19 +28,21 @@ public class CompanyDebtController {
     }
 
     @RequestMapping(value = "getNotPaidDebt")
-    public List<CompanyDebt> getNotPaidDebt(@RequestBody CompanyPost companyPost)throws Exception{
-        String company=companyPost.getCompanyName();
-        Double pay=companyPost.getPay();
-        Query query=new Query("company=\'"+company+"\'");
-        List<CompanyDebt> companyDebtList=companyDebtService.get(query);
-        Double totalDebt=0.0;
-        List<CompanyDebt> companyDebtListNew=new ArrayList<>();
+    public List<CompanyDebt> getNotPaidDebt(@RequestBody CompanyPost companyPost) throws Exception {
+        String company = companyPost.getCompanyName();
+        Double pay = companyPost.getPay();
+        Query query = new Query("company=\'" + company + "\'");
+        List<CompanyDebt> companyDebtList = companyDebtService.get(query);
+        Double totalDebt = 0.0;
+        List<CompanyDebt> companyDebtListNew = new ArrayList<>();
         for (CompanyDebt companyDebt : companyDebtList) {
-            totalDebt+=companyDebt.getDebt();
-            if(totalDebt>pay){
+            totalDebt += companyDebt.getDebt();
+            companyDebtListNew.add(companyDebt);
+            if (totalDebt > pay) {
+                /*判断是加上合适还是不加合适*/
+
                 break;
             }
-            companyDebtListNew.add(companyDebt);
         }
         return companyDebtListNew;
     }
