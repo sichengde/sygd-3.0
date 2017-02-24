@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -16,8 +17,26 @@ public class CompanyDebt extends BaseEntity{
     private String userId;//操作员号
     private String description;//备注，描述
     private String pointOfSale;//营业部门
+    @Transient
+    public Double total;
+    @Transient
+    public Boolean tmp;//临时标志，代表定额结算产生的冲账条目，若为true则在单位结算时需要回冲一条
 
     public CompanyDebt() {
+    }
+    public CompanyDebt(CompanyDebt companyDebt){
+        this.company=companyDebt.getCompany();
+        this.debt=companyDebt.getDebt();
+        this.doTime=companyDebt.getDoTime();
+        this.description=companyDebt.getDescription();
+    }
+
+    public Boolean getNotNullTmp(){
+        if(this.tmp==null){
+            return false;
+        }else {
+            return this.tmp;
+        }
     }
 
     public String getCompany() {
@@ -90,5 +109,21 @@ public class CompanyDebt extends BaseEntity{
 
     public void setPointOfSale(String pointOfSale) {
         this.pointOfSale = pointOfSale;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
+    public Boolean getTmp() {
+        return tmp;
+    }
+
+    public void setTmp(Boolean tmp) {
+        this.tmp = tmp;
     }
 }

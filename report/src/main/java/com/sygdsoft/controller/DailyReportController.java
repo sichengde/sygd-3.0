@@ -1,6 +1,7 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.model.*;
+import com.sygdsoft.model.room.DailyReportReturn;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.NullJudgement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
+import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 /**
  * Created by 舒展 on 2016-07-11.
@@ -47,9 +49,11 @@ public class DailyReportController {
     DeskDetailHistoryService deskDetailHistoryService;
     @Autowired
     VipIntegrationService vipIntegrationService;
+    @Autowired
+    CompanyPayService companyPayService;
 
     @RequestMapping(value = "dailyReport",method = RequestMethod.POST)
-    public List<DailyReport> dailyReport(@RequestBody ReportJson reportJson) throws Exception {
+    public DailyReportReturn dailyReport(@RequestBody ReportJson reportJson) throws Exception {
         /*获取传递进来的查询参数*/
         Date beginTime=reportJson.getBeginTime();
         Date endTime=reportJson.getEndTime();
@@ -192,10 +196,19 @@ public class DailyReportController {
             }
             fieldTemplate.setFieldN(field + 1, String.valueOf(total));
         }
-        /*计算会员当日存款*/
+        /*计算会员结算金额*/
         Double VipPay = NullJudgement.nullToZero(vipIntegrationService.getTotalPay(beginTime, endTime));
-        /*计算单位当日存款*/
-        Double companyPay = NullJudgement.nullToZero(companyService.getTotalDeposit(beginTime, endTime));
+        /*计算单位结算金额*/
+        CompanyPay companyPayQuery=companyPayService.getSumPay(null,null,null,beginTime, endTime);
+        Double companyPay;
+        Double companyDebt;
+        if(companyPayQuery==null){
+            companyPay=0.0;
+            companyDebt=0.0;
+        }else {
+            companyPay=companyPayQuery.getPay();
+            companyDebt=companyPayQuery.getDebt();
+        }
         /*计算当日收取的预订订金*/
         Double subscription = NullJudgement.nullToZero(bookService.getTotalSubscription(beginTime, endTime));
         paramList.add(userService.getCurrentUser());
@@ -213,6 +226,13 @@ public class DailyReportController {
         reportJson.setReportIndex(reportService.generateReport(templateList,param,"dailyReport",format));
         dailyReportList.get(0).setReportJson(reportJson);
         dailyReportList.get(0).setParamList(pointOfSaleService.listToStringList(pointOfSaleList));
-        return dailyReportList;
+        /*设计返回值*/
+        DailyReportReturn dailyReportReturn=new DailyReportReturn();
+        dailyReportReturn.setBookMoney(subscription);
+        dailyReportReturn.setCompanyDebt(companyDebt);
+        dailyReportReturn.setCompanyPay(companyPay);
+        dailyReportReturn.setVipPay(VipPay);
+        dailyReportReturn.setDailyReportList(dailyReportList);
+        return dailyReportReturn;
     }
 }

@@ -14,13 +14,6 @@ import java.util.Date;
  */
 public interface CompanyMapper extends MyMapper<Company> {
     /**
-     * 获取当日的单位支付金额
-     */
-    @Select("select sum(deposit) deposit from company_debt where do_time>#{beginTime} and do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getTotalDeposit(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
-
-    /**
      * 为单位增加消费
      */
     @Update("UPDATE company set consume=ifnull(consume,0)+#{consume} where name=#{company}")

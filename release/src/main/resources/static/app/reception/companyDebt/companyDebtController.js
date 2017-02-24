@@ -12,7 +12,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '别名', id: 'alias', width: '100px'},
         {name: '单位类别', id: 'category', selectId: '1', width: '130px'},
         {name: '价格协议', id: 'protocol', selectId: '0', width: '170px'},
-        {name: '挂账款', id: 'debt', static: 'true', width: '100px',default:'0'},
+        {name: '挂账款', id: 'debt', static: 'true', width: '100px', default: '0'},
         /*        {name:'预付款',id:'deposit',static:'true',width:'100px'},
          {name:'余额',exp:'deposit-debt',static:'true',width:'100px'},*/
         {name: '有效日期', id: 'limitTime', width: '100px', date: 'short'},
@@ -25,7 +25,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
     $scope.companyLordFields = [
         {name: '单位名称', id: 'company', selectId: '0', width: '40%'},
         {name: '签单人名称', id: 'name', width: '40%'},
-        {name: '挂账款', id: 'debt', static: 'true',default:'0'}
+        {name: '挂账款', id: 'debt', static: 'true', default: '0'}
     ];
 
     //账务明细
@@ -35,17 +35,22 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '结账时间', id: 'doTime', date: 'true', width: '100px', desc: '0', filter: 'date'},
         {name: '挂账款', id: 'debt', width: '100px'},
         {name: '剩余挂账', id: 'currentRemain', width: '100px'},
-        /*{name:'预付款',id:'deposit',width:'100px'},*/
-        /*{name:'支付款',id:'pay',width:'100px',sum:'true'},*/
-        {name: '币种', id: 'currency', width: '150px', filter: 'list'},
-        {name: '币种信息', id: 'currencyAdd', width: '150px', filter: 'list'},
-        {name: '操作类别', id: 'category', width: '150px', filter: 'list'},
         {name: '结账流水号', id: 'paySerial', width: '150px'},
         {name: '备注', id: 'description', width: '150px'},
         {name: '营业部门', id: 'pointOfSale', width: '150px'},
         {name: '操作员', id: 'userId', width: '120px'}
     ];
-
+    $scope.companyDebtHistoryFields = $scope.companyDebtFields;
+    /*结算明细*/
+    $scope.companyPayFields = [
+        {name: '单位结账序列号', id: 'companyPaySerial', filter: 'input'},
+        {name: '结挂账款', id: 'debt'},
+        {name: '实收金额', id: 'pay'},
+        {name: '币种', id: 'currency', filter: 'list'},
+        {name: '币种额外信息', id: 'currencyAdd'},
+        {name: '备注', id: 'remark'},
+        {name: '结账时间', id: 'doneTime', desc: '0', filter: 'date'}
+    ];
     //宴请签单人
     $scope.freemanFields = [
         {name: '宴请签单人', id: 'freeman', width: '120px'},
@@ -70,6 +75,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
     /*挂账明细默认不显示*/
     $scope.initConditionCompany = 'id=-1';
     $scope.initConditionFreeman = 'id=-1';
+    $scope.initConditionCompanyDebtHistory = 'id=-1';
     dataService.initData(['refreshProtocolList', 'refreshCompanyCategoryList'])
         .then(function () {
             $scope.companySelectList[0] = util.objectListToString(dataService.getProtocolList(), 'protocol');
@@ -83,6 +89,11 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
     /*选择单位*/
     $scope.chooseCompany = function (d) {
         $scope.initConditionCompany = 'company=' + util.wrapWithBrackets(d.name);
+        $scope.initConditionCompanyPay = 'company=' + util.wrapWithBrackets(d.name);
+    };
+    /*选择结算*/
+    $scope.chooseCompanyPay=function (companyPay) {
+        $scope.initConditionCompanyDebtHistory = 'company_pay_serial=' + util.wrapWithBrackets(companyPay.companyPaySerial);
     };
     /*选择宴请签单人*/
     $scope.chooseFreeman = function (d) {

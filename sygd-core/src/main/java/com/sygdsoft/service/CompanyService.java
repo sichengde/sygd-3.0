@@ -48,25 +48,6 @@ public class CompanyService extends BaseService<Company>{
     }
 
     /**
-     * 充值
-     */
-    public void addDeposit(String companyName, Double money)  {
-        companyMapper.addDeposit(companyName,money);
-    }
-    /**
-     * 结算
-     */
-    public void pay(String company,Double total){
-        companyMapper.pay(company, total);
-    }
-    /**
-     * 查询充值总额
-     */
-    public Double getTotalDeposit(Date beginTime,Date endTime){
-        return companyMapper.getTotalDeposit(beginTime, endTime);
-    }
-
-    /**
      * 为该单位增加消费数据
      */
     public void addConsume(String company,Double consume){

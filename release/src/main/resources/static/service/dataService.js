@@ -1546,6 +1546,40 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 单位账务历史
+     */
+    var companyDebtHistoryList;
+    function refreshCompanyDebtHistoryList(p) {
+        p = p || {};
+        return webService.post('companyDebtHistoryGet', p)
+            .then(function (d) {
+                companyDebtHistoryList = d;
+                return d;
+            })
+    }
+
+    function getCompanyDebtHistoryList() {
+        return companyDebtHistoryList;
+    }
+
+    /**
+     * 单位结算记录
+     */
+    var companyPayList;
+    function refreshCompanyPayList(p) {
+        p = p || {};
+        return webService.post('companyPayGet', p)
+            .then(function (d) {
+                companyPayList = d;
+                return d;
+            })
+    }
+
+    function getCompanyPayList() {
+        return companyPayList;
+    }
+
+    /**
      * 公共方法，获取之类的
      */
     var refreshed;
@@ -1758,6 +1792,10 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getInterfaceDoorList:getInterfaceDoorList,
         refreshMenuCostList:refreshMenuCostList,
         getMenuCostList:getMenuCostList,
+        refreshCompanyDebtHistoryList:refreshCompanyDebtHistoryList,
+        getCompanyDebtHistoryList:getCompanyDebtHistoryList,
+        refreshCompanyPayList:refreshCompanyPayList,
+        getCompanyPayList:getCompanyPayList,
         initData: initData
     }
 }]);

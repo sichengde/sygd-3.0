@@ -6,13 +6,14 @@ import java.util.Date;
  * Created by 舒展 on 2017-02-23.
  */
 public class CompanyPay extends BaseEntity{
-    public String companyPaySerial;//单位结账序列号
-    public Double debt;//结挂账款
-    public Double pay;//实收金额
-    public String currency;//币种
-    public String currencyAdd;//币种额外信息
-    public String remark;//币种额外信息
-    public Date doneTime;//结账时间
+    private String companyPaySerial;//单位结账序列号
+    private String company;//单位名称
+    private Double debt;//结挂账款
+    private Double pay;//实收金额
+    private String currency;//币种
+    private String currencyAdd;//币种额外信息
+    private String remark;//币种额外信息
+    private Date doneTime;//结账时间
 
     public CompanyPay() {
     }
@@ -71,5 +72,13 @@ public class CompanyPay extends BaseEntity{
 
     public void setDoneTime(Date doneTime) {
         this.doneTime = doneTime;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

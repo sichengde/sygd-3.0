@@ -3,9 +3,22 @@
         <sz-pane title="应收应付">
             <sz-table fields="companyFields" row-click="chooseCompany(d)" search-condition="condition" outer-refresh="lordInit(d)" head="true" title="点击查看账务明细" select-list="companySelectList" button="{{editable?false:'add update delete'}}" right-click="{{editable?'rightClickCompany':''}}" deep-search="true"></sz-table>
             <div class="clear"></div>
-            <div class="detailTable">
-                <h1>账务明细</h1>
-                <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt" deep-search="true"></sz-table>
+            <div class="szSheet">
+                <sz-tab>
+                    <sz-pane title="账务明细">
+                        <sz-table fields="companyDebtFields" button="add update delete" search-condition="initConditionCompany" head="true" right-click="rightClickCompanyDebt" deep-search="true"></sz-table>
+                    </sz-pane>
+                    <sz-pane title="结算明细">
+                        <sz-table fields="companyPayFields" button="add update delete" search-condition="initConditionCompanyPay" head="true" row-click="chooseCompanyPay(d)" deep-search="true"></sz-table>
+                    </sz-pane>
+                </sz-tab>
+            </div>
+            <div class="szSheet">
+                <sz-tab>
+                    <sz-pane title="账务历史">
+                        <sz-table fields="companyDebtHistoryFields" button="add update delete" search-condition="initConditionCompanyDebtHistory" head="true" right-click="rightClickCompanyDebt" deep-search="true"></sz-table>
+                    </sz-pane>
+                </sz-tab>
             </div>
         </sz-pane>
         <sz-pane title="单位签单人">

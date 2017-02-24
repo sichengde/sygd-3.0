@@ -1,4 +1,4 @@
-App.controller('rightClickCompanyDebtController',['$scope','popUpService',function ($scope,popUpService) {
+App.controller('rightClickCompanyDebtController',['$scope','popUpService','messageService',function ($scope,popUpService,messageService) {
     var companyDebt=popUpService.getParam();
     /*现实消费明细，分为，接待，餐饮，桑拿三种*/
     $scope.showDetail=function () {
@@ -9,6 +9,12 @@ App.controller('rightClickCompanyDebtController',['$scope','popUpService',functi
                 popUpService.pop('debtDetail', null, null, {paySerial: companyDebt.paySerial});
                 break;
             case 'c':
+                /*判断二字母是不是p，p是单位结算*/
+                if(companyDebt.paySerial[1]=='p'){
+                    messageService.setMessage({type:'alert',content:'单位转入明细请根据结账流水号在结算明细中查找'})
+                    popUpService.pop('message');
+                    return;
+                }
                 popUpService.close('rightClickCompanyDebt',true);
                 popUpService.pop('deskDetailHistory', null, null, {ckSerial:companyDebt.paySerial});
                 break;

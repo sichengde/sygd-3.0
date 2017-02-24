@@ -32,17 +32,25 @@ public class CompanyDebtController {
         String company = companyPost.getCompanyName();
         Double pay = companyPost.getPay();
         Query query = new Query("company=\'" + company + "\'");
+        query.setOrderByList(new String[]{"doTime"});
         List<CompanyDebt> companyDebtList = companyDebtService.get(query);
         Double totalDebt = 0.0;
         List<CompanyDebt> companyDebtListNew = new ArrayList<>();
         for (CompanyDebt companyDebt : companyDebtList) {
             totalDebt += companyDebt.getDebt();
-            companyDebtListNew.add(companyDebt);
             if (totalDebt > pay) {
                 /*判断是加上合适还是不加合适*/
-
+                if (totalDebt - pay < companyDebt.getDebt() / 2) {
+                    companyDebtListNew.add(companyDebt);
+                }else {
+                    totalDebt-=companyDebt.getDebt();
+                }
                 break;
             }
+            companyDebtListNew.add(companyDebt);
+        }
+        if(companyDebtListNew.size()>0){
+            companyDebtListNew.get(0).setTotal(totalDebt);
         }
         return companyDebtListNew;
     }

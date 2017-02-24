@@ -353,14 +353,15 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         webService.post('dailyReport', {beginTime: beginTime, endTime: endTime, format: format})
             .then(function (r) {
                 $scope.dailyReportFields = [];
-                var paramList = r[0].paramList;
+                var paramList = r.dailyReportList[0].paramList;
                 $scope.dailyReportFields.push({name: '项目', id: 'secondPointOfSale'});
                 for (var i = 0; i < paramList.length; i++) {
                     var param = paramList[i];
                     $scope.dailyReportFields.push({name: param, id: 'paramField' + (i + 1)});
                 }
                 $scope.dailyReportFields.push({name: '合计', id: 'total'});
-                $scope.dailyReportList = r;
+                $scope.dailyReportList = r.dailyReportList;
+                $scope.dailyReportRemark='会员充值：'+r.vipPay+' 单位支付：'+r.companyPay+' 实际结算：'+r.companyDebt;
             });
     };
     $scope.dailyReportItemClick = function (item, id) {
@@ -488,10 +489,8 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
     $scope.companyDebtReportFields = [
         {name: '单位名称', id: 'company'},
         {name: '期初余额', id: 'remain'},
-        {name: '本期发生额', id: 'debtGenerate'},
-        {name: '本期房费', id: 'roomConsume'},
-        {name: '其他', id: 'otherConsume'},
-        {name: '本期回款', id: 'back'},
+        {name: '期间发生额', id: 'debtGenerate'},
+        {name: '期间回款', id: 'back'},
         {name: '期末余额', id: 'debt'}
     ];
     $scope.companyDebtReport = function (beginTime, endTime) {

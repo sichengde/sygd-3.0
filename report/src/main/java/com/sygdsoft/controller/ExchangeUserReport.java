@@ -47,6 +47,8 @@ public class ExchangeUserReport {
     RoomShopDetailService roomShopDetailService;
     @Autowired
     OtherParamService otherParamService;
+    @Autowired
+    CompanyPayService companyPayService;
 
     /**
      * 接待交班审核表
@@ -75,7 +77,10 @@ public class ExchangeUserReport {
             fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField6(ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
             fieldTemplate.setField7(ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值
-            fieldTemplate.setField8(ifNotNullGetString(companyDebtService.getTotalCompanyDeposit(userId,currency.getCurrency(),  beginTime, endTime)));//单位付款
+            CompanyPay companyPayQuery=companyPayService.getSumPay(null,userId, currency.getCurrency(),beginTime, endTime);
+            if(companyPayQuery!=null) {
+                fieldTemplate.setField8(ifNotNullGetString(companyPayQuery.getPay()));//单位付款
+            }
             templateList.add(fieldTemplate);
         }
         /*生成水晶报表字段*/

@@ -5,7 +5,7 @@
         <table class="tableBordernone" style="margin-top: 5px;">
             <tr>
                 <td class="ppp">
-                    <p ng-show="payBy=='按明细结'"><span>应付金额：</span>{{'1000'}}</p>
+                    <p ng-show="payBy=='按明细结'"><span>应付金额：</span>{{debt}}</p>
                     <p><span>实付金额：</span><input type="text" style="float: none; width: 180px;" ng-model="pay"></p>
                     <div class="btn-group">
                         <label class="btn btn-primary" ng-model="payBy" uib-btn-radio="'按明细结'" uncheckable>按明细结</label>
@@ -38,6 +38,7 @@
             </tr>
         </table>
         <div class="clear"></div>
+        备注<input type="text" ng-model="remark">
         <button style="margin-top: 20px;" ng-click="submit()">确认支付</button>
     </div>
     <div class="closeBox" ng-click="closePop('companyPay')">+</div>
