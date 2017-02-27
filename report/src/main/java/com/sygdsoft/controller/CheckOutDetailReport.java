@@ -5,6 +5,8 @@ import com.sygdsoft.model.DebtHistory;
 import com.sygdsoft.model.DebtPay;
 import com.sygdsoft.model.FieldTemplate;
 import com.sygdsoft.model.ReportJson;
+import com.sygdsoft.model.room.CheckOutDetailReturn;
+import com.sygdsoft.model.room.CheckOutDetailRow;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,19 +55,19 @@ public class CheckOutDetailReport {
 
     @RequestMapping(value = "checkOutDetailReport")
     public Integer checkOutDetailReport(@RequestBody ReportJson reportJson) throws Exception {
-        Date beginTime=reportJson.getBeginTime();
-        Date endTime=reportJson.getEndTime();
-        String userId=reportJson.getUserId();
-        if("".equals(userId)){
-            userId=null;
+        Date beginTime = reportJson.getBeginTime();
+        Date endTime = reportJson.getEndTime();
+        String userId = reportJson.getUserId();
+        if ("".equals(userId)) {
+            userId = null;
         }
-        String format=reportJson.getFormat();
+        String format = reportJson.getFormat();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
         Query query = new Query();
-        if(userId==null){
+        if (userId == null) {
             query.setCondition("done_time >" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endTime)));
-        }else {
+        } else {
             query.setCondition("done_time >" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endTime)) + " and user_id=" + util.wrapWithBrackets(userId));
         }
         query.setOrderByList(new String[]{"doneTime"});
@@ -88,9 +90,9 @@ public class CheckOutDetailReport {
                 fieldTemplate.setField6("true");
                 templateList.add(fieldTemplate);
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
-                query.setOrderByList(new String[]{"roomId","pointOfSale","doTime"});
+                query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
-                debtHistoryList=debtHistoryService.mergeDebtHistory(debtHistoryList);
+                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList);
                 for (DebtHistory debtHistory : debtHistoryList) {
                     fieldTemplate = new FieldTemplate();//循环输出结账明细
                     fieldTemplate.setField1(timeService.longFormat.format(debtHistory.getDoTime()));
@@ -119,7 +121,7 @@ public class CheckOutDetailReport {
                 currencyMap.put(currency, debtPay.getDebtMoney());
             }
         }
-        List<String> paramList=new ArrayList<>();
+        List<String> paramList = new ArrayList<>();
         paramList.add(ifNotNullGetString(total));
         paramList.add(userService.getCurrentUser());
         paramList.add(timeService.dateToStringLong(beginTime));
@@ -130,8 +132,88 @@ public class CheckOutDetailReport {
             out += s + "/" + currencyMap.get(s) + " ";
         }
         paramList.add(out);
-        String[] param=new String[paramList.size()];
+        String[] param = new String[paramList.size()];
         paramList.toArray(param);
-        return reportService.generateReport(templateList, param, "checkOutDetail",format);
+        return reportService.generateReport(templateList, param, "checkOutDetail", format);
+    }
+
+    /**
+     * 手机端显示结账明细表
+     */
+    @RequestMapping(value = "checkOutDetailMobile")
+    public CheckOutDetailReturn checkOutDetailMobile(@RequestBody ReportJson reportJson) throws Exception {
+        Date beginTime = reportJson.getBeginTime();
+        Date endTime = reportJson.getEndTime();
+        String userId = reportJson.getUserId();
+        if ("".equals(userId)) {
+            userId = null;
+        }
+        timeService.setNow();
+        List<CheckOutDetailRow> checkOutDetailRowList = new ArrayList<>();
+        Query query = new Query();
+        if (userId == null) {
+            query.setCondition("done_time >" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endTime)));
+        } else {
+            query.setCondition("done_time >" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endTime)) + " and user_id=" + util.wrapWithBrackets(userId));
+        }
+        query.setOrderByList(new String[]{"doneTime"});
+        List<DebtPay> debtPayList = debtPayService.get(query);
+        CheckOutDetailRow checkOutDetailRow;
+        Double total = 0.0;//总的结账金额
+        Map<String, Double> currencyMap = new HashMap<>();
+        String lastSerial = null;//上一个的账号，每次循环判断，如果相同即是分单
+        for (DebtPay debtPay : debtPayList) {
+            if (!debtPay.getPaySerial().equals(lastSerial)) {
+                lastSerial = debtPay.getPaySerial();
+                checkOutDetailRow = new CheckOutDetailRow();//第一行是主账号(现在改成结账时间了)
+                checkOutDetailRow.setDoTime(timeService.dateToStringLong(debtPay.getDoneTime()));
+                if (debtPay.getGroupAccount() != null) {
+                    checkOutDetailRow.setCurrency(debtPay.getGroupAccount());
+                    checkOutDetailRow.setDescription("公司:" + debtPay.getCompany());
+                } else {
+                    checkOutDetailRow.setCurrency(debtPay.getSelfAccount());
+                }
+                checkOutDetailRowList.add(checkOutDetailRow);
+                query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
+                query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
+                List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
+                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList);
+                for (DebtHistory debtHistory : debtHistoryList) {
+                    checkOutDetailRow = new CheckOutDetailRow();//循环输出结账明细
+                    checkOutDetailRow.setDoTime(timeService.dateToStringLong(debtHistory.getDoTime()));
+                    checkOutDetailRow.setMoney(ifNotNullGetString(debtHistory.getConsume()));
+                    checkOutDetailRow.setDescription(debtHistory.getDescription());
+                    checkOutDetailRow.setRoomId(debtHistory.getRoomId());
+                    checkOutDetailRowList.add(checkOutDetailRow);
+                }
+            }
+            checkOutDetailRow = new CheckOutDetailRow();//最后一行是结账信息，俗称小计
+            checkOutDetailRow.setDoTime("小计");
+            checkOutDetailRow.setCurrency(debtPay.getCurrency());
+            checkOutDetailRow.setDescription(debtPay.getDebtCategory());
+            checkOutDetailRow.setMoney(String.valueOf(debtPay.getDebtMoney()));
+            checkOutDetailRow.setUserId(debtPay.getUserId());
+            checkOutDetailRowList.add(checkOutDetailRow);
+            /*统计该账单*/
+            total = total + debtPay.getDebtMoney();
+            Double tempDouble;
+            String currency = debtPay.getCurrency();
+            if (currencyMap.containsKey(currency)) {
+                tempDouble = currencyMap.get(debtPay.getCurrency());
+                tempDouble += debtPay.getDebtMoney();
+                currencyMap.put(currency, tempDouble);
+            } else {
+                currencyMap.put(currency, debtPay.getDebtMoney());
+            }
+        }
+        String out = "";
+        /*币种分析*/
+        for (String s : currencyMap.keySet()) {
+            out += s + "/" + currencyMap.get(s) + " ";
+        }
+        CheckOutDetailReturn checkOutDetailReturn = new CheckOutDetailReturn();
+        checkOutDetailReturn.setCheckOutDetailRowList(checkOutDetailRowList);
+        checkOutDetailReturn.setRemark("结账合计" + ifNotNullGetString(total) + ",币种分析:" + out);
+        return checkOutDetailReturn;
     }
 }
