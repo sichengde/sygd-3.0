@@ -1,6 +1,8 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.model.*;
+import com.sygdsoft.model.room.ExchangeUserSmallJQReturn;
+import com.sygdsoft.model.room.ExchangeUserSmallJQRow;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -112,6 +114,71 @@ public class ExchangeUserReport {
         exchangeUserJQ.setReportJson(reportJson);
         exchangeUserJQ.setPayTotal(payTotal);
         return exchangeUserJQ;
+    }
+
+    /**
+     * 手机端，接待交班审核表(小表，只有结算款，附带房吧明细)
+     */
+    @RequestMapping(value = "exchangeUserReportSmallMobile")
+    public ExchangeUserSmallJQReturn exchangeUserReportSmallMobile(@RequestBody ReportJson reportJson)throws Exception{
+        Date beginTime=reportJson.getBeginTime();
+        Date endTime=reportJson.getEndTime();
+        timeService.setNow();
+        List<ExchangeUserSmallJQRow> exchangeUserSmallJQRowList = new ArrayList<>();
+        List<Currency> currencyList=currencyService.get(null);
+        ExchangeUserSmallJQRow exchangeUserSmallJQRow;
+        exchangeUserSmallJQRow=new ExchangeUserSmallJQRow();
+        exchangeUserSmallJQRow.setField1("前台款列印:");
+        exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
+        /*统计结算款*/
+        Double consumeTotal=0.0;
+        for (Currency currency : currencyList) {
+            exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
+            String currencyString=currency.getCurrency();
+            exchangeUserSmallJQRow.setField2(currency.getCurrency());//币种
+            Double roomPay=debtPayService.getDebtMoneyByCurrencyDateUser(null,currencyString,beginTime, endTime);
+            exchangeUserSmallJQRow.setField3(ifNotNullGetString(roomPay));//结算款
+            exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
+            consumeTotal+=roomPay;
+        }
+        Double payTotal=debtPayService.getDebtMoneyByDateUser(null, beginTime, endTime);
+        /*在店押金*/
+        Double depositAll=debtService.getDepositMoneyAll();//在店押金
+        /*统计房吧零售*/
+        List<RoomShopDetail> roomShopDetailList=roomShopDetailService.getRetailByDoneTimeUser(null,beginTime, endTime);//商品零售明细
+        ExchangeUserSmallJQRow exchangeUserSmallJQRowWait = new ExchangeUserSmallJQRow();
+        exchangeUserSmallJQRowWait.setField1("商品零售");
+        exchangeUserSmallJQRowList.add(exchangeUserSmallJQRowWait);
+        Double tempTotalConsume=0.0;//准备回记消费合计
+        for (RoomShopDetail roomShopDetail : roomShopDetailList) {
+            exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
+            exchangeUserSmallJQRow.setField2(roomShopDetail.getItem());
+            exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNum()+" "+roomShopDetail.getUnit()));
+            exchangeUserSmallJQRow.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
+            tempTotalConsume+=roomShopDetail.getTotalMoney();
+            exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
+        }
+        exchangeUserSmallJQRowWait.setField2(String.valueOf(tempTotalConsume));
+
+        exchangeUserSmallJQRowWait = new ExchangeUserSmallJQRow();
+        exchangeUserSmallJQRowWait.setField1("房吧销售");
+        exchangeUserSmallJQRowList.add(exchangeUserSmallJQRowWait);
+        tempTotalConsume=0.0;//准备回记消费合计
+        roomShopDetailList=roomShopDetailService.getSumRoomShopByDoneTimeUser(null, beginTime, endTime);//房吧明细
+        for (RoomShopDetail roomShopDetail : roomShopDetailList) {
+            tempTotalConsume+=roomShopDetail.getTotalMoney();
+            exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
+            exchangeUserSmallJQRow.setField2(roomShopDetail.getItem());
+            exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNum()+" "+roomShopDetail.getUnit()));
+            exchangeUserSmallJQRow.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
+            exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
+        }
+        exchangeUserSmallJQRowWait.setField2(String.valueOf(tempTotalConsume));
+
+        ExchangeUserSmallJQReturn exchangeUserSmallJQReturn=new ExchangeUserSmallJQReturn();
+        exchangeUserSmallJQReturn.setExchangeUserSmallJQRowList(exchangeUserSmallJQRowList);
+        exchangeUserSmallJQReturn.setRemark("在店押金:"+depositAll+",结算款:"+consumeTotal+"应缴结算款:"+payTotal);
+        return exchangeUserSmallJQReturn;
     }
 
     /**
