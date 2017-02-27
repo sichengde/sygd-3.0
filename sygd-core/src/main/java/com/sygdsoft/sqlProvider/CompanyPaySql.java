@@ -16,7 +16,7 @@ public class CompanyPaySql {
             return "SELECT sum(debt) debt,sum(pay) pay FROM company_pay WHERE company=#{company} and done_time>#{beginTime} AND done_time<#{endTime}";
         }
         if (userId != null && currency != null) {
-            return "SELECT sum(debt) debt,sum(pay) pay FROM company_pay WHERE user_id=#{userId} and currency={currency} and done_time>#{beginTime} AND done_time<#{endTime} AND currency!=\'转单位\'";
+            return "SELECT sum(debt) debt,sum(pay) pay FROM company_pay WHERE user_id=#{userId} and currency=#{currency} and done_time>#{beginTime} AND done_time<#{endTime} AND currency!=\'转单位\'";
         } else if (userId == null && currency != null) {
             return "SELECT sum(debt) debt,sum(pay) pay FROM company_pay WHERE currency=#{currency} and done_time>#{beginTime} AND done_time<#{endTime}";
         } else {
