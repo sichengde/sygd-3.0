@@ -17,7 +17,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '小时房', id: 'hourRoom'},
         {name: '总计房费', id: 'totalConsume'},
         {name: '平均房价', id: 'averagePrice'},
-        {name: 'REVPER', id: 'revper'},
+        {name: 'REVPAR', id: 'revper'},
         {name: '出租率', id: 'averageRent'}
     ];
     $scope.roomCategorySaleReport = function (beginTime, endTime) {

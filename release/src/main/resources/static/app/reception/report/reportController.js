@@ -250,7 +250,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         {name: '预订订金', id: 'subscription'},
         {name: '退订金', id: 'cancelSubscription'},
         {name: '会员充值', id: 'vipRecharge'},
-        {name: '单位充值/结算', id: 'companyPay'}
+        {name: '单位结算', id: 'companyPay'}
     ];
     $scope.exchangeUserReport = function (userId, beginTime, endTime, format) {
         webService.post('exchangeUserReport', {userId: userId, beginTime: beginTime, endTime: endTime, format: format})
