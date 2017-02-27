@@ -32,6 +32,9 @@ public class CompanyDebtReportRow {
     public Double getNotNullDebt() {
         return NullJudgement.nullToZero(debt);
     }
+    public Double getNotNullBack() {
+        return NullJudgement.nullToZero(back);
+    }
 
     public String getCompany() {
         return company;

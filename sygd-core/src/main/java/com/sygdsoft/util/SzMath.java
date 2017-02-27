@@ -60,6 +60,10 @@ public class SzMath {
         return twoDecimal.format(var1);
     }
 
+    public String formatTwoDecimal(String var1) {
+        return twoDecimal.format(var1);
+    }
+
     public String formatTwoDecimal(Double var1, Double var2) {
         if(var2==0){
             var2=1.0;
@@ -89,6 +93,9 @@ public class SzMath {
     }
 
     public Double formatTwoDecimalReturnDouble(Double var1) {
+        if(var1==null){
+            return 0.0;
+        }
         return Double.valueOf(twoDecimal.format(var1));
     }
 
