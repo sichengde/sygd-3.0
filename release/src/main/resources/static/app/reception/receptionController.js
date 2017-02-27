@@ -205,7 +205,6 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
     $scope.chooseSource = function (room) {
         if (room.state == '散客房' || room.state == '团队房') {
             sourceMoveRoom = room;
-
         }
     };
     /*松开确认*/

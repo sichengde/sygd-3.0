@@ -13,6 +13,7 @@ public class CompanyPay extends BaseEntity{
     private String currency;//币种
     private String currencyAdd;//币种额外信息
     private String remark;//币种额外信息
+    private String userId;//操作员
     private Date doneTime;//结账时间
 
     public CompanyPay() {
@@ -80,5 +81,13 @@ public class CompanyPay extends BaseEntity{
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

@@ -122,6 +122,7 @@ public class CompanyController {
         companyPay.setDebt(debt);
         companyPay.setPay(pay);
         companyPay.setDoneTime(timeService.getNow());
+        companyPay.setUserId(userService.getCurrentUser());
         companyPayService.add(companyPay);
         /*删除之前的单位账*/
         companyDebtService.delete(companyDebtList);
