@@ -28,6 +28,12 @@
                                                 show-seconds="true"></uib-timepicker>
                             </div>
                         </li>
+                        <li>
+                            <select ng-model="module" ng-options="x for x in moduleList"></select>
+                        </li>
+                        <li>
+                            <select ng-model="pointOfSale" ng-options="x for x in pointOfSaleList"></select>
+                        </li>
                     </ul>
                     <input type="button" ng-click="showDetail()" value="查询明细">
                     <sz-table ng-if="companyDebtList" fields="companyDebtFields" items="companyDebtList" button="add update delete" head="true" right-click="rightClickCompanyDebt"></sz-table>

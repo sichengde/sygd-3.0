@@ -29,7 +29,7 @@ App.controller('OtherConsumeController', ['$scope', 'webService', 'dataService',
             }
             debt.description = $scope.manualConsume + ':' + $scope.remark;
             debt.roomId = $scope.room.roomId;
-            webService.post('otherConsumeRoom', debt)
+            return webService.post('otherConsumeRoom', debt)
                 .then(
                     function (r) {
                         popUpService.close('otherConsume');
@@ -51,7 +51,7 @@ App.controller('OtherConsumeController', ['$scope', 'webService', 'dataService',
             debtHistory.currency = $scope.company.name;
             debtHistory.currencyAdd = $scope.companyLord;
             debtHistory.description = '单位' + $scope.manualConsume + '/' + $scope.companyLord + ':' + $scope.remark;
-            webService.post('otherConsumeCompany', debtHistory)
+            return webService.post('otherConsumeCompany', debtHistory)
                 .then(function (d) {
                     messageService.actionSuccess();
                     /*弹出打印预览界面*/

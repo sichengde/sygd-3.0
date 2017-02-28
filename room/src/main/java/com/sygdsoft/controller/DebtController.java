@@ -180,7 +180,7 @@ public class DebtController {
         timeService.setNow();
         userLogService.addUserLog("杂单冲账单位:" + company + " 金额:" + money, userLogService.reception, userLogService.ZC, serialService.getPaySerial());
         /*判断币种*/
-        debtPayService.parseCurrency("转单位", company + " " + companyLord, money, null, null, debtHistory.getCategory(), serialService.getPaySerial(), "接待");
+        debtPayService.parseCurrency("转单位", company + " " + companyLord, money, null, null, debtHistory.getCategory(), serialService.getPaySerial(), "接待",debtHistory.getPointOfSale());
         /*创建杂单报表
         * 1.操作员
         * 2.金额
@@ -222,7 +222,7 @@ public class DebtController {
         debtPayService.add(debtPay);
         debtHistoryService.add(debtHistory);
         /*判断币种*/
-        debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "商品零售", serialService.getPaySerial(), "接待");
+        debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "商品零售", serialService.getPaySerial(), "接待",null);
         /*创建房吧明细账务*/
         List<RoomShopDetail> roomShopDetailList = retailIn.getRoomShopDetailList();
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {

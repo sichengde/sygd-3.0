@@ -16,7 +16,8 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
         {name: '挂账款', id: 'debt', width: '100px'},
         {name: '结账流水号', id: 'paySerial', width: '150px'},
         {name: '备注', id: 'description', width: '150px'},
-        {name: '营业部门', id: 'pointOfSale', width: '150px'},
+        {name: '模块', id: 'pointOfSale', width: '150px'},
+        {name: '营业部门', id: 'secondPointOfSale', width: '150px'},
         {name: '操作员', id: 'userId', width: '120px'}
     ];
     dataService.initData(['refreshCurrencyList'], [{condition: 'check_in=1'}])
@@ -25,6 +26,13 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
             $scope.currencyList.push('转单位');
             $scope.currency = '人民币';
         });
+    dataService.refreshPointOfSaleList({condition: 'module=\'接待\''})
+        .then(function (r) {
+            $scope.pointOfSaleList = ['全部'].concat(r[0].secondPointOfSale.split(' '));
+            $scope.pointOfSale = $scope.pointOfSaleList[0];
+        });
+    $scope.moduleList=['全部','接待','餐饮','桑拿'];
+    $scope.module='全部';
     var pay;
     $scope.showDetail = function () {
         if (!$scope.pay && $scope.payBy == '定额结算') {
@@ -73,6 +81,12 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
             if ($scope.endTime) {
                 var endTime = dateFilter($scope.endTime, 'yyyy-MM-dd HH:mm:ss');
                 query.condition += ' and do_time<' + util.wrapWithBrackets(endTime);
+            }
+            if($scope.pointOfSale!='全部'){
+                query.condition+=' and second_point_of_sale='+util.wrapWithBrackets($scope.pointOfSale);
+            }
+            if($scope.module!='全部'){
+                query.condition+=' and point_of_sale='+util.wrapWithBrackets($scope.module);
             }
             dataService.refreshCompanyDebtList(query)
                 .then(function (r) {

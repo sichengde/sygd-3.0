@@ -29,8 +29,8 @@
             </tr>
         </table>
         <dl class="button">
-            <button ng-show="manualConsume=='杂单'" sz-submit ng-click="addDebt()" sz-permission="杂单">入账</button>
-            <button ng-show="manualConsume=='冲账'" sz-submit ng-click="addDebt()" sz-permission="冲账">入账</button>
+            <button ng-show="manualConsume=='杂单'" sz-submit sz-one-click="addDebt()" sz-permission="杂单">入账</button>
+            <button ng-show="manualConsume=='冲账'" sz-submit sz-one-click="addDebt()" sz-permission="冲账">入账</button>
         </dl>
     </div>
 

@@ -93,7 +93,7 @@ public class VipController {
             /*增加一条账务明细*/
             vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency);
         }
-        debtService.parseCurrency(currency,currencyAdd,realMoney,null,null,"会员发卡充值",null,null );
+        debtService.parseCurrency(currency,currencyAdd,realMoney,null,null,"会员发卡充值",null,null,null );
         /*判断币种，这里允许挂单位账*/
         return reportService.generateReport(null, params, "vipAdd", "pdf");
     }
@@ -138,7 +138,7 @@ public class VipController {
         vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency);
         userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency+"/"+currencyAdd};
-        debtService.parseCurrency(currency,currencyAdd,money,null,null,"会员充值",null,null );
+        debtService.parseCurrency(currency,currencyAdd,money,null,null,"会员充值",null,null ,null);
         return reportService.generateReport(null, param, "vipRecharge", "pdf");
     }
 

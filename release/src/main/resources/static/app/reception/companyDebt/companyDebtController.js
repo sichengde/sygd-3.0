@@ -37,7 +37,8 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '剩余挂账', id: 'currentRemain', width: '100px'},
         {name: '结账流水号', id: 'paySerial', width: '150px'},
         {name: '备注', id: 'description', width: '150px'},
-        {name: '营业部门', id: 'pointOfSale', width: '150px'},
+        {name: '模块', id: 'pointOfSale', width: '150px'},
+        {name: '营业部门', id: 'secondPointOfSale', width: '150px'},
         {name: '操作员', id: 'userId', width: '120px'}
     ];
     $scope.companyDebtHistoryFields = $scope.companyDebtFields;

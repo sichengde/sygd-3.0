@@ -15,6 +15,7 @@ public class CompanyDebtHistory extends BaseEntity {
     public String userId;
     public String description;
     public String pointOfSale;
+    public String secondPointOfSale;
     public Double currentRemain;
     public String companyPaySerial;
 
@@ -30,6 +31,7 @@ public class CompanyDebtHistory extends BaseEntity {
         this.userId=companyDebt.getUserId();
         this.description=companyDebt.getDescription();
         this.pointOfSale=companyDebt.getPointOfSale();
+        this.secondPointOfSale=companyDebt.getSecondPointOfSale();
         this.currentRemain=companyDebt.getCurrentRemain();
     }
 
@@ -119,5 +121,13 @@ public class CompanyDebtHistory extends BaseEntity {
 
     public void setDoneTime(Date doneTime) {
         this.doneTime = doneTime;
+    }
+
+    public String getSecondPointOfSale() {
+        return secondPointOfSale;
+    }
+
+    public void setSecondPointOfSale(String secondPointOfSale) {
+        this.secondPointOfSale = secondPointOfSale;
     }
 }

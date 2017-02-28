@@ -57,7 +57,7 @@ public class CompanyService extends BaseService<Company>{
     /**
      * 结算时币种为单位（离店结算，商品零售）
      */
-    public String companyAddDebt(String company, String lord, Double money, String description, String pointOfSale,String serial) throws Exception {
+    public String companyAddDebt(String company, String lord, Double money, String description, String pointOfSale,String secondPointOfSale,String serial) throws Exception {
         Company companyObj=getByName(company);
         companyObj.setDebt(companyObj.getNotNullCompanyDebt()+money);
         update(companyObj);
@@ -71,6 +71,7 @@ public class CompanyService extends BaseService<Company>{
         companyDebt.setUserId(userService.getCurrentUser());
         companyDebt.setDescription(description);
         companyDebt.setPointOfSale(pointOfSale);
+        companyDebt.setSecondPointOfSale(secondPointOfSale);
         companyDebt.setCurrentRemain(companyObj.getDebt());
         companyDebtService.add(companyDebt);
         return " 转单位至:" + company + " 签单人:" + lord;

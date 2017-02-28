@@ -158,7 +158,7 @@ public class CompanyController {
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
         /*判断一下是不是转单位*/
-        debtPayService.parseCurrency(currency, currencyAdd, pay, null,null,companyName+"单位结算转入",serialService.getCompanyPaySerial(),null);
+        debtPayService.parseCurrency(currency, currencyAdd, pay, null,null,companyName+"单位结算转入",serialService.getCompanyPaySerial(),null,null);
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
         /*生成结算报表
         * 1.单位名称

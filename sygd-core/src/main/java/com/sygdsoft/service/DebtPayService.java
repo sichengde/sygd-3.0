@@ -130,7 +130,7 @@ public class DebtPayService extends BaseService<DebtPay> {
      * @param roomList     离店结算时的房号
      * @param groupAccount 离店结算时的公付账号
      */
-    public String parseCurrency(String currency, String currencyAdd, Double money, List<String> roomList, String groupAccount, String description,String paySerial,String pointOfSale) throws Exception {
+    public String parseCurrency(String currency, String currencyAdd, Double money, List<String> roomList, String groupAccount, String description,String paySerial,String pointOfSale,String secondPointOfSale) throws Exception {
         String changeDebt = "";
         switch (currency) {
             case "转房客"://转房客，新建一条账务
@@ -183,7 +183,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 } catch (Exception e) {
                     throw new Exception("请输入签单单位和签单人");
                 }
-                changeDebt += companyService.companyAddDebt(company, lord, money,description,pointOfSale,paySerial);
+                changeDebt += companyService.companyAddDebt(company, lord, money,description,pointOfSale,secondPointOfSale,paySerial);
                 break;
             case "宴请"://转宴请
                 String name;

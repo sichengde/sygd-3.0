@@ -17,6 +17,7 @@ public class CompanyDebt extends BaseEntity{
     private String userId;//操作员号
     private String description;//备注，描述
     private String pointOfSale;//营业部门
+    private String secondPointOfSale;//营业部门
     @Transient
     public Double total;
     @Transient
@@ -125,5 +126,13 @@ public class CompanyDebt extends BaseEntity{
 
     public void setTmp(Boolean tmp) {
         this.tmp = tmp;
+    }
+
+    public String getSecondPointOfSale() {
+        return secondPointOfSale;
+    }
+
+    public void setSecondPointOfSale(String secondPointOfSale) {
+        this.secondPointOfSale = secondPointOfSale;
     }
 }
