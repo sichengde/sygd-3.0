@@ -1,4 +1,3 @@
-/*
 package com.sygdsoft.conf.dataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,6 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
-*/
 /**
  * 动态数据源注册<br/>
  * 启动动态数据源请在启动类中（如SpringBootSampleApplication）
@@ -30,8 +28,7 @@ import org.springframework.core.type.AnnotationMetadata;
  * @author 单红宇(365384722)
  * @myblog http://blog.csdn.net/catoop/
  * @create 2016年1月24日
- *//*
-
+ */
 public class DynamicDataSourceRegister
         implements ImportBeanDefinitionRegistrar, EnvironmentAware {
 
@@ -73,8 +70,7 @@ public class DynamicDataSourceRegister
         logger.info("Dynamic DataSource Registry");
     }
 
-    */
-/**
+    /**
      * 创建DataSource
      *
      * @param type
@@ -85,8 +81,7 @@ public class DynamicDataSourceRegister
      * @return
      * @author SHANHY
      * @create 2016年1月24日
-     *//*
-
+     */
     @SuppressWarnings("unchecked")
     public DataSource buildDataSource(Map<String, Object> dsMap) {
         try {
@@ -111,25 +106,21 @@ public class DynamicDataSourceRegister
         return null;
     }
 
-    */
-/**
+    /**
      * 加载多数据源配置
-     *//*
-
+     */
     @Override
     public void setEnvironment(Environment env) {
         initDefaultDataSource(env);
         initCustomDataSources(env);
     }
 
-    */
-/**
+    /**
      * 初始化主数据源
      *
      * @author SHANHY
      * @create 2016年1月24日
-     *//*
-
+     */
     private void initDefaultDataSource(Environment env) {
         // 读取主数据源
         RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(env, "spring.datasource.");
@@ -145,16 +136,14 @@ public class DynamicDataSourceRegister
         dataBinder(defaultDataSource, env);
     }
 
-    */
-/**
+    /**
      * 为DataSource绑定更多数据
      *
      * @param dataSource
      * @param env
      * @author SHANHY
      * @create  2016年1月25日
-     *//*
-
+     */
     private void dataBinder(DataSource dataSource, Environment env){
         RelaxedDataBinder dataBinder = new RelaxedDataBinder(dataSource);
         //dataBinder.setValidator(new LocalValidatorFactory().run(this.applicationContext));
@@ -176,14 +165,12 @@ public class DynamicDataSourceRegister
         dataBinder.bind(dataSourcePropertyValues);
     }
 
-    */
-/**
+    /**
      * 初始化更多数据源
      *
      * @author SHANHY
      * @create 2016年1月24日
-     *//*
-
+     */
     private void initCustomDataSources(Environment env) {
         // 读取配置文件获取更多数据源，也可以通过defaultDataSource读取数据库获取更多数据源
         RelaxedPropertyResolver propertyResolver = new RelaxedPropertyResolver(env, "custom.datasource.");
@@ -196,4 +183,4 @@ public class DynamicDataSourceRegister
         }
     }
 
-}*/
+}

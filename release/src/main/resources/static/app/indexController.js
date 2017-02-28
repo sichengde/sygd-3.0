@@ -3,11 +3,11 @@
  * 主页面控制器，初始化常用数据
  */
 
-App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webService', 'popUpService', 'util', 'dataService', 'host', 'messageService', function ($scope, $location, LoginService, webService, popUpService, util, dataService, host, messageService) {
+App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webService', 'popUpService', 'util', 'dataService', 'host', 'messageService', 'hostJquery','$cacheFactory', function ($scope, $location, LoginService, webService, popUpService, util, dataService, host, messageService, hostJquery,$cacheFactory) {
     /**
      * 加载就执行的部分，包括数据初始化，登录验证
      */
-    /*初始化基础模块1*/
+    /*初始化基础模块*/
     /*webService.post('getDataBaseName',{})
      .then(function (r) {
      webService.cloudPost('setDataBaseName',r.data)
@@ -190,7 +190,7 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
     };
     function logOut() {
         $.ajax({
-            url: '/userOut',
+            url: hostJquery+'/userOut',
             type: 'post',
             data: {user: LoginService.getUser(), module: LoginService.getModule()},
             success: function (data) {

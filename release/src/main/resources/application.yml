@@ -1,18 +1,35 @@
 server:
-    port: 8080
-    context-path:
+    port: 80
     session:
       timeout: 0
 logging:
     level:
-        com.sygdsoft: INFO
+        com.sygdsoft: DEBUG
     path: C:\report
 night:
     action: 0 0 0 * * *
     protect: 0 59 23 * * *
 hotel:
-    hotelId: shen_yang_su_yuan
+    hotelId: hotel
     ip: localhost
+custom:
+    datasource:
+        names: yujianyifenghua,base_hotel,hotel
+        yujianyifenghua:
+            url: jdbc:mysql://localhost:3306/yujianyifenghua?characterEncoding=utf8&useSSL=true
+            username: yujianyifenghua
+            password: q123
+            driver-class-name: com.mysql.jdbc.Driver
+        base_hotel:
+            url: jdbc:mysql://localhost:3306/base_hotel?characterEncoding=utf8&useSSL=true
+            username: base_hotel
+            password: q123
+            driver-class-name: com.mysql.jdbc.Driver
+        hotel:
+            url: jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true
+            username: hotel
+            password: q123
+            driver-class-name: com.mysql.jdbc.Driver
 spring:
     datasource:
         name: hotel

@@ -16,12 +16,12 @@ public class UserService extends BaseService<User>{
     HttpServletRequest request;
     public String getCurrentUser() throws Exception {
         String userId= (String) request.getSession().getAttribute("userId");
-        if(userId==null){
+        /*if(userId==null){
             throw new Exception("登录超时，需要重新登录");
         }else {
             return userId;
-        }
-        //return userId;
+        }*/
+        return userId;
     }
     public String getCurrentIpAddr(){
         return request.getRemoteAddr();

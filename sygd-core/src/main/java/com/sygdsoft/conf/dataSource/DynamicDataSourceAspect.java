@@ -28,41 +28,45 @@ public class DynamicDataSourceAspect {
     @Pointcut("execution(* com.sygdsoft.controller.*.*(..))")
     private void pointcut() {
     }
+
     private static final Logger logger = LoggerFactory.getLogger(DynamicDataSourceAspect.class);
-    /*@Autowired
-    HotelService hotelService;
 
-    @Before("@annotation(ds)")
-    public void changeDataSource(JoinPoint point, TargetDataSource ds) throws Throwable {
-        String dsId = ds.name();
-        if (!DynamicDataSourceContextHolder.containsDataSource(dsId)) {
-            logger.error("数据源[{}]不存在，使用默认数据源 > {}", ds.name(), point.getSignature());
-        } else {
-            logger.debug("Use DataSource : {} > {}", ds.name(), point.getSignature());
-            DynamicDataSourceContextHolder.setDataSourceType(ds.name());
-        }
-    }
+    /*
+     @Autowired
+     HotelService hotelService;
 
-    @Before("pointcut()")
-    public void changeDataSource(JoinPoint point) throws Throwable {
-        String dsId = hotelService.getCurrentHotel();
-        if (!DynamicDataSourceContextHolder.containsDataSource(dsId)) {
-            logger.error("数据源[{}]不存在，使用默认数据源 > {}", dsId, point.getSignature());
-        } else {
-            logger.debug("Use DataSource : {} > {}", dsId, point.getSignature());
-            DynamicDataSourceContextHolder.setDataSourceType(dsId);
-        }
-    }
+     @Before("@annotation(ds)")
+     public void changeDataSource(JoinPoint point, TargetDataSource ds) throws Throwable {
+         String dsId = ds.name();
+         if (!DynamicDataSourceContextHolder.containsDataSource(dsId)) {
+             logger.error("数据源[{}]不存在，使用默认数据源 > {}", ds.name(), point.getSignature());
+         } else {
+             logger.debug("Use DataSource : {} > {}", ds.name(), point.getSignature());
+             DynamicDataSourceContextHolder.setDataSourceType(ds.name());
+         }
+     }
 
-    @After("pointcut()")
-    public void restoreDataSource(JoinPoint point) {
-        String dsId = hotelService.getCurrentHotel();
-        logger.debug("Revert DataSource : {} > {}", dsId, point.getSignature());
-        DynamicDataSourceContextHolder.clearDataSourceType();
-    }*/
-   @AfterThrowing(pointcut = "pointcut()", throwing = "e")
-   public void restoreDataSource(Exception e) throws Exception{
-       Exception exception;
+     @Before("pointcut()")
+     public void changeDataSource(JoinPoint point) throws Throwable {
+         String dsId = hotelService.getCurrentHotel();
+         if (!DynamicDataSourceContextHolder.containsDataSource(dsId)) {
+             logger.error("数据源[{}]不存在，使用默认数据源 > {}", dsId, point.getSignature());
+         } else {
+             logger.debug("Use DataSource : {} > {}", dsId, point.getSignature());
+             DynamicDataSourceContextHolder.setDataSourceType(dsId);
+         }
+     }
+
+     @After("pointcut()")
+     public void restoreDataSource(JoinPoint point) {
+         String dsId = hotelService.getCurrentHotel();
+         logger.debug("Revert DataSource : {} > {}", dsId, point.getSignature());
+         DynamicDataSourceContextHolder.clearDataSourceType();
+     }*/
+    @AfterThrowing(pointcut = "pointcut()", throwing = "e")
+    public void restoreDataSource(Exception e) throws Exception {
+        Exception exception;
+        System.out.println("current datasource :"+DynamicDataSourceContextHolder.getDataSourceType());
        /*尝试输出mybatis异常*/
         try {
             String message = ((InvocationTargetException) e).getTargetException().getMessage();

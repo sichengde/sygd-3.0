@@ -67,11 +67,11 @@ public class ModuleService {
      * 获取全部Module
      */
     public Module[] getAllModule() {
-        //return moduleUltimate;
-        if (registerService.getPass() == 0) {//0是通过
+        return moduleUltimate;
+/*        if (registerService.getPass() == 0) {//0是通过
             return moduleUltimate;
         }else {
             return null;
-        }
+        }*/
     }
 }

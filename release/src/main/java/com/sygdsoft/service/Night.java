@@ -1,10 +1,6 @@
 package com.sygdsoft.service;
 
-import com.sygdsoft.conf.CloudServiceConfig;
-import com.sygdsoft.controller.NightController;
-import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.CheckInMapper;
-import com.sygdsoft.model.*;
 import com.sygdsoft.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +10,7 @@ import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.messaging.simp.broker.BrokerAvailabilityEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -85,7 +79,9 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         map.put("hotelId",hotelService.getHotelId());
         hotelService.post(CloudServiceConfig.cloudAddress+"/manualNightCloud",map);*/
         userLogService.addUserLogWithoutUserIp("自动夜审",userLogService.reception,userLogService.night);
+        this.messagingTemplate.convertAndSend("/beginNight", true);
         nightService.nightActionLogic();
+        this.messagingTemplate.convertAndSend("/beginNight", false);
     }
 
     /**
