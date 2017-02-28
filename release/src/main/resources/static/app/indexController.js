@@ -7,7 +7,7 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
     /**
      * 加载就执行的部分，包括数据初始化，登录验证
      */
-    /*初始化基础模块*/
+    /*初始化基础模块1*/
     /*webService.post('getDataBaseName',{})
      .then(function (r) {
      webService.cloudPost('setDataBaseName',r.data)
