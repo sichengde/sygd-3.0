@@ -12,53 +12,71 @@ App.directive('szPay', function () {
     return {
         restrict: 'E',
         controller: ['$scope', 'dataService', 'util', 'roomFilter', 'messageService', 'dateFilter', 'popUpService', function ($scope, dataService, util, roomFilter, messageService, dateFilter, popUpService) {
-            dataService.initData(['refreshCurrencyList', 'refreshCompanyList', 'refreshVipList', 'refreshRoomList', 'refreshCompanyLordList', 'refreshFreemanList'], [{condition: 'check_out=1'}, {condition: 'if_debt=\'y\''}, {condition: 'state=\'正常\''}])
+            dataService.initData(['refreshCurrencyList',   'refreshCompanyLordList', 'refreshFreemanList'], [{condition: 'check_out=1'}])
                 .then(function () {
                     /*可供选择的币种*/
                     if (!$scope.currencyList) {
                         $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');
                     }
                     $scope.currencyPayList[0].currency = $scope.currencyList[0];
-                    /*初始化可供选择的单位结账数组*/
-                    $scope.companyList = util.objectListToString(dataService.getCompanyList(), 'name');
-                    $scope.companyLordList = dataService.getCompanyLordList();
-                    /*宴请数组*/
-                    $scope.freemanList = util.objectListToString(dataService.getFreemanList(), 'freeman');
-                    /*转房客时需要用的到房号，离店结算的话考虑不能有本房间*/
-                    var roomList = dataService.getRoomList();
-                    if ($scope.excludeRoom) {
-                        util.deleteFromArray(roomList, 'roomId', $scope.excludeRoom);
-                    }
-                    $scope.roomList = roomFilter(roomList, ['散客房', '团队房'], '全部');
                 });
+            /*更改币种后根据币种初始化单位，客房信息*/
+            $scope.currencyChange = function (currencyPay) {
+                currencyPay.currencyAdd = null;
+                currencyPay.currencyAdd1 = null;
+                currencyPay.currencyAdd2 = null;
+                if(currencyPay.currency=='转单位'){
+                    dataService.refreshCompanyList({condition: 'if_debt=\'y\''})
+                        .then(function (r) {
+                            /*初始化可供选择的单位结账数组*/
+                            $scope.companyList = dataService.getCompanyList();
+                            $scope.companyLordList = dataService.getCompanyLordList();
+                            /*宴请数组*/
+                            $scope.freemanList = util.objectListToString(dataService.getFreemanList(), 'freeman');
+                        })
+                }
+                if(currencyPay.currency=='转房客'){
+                    dataService.refreshRoomList()
+                        .then(function (r) {
+                            /*转房客时需要用的到房号，离店结算的话考虑不能有本房间*/
+                            var roomList = dataService.getRoomList();
+                            if ($scope.excludeRoom) {
+                                util.deleteFromArray(roomList, 'roomId', $scope.excludeRoom);
+                            }
+                            $scope.roomList = roomFilter(roomList, ['散客房', '团队房'], '全部');
+                        })
+                }
+            };
             /*读会员卡*/
             $scope.vipScale = dataService.getOtherParamMapValue('积分比率');//先确定好积分比率
             $scope.readCard = function (r) {
-                var vip = util.getValueByField(dataService.getVipList(), 'idNumber', r.idNumber);
-                /*判断一下有效日期*/
-                if (vip) {
-                    dataService.refreshTimeNow()
-                        .then(function (time) {
-                            if (vip.remainTime < time && vip.remainTime) {//过期不能刷
-                                messageService.setMessage({
-                                    type: 'error',
-                                    content: '有效日期为:' + dateFilter(vip.remainTime, 'yyyy-MM-dd') + ',当前时间:' + dateFilter(time, 'yyyy-MM-dd')
-                                });
-                                popUpService.pop('message');
-                            } else if (vip.remain < r.money && $scope.vipScale * vip.score < r.money) {//余额不足不能刷
-                                messageService.setMessage({
-                                    type: 'error',
-                                    content: '余额为:' + vip.remain + ',积分可抵:' + $scope.vipScale * vip.score + ',当前消费:' + r.money
-                                });
-                                popUpService.pop('message');
-                            } else {
-                                r.memberInfo = vip;
-                                r.currencyAdd1 = r.memberInfo.vipNumber;
-                                r.currencyAdd = r.currencyAdd1 + ' 余额';
-                                r.currencyAdd2 = '余额';
-                            }
-                        })
-                }
+                dataService.refreshVipList({condition: 'state=\'正常\' and id_number=' + util.wrapWithBrackets(r.idNumber)})
+                    .then(function (vipList) {
+                        var vip = vipList[0];
+                        if (vip) {
+                            dataService.refreshTimeNow()
+                                .then(function (time) {
+                                    if (vip.remainTime < time && vip.remainTime) {//过期不能刷
+                                        messageService.setMessage({
+                                            type: 'error',
+                                            content: '有效日期为:' + dateFilter(vip.remainTime, 'yyyy-MM-dd') + ',当前时间:' + dateFilter(time, 'yyyy-MM-dd')
+                                        });
+                                        popUpService.pop('message');
+                                    } else if (vip.remain < r.money && $scope.vipScale * vip.score < r.money) {//余额不足不能刷
+                                        messageService.setMessage({
+                                            type: 'error',
+                                            content: '余额为:' + vip.remain + ',积分可抵:' + $scope.vipScale * vip.score + ',当前消费:' + r.money
+                                        });
+                                        popUpService.pop('message');
+                                    } else {
+                                        r.memberInfo = vip;
+                                        r.currencyAdd1 = r.memberInfo.vipNumber;
+                                        r.currencyAdd = r.currencyAdd1 + ' 余额';
+                                        r.currencyAdd2 = '余额';
+                                    }
+                                })
+                        }
+                    });
             };
             /*选择会员积分还是余额*/
             $scope.vipPayCategory = function (r) {
@@ -66,11 +84,11 @@ App.directive('szPay', function () {
             };
             /*选择房间之后显示余额*/
             $scope.changeChooseRoom = function (r) {
-                var room=util.getValueByField($scope.roomList,'roomId',r.currencyAdd);
+                var room = util.getValueByField($scope.roomList, 'roomId', r.currencyAdd);
                 if (room.checkInGroup) {
-                    r.chooseRoomRemain = room.checkInGroup.deposit-room.checkInGroup.consume;
+                    r.chooseRoomRemain = room.checkInGroup.deposit - room.checkInGroup.consume;
                 } else {
-                    r.chooseRoomRemain = room.checkIn.deposit-room.checkIn.consume;
+                    r.chooseRoomRemain = room.checkIn.deposit - room.checkIn.consume;
                 }
             };
             /*选择单位之后重新筛选可签单人*/

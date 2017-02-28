@@ -5,7 +5,7 @@
             支付方式：
         </td>
         <td style="width: 130px; text-align: left">
-            <select ng-options="x for x in currencyList" ng-model="r.currency" ng-change="r.currencyAdd=null;r.currencyAdd1=null;r.currencyAdd2=null;">
+            <select ng-options="x for x in currencyList" ng-model="r.currency" ng-change="currencyChange(r)">
             </select>
         </td>
         <td colspan="4" class="xtc" style="width: 690px">
@@ -33,7 +33,7 @@
                 <span class="lan2">当前余额：</span>{{r.chooseRoomRemain | currency:'￥'}}
             </p>
             <p class="fl2" ng-show="r.currency=='转单位'">
-                <span class="lan2">单位名称：</span><input type="text" ng-model="r.currencyAdd1" sz-select="companyList" ng-change="changeCompany(r)" style="width: 130px; float: none"></p>
+                <span class="lan2">单位名称：</span><input type="text" ng-model="r.currencyAdd1" sz-field="'name'" sz-select="companyList" sz-alias="alias" ng-change="changeCompany(r)" style="width: 130px; float: none"></p>
             <p class="fl2" ng-show="r.currency=='转单位'">
                 <span class="lan2">签单人：</span><input type="text" ng-model="r.currencyAdd2" sz-select="r.companyLordListShow" ng-change="changeCompanyLord(r)" style="width: 80px; float: none">
             </p>

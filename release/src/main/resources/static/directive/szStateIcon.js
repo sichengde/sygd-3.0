@@ -60,10 +60,11 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
         if (room.checkIn) {
             var reachTime = dateFilter(room.checkIn.reachTime, 'yyyy-MM-dd HH:mm:ss');
             out2 += '<li><b>抵店日期：</b>' + reachTime + '</li>';
-        }
-        if (room.checkIn) {
             var leaveTime = dateFilter(room.checkIn.leaveTime, 'yyyy-MM-dd HH:mm:ss');
             out2 += '<li><b>预离日期：</b>' + leaveTime + '</li>';
+            if(room.checkIn.remark){
+                out2 += '<li><b>备注：</b>' + room.checkIn.remark + '</li>';
+            }
         }
         if (room.checkInGroup) {
             out2 += '<li><b>团名：</b>' + room.checkInGroup.name + '</li>';

@@ -125,6 +125,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             }
         }
         $scope.checkInRoomIdList = util.objectListToString($scope.checkInList, 'roomId');
+        $scope.checkInBackUp=angular.copy($scope.checkInList);
     };
     /*预定转入住*/
     $scope.bookIn = function (book) {

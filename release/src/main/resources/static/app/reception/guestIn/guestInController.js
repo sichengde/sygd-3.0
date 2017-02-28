@@ -264,6 +264,8 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                         popUpService.close('guestIn');
                         /*本地记录选择的客源*/
                         localStorage.setItem('guestInGuestSourceIndex', $scope.guestSourceList.indexOf($scope.guestSource));
+                    },function () {
+                        popUpService.close('guestIn');
                     })
             });
     };
