@@ -1,13 +1,16 @@
+/*
 package com.sygdsoft.conf.dataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
+*/
 /**
  * 动态数据源
  *
  * @author   单红宇(365384722)
  * @myblog  http://blog.csdn.net/catoop/
  * @create    2016年1月22日
- */
+ *//*
+
 public class DynamicDataSource extends AbstractRoutingDataSource {
 
     @Override
@@ -15,4 +18,4 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         return DynamicDataSourceContextHolder.getDataSourceType();
     }
 
-}
+}*/

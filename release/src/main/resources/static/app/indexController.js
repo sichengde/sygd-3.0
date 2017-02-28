@@ -3,7 +3,7 @@
  * 主页面控制器，初始化常用数据
  */
 
-App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webService', 'popUpService', 'util', 'dataService', 'host', 'messageService', 'hostJquery','$cacheFactory', function ($scope, $location, LoginService, webService, popUpService, util, dataService, host, messageService, hostJquery,$cacheFactory) {
+App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webService', 'popUpService', 'util', 'dataService', 'host', 'messageService', function ($scope, $location, LoginService, webService, popUpService, util, dataService, host, messageService) {
     /**
      * 加载就执行的部分，包括数据初始化，登录验证
      */
@@ -190,7 +190,7 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
     };
     function logOut() {
         $.ajax({
-            url: hostJquery+'/userOut',
+            url: '/userOut',
             type: 'post',
             data: {user: LoginService.getUser(), module: LoginService.getModule()},
             success: function (data) {
