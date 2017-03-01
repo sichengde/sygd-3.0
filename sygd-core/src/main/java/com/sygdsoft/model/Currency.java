@@ -20,6 +20,10 @@ public class Currency extends BaseEntity{
         return NullJudgement.nullToZero(score);
     }
 
+    public boolean getNotNullPayTotal() {
+        return NullJudgement.nullToZero(score);
+    }
+
     public Currency(String currency) {
         this.currency = currency;
     }

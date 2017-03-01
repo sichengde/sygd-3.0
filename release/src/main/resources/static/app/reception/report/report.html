@@ -35,26 +35,6 @@
                 </div>
             </div>
         </sz-pane>
-        <sz-pane title="客房经营分析">
-            <div ng-show="showRoomParseReport" ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>
-            <div class="tableDiv">
-                <ul>
-                    <li>
-                        日期：
-                        <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
-                    </li>
-                    <li>
-                        <div class="btn-group">
-                            <label class="btn btn-primary" ng-model="range" uib-btn-radio="'月'" uncheckable>月</label>
-                            <label class="btn btn-primary" ng-model="range" uib-btn-radio="'季'" uncheckable>季</label>
-                            <label class="btn btn-primary" ng-model="range" uib-btn-radio="'年'" uncheckable>年</label>
-                        </div>
-                    </li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(beginTime,range)" value="预览"></li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReportExport()" value="导出xls"></li>
-                </ul>
-            </div>
-        </sz-pane>
         <sz-pane title="借贷平衡表">
             <div class="tableDiv">
                 <ul>
@@ -115,59 +95,6 @@
                 </ul>
             </div>
         </sz-pane>
-        <sz-pane title="单位销售员汇总">
-            <div class="tableDiv">
-                <ul>
-                    <li>销售员：
-                        <select style="width: 105px;" class="tableSelect" ng-model="saleMan" ng-options="x for x in saleManList"></select>
-                    </li>
-                    </li>
-                    <li>
-                        时间：
-                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
-                        <div class="timeSfm" style="float: right">
-                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
-                                            show-seconds="true"></uib-timepicker>
-                        </div>
-                    </li>
-                    <li style="margin-left: 0px;">至</li>
-                    <li>
-                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
-                        <div class="timeSfm" style="float: right">
-                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
-                                            show-seconds="true"></uib-timepicker>
-                        </div>
-                    </li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="saleManReport(saleMan,beginTime,endTime)" value="预览"></li>
-                </ul>
-                <sz-table ng-if="saleManReportList" fields="saleManReportFields" items="saleManReportList" button="add update delete" items-per-page="20" print="单位销售员挂账汇总" query-message="queryMessageSaleManReport"></sz-table>
-            </div>
-        </sz-pane>
-        <sz-pane title="单位欠款分析">
-            <div class="tableDiv">
-                <ul>
-                    <li>
-                        时间：
-                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
-                        <div class="timeSfm" style="float: right">
-                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
-                                            show-seconds="true"></uib-timepicker>
-                        </div>
-                    </li>
-                    <li style="margin-left: 0px;">至</li>
-                    <li>
-                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
-                        <div class="timeSfm" style="float: right">
-                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
-                                            show-seconds="true"></uib-timepicker>
-                        </div>
-                    </li>
-                    <li>说明：分单的单位账优先按照房费统计</li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyDebtReport(beginTime,endTime)" value="预览"></li>
-                </ul>
-                <sz-table ng-if="companyDebtReportList" fields="companyDebtReportFields" items="companyDebtReportList" button="add update delete" items-per-page="20" print="单位欠款分析" query-message="queryMessageCompanyDebtReport" item-click="companyDebtReportItemClick(item,id)"></sz-table>
-            </div>
-        </sz-pane>
         <div class="iframeTs">
             <iframe width="1000" height="800" name="iframeReport" id="iframeReport"></iframe>
         </div>
@@ -178,4 +105,3 @@
 <sz-pop-up name="reception/debtPay/debtPay.html"></sz-pop-up>
 <sz-pop-up name="restaurant/deskDetailHistory/deskDetailHistory.html"></sz-pop-up>
 <sz-pop-up name="restaurant/deskPay/deskPay.html"></sz-pop-up>
-<sz-pop-up name="reception/companyDebt/popCompanyDebt/popCompanyDebt.html"></sz-pop-up>

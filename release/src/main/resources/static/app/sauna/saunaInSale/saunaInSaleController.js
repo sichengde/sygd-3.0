@@ -1,7 +1,7 @@
 App.controller('saunaInSaleController',['$scope','dataService','util','popUpService','webService','messageService',function ($scope,dataService,util,popUpService,webService,messageService) {
     var post=popUpService.getParam();
     $scope.saunaInSaleList=post.saunaInRowList;
-    $scope.backUp=angular.copy($scope.saunaInSaleList);
+    var backUp=angular.copy($scope.saunaInSaleList);
     $scope.saunaInSaleSelectList=[];
     dataService.refreshInCategoryList()
         .then(function (r) {
@@ -16,6 +16,9 @@ App.controller('saunaInSaleController',['$scope','dataService','util','popUpServ
         {name:'手牌号',id:'ringNumber',static:'true'},
         {name:'浴资',id:'menu',selectId:'0'}
     ];
+    $scope.backUp=function () {
+        $scope.saunaInSaleList=backUp;
+    }
     $scope.saunaIn=function () {
         post.inCategory=$scope.inCategory;
         webService.post('saunaIn',post)

@@ -64,6 +64,7 @@ public class DailyReportController {
         Integer field = 1;
         Double[] totalConsumeMoneyPerModule = new Double[pointOfSaleList.size()];
         Double[] totalCurrencyMoneyPerModule = new Double[pointOfSaleList.size()];
+        Double[] totalCurrencyMoneyPerModuleRealMoney = new Double[pointOfSaleList.size()];//参与统计结算款
         Double[] totalDiscountPerModule = new Double[pointOfSaleList.size()];
         List<String> paramList=new ArrayList<>();
         Integer totalField=pointOfSaleList.size()+2;//用于生成日报表实体类对象，第一列名称，最后一列合计，所以要加两列
@@ -73,6 +74,7 @@ public class DailyReportController {
             paramList.add(firstPointOfSale);
             totalConsumeMoneyPerModule[field - 1] = 0.0;
             totalCurrencyMoneyPerModule[field - 1] = 0.0;
+            totalCurrencyMoneyPerModuleRealMoney[field - 1] = 0.0;
             totalDiscountPerModule[field - 1] = 0.0;
             /*每个销售点自定义的二级销售部门*/
             for (String item : pointOfSale.getSecondPointOfSale().split(" ")) {
@@ -138,6 +140,11 @@ public class DailyReportController {
                     old.setFieldN(field + 1, String.valueOf(money));
                 }
                 totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
+                if(currency.getNotNullPayTotal()) {
+                    totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
+                }else {
+                    totalCurrencyMoneyPerModuleRealMoney[field - 1]=0.0;
+                }
             }
             /*每个销售点的折扣*/
             switch (module) {
@@ -186,6 +193,14 @@ public class DailyReportController {
             fieldTemplateTotalCurrency.setFieldN(i + 2, String.valueOf(aDouble));
         }
         templateList.add(fieldTemplateTotalCurrency);
+        /*参与统计币种合计*/
+        FieldTemplate fieldTemplateTotalCurrencyRealMoney = new FieldTemplate();
+        fieldTemplateTotalCurrencyRealMoney.setField1("参与统计");
+        for (int i = 0; i < totalCurrencyMoneyPerModuleRealMoney.length; i++) {
+            Double aDouble = totalCurrencyMoneyPerModuleRealMoney[i];
+            fieldTemplateTotalCurrencyRealMoney.setFieldN(i + 2, String.valueOf(aDouble));
+        }
+        templateList.add(fieldTemplateTotalCurrencyRealMoney);
         /*为后两列(一列)列头赋值*/
         paramList.add("合计");
         /*统计右侧合计*/

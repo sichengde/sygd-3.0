@@ -6,8 +6,8 @@ App.directive('szHoverRoom',['$interval' , function ($interval) {
         restrict:'A',
         link:function(scope,element){
             var hover = element.children(".hoverDiv");
-            var roomStateTop = element.offset().top;
             element.bind('click',function () {
+                var roomStateTop = element.offset().top;
                 var bodyWidth = document.body.offsetWidth;
                 var roomStateLeft = element.offset().left;
                 var right = bodyWidth-roomStateLeft;

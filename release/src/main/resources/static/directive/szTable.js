@@ -26,7 +26,7 @@
  * itemChange:修改之后调用的外部方法
  * remark:外部生成的备注，描述一些总结，例如菜品统计表中统计一下各个品种的总和
  * initState:初始状态（增加，删除，修改）
- * backUp:在外部直接生成数据时，并且可以进一步增删改查，用这个属性对table中的备份数据赋值
+ * backUp:在外部直接生成数据时，并且可以进一步增删改查，用这个属性对table中的备份数据赋值(后改为方法，在外部进行备份，标准用法在团队开房里)
  * ---------------------------------------------------------
  * field中内容
  * name:每列的标题
@@ -91,7 +91,7 @@ App.directive('szTable', ['$filter', function ($filter) {
             itemChange: '&',
             remark: '=?',
             initState: '@',
-            backUp: '=?'
+            backUp: '&'
         },
         controller: ['$scope', 'webService', 'util', 'dataService', '$parse', '$attrs', 'messageService', 'popUpService', 'nullToStringFilter', 'dateFilter', function ($scope, webService, util, dataService, $parse, $attrs, messageService, popUpService, nullToStringFilter, dateFilter) {
             var backUpItem;//备用数据，用于比较修改了哪些数据
@@ -552,7 +552,11 @@ App.directive('szTable', ['$filter', function ($filter) {
                 $scope.wrongMsg = null;
                 deleteList = [];
                 updateList = [];
-                $scope.items = angular.copy(backUpItem);
+                if(!$scope.backUp) {
+                    $scope.items = angular.copy(backUpItem);
+                }else {
+                    $scope.backUp();
+                }
                 //$scope.refreshAndSearch();
             };
             $scope.add = function () {
@@ -668,9 +672,9 @@ App.directive('szTable', ['$filter', function ($filter) {
                 }
                 search();
             });
-            $scope.$watch('backUp', function (value) {
+            /*$scope.$watch('backUp', function (value) {
                 backUpItem = value;
-            });
+            });*/
             $scope.$watch('searchCondition', function (value) {
                 if (value) {
                     $scope.refreshAndSearch();

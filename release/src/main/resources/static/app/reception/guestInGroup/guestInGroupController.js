@@ -5,6 +5,7 @@
 App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'LoginService', 'protocolService', 'messageService', 'popUpService', 'roomFilter', 'doorInterfaceService', 'host', '$filter', 'dateFilter', 'readIdCardService', function ($scope, util, webService, dataService, receptionService, protocolFilter, LoginService, protocolService, messageService, popUpService, roomFilter, doorInterfaceService, host, $filter, dateFilter, readIdCardService) {
     /*用于提交的对象*/
     var guestInGroup = {};
+    var checkInBackUp;//备份
     $scope.checkInList = [];
     $scope.checkInGuestList = [];
     $scope.checkInGroup = {};
@@ -125,7 +126,10 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             }
         }
         $scope.checkInRoomIdList = util.objectListToString($scope.checkInList, 'roomId');
-        $scope.checkInBackUp=angular.copy($scope.checkInList);
+        checkInBackUp=angular.copy($scope.checkInList);
+    };
+    $scope.checkInBackUp=function () {
+        $scope.checkInList=checkInBackUp;
     };
     /*预定转入住*/
     $scope.bookIn = function (book) {

@@ -1,6 +1,7 @@
 App.controller('storageManagerController', ['$scope', 'dataService', 'util', 'webService', 'messageService', 'popUpService', function ($scope, dataService, util, webService, messageService, popUpService) {
     $scope.storageIn = {};
     $scope.storageOut = {};
+    var storageOutDetailBackUp;
     dataService.initData(['refreshHouseList', 'refreshApproverList', 'refreshStorageInDeptList', 'refreshStorageOutDeptList', 'refreshStorageInCategoryList', 'refreshStorageOutCategoryList'])
         .then(function () {
             $scope.storageInAndOutDetailSelectList[0] = util.objectListToString(dataService.getHouseList(), 'houseName');
@@ -172,7 +173,10 @@ App.controller('storageManagerController', ['$scope', 'dataService', 'util', 'we
                 $scope.storageOutDetailList.push(obj);
             }
         }
-        $scope.storageOutDetailBackUp=angular.copy($scope.storageOutDetailList);
+        storageOutDetailBackUp=angular.copy($scope.storageOutDetailList);
+    }
+    $scope.storageOutDetailBackUp=function () {
+        $scope.storageOutDetailList=storageOutDetailBackUp;
     }
     /*统计各个销售点销售的品种，然后出库*/
     $scope.autoOut=function () {

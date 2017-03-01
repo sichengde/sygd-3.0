@@ -1,6 +1,9 @@
 App.controller('storageOutSpecifyController', ['$scope', 'popUpService','messageService', function ($scope, popUpService,messageService) {
     $scope.storageInDetailList = popUpService.getParam();
-    $scope.backUp = angular.copy(popUpService.getParam());
+    var backUp = angular.copy(popUpService.getParam());
+    $scope.backUp=function () {
+        $scope.storageInDetailList=backUp;
+    }
     $scope.storageInDetailFields = [
         {name: '仓库', id: 'house', selectId: '0', itemChange: true, notNull: 'true', static: 'true'},
         {name: '货物', id: 'cargo', selectId: '1', itemChange: true, freeSelect: 'true', notNull: 'true', static: 'true'},

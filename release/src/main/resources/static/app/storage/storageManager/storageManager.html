@@ -15,7 +15,7 @@
                     <li class="sxli2"><select ng-model="storageOut.category" ng-options="x for x in storageOutCategory" style="width: 120px;"></select></li>
                 </ul>
             </div>
-            <sz-table fields="storageOutDetailFields" items="storageOutDetailList" select-list="storageInAndOutDetailSelectList" item-change="storageOutDetailItemChange(item,field)" back-up="storageOutDetailBackUp"></sz-table>
+            <sz-table fields="storageOutDetailFields" items="storageOutDetailList" select-list="storageInAndOutDetailSelectList" item-change="storageOutDetailItemChange(item,field)" back-up="storageOutDetailBackUp()"></sz-table>
             <div class="button" style="border: none; margin: 0px;">
                 <div class="fr">
                     <div class="tsHoverDiv">

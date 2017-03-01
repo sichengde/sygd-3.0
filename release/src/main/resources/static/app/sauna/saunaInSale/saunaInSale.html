@@ -2,7 +2,7 @@
     <dl class="tctit"><h1>折扣开牌</h1></dl>
     <div class="tcDiv">
         <select ng-options="x for x in inCategoryList" ng-model="inCategory"></select>
-        <sz-table fields="saunaInSaleFields" items="saunaInSaleList" button="add delete" select-list="saunaInSaleSelectList" init-state="update" back-up="backUp"></sz-table>
+        <sz-table fields="saunaInSaleFields" items="saunaInSaleList" button="add delete" select-list="saunaInSaleSelectList" init-state="update" back-up="backUp()"></sz-table>
         <div class="button"><button ng-click="saunaIn()">确定</button></div>
     </div>
     <div class="closeBox" ng-click="closePop('saunaInSale',true)">+</div>
