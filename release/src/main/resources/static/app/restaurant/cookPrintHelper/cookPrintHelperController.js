@@ -1,35 +1,55 @@
-App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', function ($scope, dataService, util) {
+App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util','dateFilter', function ($scope, dataService, util,dateFilter) {
     var rowData = [];
     $scope.refresh = function () {
-        dataService.refreshDeskInList({orderByList: ['pointOfSale']})
-            .then(function (deskInList) {
-                //TODO:究竟怎么构建分类（厨打划单）
-                /*var lastPOS='';
-                 var lastDesk='';
-                 var lastCookRoom='';
-                 var nowPointOfSale;
-                 var nowDesk;
-                 var nowCookRoom;
-                 for (var i = 0; i < deskInList.length; i++) {
-                 var deskIn = deskInList[i];
-                 if(lastPOS!=deskIn.pointOfSale){//新的营业部门
-                 nowPointOfSale={
-                 group:deskIn.pointOfSale,
-                 children:[]
-                 };
-                 rowData.push(nowPointOfSale)
-                 }
-                 nowDesk={
-                 group:deskIn.desk,
-                 children:[]
-                 };
-                 nowPointOfSale.children.push(nowDesk);
-                 for (var j = 0; j < deskIn.deskDetailList.length; j++) {
-                 var deskdetail = deskIn.deskDetailList[j];
-
-                 }
-                 }*/
-                var a = [
+        dataService.initData(['refreshPointOfSaleList','deskInGetWithDetail'],[{condition:'module=\'餐饮\''},{orderByList: ['pointOfSale']}])
+            .then(function () {
+                var pointOfSaleList=dataService.getPointOfSale();
+                var deskInList=dataService.getDeskInList();
+                for (var i = 0; i < pointOfSaleList.length; i++) {
+                    var pointOfSale = pointOfSaleList[i];
+                    var pointOfSaleLeaf={
+                        group: pointOfSale.firstPointOfSale,
+                        children:[]
+                    };
+                    rowData.push(pointOfSaleLeaf);
+                    for (var j = 0; j < deskInList.length; j++) {
+                        var deskIn = deskInList[j];
+                        if(deskIn.pointOfSale!=pointOfSale.firstPointOfSale){
+                            continue;
+                        }
+                        var deskInLeaf={
+                            group:deskIn.desk,
+                            children:[]
+                        };
+                        pointOfSaleLeaf.children.push(deskInLeaf);
+                        var lastCookRoom;
+                        var cookRoomLeaf;
+                        for (var k = 0; k < deskIn.deskDetailList.length; k++) {
+                            var deskDetail = deskIn.deskDetailList[k];
+                            if(!deskDetail.cookRoom){
+                                continue;
+                            }
+                            if(deskDetail.cookRoom!=lastCookRoom) {
+                                cookRoomLeaf={
+                                    group:deskDetail.cookRoom,
+                                    children:[]
+                                };
+                                deskInLeaf.children.push(cookRoomLeaf);
+                                lastCookRoom=deskDetail.cookRoom;
+                            }
+                            cookRoomLeaf.children.push({
+                                name:deskDetail.foodName,
+                                num:deskDetail.num,
+                                doTime:deskDetail.doTime,
+                                remark:deskDetail.remark,
+                                cooked:deskDetail.cooked
+                            })
+                        }
+                    }
+                }
+                $scope.gridOptions.api.setRowData(rowData);
+            });
+                /*var a = [
                     {
                         group: '中餐厅',
                         participants: [
@@ -118,14 +138,15 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', fu
                         ]
                     }
                 ];
-                $scope.gridOptions.api.setRowData(a)
-            });
+                $scope.gridOptions.api.setRowData(a)*/
     };
     $scope.refresh();
     var columnDefs = [
         {headerName: "索引", cellRenderer: 'group'},
         {headerName: "名称", field: "name"},
         {headerName: "数量", field: "num"},
+        {headerName: "备注", field: "remark"},
+        {headerName: "下菜时间", field: "doTime",cellRenderer: timeCellRender},
         {
             headerName: "已做", field: "cooked",  cellRenderer: innerCellRenderer
         }
@@ -134,6 +155,7 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', fu
         columnDefs: columnDefs,
         enableColResize: true,
         getNodeChildDetails: getNodeChildDetails,
+        getContextMenuItems: getContextMenuItems,
         onGridReady: function (params) {
             params.api.sizeColumnsToFit();
         }
@@ -144,7 +166,7 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', fu
             return {
                 group: true,
                 // provide ag-Grid with the children of this group
-                children: rowItem.participants,
+                children: rowItem.children,
                 // this is not used, however it is available to the cellRenderers,
                 // if you provide a custom cellRenderer, you might use it. it's more
                 // relavent if you are doing multi levels of groupings, not just one
@@ -158,9 +180,37 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', fu
         }
     }
 
+    function getContextMenuItems(params) {
+        if (!params.node.group) {
+            var result = [
+                { // custom item
+                    name: '设为已做 ',
+                    action: function () {window.alert('Alerting about ' + params.value); }
+                },
+                { // custom item
+                    name: '设为未做',
+                }
+            ];
+
+            return result;
+        }
+    }
+
     function innerCellRenderer(params) {
         if (!params.node.group) {
-            return '<input type="checkbox" /> '
+            if(params.value) {
+                return '是';
+            }else {
+                return '否';
+            }
+        }else {
+            return '';
+        }
+    }
+
+    function timeCellRender(params) {
+        if (!params.node.group) {
+            return dateFilter(params.value,'yyyy-MM-dd HH:mm:ss');
         }else {
             return '';
         }

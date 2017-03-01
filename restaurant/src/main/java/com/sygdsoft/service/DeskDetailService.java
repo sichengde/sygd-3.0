@@ -48,7 +48,7 @@ public class DeskDetailService extends BaseService<DeskDetail> {
     }
 
     /**
-     * 通过桌号和销售点获得该桌账务列表，根据菜品名排序，不进行聚合，主要用于数据计表
+     * 通过桌号和销售点获得该桌账务列表，不进行聚合，主要用于数据计表
      */
     /*考虑营业部门*/
     public List<DeskDetail> getListByDesk(String deskName, String pointOfSale) throws Exception {
@@ -63,6 +63,13 @@ public class DeskDetailService extends BaseService<DeskDetail> {
         DeskDetail deskDetailQuery=new DeskDetail();
         deskDetailQuery.setDesk(deskName);
         return deskDetailMapper.select(deskDetailQuery);
+    }
+
+    /*根据厨房排序，用于电子划菜*/
+    public List<DeskDetail> getListByDeskCookRoom(String deskName)throws Exception{
+        Query query = new Query("desk=" + util.wrapWithBrackets(deskName));
+        query.setOrderByList(new String[]{"cookRoom"});
+        return get(query);
     }
 
     /**

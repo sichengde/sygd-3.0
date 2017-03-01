@@ -32,7 +32,7 @@ public class DeskInService extends BaseService<DeskIn>{
      */
     public void setDeskDetail(List<DeskIn> deskInList) throws Exception {
         for (DeskIn deskIn : deskInList) {
-            deskIn.setDeskDetailList(deskDetailService.getListByDesk(deskIn.getDesk()));
+            deskIn.setDeskDetailList(deskDetailService.getListByDeskCookRoom(deskIn.getDesk()));
         }
     }
 }

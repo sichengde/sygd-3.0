@@ -1580,6 +1580,17 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 需要initData的webService方法
+     */
+    function deskInGetWithDetail(p) {
+        return webService.post('deskInGetWithDetail', p)
+            .then(function (d) {
+                deskInList=d;
+                return d;
+            })
+    }
+
+    /**
      * 公共方法，获取之类的
      */
     var refreshed;
@@ -1796,6 +1807,7 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getCompanyDebtHistoryList:getCompanyDebtHistoryList,
         refreshCompanyPayList:refreshCompanyPayList,
         getCompanyPayList:getCompanyPayList,
+        deskInGetWithDetail:deskInGetWithDetail,
         initData: initData
     }
 }]);
