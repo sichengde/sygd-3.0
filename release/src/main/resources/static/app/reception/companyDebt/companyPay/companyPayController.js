@@ -17,7 +17,7 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
         {name: '结账流水号', id: 'paySerial', width: '150px'},
         {name: '备注', id: 'description', width: '150px'},
         {name: '模块', id: 'pointOfSale', width: '150px'},
-        {name: '营业部门', id: 'secondPointOfSale', width: '150px'},
+        {name: '类型', id: 'secondPointOfSale', width: '150px'},
         {name: '操作员', id: 'userId', width: '120px'}
     ];
     dataService.initData(['refreshCurrencyList'], [{condition: 'check_in=1'}])
@@ -28,7 +28,7 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
         });
     dataService.refreshPointOfSaleList({condition: 'module=\'接待\''})
         .then(function (r) {
-            $scope.pointOfSaleList = ['全部'].concat(r[0].secondPointOfSale.split(' '));
+            $scope.pointOfSaleList = ['全部','离店'].concat(r[0].secondPointOfSale.split(' '));
             $scope.pointOfSale = $scope.pointOfSaleList[0];
         });
     $scope.moduleList=['全部','接待','餐饮','桑拿'];

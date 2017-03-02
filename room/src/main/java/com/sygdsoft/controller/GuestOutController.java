@@ -399,7 +399,7 @@ public class GuestOutController {
             debtPayService.add(debtPay);
             changeDebt += " 币种:" + currency + "/" + money;
             /*通过币种判断结账类型*/
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待",null);
+            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待","离店");
             this.checkVip(groupAccount, roomIdList, currency, money);
         }
         return changeDebt;
