@@ -134,6 +134,9 @@
 @media ( min-width: 1179px) and (max-width:1409px){
     /*.menubox a { width: 75px;}*/
     .saixuanbox .styleSheet { margin-right: 0px;}
+    .menu { margin-left: 310px;}
+    .logo { width: 300px;}
+    .logo img { width: 250px;}
 }
 
 @keyframes itemHover {0%{

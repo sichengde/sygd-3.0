@@ -607,6 +607,17 @@ left:65px; top:0px; font-weight:normal;
 .ppp p span { width: 80px; text-align: right; display: block; float: left}
 .ppp input { float: none!important;}
 
+
+.dwppp ul { float: left; width: 100%;border-bottom: 1px solid #c1c1c1;}
+.dwppp ul>li { float: left; padding: 5px 0px 5px 0px; margin-top: 5px; margin-bottom: 5px; text-align: left;
+    height: 25px;
+    line-height: 25px;}
+.dwppp li>span { width: 100px; text-align: right; display:inline-block; float: left}
+.dwppp li a { width: auto!important;}
+.dwppp input,.dwppp select { float: none!important;}
+.tanchuang .btn-group { padding-top: 10px;}
+.tanchuang .btn-group .btn { height: auto}
+
 /**结算弹窗积分余额**/
 .fdjy { position: absolute; bottom:25px; right:0px; background: #fff; line-height: 20px; border: 1px solid #ccc; border-radius: 3px; padding: 5px;}
 

@@ -19,13 +19,13 @@
                     <select ng-model="pointOfSale" ng-options="x for x in pointOfSaleList" style="width: 140px;"></select>
                 </td>
                 <td><span class={{manualConsume=='冲账'?'red':''}}>费用金额：</span></td>
-                <td><input type="text" ng-model="consume"></td>
+                <td><input type="text" ng-model="consume" style="width: 142px;"></td>
             </tr>
             <tr>
                 <td>备注：</td>
                 <td colspan="3"><input type="text" style="width: 350px;" ng-model="remark"></td>
-                <td>{{company.name?'签单人':''}}</td>
-                <td><input ng-show="company.name" style="width: 100px;" type="text" ng-model="companyLord" sz-select="companyLordListShow"></td>
+                <td>{{company.name?'签单人：':''}}</td>
+                <td style="width: 150px; float: left"><input ng-show="company.name" type="text" ng-model="companyLord" sz-select="companyLordListShow" style="width: 142px;"></td>
             </tr>
         </table>
         <dl class="button">

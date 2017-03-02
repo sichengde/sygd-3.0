@@ -14,7 +14,7 @@
                             <td ng-show="editableRoomPrice"><input type="text" ng-model="checkIn.finalRoomPrice"></td>
                             <td style="text-align: right">早餐：</td>
                             <td style="text-align: left; width: 110px"><input type="text" ng-model="checkIn.breakfast" style="width: 30px;">&nbsp;份</td>
-                            <td>会员卡号：</td>
+                            <td width="100">会员卡号：</td>
                             <td style="text-align: left; width: 110px">{{checkIn.vipNumber}}</td>
                         </tr>
                         <tr>
@@ -45,19 +45,19 @@
                     </table>
                     <table class="tableBorderfff">
                         <tr>
-                            <td>押金币种：</td>
-                            <td width="120">{{checkIn.vipNumber}}</td>
+                            <td width="100">押金币种：</td>
+                            <td>{{checkIn.vipNumber}}</td>
                             <td>已交押金：</td>
-                            <td width="120">{{checkIn.deposit}}</td>
+                            <td>{{checkIn.deposit}}</td>
                             <td>当前消费：</td>
-                            <td width="120">{{checkIn.consume}}</td>
+                            <td>{{checkIn.consume}}</td>
                             <td>已结金额：</td>
-                            <td width="120">{{checkIn.pay}}</td>
+                            <td width="100">{{checkIn.pay}}</td>
                         </tr>
                         <tr>
                             <td>备注：</td>
                             <td colspan="7">
-                                <textarea style="width: 735px; height: 50px;" ng-model="checkIn.remark"></textarea>
+                                <textarea style="width: 635px; height: 50px;" ng-model="checkIn.remark"></textarea>
                             </td>
                         </tr>
                     </table>
