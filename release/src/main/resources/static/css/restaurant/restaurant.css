@@ -54,9 +54,9 @@ background-size: 65px;
     -webkit-border-radius:10px;
     -moz-border-radius:10px;
     border-radius:10px;}
-.icon-d1 { background: #2a9ec9; left: 40px; top:50px;}
-.icon-d2 { background: #ffa800; left: 105px; top:20px;}
-.icon-d3 { background: #4f4f4f; left: 95px; top:50px;}
+.icon-d1 { background: #2a9ec9; left: 100px; top:20px;}
+.icon-d2 { background: #ffa800; left: 100px; top:40px;}
+.icon-d3 { background: #4f4f4f; left: 95px; top:20px;}
 
 /*菜品列表*/
 .cdBox {position: fixed; height: calc(100% - 40px); height: -webkit-calc(100% - 40px); height: -moz-calc(100% - 40px); width: 60px; right: 0px; bottom: 0px; top:0px; overflow: hidden;transition:width 0.5s;

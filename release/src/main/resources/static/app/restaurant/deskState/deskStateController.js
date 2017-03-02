@@ -49,5 +49,9 @@ App.controller('deskStateController', ['$scope', 'dataService', 'util', 'LoginSe
                 $scope.deskList = dataService.getDeskList();
             });
     };
+    /*预览未来预定*/
+    $scope.previewBook=function () {
+        $scope.featureDateOpened=true;
+    };
     $scope.refresh();
 }]);

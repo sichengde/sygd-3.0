@@ -7,6 +7,7 @@ import com.sygdsoft.model.DeskIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,12 +26,12 @@ public class DeskService extends BaseService<Desk> {
     /**
      * 设置桌台信息
      */
-    public void setDeskDetail(List<Desk> deskList) {
+    public void setDeskDetail(List<Desk> deskList,Date date) {
         for (Desk desk : deskList) {
             DeskIn deskInQuery = new DeskIn();
             deskInQuery.setDesk(desk.getName());
             desk.setDeskIn(deskInMapper.selectOne(deskInQuery));
-            desk.setDeskBookList(deskBookService.getListByDesk(desk.getName()));
+            desk.setDeskBookList(deskBookService.getByDate(desk.getName(),date));
         }
     }
 
@@ -42,6 +43,15 @@ public class DeskService extends BaseService<Desk> {
         deskIn.setDesk(desk);
         deskIn.setPointOfSale(pointOfSale);
         return deskInMapper.selectOne(deskIn);
+    }
+
+    /**
+     * 通过营业部门查找
+     */
+    public List<Desk> getByPointOfSale(String pointOfSale){
+        Desk desk=new Desk();
+        desk.setPointOfSale(pointOfSale);
+        return deskMapper.select(desk);
     }
 
     /**

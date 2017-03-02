@@ -24,6 +24,15 @@ public class DeskDetailService extends BaseService<DeskDetail> {
     @Autowired
     OtherParamService otherParamService;
     /**
+     * 根据id获得实例一个
+     */
+    public DeskDetail getById(Integer id){
+        DeskDetail deskDetail=new DeskDetail();
+        deskDetail.setId(id);
+        return deskDetailMapper.selectOne(deskDetail);
+    }
+
+    /**
      * 获得聚合后的
      */
     public List<DeskDetail> getGroupByQuery(Query query) throws Exception {

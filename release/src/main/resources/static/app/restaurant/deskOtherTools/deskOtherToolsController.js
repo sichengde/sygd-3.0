@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-09-18.
  */
-App.controller('deskOtherToolsController', ['$scope','popUpService', function ($scope,popUpService) {
+App.controller('deskOtherToolsController', ['$scope','popUpService','webService','LoginService', function ($scope,popUpService,webService,LoginService) {
     $scope.deskBookFields = [
         {name: '订单编号', id: 'deskBookSerial',static:'true',filter:'input',width:'148px'},
         {name: '预定桌号', id: 'desk', width: '300px'},
@@ -24,5 +24,16 @@ App.controller('deskOtherToolsController', ['$scope','popUpService', function ($
     };
     $scope.refresh = function () {
         deskBookRefresh();
+    };
+    /*预定预览信息初始化*/
+    $scope.refreshFeature=function (date) {
+        var pointOfSale=LoginService.getPointOfSale();
+        var post={};
+        post.pointOfSale=pointOfSale;
+        post.date=date;
+        webService.post('deskGetByDate',post)
+            .then(function (r) {
+                $scope.deskList = r;
+            });
     }
 }]);

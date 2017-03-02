@@ -8,6 +8,29 @@
                 </div>
             </div>
         </sz-pane>
+        <sz-pane title="预定预览">
+            <ul class="cyStateContent">
+                <!---->
+                <li class="cyStateBox" ng-repeat="r in deskList" ng-click="deskIn(r)" sz-hover-room>
+                    <h1>{{r.name}}</h1>
+                    <p>&nbsp;</p>
+                    <i class="icon-hp"></i>
+                    <i ng-show="r.deskBookList.length>0" class="dotd icon-d1">订</i>
+                    <i ng-show="r.deskBookList.length>1" class="dotd icon-d2">订</i>
+                    <div class="hoverDiv" ng-show="r.deskBookList.length>0">
+                        <ul>
+                            <li ng-repeat="r2 in r.deskBookList">来期:{{r2.reachTime | date:'HH:mm:ss'}} &nbsp; <span class="red">订金:￥{{+r2.subscription}}</span></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <div class="tableDiv">
+                <li>
+                    日期：
+                    <input uib-datepicker-popup ng-model="featureDate" ng-change="refreshFeature(featureDate)">
+                </li>
+            </div>
+        </sz-pane>
     </sz-tab>
 </div>
 <sz-pop-up refresh="refresh()" name="restaurant/deskOtherTools/deskBookIn/deskBookIn.html"></sz-pop-up>

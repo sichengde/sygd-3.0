@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,18 +20,22 @@ public class DeskBookService extends BaseService<DeskBook> {
     DeskBookMapper deskBookMapper;
     @Autowired
     Util util;
+    @Autowired
+    TimeService timeService;
+
+
     /**
-     * 模糊查询,查询该房号是否有预定
+     * 查询房号该天是否有预定
      */
-    List<DeskBook> getListByDesk(String desk){
-        return deskBookMapper.getLastThreeByDesk(desk);
+    List<DeskBook> getByDate(String desk, Date date) {
+        return deskBookMapper.getByDate(desk, timeService.dateToStringShort(date)+"%");
     }
 
     /**
      * 补交/退订金
      */
     public void addSubscription(String deskBookSerial, Double subscription) {
-       deskBookMapper.addSubscription(deskBookSerial,subscription);
+        deskBookMapper.addSubscription(deskBookSerial, subscription);
     }
 
 }

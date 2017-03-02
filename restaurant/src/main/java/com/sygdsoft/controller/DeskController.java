@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
-import static org.springframework.transaction.TransactionDefinition.ISOLATION_READ_COMMITTED;
 
 /**
  * Created by 舒展 on 2016-07-14.
@@ -91,7 +91,16 @@ public class DeskController {
     @RequestMapping(value = "deskGet")
     public List<Desk> deskGet(@RequestBody Query query) throws Exception {
         List<Desk> deskList = deskService.get(query);
-        deskService.setDeskDetail(deskList);
+        deskService.setDeskDetail(deskList,new Date());
+        return deskList;
+    }
+
+    @RequestMapping(value = "deskGetByDate")
+    public List<Desk> deskGetByDate(@RequestBody POSAndDate posAndDate){
+        String pointOfSale=posAndDate.getPointOfSale();
+        Date date=posAndDate.getDate();
+        List<Desk> deskList=deskService.getByPointOfSale(pointOfSale);
+        deskService.setDeskDetail(deskList, date);
         return deskList;
     }
 

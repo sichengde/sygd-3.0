@@ -24,10 +24,11 @@
             <h1>{{r.name}}</h1>
             <p>{{r.deskIn.num}}{{r.deskIn?'人':''}} &nbsp; {{r.deskIn?'￥':''}}{{r.deskIn.consume}}</p>
             <i class="{{r.deskIn?'icon-jc':'icon-hp'}}"></i>
-            <i ng-show="r.deskBookList.length>0" class="dotd icon-d2">订</i>
+            <i ng-show="r.deskBookList.length>0" class="dotd icon-d1">订</i>
+            <i ng-show="r.deskBookList.length>1" class="dotd icon-d2">订</i>
             <div class="hoverDiv" ng-show="r.deskBookList.length>0">
                 <ul>
-                    <li ng-repeat="r2 in r.deskBookList">来期:{{r2.reachTime | date}} &nbsp; <span class="red">订金:￥{{+r2.subscription}}</span></li>
+                    <li ng-repeat="r2 in r.deskBookList">来期:{{r2.reachTime | date:'HH:mm:ss'}} &nbsp; <span class="red">订金:￥{{+r2.subscription}}</span></li>
                 </ul>
             </div>
         </li>

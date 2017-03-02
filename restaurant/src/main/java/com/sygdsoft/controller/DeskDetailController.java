@@ -55,6 +55,19 @@ public class DeskDetailController {
     }
 
     /**
+     * 设置已做未做（电子划菜）
+     * @param deskDetail
+     * @throws Exception
+     */
+    @RequestMapping(value = "deskDetailCooked")
+    @Transactional(rollbackFor = Exception.class)
+    public void deskDetailUpdate(@RequestBody DeskDetail deskDetail)throws Exception{
+        DeskDetail deskDetail1=deskDetailService.getById(deskDetail.getId());
+        deskDetail1.setCooked(deskDetail.getCooked());
+        deskDetailService.update(deskDetail1);
+    }
+
+    /**
      * 更新菜品（一步增删改）
      * 传进来的是该桌的所有菜品
      * 等叫和叫起在厨打印单上判断

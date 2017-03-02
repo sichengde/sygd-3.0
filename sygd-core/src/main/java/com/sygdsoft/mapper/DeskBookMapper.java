@@ -19,7 +19,7 @@ public interface DeskBookMapper extends MyMapper<DeskBook> {
     /**
      * 根据桌号查找最近三条订单
      */
-    @Select("select * from desk_book where instr(desk,#{desk}) LIMIT 0,3")
+    @Select("select * from desk_book where instr(desk,#{desk}) and reach_time like #{date} order by reach_time")
     @Results(value = {
             @Result(property = "reachTime",column = "reach_time"),
             @Result(property = "remainTime",column = "remain_time"),
@@ -27,5 +27,5 @@ public interface DeskBookMapper extends MyMapper<DeskBook> {
             @Result(property = "pointOfSale",column = "point_of_sale"),
             @Result(property = "deskBookSerial",column = "desk_book_serial")
     })
-    List<DeskBook> getLastThreeByDesk(@Param("desk") String desk);
+    List<DeskBook> getByDate(@Param("desk") String desk,@Param("date")String date);
 }
