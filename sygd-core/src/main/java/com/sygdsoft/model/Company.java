@@ -2,7 +2,9 @@ package com.sygdsoft.model;
 
 import com.sygdsoft.util.NullJudgement;
 
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2016-04-13.
@@ -20,6 +22,10 @@ public class Company extends BaseEntity{
     private String ifDebt;//允许挂账
     private String saleMan;//销售人员
     private String phone;//联系方式
+    @Transient
+    private List<CompanyDebtIntegration> companyDebtIntegrationList;
+    @Transient
+    private List<CompanyDebt> companyDebtList;
 
     public Company() {
     }
@@ -124,5 +130,21 @@ public class Company extends BaseEntity{
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public List<CompanyDebtIntegration> getCompanyDebtIntegrationList() {
+        return companyDebtIntegrationList;
+    }
+
+    public void setCompanyDebtIntegrationList(List<CompanyDebtIntegration> companyDebtIntegrationList) {
+        this.companyDebtIntegrationList = companyDebtIntegrationList;
+    }
+
+    public List<CompanyDebt> getCompanyDebtList() {
+        return companyDebtList;
+    }
+
+    public void setCompanyDebtList(List<CompanyDebt> companyDebtList) {
+        this.companyDebtList = companyDebtList;
     }
 }

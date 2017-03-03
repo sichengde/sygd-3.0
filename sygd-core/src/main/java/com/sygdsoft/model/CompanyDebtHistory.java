@@ -1,6 +1,8 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2017-02-23.
@@ -18,6 +20,8 @@ public class CompanyDebtHistory extends BaseEntity {
     public String secondPointOfSale;
     public Double currentRemain;
     public String companyPaySerial;
+    @Transient
+    public List<DebtHistory> debtHistoryList;//账务历史
 
     public CompanyDebtHistory() {
     }
@@ -129,5 +133,13 @@ public class CompanyDebtHistory extends BaseEntity {
 
     public void setSecondPointOfSale(String secondPointOfSale) {
         this.secondPointOfSale = secondPointOfSale;
+    }
+
+    public List<DebtHistory> getDebtHistoryList() {
+        return debtHistoryList;
+    }
+
+    public void setDebtHistoryList(List<DebtHistory> debtHistoryList) {
+        this.debtHistoryList = debtHistoryList;
     }
 }

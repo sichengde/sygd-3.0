@@ -2,6 +2,7 @@ package com.sygdsoft.model;
 
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2016-04-13.
@@ -22,6 +23,8 @@ public class CompanyDebt extends BaseEntity{
     public Double total;
     @Transient
     public Boolean tmp;//临时标志，代表定额结算产生的冲账条目，若为true则在单位结算时需要回冲一条
+    @Transient
+    public List<DebtHistory> debtHistoryList;//账务历史
 
     public CompanyDebt() {
     }
@@ -134,5 +137,13 @@ public class CompanyDebt extends BaseEntity{
 
     public void setSecondPointOfSale(String secondPointOfSale) {
         this.secondPointOfSale = secondPointOfSale;
+    }
+
+    public List<DebtHistory> getDebtHistoryList() {
+        return debtHistoryList;
+    }
+
+    public void setDebtHistoryList(List<DebtHistory> debtHistoryList) {
+        this.debtHistoryList = debtHistoryList;
     }
 }

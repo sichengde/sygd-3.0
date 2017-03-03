@@ -1,6 +1,8 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2017-02-24.
@@ -15,6 +17,9 @@ public class CompanyDebtIntegration extends BaseEntity{
     private String userId;//操作员号
     private String description;//备注，描述
     private String pointOfSale;//营业部门
+    private String secondPointOfSale;//类别
+    @Transient
+    public List<DebtHistory> debtHistoryList;//账务历史
 
     public CompanyDebtIntegration() {
     }
@@ -89,5 +94,21 @@ public class CompanyDebtIntegration extends BaseEntity{
 
     public void setPointOfSale(String pointOfSale) {
         this.pointOfSale = pointOfSale;
+    }
+
+    public List<DebtHistory> getDebtHistoryList() {
+        return debtHistoryList;
+    }
+
+    public void setDebtHistoryList(List<DebtHistory> debtHistoryList) {
+        this.debtHistoryList = debtHistoryList;
+    }
+
+    public String getSecondPointOfSale() {
+        return secondPointOfSale;
+    }
+
+    public void setSecondPointOfSale(String secondPointOfSale) {
+        this.secondPointOfSale = secondPointOfSale;
     }
 }

@@ -1,5 +1,20 @@
 <div id="content" class="ddDing">
     <sz-tab>
+        <sz-pane title="客房销售统计">
+            <div class="tableDiv">
+                <li>
+                    时间：
+                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li style="margin-left: 0px;">至</li>
+                <li>
+                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
+                </li>
+                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="roomCategorySaleReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
+                <li>平均房价不考虑加收和小时房费，冲账不算次数</li>
+            </div>
+            <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage" remark="roomCategorySaleRemark" items-per-page="20"></sz-table>
+        </sz-pane>
         <sz-pane title="客房经营分析">
             <div ng-show="showRoomParseReport" ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>
             <div class="tableDiv">
@@ -19,21 +34,6 @@
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReportExport()" value="导出xls"></li>
                 </ul>
             </div>
-        </sz-pane>
-        <sz-pane title="客房销售统计">
-            <div class="tableDiv">
-                <li>
-                    时间：
-                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
-                </li>
-                <li style="margin-left: 0px;">至</li>
-                <li>
-                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
-                </li>
-                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="roomCategorySaleReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
-                <li>平均房价不考虑加收和小时房费，冲账不算次数</li>
-            </div>
-            <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage" remark="roomCategorySaleRemark" items-per-page="20"></sz-table>
         </sz-pane>
         <sz-pane title="客源人数分析">
             <div class="tableDiv">
@@ -136,6 +136,34 @@
                 </ul>
                 <sz-table ng-if="companyDebtReportList" fields="companyDebtReportFields" items="companyDebtReportList" button="add update delete" items-per-page="20" print="单位欠款分析" query-message="queryMessageCompanyDebtReport" item-click="companyDebtReportItemClick(item,id)"></sz-table>
             </div>
+        </sz-pane>
+        <sz-pane title="单位挂账明细">
+            <!--<div class="tableDiv">
+                <ul>
+                    <li>
+                        时间：
+                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li style="margin-left: 0px;">至</li>
+                    <li>
+                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li>
+                        未结 <input type="checkbox" ng-model="paid" ng-init="paid=true">
+                    </li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyDebtDetailGet(paid,beginTime,endTime)" value="预览"></li>
+                </ul>
+            </div>
+            <div ng-show="showCompanyDebtDetailReport" ag-grid="gridOptionsCompanyDebt" class="ag-fresh" style="height: 500px;"></div>-->
+            <sz-table fields="companyDebtRichFields" head="true" deep-search="true" button="add update delete" items-per-page="20" print="单位挂账明细"></sz-table>
         </sz-pane>
         <!--<sz-pane title="预订信息-餐饮"></sz-pane>
         <sz-pane title="预订信息-餐饮"></sz-pane>-->

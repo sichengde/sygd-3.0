@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.sygdsoft.util.NullJudgement;
 
 import javax.persistence.Transient;
@@ -29,6 +30,7 @@ public class DebtHistory extends BaseEntity{
     private String remark;//备注（例如押金已退）
     private String fromRoom;//从哪转入的（针对于转房客结算）
     private String guestSource;//客源
+    private Boolean companyPaid;//标记单位结算是否支付了该笔账务，针对精确的单位结算
     @Transient
     private String currencyAdd;//结账币种附加信息（会员号，单位名等等，主要用于商品零售）
 
@@ -222,5 +224,13 @@ public class DebtHistory extends BaseEntity{
 
     public void setGuestSource(String guestSource) {
         this.guestSource = guestSource;
+    }
+
+    public Boolean getCompanyPaid() {
+        return companyPaid;
+    }
+
+    public void setCompanyPaid(Boolean companyPaid) {
+        this.companyPaid = companyPaid;
     }
 }

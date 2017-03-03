@@ -1580,6 +1580,23 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 单位挂账明细
+     */
+    var companyDebtRichList;
+    function refreshCompanyDebtRichList(p) {
+        p = p || {};
+        return webService.post('companyDebtRichGet', p)
+            .then(function (d) {
+                companyDebtRichList = d;
+                return d;
+            })
+    }
+
+    function getCompanyDebtRichList() {
+        return companyDebtRichList;
+    }
+
+    /**
      * 需要initData的webService方法
      */
     function deskInGetWithDetail(p) {
@@ -1807,6 +1824,8 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getCompanyDebtHistoryList:getCompanyDebtHistoryList,
         refreshCompanyPayList:refreshCompanyPayList,
         getCompanyPayList:getCompanyPayList,
+        refreshCompanyDebtRichList:refreshCompanyDebtRichList,
+        getCompanyDebtRichList:getCompanyDebtRichList,
         deskInGetWithDetail:deskInGetWithDetail,
         initData: initData
     }

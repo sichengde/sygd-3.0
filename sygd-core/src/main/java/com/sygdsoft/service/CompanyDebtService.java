@@ -4,6 +4,7 @@ import com.sygdsoft.jsonModel.report.CompanyDebtReportRow;
 import com.sygdsoft.mapper.CompanyDebtMapper;
 import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
+import com.sygdsoft.model.CompanyDebtIntegration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,12 @@ import java.util.List;
 public class CompanyDebtService extends BaseService<CompanyDebt> {
     @Autowired
     CompanyDebtMapper companyDebtMapper;
+    /**
+     * 获得某个时间段内某单位挂账明细
+     */
+    public List<CompanyDebt> getByCompanyDate(String company, Date beginTime, Date endTime){
+        return companyDebtMapper.getByCompanyDate(company,beginTime,endTime);
+    }
 
     /**
      * 获得某个单位某段时间内的挂账款

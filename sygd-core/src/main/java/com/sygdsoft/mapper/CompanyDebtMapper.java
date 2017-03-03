@@ -5,10 +5,7 @@ import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
 import com.sygdsoft.sqlProvider.CompanyDebtSql;
 import com.sygdsoft.util.MyMapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 import java.util.List;
@@ -36,4 +33,17 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
      */
     @Select("SELECT sum(roomConsume) roomConsume FROM (SELECT cd.company, if(sum(consume) > cd.debt, cd.debt, sum(consume)) roomConsume  FROM company_debt cd LEFT JOIN debt_history dh ON cd.pay_serial = dh.pay_serial WHERE cd.do_time>#{beginTime} AND cd.do_time<#{endTime} and dh.point_of_sale='房费' GROUP BY cd.id) total WHERE total.company=#{company} GROUP BY total.company")
     CompanyDebtReportRow getRoomConsumeByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
+     * 获得某个时间段内某单位挂账明细
+     */
+    @Select("select * from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime}")
+    @Results(value = {
+            @Result(property = "paySerial",column = "pay_serial"),
+            @Result(property = "doTime",column = "do_time"),
+            @Result(property = "userId",column = "user_id"),
+            @Result(property = "pointOfSale",column = "point_of_sale"),
+            @Result(property = "currentRemain",column = "current_remain"),
+    })
+    List<CompanyDebt> getByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

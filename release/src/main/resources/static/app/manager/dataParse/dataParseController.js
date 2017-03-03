@@ -6,6 +6,15 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     /**
      * 客房经营状况
      */
+    var localeText = {
+        export: '导出',
+        csvExport: '导出为CSV',
+        excelExport: '导出XLS',
+        copy: '复制',
+        paste: '粘贴',
+        copyWithHeaders: '复制标题',
+        toolPanel: '工具栏'
+    }
     var columnDefs = [
         {
             headerName: '',
@@ -40,49 +49,42 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             ]
         }
     ];
-    var allColumnIds = [
-        'month',
-        'averageRent',
-        'averagePrice',
-        'revper',
-        'guestNum',
-        'groupNum',
-        'foreigner'
-    ];
     var pointOfSaleIds = [];
-    dataService.initData(['refreshPointOfSaleList', 'refreshGuestSourceList'], [{condition: 'module=\'接待\''},{orderByList:['countCategory']}])
+    dataService.initData(['refreshPointOfSaleList', 'refreshGuestSourceList'], [{condition: 'module=\'接待\''}, {orderByList: ['countCategory']}])
         .then(function () {
             /*统计房费客源明细*/
             var guestSourceList = dataService.getGuestSourceList();
             var totalRoomConsumeValueGetter = '';
-            var lastCategory='';
-            var totalStr='';
+            var lastCategory = '';
+            var totalStr = '';
             var guestSourceCategory;
             for (var i = 0; i < guestSourceList.length; i++) {
-                var guestSource=guestSourceList[i].guestSource;
-                var countCategory=guestSourceList[i].countCategory;
-                if(countCategory!=lastCategory){
-                    if(lastCategory!=''){
+                var guestSource = guestSourceList[i].guestSource;
+                var countCategory = guestSourceList[i].countCategory;
+                if (countCategory != lastCategory) {
+                    if (lastCategory != '') {
                         totalStr = totalStr.substring(0, totalStr.length - 1);
                         guestSourceCategory.children.push({
                             headerName: '总计',
+                            colId: '总计',
                             valueGetter: totalStr
                         });
-                        totalStr='';
+                        totalStr = '';
                     }
-                    guestSourceCategory={
-                        headerName:countCategory,
+                    guestSourceCategory = {
+                        headerName: countCategory,
                         marryChildren: true,
                         groupId: countCategory,
                         columnGroupShow: 'open',
                         openByDefault: true,
-                        children:[]
+                        children: []
                     };
                     columnDefs[2].children[0].children.push(guestSourceCategory);
-                    lastCategory=countCategory;
+                    lastCategory = countCategory;
                 }
                 guestSourceCategory.children.push({
                     headerName: guestSource,
+                    colId: guestSource,
                     field: guestSource,
                     columnGroupShow: 'open'
                 });
@@ -93,6 +95,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             totalStr = totalStr.substring(0, totalStr.length - 1);
             guestSourceCategory.children.push({
                 headerName: '总计',
+                colId: '总计',
                 valueGetter: totalStr
             });
             totalRoomConsumeValueGetter = totalRoomConsumeValueGetter.substring(0, totalRoomConsumeValueGetter.length - 1);
@@ -129,7 +132,6 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 volatile: true
             });
             pointOfSaleIds.push('totalPointOfSaleConsume');
-            allColumnIds = allColumnIds.concat(pointOfSaleIds);
         });
     $scope.gridOptions = {
         columnDefs: columnDefs,
@@ -142,25 +144,15 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         onGridReady: function () {
             /*this.columnApi.setColumnGroupOpened('roomConsume', true);*/
             /*this.columnApi.autoSizeColumns(allColumnIds);*/
+            /*this.api.sizeColumnsToFit();*/
         },
-        localeText: {
-            export: '导出',
-            csvExport: '导出为CSV',
-            excelExport: '导出XLS',
-            copy: '复制',
-            paste: '粘贴',
-            copyWithHeaders: '复制标题',
-            toolPanel: '工具栏'
-        }
+        localeText: localeText
     };
     $scope.range = '年';
-    $scope.showRoomParseReport=false;
+    $scope.showRoomParseReport = false;
     $scope.RoomParseReport = function (beginTime, range) {
         $scope.showRoomParseReport = true;
-        webService.post('RoomParseReport', {
-            date: beginTime,
-            range: range
-        })
+        webService.post('RoomParseReport', {date: beginTime, range: range})
             .then(function (r) {
                 for (var i = 0; i < r.length; i++) {
                     var row = r[i];
@@ -183,13 +175,34 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                         }
                     }
                 }
+                ;
+                $scope.gridOptions.api.setColumnDefs(columnDefs);
                 $scope.gridOptions.api.setRowData(r);
+                var allColumnIds = [];
+                getColumnDef(columnDefs, allColumnIds);
+                $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
+                $scope.gridOptions.api.ensureColumnVisible('totalPointOfSaleConsume');
+                $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
             })
     };
-    $scope.RoomParseReportExport=function () {
+    function getColumnDef(defs, allColumnIds) {
+        defs.forEach(function (columnDef) {
+            if (columnDef.children) {
+                getColumnDef(columnDef.children, allColumnIds)
+            } else {
+                if (columnDef.field) {
+                    allColumnIds.push(columnDef.field);
+                } else {
+                    allColumnIds.push(columnDef.colId);
+                }
+            }
+        });
+    }
+
+    $scope.RoomParseReportExport = function () {
         $scope.gridOptions.api.exportDataAsExcel({
             columnGroups: true,
-            skipGroups:false
+            skipGroups: false
         });
     };
     /*房类分析*/
@@ -215,7 +228,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         webService.post('roomCategorySaleReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
                 $scope.roomCategorySaleList = r.roomCategoryRowList;
-                $scope.roomCategorySaleRemark=r.remark;
+                $scope.roomCategorySaleRemark = r.remark;
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
                 echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
             })
@@ -232,7 +245,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             .then(function (r) {
                 $scope.guestSourceParseList = r.guestParseRowList;
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
-                $scope.guestSourceParseRemark=r.remark;
+                $scope.guestSourceParseRemark = r.remark;
                 echartService.generateChartCompare(r.guestParseRowList, r.guestParseRowListHistory, 'guestSource', 'totalConsume');
             })
     };
@@ -251,10 +264,10 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     };
     /*单位预订到达率*/
     $scope.companyBookParseFields = [
-        {id: 'company', name: '单位名称',width:'300px'},
-        {id: 'totalRoom', name: '总订房数',width:'100px'},
-        {id: 'bookedRoom', name: '已开房数',width:'100px'},
-        {id: 'mark', name: '到达率',width:'100px'}
+        {id: 'company', name: '单位名称', width: '300px'},
+        {id: 'totalRoom', name: '总订房数', width: '100px'},
+        {id: 'bookedRoom', name: '已开房数', width: '100px'},
+        {id: 'mark', name: '到达率', width: '100px'}
     ];
     $scope.companyBookParseReport = function (beginTime, endTime) {
         webService.post('companyBookParse', {beginTime: beginTime, endTime: endTime})
@@ -322,6 +335,51 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 break;
         }
     };
+    /*单位挂账明细*/
+    $scope.companyDebtRichFields=[
+        {name: "单位名称", id: 'company',filter:'input'},
+        {name: "签单人", id: "lord",filter:'input'},
+        {name: "宾客", id: "name"},
+        {name: "金额", id: "debt"},
+        {name: "挂账时间", id: "companyDoTime",filter:'date'},
+        {name: "备注", id: "description" },
+        {name: "模块", id: "pointOfSale" ,filter:'list'},
+        {name: "发生时间", id: "debtDoTime" ,filter:'date'},
+        {name: "统计部门", id: "secondPointOfSale" },
+        {name: "房号", id: "roomId" ,filter:'input'},
+        {name: "接待员", id: "userId" },
+        {name: "类型", id: "category" ,filter:'list'},
+        {name: "已结标志", id: "companyPaid" ,boolean:'true',filter:'list'}
+    ];
+    /*$scope.companyDebtDetailGet = function (paid, beginTime, endTime) {
+        var post = {};
+        post.beginTime = beginTime;
+        post.endTime = endTime;
+        post.paid = paid;
+        webService.post('companyDebtDetailGet', post)
+            .then(function (r) {
+                var rowData=[];
+                for (var i = 0; i < r.length; i++) {
+                    var company = r[i];
+                    var companyDebtList;
+                    if(company.CompanyDebtIntegration){
+                        companyDebtList=company.CompanyDebtIntegration;
+                    }else if(company.CompanyDebt){
+                        companyDebtList=company.CompanyDebt;
+                    }
+                    if(companyDebtList){//有明细
+                        for (var j = 0; j < companyDebtList.length; j++) {
+                            var companyDebt = companyDebtList[j];
+
+                        }
+                    }
+                }
+                $scope.showCompanyDebtDetailReport = true;
+                $scope.companyDebtReportData = r;
+                $scope.companyDebtReportList = r.companyDebtReportRowList;
+                $scope.queryMessageCompanyDebtReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
+            })
+    };*/
     /*全店收入表*/
     $scope.hotelParseFields = [
         {name: '营业部门', id: 'pointOfSale'},
