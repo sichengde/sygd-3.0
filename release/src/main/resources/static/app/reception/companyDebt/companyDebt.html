@@ -37,6 +37,12 @@
                           right-click="rightClickCompanyDebt"></sz-table>
             </div>
         </sz-pane>
+        <sz-pane title="单位挂账明细">
+            <sz-table fields="companyDebtRichFields" head="true" deep-search="true" button="add update delete" pick-able="true" items-per-page="20" print="单位挂账明细" get-item="getItem(f)"></sz-table>
+            <ul>
+                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyPayThis()" value="结算已选明细"></li>
+            </ul>
+        </sz-pane>
         <!--<sz-pane title="单位欠款报表">
             <div style="width: 1000px;">
                 <div ag-grid="gridOptions" class="ag-fresh" style="height: 100%;"></div>

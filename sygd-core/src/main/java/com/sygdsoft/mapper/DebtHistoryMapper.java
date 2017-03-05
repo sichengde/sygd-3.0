@@ -193,4 +193,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     @Delete("delete from debt_history WHERE category IN ('加收房租','小时房租') and pay_serial=#{paySerial}")
     void deleteAddDebt(@Param("paySerial") String paySerial);
+
+    @Update("update debt_history set company_paid=true where id=#{id}")
+    void setPaidById(@Param("id") Integer id);
 }

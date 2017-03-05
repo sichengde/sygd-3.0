@@ -1,22 +1,31 @@
 <div class="tanchuang" style="width: 980px;" ng-if="pop" ng-controller="companyPayController" drag>
     <dl class="tctit"><h1>单位结算</h1></dl>
     <div class="tcDiv">
-        <dl class="tcTopName">单位名称：<span style="margin-right: 10px;">{{company}}</span> 单位欠款{{totalDebt}}</dl>
-        <div class="btn-group">
+        <dl class="tcTopName">单位名称：<span style="margin-right: 10px;">{{company}}</span><span ng-show="!targetPay">单位欠款{{totalDebt}}</span></dl>
+        <div class="btn-group" ng-show="!targetPay">
             <label class="btn btn-primary" ng-model="payBy" uib-btn-radio="'按明细结'" uncheckable>按明细结</label>
             <label class="btn btn-primary" ng-model="payBy" uib-btn-radio="'定额结算'" uncheckable>定额结算</label>
         </div>
         <table class="tableBorderfff" style="margin-top: 5px;">
             <tr>
                 <td>
-                    <div ng-show="payBy=='按明细结'" class="dwppp">
+                    <div class="dwppp">
+                        <ul>
+                            <li ng-show="payBy=='按明细结'" style="width:195px;"><span>应付金额：</span><font color="#fe0000">{{debt}}</font></li>
+                            <li><span>实付金额：</span><input type="text" style="float: none; width: 78px;" ng-model="pay"></li>
+                            <li style="width: 400px;"><span>备注：</span><input type="text" ng-model="remark" style="float: none"></li>
+                        </ul>
+                    </div>
+                    <div ng-show="payBy=='按明细结'&&!targetPay" class="dwppp">
                         <ul>
                             <li>
-                                <span>模块：</span><select ng-model="module" ng-options="x for x in moduleList" style="width: 80px;"></select>
+                                <span>模块：</span><select ng-model="module" ng-options="x for x in moduleList" style="width: 90px;"></select>
                             </li>
                             <li>
-                                <span>类型：</span><select ng-model="pointOfSale" ng-options="x for x in pointOfSaleList" style="width: 80px;"></select>
+                                <span>项目：</span><select ng-model="pointOfSale" ng-options="x for x in pointOfSaleList" style="width: 90px;"></select>
                             </li>
+                        </ul>
+                        <ul>
                             <li>
                                 <span>时间：</span>
                                 <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
@@ -36,14 +45,7 @@
 
                         </ul>
                     </div>
-                    <div class="dwppp">
-                        <ul>
-                            <li ng-show="payBy=='按明细结'" style="width:180px;"><span>应付金额：</span><font color="#fe0000">{{debt}}</font></li>
-                            <li style="width:180px;"><span>实付金额：</span><input type="text" style="float: none; width: 68px;" ng-model="pay"></li>
-                            <li style="width: 400px;"><span>备注：</span><input type="text" ng-model="remark" style="float: none"></li>
 
-                        </ul>
-                    </div>
                     <div class="dwppp">
                         <ul style="border: none">
                             <li><sz-pay></sz-pay></li>
@@ -52,11 +54,10 @@
                 </td>
             </tr>
         </table>
-        <sz-table ng-if="companyDebtList" fields="companyDebtFields" items="companyDebtList" button="add update delete" head="true" right-click="rightClickCompanyDebt"></sz-table>
-        <div class="clear"></div>
+        <sz-table ng-if="companyDebtList" fields="companyDebtFields" items="companyDebtList" button="add update delete" head="true" right-click="rightClickCompanyDebt" items-per-page="8"></sz-table>
         <dl class="button">
-            <div class="fl"><input type="button" ng-click="showDetail()" value="查询明细"></div>
-            <div class="fr"><button class="sbe" style="margin-top: 20px;" ng-click="submit()">确认支付</button></div>
+            <div class="fl" ng-show="!targetPay"><input type="button" ng-click="showDetail()" value="查询明细"></div>
+            <div class="fr"><button class="sbe" ng-click="submit()">确认支付</button></div>
         </dl>
 
     </div>

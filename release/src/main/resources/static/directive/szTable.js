@@ -9,7 +9,7 @@
  * button:增删改哪个不要
  * deepSearch:深度搜索，当数据量特别大时需要启用
  * head:是否需要表头
- * outerRefresh:刷新后执行的外部方法
+ * outerRefresh:刷新后执行的外部方法，可用于把当前数据发送到外面
  * rowClick:点击行事件
  * itemClick:点击表格
  * alwaysAdd:持续添加（点完保存后可以继续添加）
@@ -27,6 +27,7 @@
  * remark:外部生成的备注，描述一些总结，例如菜品统计表中统计一下各个品种的总和
  * initState:初始状态（增加，删除，修改）
  * backUp:在外部直接生成数据时，并且可以进一步增删改查，用这个属性对table中的备份数据赋值(后改为方法，在外部进行备份，标准用法在团队开房里)
+ * getItem:获得当前的items
  * ---------------------------------------------------------
  * field中内容
  * name:每列的标题
@@ -55,6 +56,9 @@
  * popChoose:下拉列表为复选，因此会弹出一个复选框
  * itemChange:配合上边的相同参数，看看哪些域在改变时需要调用外部方法
  * unique:不可重复
+ * -----------------------------------------------------------
+ * attr中内容
+ * pickAble:所有列前边有个勾选标志
  * -----------------------------------------------------------
  * 用法：
  * 1.不想显示的字段，但添加到数据库中时需要有默认值，可不设置name属性，并且把default设置为默认值
@@ -91,6 +95,7 @@ App.directive('szTable', ['$filter', function ($filter) {
             itemChange: '&',
             remark: '=?',
             initState: '@',
+            getItem: '&',
             backUp: '&'
         },
         controller: ['$scope', 'webService', 'util', 'dataService', '$parse', '$attrs', 'messageService', 'popUpService', 'nullToStringFilter', 'dateFilter', function ($scope, webService, util, dataService, $parse, $attrs, messageService, popUpService, nullToStringFilter, dateFilter) {
@@ -115,9 +120,12 @@ App.directive('szTable', ['$filter', function ($filter) {
             if (!$scope.print) {
                 $scope.print = false;
             }
+            if ($attrs.pickAble) {
+                $scope.pickAble = true;
+            }
             /*初始化时间map*/
-            $scope.beginTime={};
-            $scope.endTime={};
+            $scope.beginTime = {};
+            $scope.endTime = {};
             $scope.prefix = $attrs.fields.substring(0, $attrs.fields.indexOf('Fields'));
             $scope.parse = $parse;//分析表达式
             $scope.reverse = false;
@@ -415,6 +423,13 @@ App.directive('szTable', ['$filter', function ($filter) {
                 $scope.initRefresh({f: $scope.refreshAndSearch});
             }
 
+            $scope.getItemMethod=function() {
+                return $scope.items;
+            };
+            if ($attrs.getItem) {
+                $scope.getItem({f: $scope.getItemMethod});
+            }
+
             $scope.change = function () {
                 search();
             };
@@ -546,15 +561,26 @@ App.directive('szTable', ['$filter', function ($filter) {
                     }
                 }
             };
+            var pickSign = false;
+            $scope.pickAll = function () {
+                var i;
+                var obj;
+                pickSign = !pickSign;
+                for (i = 0; i < $scope.pagedItems[$scope.currentPage].length; i++) {
+                    obj = $scope.pagedItems[$scope.currentPage][i];
+                    deleteList.push(obj);
+                    obj.szPick = pickSign;
+                }
+            };
             $scope.cancel = function () {
                 $scope.state = 'none';
                 $scope.addItem = {};
                 $scope.wrongMsg = null;
                 deleteList = [];
                 updateList = [];
-                if(!$scope.backUp) {
+                if (!$scope.backUp) {
                     $scope.items = angular.copy(backUpItem);
-                }else {
+                } else {
                     $scope.backUp();
                 }
                 //$scope.refreshAndSearch();
@@ -673,8 +699,8 @@ App.directive('szTable', ['$filter', function ($filter) {
                 search();
             });
             /*$scope.$watch('backUp', function (value) {
-                backUpItem = value;
-            });*/
+             backUpItem = value;
+             });*/
             $scope.$watch('searchCondition', function (value) {
                 if (value) {
                     $scope.refreshAndSearch();
@@ -696,7 +722,7 @@ App.directive('szTable', ['$filter', function ($filter) {
                     }
                 });
                 /*看看有没有自动打印，自动获取的此时打印*/
-                if ($scope.printNow&&$scope.items) {
+                if ($scope.printNow && $scope.items) {
                     $scope.szTableReport('pdf');
                 }
             });
@@ -729,12 +755,12 @@ App.directive('szTable', ['$filter', function ($filter) {
                 var totalWidth = 0;
                 angular.forEach($scope.fields, function (field) {
                     columnHeaders.push(field.name);
-                    var element=angular.element(document.getElementById($scope.prefix + field.id));
+                    var element = angular.element(document.getElementById($scope.prefix + field.id));
                     var currentWidth;
-                    if(element.context) {
+                    if (element.context) {
                         currentWidth = element.width();
-                    }else {
-                        currentWidth=100;
+                    } else {
+                        currentWidth = 100;
                     }
                     widthList.push(currentWidth);
                     totalWidth = totalWidth + currentWidth;
@@ -857,9 +883,9 @@ App.directive('szTable', ['$filter', function ($filter) {
                         util.getValueByField($scope.fields, 'id', id).width = data.width();
                         data = data.prev();
                     }
-                }else {//说明是ionic的，都初始化为100完事
-                    angular.forEach($scope.fields,function (value) {
-                        value.width=100;
+                } else {//说明是ionic的，都初始化为100完事
+                    angular.forEach($scope.fields, function (value) {
+                        value.width = 100;
                     })
                 }
 
@@ -876,7 +902,7 @@ App.directive('szTable', ['$filter', function ($filter) {
                         break;
                 }
                 /*看看需不需要立即打印，手动生成的此时打印*/
-                if ($scope.printNow&&$scope.items) {
+                if ($scope.printNow && $scope.items) {
                     $scope.szTableReport('pdf');
                 }
             });

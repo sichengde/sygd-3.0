@@ -2,9 +2,16 @@
  * Created by Administrator on 2016-07-01.
  */
 App.controller('companyPayController', ['$scope', 'webService', 'dataService', 'popUpService', 'util', 'messageService', 'dateFilter', function ($scope, webService, dataService, popUpService, util, messageService, dateFilter) {
-    var company = popUpService.getParam();
-    $scope.company = company.name;
-    $scope.totalDebt = company.debt;
+    var param = popUpService.getParam();
+    if (param.debtList) {//指定明细的精确解算
+        $scope.targetPay = true;
+        $scope.company = param.company;
+        $scope.debt = param.debt;
+        $scope.pay = param.debt;
+    } else {//没指定账务
+        $scope.company = param.name;
+        $scope.totalDebt = param.debt;
+    }
     $scope.currencyPayList = [];//sz-pay
     $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
     $scope.payBy = '按明细结';
@@ -28,11 +35,11 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
         });
     dataService.refreshPointOfSaleList({condition: 'module=\'接待\''})
         .then(function (r) {
-            $scope.pointOfSaleList = ['全部','离店'].concat(r[0].secondPointOfSale.split(' '));
+            $scope.pointOfSaleList = ['全部', '离店'].concat(r[0].secondPointOfSale.split(' '));
             $scope.pointOfSale = $scope.pointOfSaleList[0];
         });
-    $scope.moduleList=['全部','接待','餐饮','桑拿'];
-    $scope.module='全部';
+    $scope.moduleList = ['全部', '接待', '餐饮', '桑拿'];
+    $scope.module = '全部';
     var pay;
     $scope.showDetail = function () {
         if (!$scope.pay && $scope.payBy == '定额结算') {
@@ -73,7 +80,7 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
                     $scope.companyDebtList = r;
                 })
         } else {
-            var query = {condition: 'company=' + util.wrapWithBrackets(company.name)};
+            var query = {condition: 'company=' + util.wrapWithBrackets($scope.company)};
             if ($scope.beginTime) {
                 var beginTime = dateFilter($scope.beginTime, 'yyyy-MM-dd HH:mm:ss');
                 query.condition += ' and do_time>' + util.wrapWithBrackets(beginTime);
@@ -82,11 +89,11 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
                 var endTime = dateFilter($scope.endTime, 'yyyy-MM-dd HH:mm:ss');
                 query.condition += ' and do_time<' + util.wrapWithBrackets(endTime);
             }
-            if($scope.pointOfSale!='全部'){
-                query.condition+=' and second_point_of_sale='+util.wrapWithBrackets($scope.pointOfSale);
+            if ($scope.pointOfSale != '全部') {
+                query.condition += ' and second_point_of_sale=' + util.wrapWithBrackets($scope.pointOfSale);
             }
-            if($scope.module!='全部'){
-                query.condition+=' and point_of_sale='+util.wrapWithBrackets($scope.module);
+            if ($scope.module != '全部') {
+                query.condition += ' and point_of_sale=' + util.wrapWithBrackets($scope.module);
             }
             dataService.refreshCompanyDebtList(query)
                 .then(function (r) {
@@ -105,12 +112,35 @@ App.controller('companyPayController', ['$scope', 'webService', 'dataService', '
             popUpService.pop('message');
             return;
         }
-        if(!$scope.pay){
+        if (!$scope.pay) {
             messageService.setMessage({type: 'error', content: '请输入实付金额'});
             popUpService.pop('message');
             return;
         }
-        if(!$scope.companyDebtList.length>0){
+        if ($scope.pay > $scope.debt) {
+            messageService.setMessage({type: 'error', content: '实付金额不能大于应付金额'});
+            popUpService.pop('message');
+            return;
+        }
+        /*在这里先进行指向结算*/
+        if ($scope.targetPay) {
+            var companyTargetPost = {};
+            companyTargetPost.companyName = $scope.company;
+            companyTargetPost.pay = $scope.pay;
+            companyTargetPost.debt = $scope.debt;
+            companyTargetPost.remark = $scope.remark;
+            companyTargetPost.debtHistoryList = param.debtList;
+            companyTargetPost.paySerialMap = param.paySerialMap;
+            companyTargetPost.currencyPost = $scope.currencyPayList[0];
+            webService.post('companyTargetPay', companyTargetPost)
+                .then(function (r) {
+                    popUpService.close('companyPay');
+                    /*弹出打印预览界面*/
+                    webService.openReport(r);
+                });
+            return
+        }
+        if (!$scope.companyDebtList.length > 0) {
             messageService.setMessage({type: 'error', content: '没有可结算的明细'});
             popUpService.pop('message');
             return;

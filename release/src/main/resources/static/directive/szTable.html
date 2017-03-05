@@ -41,6 +41,7 @@
 <table class="tableBlue {{scroll?'tableScroll':''}}">
     <thead>
     <tr>
+        <th class="id" ng-if="pickAble" ng-click="pickAll()" style="width: 50px; text-align: center">#</th>
         <th class="{{r.id}}" id="{{prefix+r.id}}" sz-resizeable sz-table-init-width ng-repeat="r in fields" ng-style="{width:r.width}" ng-if="r.name">
             <div></div>
             <span ng-click="sort_by(r.id)" class="spanp" sz-table-td><p>{{r.name}}</p><i></i></span>
@@ -50,6 +51,7 @@
     </thead>
     <tbody scroll-glue>
     <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse" ng-click="chooseRow(item)" ng-class="{hover:item.selected}" sz-right-click="{{rightClick}}" right-click-param="item">
+        <td ng-if="pickAble" style="width: 50px; text-align: center"><input type="checkbox" ng-model="item.szPick"></td>
         <td ng-repeat="r in fields" ng-style="{width:r.width}" ng-if="r.name">
             <!--非更新时-->
             <span ng-if="state!='update'">

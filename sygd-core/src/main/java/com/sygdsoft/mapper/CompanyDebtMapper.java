@@ -46,4 +46,13 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
             @Result(property = "currentRemain",column = "current_remain"),
     })
     List<CompanyDebt> getByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    @Select("select * from company_debt where company=#{company} and pay_serial=#{paySerial}")
+    @Results(value = {
+            @Result(property = "paySerial",column = "pay_serial"),
+            @Result(property = "doTime",column = "do_time"),
+            @Result(property = "userId",column = "user_id"),
+            @Result(property = "pointOfSale",column = "point_of_sale"),
+            @Result(property = "currentRemain",column = "current_remain"),
+    })
+    List<CompanyDebt> getByNameSerial(@Param("company") String company, @Param("paySerial") String paySerial);
 }

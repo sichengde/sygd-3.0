@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 import static com.sygdsoft.util.NullJudgement.nullToZero;
@@ -44,6 +45,8 @@ public class CompanyController {
     SzMath szMath;
     @Autowired
     DebtPayService debtPayService;
+    @Autowired
+    DebtHistoryService debtHistoryService;
 
     @RequestMapping(value = "companyGet")
     public List<Company> companyGet(@RequestBody Query query) throws Exception {
@@ -135,7 +138,7 @@ public class CompanyController {
             companyDebtHistory.setDoneTime(timeService.getNow());
             companyDebtHistory.setCompanyPaySerial(serialService.getCompanyPaySerial());
             companyDebtHistoryList.add(companyDebtHistory);
-            FieldTemplate fieldTemplate=new FieldTemplate();
+            FieldTemplate fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(timeService.dateToStringLong(companyDebt.getDoTime()));
             fieldTemplate.setField2(companyDebt.getPaySerial());
             fieldTemplate.setField3(szMath.ifNotNullGetString(companyDebt.getDebt()));
@@ -158,7 +161,124 @@ public class CompanyController {
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
         /*判断一下是不是转单位*/
-        debtPayService.parseCurrency(currency, currencyAdd, pay, null,null,companyName+"单位结算转入",serialService.getCompanyPaySerial(),null,null);
+        debtPayService.parseCurrency(currency, currencyAdd, pay, null, null, companyName + "单位结算转入", serialService.getCompanyPaySerial(), null, null);
+        userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
+        /*生成结算报表
+        * 1.单位名称
+        * 2.结算金额
+        * 3.操作员
+        * 4.币种信息
+        * 5.实付金额
+        * fields
+        * 1.结账序列号
+        * 2.挂账金额
+        * 3.挂账时间
+        * 4.挂账部门
+        * 5.备注
+        * 6，操作员
+        * */
+
+        return reportService.generateReport(templateList, new String[]{companyName, ifNotNullGetString(debt), ifNotNullGetString(userService.getCurrentUser()), currency + "/" + ifNotNullGetString(currencyAdd), ifNotNullGetString(pay)}, "companyPay", "pdf");
+    }
+
+    /**
+     * 精确结算
+     *
+     * @return
+     */
+    @RequestMapping(value = "companyTargetPay")
+    @Transactional(rollbackFor = Exception.class)
+    public Integer companyTargetPay(@RequestBody CompanyPost companyPost) throws Exception {
+        timeService.setNow();
+        serialService.setCompanyPaySerial();
+        String companyName = companyPost.getCompanyName();
+        String remark = companyPost.getRemark();
+        Double debt = companyPost.getDebt();
+        Double pay = companyPost.getPay();
+        List<DebtHistory> debtHistoryList = companyPost.getDebtHistoryList();
+        Map<String, Double> paySerialMap = companyPost.getPaySerialMap();
+        String currency = companyPost.getCurrencyPost().getCurrency();
+        String currencyAdd = companyPost.getCurrencyPost().getCurrencyAdd();
+        /*更新单位金额*/
+        Company company = companyService.getByName(companyName);
+        if (company == null) {
+            throw new Exception("该单位不存在");
+        }
+        company.setDebt(company.getDebt() - debt);
+        companyService.update(company);
+        /*生成结账记录*/
+        CompanyPay companyPay = new CompanyPay();
+        companyPay.setCompany(companyName);
+        companyPay.setRemark(remark);
+        companyPay.setCurrencyAdd(currencyAdd);
+        companyPay.setCurrency(currency);
+        companyPay.setCompanyPaySerial(serialService.getCompanyPaySerial());
+        companyPay.setDebt(debt);
+        companyPay.setPay(pay);
+        companyPay.setDoneTime(timeService.getNow());
+        companyPay.setUserId(userService.getCurrentUser());
+        companyPayService.add(companyPay);
+        List<FieldTemplate> templateList = new ArrayList<>();
+        CompanyDebtHistory companyDebtHistory;
+        List<CompanyDebtHistory> companyDebtHistoryList = new ArrayList<>();
+        /*历史账务全部设置为已结*/
+        for (DebtHistory debtHistory : debtHistoryList) {
+            if (debtHistory.getPaySerial() != null) {//有账务历史的说明也有结账序列号，直接更新
+                debtHistoryService.setPaidById(debtHistory.getId());
+            } else {//老系统转进来的没有结账序列号，需要根据id删除一下账务历史
+                CompanyDebt companyDebt = companyDebtService.getById(debtHistory.getId());
+                companyDebtHistory = new CompanyDebtHistory(companyDebt);
+                companyDebtHistory.setDoneTime(timeService.getNow());
+                companyDebtHistory.setCompanyPaySerial(serialService.getCompanyPaySerial());
+                FieldTemplate fieldTemplate = new FieldTemplate();
+                fieldTemplate.setField1(timeService.dateToStringLong(companyDebt.getDoTime()));
+                fieldTemplate.setField2(companyDebt.getPaySerial());
+                fieldTemplate.setField3(szMath.ifNotNullGetString(companyDebt.getDebt()));
+                fieldTemplate.setField4(companyDebt.getPointOfSale());
+                fieldTemplate.setField5(companyDebt.getDescription());
+                fieldTemplate.setField6(companyDebt.getUserId());
+                templateList.add(fieldTemplate);
+                companyDebtService.delete(companyDebt);
+                companyDebtHistoryList.add(companyDebtHistory);
+            }
+        }
+        /*循环map*/
+        for (String paySerial : paySerialMap.keySet()) {
+            Double sign = 0.0;//标志，看看最后减完要是小于零就说明不对了
+            List<CompanyDebt> companyDebtList = companyDebtService.getByNameSerial(companyName, paySerial);
+            for (CompanyDebt companyDebt : companyDebtList) {
+                sign += companyDebt.getDebt();
+                /*大不大于都要进历史*/
+                companyDebtHistory = new CompanyDebtHistory(companyDebt);
+                companyDebtHistory.setDoneTime(timeService.getNow());
+                companyDebtHistory.setCompanyPaySerial(serialService.getCompanyPaySerial());
+                FieldTemplate fieldTemplate = new FieldTemplate();
+                fieldTemplate.setField1(timeService.dateToStringLong(companyDebt.getDoTime()));
+                fieldTemplate.setField2(companyDebt.getPaySerial());
+                fieldTemplate.setField3(szMath.ifNotNullGetString(companyDebt.getDebt()));
+                fieldTemplate.setField4(companyDebt.getPointOfSale());
+                fieldTemplate.setField5(companyDebt.getDescription());
+                fieldTemplate.setField6(companyDebt.getUserId());
+                templateList.add(fieldTemplate);
+                /*小于等于就删了，大于就更新*/
+                if (companyDebt.getDebt() <= paySerialMap.get(paySerial)) {
+                    /*删除之前的单位账*/
+                    companyDebtService.delete(companyDebt);
+                } else {
+                    /*更新余额*/
+                    companyDebt.setDebt(companyDebt.getDebt() - paySerialMap.get(paySerial));
+                    companyDebtHistory.setDebt(paySerialMap.get(paySerial));//进历史的数据略作修改
+                    companyDebtService.update(companyDebt);
+                }
+                companyDebtHistoryList.add(companyDebtHistory);
+            }
+            if (sign < paySerialMap.get(paySerial)) {
+                throw new Exception("结账序列号:" + paySerial + "可能存在分单，选中明细超过该笔分单金额，无法结算");
+            }
+        }
+        companyDebtHistoryService.add(companyDebtHistoryList);
+        /*判断一下是不是转单位*/
+        debtPayService.parseCurrency(currency, currencyAdd, pay, null, null, companyName + "单位结算转入", serialService.getCompanyPaySerial(), null, null);
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
         /*生成结算报表
         * 1.单位名称

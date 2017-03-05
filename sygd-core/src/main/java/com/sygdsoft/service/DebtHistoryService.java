@@ -180,4 +180,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public void deleteAddDebt(String paySerial) {
         debtHistoryMapper.deleteAddDebt(paySerial);
     }
+
+    /**
+     * 根据id号设置单位结账标志为已结
+     */
+    public void setPaidById(Integer id){
+        debtHistoryMapper.setPaidById(id);
+    }
 }

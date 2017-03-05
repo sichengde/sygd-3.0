@@ -612,7 +612,7 @@ left:65px; top:0px; font-weight:normal;
 .dwppp ul>li { float: left; padding: 5px 0px 5px 0px; margin-top: 5px; margin-bottom: 5px; text-align: left;
     height: 25px;
     line-height: 25px;}
-.dwppp li>span { width: 100px; text-align: right; display:inline-block; float: left}
+.dwppp li>span { width: 100px; text-align: right; display:inline-block; float: left; margin-right: 5px;}
 .dwppp li a { width: auto!important;}
 .dwppp input,.dwppp select { float: none!important;}
 .tanchuang .btn-group { padding-top: 10px;}

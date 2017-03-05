@@ -838,13 +838,15 @@ public class GuestOutController {
             vipRemain = vip.getNotNullVipRemain();
         }
         for (DebtHistory debtHistory : debtHistoryList) {
+            //TODO:加个单位结算验证，如果已经被结了就不能叫回了
+            //if(debtHistory.getpa)
             Debt debt = new Debt(debtHistory);
             debt.setPaySerial(null);
             debtList.add(debt);
             /*判断押金币种，如果是会员还要重新冻结*/
             if (currencyService.HY.equals(debt.getCurrency())) {
                 if (vipRemain < debt.getDeposit()) {
-                    return -2;//会员押金余额不足
+                    throw new Exception("该房采用会员押金方式，会员押金余额不足，无法提供押金，叫回失败");
                 }
                 vipRemain -= debt.getDeposit();
                 vipService.depositByVip(debt.getVipNumber(), debt.getDeposit());
@@ -869,6 +871,7 @@ public class GuestOutController {
             companyService.addConsume(debtPay.getCompany(), -debtPay.getDebtMoney());
         }
         /*逆向户籍转换，删除宾客历史，同时生成checkIn和checkInGroup(checkInHistory可以不删，反正总是要结账的)*/
+        //TODO:checkInHistory可以不删但是次数要减一
         checkOutRoomService.delete(checkOutRoomList);
         List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.get(new Query("check_out_serial=" + util.wrapWithBrackets(checkOutSerial)));
         checkInHistoryLogService.delete(checkInHistoryLogList);

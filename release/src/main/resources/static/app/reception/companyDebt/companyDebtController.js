@@ -1,10 +1,12 @@
 /**
  * Created by Administrator on 2016-07-15.
  */
-App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService', 'util', '$route', function ($scope, popUpService, dataService, util, $route) {
+App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService', 'util', '$route', 'fieldService', 'messageService', function ($scope, popUpService, dataService, util, $route, fieldService, messageService) {
     if ($route.current.params.mode == 'edit') {
         $scope.editable = true;
     }
+    $scope.currencyPayList = [];//sz-pay
+    $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
     //应收应付
     $scope.companyFields = [
         {name: '序号', id: 'id', width: '70px'},
@@ -93,7 +95,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         $scope.initConditionCompanyPay = 'company=' + util.wrapWithBrackets(d.name);
     };
     /*选择结算*/
-    $scope.chooseCompanyPay=function (companyPay) {
+    $scope.chooseCompanyPay = function (companyPay) {
         $scope.initConditionCompanyDebtHistory = 'company_pay_serial=' + util.wrapWithBrackets(companyPay.companyPaySerial);
     };
     /*选择宴请签单人*/
@@ -126,4 +128,53 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
     $scope.gridOptions = {
         columnDefs: columnDefs
     };
+    /*单位挂账明细*/
+    $scope.companyDebtRichFields = fieldService.getCompanyDebtRichFields();
+    var getSzTableItem;
+    $scope.getItem = function (getItem) {
+        getSzTableItem = getItem;
+    };
+    /*结算这些明细*/
+    $scope.companyPayThis = function () {
+        var companyDebtList = getSzTableItem();
+        var post = {};
+        post.debtList = [];
+        post.paySerialMap = {};
+        post.debt = 0.0;
+        /*先对选择的明细进行筛选，必须是同一个单位的*/
+        for (var i = 0; i < companyDebtList.length; i++) {
+            var companyDebt = companyDebtList[i];
+            if (companyDebt.szPick) {
+                if (!post.company) {
+                    post.company = companyDebt.company;
+                }
+                if (post.company != companyDebt.company) {
+                    messageService.setMessage({type: 'error', content: '所有单位名称必须一致'});
+                    popUpService.pop('message');
+                    return
+                }
+                if (companyDebt.companyPaid) {
+                    messageService.setMessage({type: 'error', content: '请仔细检查，不能有含有已结标志的数据'});
+                    popUpService.pop('message');
+                    return
+                }
+                post.debt += companyDebt.debt;
+                post.debtList.push(companyDebt);
+                /*餐饮和桑拿不支持按照二级明细结算，所以这里就是一级明细*/
+                if (companyDebt.paySerial) {
+                    if (!post.paySerialMap[companyDebt.paySerial]) {
+                        post.paySerialMap[companyDebt.paySerial] = companyDebt.debt;
+                    } else {
+                        post.paySerialMap[companyDebt.paySerial] += companyDebt.debt;
+                    }
+                }
+            }
+        }
+        if (post.debtList.length == 0) {
+            messageService.setMessage({type: 'error', content: '没有选择具体明细'});
+            popUpService.pop('message');
+            return
+        }
+        popUpService.pop('companyPay', null, null, post);
+    }
 }]);

@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by 舒展 on 2017-03-03.
  */
-public class CompanyDebtRich {
+public class CompanyDebtRich extends BaseEntity{
     private String company;
     private String lord;
     private String paySerial;

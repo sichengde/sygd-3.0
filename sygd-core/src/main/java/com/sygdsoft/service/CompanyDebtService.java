@@ -27,6 +27,13 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     }
 
     /**
+     * 根据结账序列号和单位名称获得账务列表
+     */
+    public List<CompanyDebt> getByNameSerial(String company,String paySerial){
+        return companyDebtMapper.getByNameSerial(company,paySerial);
+    }
+
+    /**
      * 获得某个单位某段时间内的挂账款
      */
     /*正负都算*/

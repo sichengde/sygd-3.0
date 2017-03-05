@@ -1,4 +1,4 @@
-App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService) {
+App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService','fieldService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService,fieldService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     var postBeginTime;
@@ -336,21 +336,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         }
     };
     /*单位挂账明细*/
-    $scope.companyDebtRichFields=[
-        {name: "单位名称", id: 'company',filter:'input'},
-        {name: "签单人", id: "lord",filter:'input'},
-        {name: "宾客", id: "name"},
-        {name: "金额", id: "debt"},
-        {name: "挂账时间", id: "companyDoTime",filter:'date'},
-        {name: "备注", id: "description" },
-        {name: "模块", id: "pointOfSale" ,filter:'list'},
-        {name: "发生时间", id: "debtDoTime" ,filter:'date'},
-        {name: "统计部门", id: "secondPointOfSale" },
-        {name: "房号", id: "roomId" ,filter:'input'},
-        {name: "接待员", id: "userId" },
-        {name: "类型", id: "category" ,filter:'list'},
-        {name: "已结标志", id: "companyPaid" ,boolean:'true',filter:'list'}
-    ];
+    $scope.companyDebtRichFields=fieldService.getCompanyDebtRichFields();
     /*$scope.companyDebtDetailGet = function (paid, beginTime, endTime) {
         var post = {};
         post.beginTime = beginTime;
