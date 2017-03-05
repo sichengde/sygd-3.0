@@ -1,5 +1,7 @@
 package com.sygdsoft.model;
 
+import java.util.Date;
+
 /**
  * Created by 舒展 on 2017-02-09.
  */
@@ -7,6 +9,7 @@ public class GuestIntegration extends BaseEntity{
     private String cardId;
     private String country;
     private String selfAccount;
+    private Date reachTime;
 
     public GuestIntegration() {
     }
@@ -33,5 +36,13 @@ public class GuestIntegration extends BaseEntity{
 
     public void setSelfAccount(String selfAccount) {
         this.selfAccount = selfAccount;
+    }
+
+    public Date getReachTime() {
+        return reachTime;
+    }
+
+    public void setReachTime(Date reachTime) {
+        this.reachTime = reachTime;
     }
 }

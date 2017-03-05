@@ -37,8 +37,7 @@ public class GuestParseController {
         GuestParse guestParse = new GuestParse();
         guestParse.setGuestParseRowList(checkInHistoryLogService.guestSourceParse(beginTime, endTime));
         guestParse.setGuestParseRowListHistory(checkInHistoryLogService.guestSourceParse(beginTimeHistory, endTimeHistory));
-        //TODO:本地外地客人时间判断
-        String remark="本地客人:"+guestIntegrationService.getLocalGuestSum()+",外地客人:"+guestIntegrationService.getOtherGuestSum();
+        String remark="本地客人:"+guestIntegrationService.getLocalGuestSum(beginTime, endTime)+",外地客人:"+guestIntegrationService.getOtherGuestSum(beginTime, endTime);
         guestParse.setRemark(remark);
         return guestParse;
     }
