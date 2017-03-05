@@ -1,13 +1,13 @@
 /**
  * Created by Administrator on 2016-07-01.
  */
-App.controller('companyPayController', ['$scope', 'webService', 'dataService', 'popUpService', 'util', 'messageService', 'dateFilter', function ($scope, webService, dataService, popUpService, util, messageService, dateFilter) {
+App.controller('companyPayController', ['$scope', 'webService', 'dataService', 'popUpService', 'util', 'messageService', 'dateFilter','numberFilter', function ($scope, webService, dataService, popUpService, util, messageService, dateFilter,numberFilter) {
     var param = popUpService.getParam();
     if (param.debtList) {//指定明细的精确解算
         $scope.targetPay = true;
         $scope.company = param.company;
-        $scope.debt = param.debt;
-        $scope.pay = param.debt;
+        $scope.debt = numberFilter(param.debt,1);
+        $scope.pay = numberFilter(param.debt,1);
     } else {//没指定账务
         $scope.company = param.name;
         $scope.totalDebt = param.debt;
