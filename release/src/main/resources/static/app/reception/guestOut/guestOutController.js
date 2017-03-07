@@ -2,7 +2,7 @@
  * Created by Administrator on 2016-04-26.
  * 离店结算
  */
-App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptionService', 'LoginService', 'popUpService', 'webService', 'roomFilter', 'host', 'doorInterfaceService', 'protocolService', 'guestOutService', '$filter', 'messageService', '$q',function ($scope, util, dataService, receptionService, LoginService, popUpService, webService, roomFilter, host, doorInterfaceService, protocolService, guestOutService, $filter, messageService,$q) {
+App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptionService', 'LoginService', 'popUpService', 'webService', 'roomFilter', 'host', 'doorInterfaceService', 'protocolService', 'guestOutService', '$filter', 'messageService', '$q', function ($scope, util, dataService, receptionService, LoginService, popUpService, webService, roomFilter, host, doorInterfaceService, protocolService, guestOutService, $filter, messageService, $q) {
     var guestOut = {};//用于提交的对象集合
     $scope.debtList = [];//消费明细数组
     var chooseRoom = [];//结账房间（在店户籍数组）
@@ -159,7 +159,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
     };
     /*中间结算*/
     var totalConsumeMiddle;//中间结算总额
-    var totalConsumeMiddleHistory=0.0;//中间结算历史总额
+    var totalConsumeMiddleHistory = 0.0;//中间结算历史总额
     $scope.debtPayMiddle = function () {
         if ($scope.debtPayMiddleMode) {/*已经是中间结算的模式下，取消中间结算*/
             $scope.debtShowList = angular.copy(dataService.getDebtList());
@@ -175,11 +175,11 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             totalConsumeMiddleHistory = 0.0;
             for (var i = 0; i < debtList.length; i++) {
                 var debt = debtList[i];
-                if (debt.consume>0) {
+                if (debt.consume > 0) {
                     debt.choose = true;
                     $scope.debtShowList.push(debt);
                     totalConsumeMiddle += debt.consume;
-                }else if(debt.consume<0){
+                } else if (debt.consume < 0) {
                     $scope.debtShowList.push(debt);
                     totalConsumeMiddleHistory += debt.consume;
                 }
@@ -205,9 +205,9 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             /*重新设置总金额*/
             $scope.currencyPayList[0].money = totalConsumeMiddle;
             $scope.totalConsume = totalConsumeMiddle;
-        }else {
-            $scope.currencyPayList[0].money = totalConsumeMiddle+totalConsumeMiddleHistory;
-            $scope.totalConsume = totalConsumeMiddle+totalConsumeMiddleHistory;
+        } else {
+            $scope.currencyPayList[0].money = totalConsumeMiddle + totalConsumeMiddleHistory;
+            $scope.totalConsume = totalConsumeMiddle + totalConsumeMiddleHistory;
         }
 
     };
@@ -475,14 +475,15 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
         guestOut.debtAddList = debtAddList;
         guestOut.remark = $scope.remark;
         guestOut.roomIdList = util.objectListToString(chooseRoom, 'roomId');
+        guestOut.real = !(dataService.getOtherParamMapValue("结账确认") == 'y');//real为真时计表
         /*先判断是不是中间结算*/
         if ($scope.debtPayMiddleMode) {
             /*如果是按照明细结算*/
-            guestOut.payMoney=$scope.totalConsume;
-            if($scope.debtPayMiddleByDetail){
-                guestOut.debtList=util.getValueListByField($scope.debtShowList,'choose',true);
+            guestOut.payMoney = $scope.totalConsume;
+            if ($scope.debtPayMiddleByDetail) {
+                guestOut.debtList = util.getValueListByField($scope.debtShowList, 'choose', true);
             }
-            if(totalConsumeMiddle-$scope.totalConsume+totalConsumeMiddleHistory<0){
+            if (totalConsumeMiddle - $scope.totalConsume + totalConsumeMiddleHistory < 0) {
                 messageService.setMessage({type: 'error', content: '剩余消费不可小于0'});
                 popUpService.pop('message');
                 return $q.resolve();
@@ -490,10 +491,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             return webService.post('guestOutMiddle', guestOut)
                 .then(
                     function (d) {
-                        /*关闭该页面*/
-                        popUpService.close('guestOut');
-                        /*弹出打印预览界面*/
-                        window.open(host + "/receipt/" + d);
+                        guestOutReCall(d,guestOut);
                     }
                 );
         }
@@ -504,10 +502,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                     webService.post('guestOut', guestOut)
                         .then(
                             function (d) {
-                                /*关闭该页面*/
-                                popUpService.close('guestOut');
-                                /*弹出打印预览界面*/
-                                window.open(host + "/receipt/" + d);
+                                guestOutReCall(d,guestOut);
                             }
                         );
                 })
@@ -515,14 +510,32 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             return webService.post('guestOut', guestOut)
                 .then(
                     function (d) {
-                        /*关闭该页面*/
-                        popUpService.close('guestOut');
-                        /*弹出打印预览界面*/
-                        window.open(host + "/receipt/" + d);
+                        guestOutReCall(d,guestOut);
                     }
                 );
         }
     };
+
+    function guestOutReCall(i,guestOut) {
+        /*弹出打印预览界面*/
+        webService.openReport(i);
+        if(!guestOut.real){
+            messageService.setMessage({content:'是否确认计表'});
+            messageService.actionChoose()
+                .then(function () {
+                    guestOut.real=true;//之前不是真实计表的话，在此计表
+                    webService.post('guestOut', guestOut)
+                        .then(function (i) {
+                            /*关闭该页面*/
+                            popUpService.close('guestOut');
+                        })
+                })
+
+        }else {
+            /*关闭该页面*/
+            popUpService.close('guestOut');
+        }
+    }
     /*转哑房*/
     $scope.guestOutLost = function () {
         $scope.currencyPayList = [

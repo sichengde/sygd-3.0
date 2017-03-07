@@ -17,8 +17,17 @@ public class GuestOut {
     private String again;//补打
     private String paySerial;//结账序列号，补打时有用
     private String checkOutSerial;//离店序列号，补打时有用
+    private Boolean real;//真实结算，针对于辽阳宾馆这种喜欢结账之后再确认的
 
     public GuestOut() {
+    }
+
+    public Boolean getNotNullReal(){
+        if(real==null){
+            return false;
+        }else {
+            return real;
+        }
     }
 
     public String getGroupAccount() {
@@ -85,4 +94,11 @@ public class GuestOut {
         this.checkOutSerial = checkOutSerial;
     }
 
+    public Boolean getReal() {
+        return real;
+    }
+
+    public void setReal(Boolean real) {
+        this.real = real;
+    }
 }

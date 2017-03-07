@@ -10,6 +10,7 @@ import com.sygdsoft.service.*;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -89,6 +90,10 @@ public class GuestOutController {
     @RequestMapping(value = "guestOut", method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
+        Boolean real=guestOut.getNotNullReal();
+        if(!real) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         /*获取有用信息*/
         timeService.setNow();//当前时间
         serialService.setCheckOutSerial();//生成离店序列号
