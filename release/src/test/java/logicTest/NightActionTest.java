@@ -4,12 +4,8 @@ import application.ApplicationTest;
 import com.google.zxing.WriterException;
 import com.sygdsoft.controller.NightController;
 import com.sygdsoft.controller.SzTableReportController;
-import com.sygdsoft.mapper.BookRoomMapper;
-import com.sygdsoft.mapper.CalendarMapper;
-import com.sygdsoft.mapper.GuestMapCheckInMapper;
-import com.sygdsoft.model.Calendar;
-import com.sygdsoft.model.CheckInHistory;
-import com.sygdsoft.model.DebtIntegration;
+import com.sygdsoft.mapper.*;
+import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.QrCodeUtil;
 import org.junit.Test;
@@ -22,7 +18,7 @@ import java.util.List;
 /**
  * Created by 舒展 on 2016-08-24.
  */
-public class NightActionTest extends ApplicationTest{
+public class NightActionTest extends ApplicationTest {
     @Autowired
     Night night;
     @Autowired
@@ -49,6 +45,13 @@ public class NightActionTest extends ApplicationTest{
     DebtIntegrationService debtIntegrationService;
     @Autowired
     GuestMapCheckInMapper guestMapCheckInMapper;
+    @Autowired
+    CheckInHistoryMapper checkInHistoryMapper;
+
+    @Test
+    public void testMapper2() {
+        List<CheckInHistory> users=checkInHistoryService.getListByCheckOutSerial("c17030709022");
+    }
 
     @Test
     public void nightAction() throws Exception {
@@ -60,30 +63,31 @@ public class NightActionTest extends ApplicationTest{
     public void testBarcodeUtil() throws IOException, WriterException {
         qrCodeUtil.generate("哈哈好使了");
     }
+
     @Test
-    public void testQuarter()throws Exception{
+    public void testQuarter() throws Exception {
         /*Date beginTime=timeService.getMinMonth(new Date());
         Date endTime=timeService.getMaxMonth(new Date() );
         System.out.println(beginTime);
         System.out.println(endTime);*/
-        Date a=timeService.getMinMonth(new Date());
+        Date a = timeService.getMinMonth(new Date());
         timeService.setAdjustDay(20);
         System.out.println(timeService.adjustDay(a));
     }
 
     @Test
     public void testMapper() throws Exception {
-        List<String> a=guestMapCheckInMapper.getHistoryRoomPriceByCardId("3123123123123123","普通标间");
+        List<String> a = guestMapCheckInMapper.getHistoryRoomPriceByCardId("3123123123123123", "普通标间");
     }
 
     @Test
-    public void testRegisterService() throws Exception{
+    public void testRegisterService() throws Exception {
         registerService.sendMessage();
     }
 
     @Test
-    public void testGetListByCheckOutSerial(){
-        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListByCheckOutSerial("160911005");
+    public void testGetListByCheckOutSerial() {
+        List<CheckInHistory> checkInHistoryList = checkInHistoryService.getListByCheckOutSerial("160911005");
     }
 
     @Test
@@ -93,9 +97,10 @@ public class NightActionTest extends ApplicationTest{
 
     @Autowired
     CalendarMapper calendarMapper;
+
     @Test
-    public void generateCalendar()throws Exception{
-        Calendar calendar=new Calendar();
+    public void generateCalendar() throws Exception {
+        Calendar calendar = new Calendar();
         calendar.setDate(new Date("2015-01-01"));
     }
 

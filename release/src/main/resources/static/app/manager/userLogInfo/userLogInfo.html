@@ -2,12 +2,17 @@
     <sz-tab>
         <sz-pane title="操作日志">
             <div class="tableBox">
-                <sz-table fields="userLogFields" head="true" deep-search="true" button="add update delete" search-condition="condition" max-num="200" items-per-page="15"  print="操作日志"></sz-table>
+                <sz-table fields="userLogFields" head="true" deep-search="true" button="add update delete" search-condition="condition" max-num="200" items-per-page="15" print="操作日志"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="已开房间" ng-if="category=='reception' || category==null">
+            <div class="tableDiv">
+                <ul>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="groupCheckIn()" value="团队占房"></li>
+                </ul>
+            </div>
             <div class="tableBox">
-                <sz-table fields="checkInFields" head="true" deep-search="true" button="add update delete" row-click="chooseCheckIn(d)" print="在店宾客"></sz-table>
+                <sz-table fields="checkInFields" head="true" search-condition="checkInCondition" deep-search="true" button="add update delete" row-click="chooseCheckIn(d)" order-by-list="checkInOrderBy" print="在店宾客"></sz-table>
                 <div class="szSheet" style="margin-top:100px;">
                     <sz-tab>
                         <sz-pane title="客人信息">

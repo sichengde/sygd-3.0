@@ -14,6 +14,7 @@
  * itemClick:点击表格
  * alwaysAdd:持续添加（点完保存后可以继续添加）
  * searchCondition:固定搜索条件
+ * orderByList:固定排序条件
  * initRefresh:将初始化方法赋值到外部，可以在外部刷新,调用时需要加个参数f，为传递出去的参数，然后自行赋值//现在已经不能传递筛选条件，只能单纯刷新(例如有items时外部刷新赋值item后必须要手动调用一下刷新方法，否则数据不会显示)，改用监听searchCondition实现
  * rightClick:右键弹出画面的文件名
  * state:初始化状态，有些空表，例如散客开房的宾客，初始化就应该是新增状态add
@@ -84,6 +85,7 @@ App.directive('szTable', ['$filter', function ($filter) {
             itemClick: '&',
             alwaysAdd: '@',
             searchCondition: '=?',
+            orderByList: '=?',
             initRefresh: '&',
             rightClick: '@',
             state: '@',
@@ -275,8 +277,14 @@ App.directive('szTable', ['$filter', function ($filter) {
                     if ($scope.maxNum) {
                         p.num = $scope.maxNum;
                     }
-                    if (orderByList.length > 0) {
+                    /*拼接外部排序与内部排序，外部优先级高*/
+                    if (orderByList && !$scope.orderByList) {
                         p.orderByList = orderByList;
+                    } else if (!orderByList && $scope.orderByList) {
+                        p.orderByList = $scope.orderByList;
+                    }
+                    if (orderByList && $scope.orderByList) {
+                        p.orderByList = $scope.orderByList.concat(orderByList);
                     }
                     if (orderByListDesc.length > 0) {
                         p.orderByListDesc = orderByListDesc;

@@ -138,6 +138,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "vipNumber", column = "vip_number"),
             @Result(property = "fromRoom", column = "from_room"),
+            @Result(property = "companyPaid", column = "company_paid"),
     })
     List<DebtHistory> getListExcludeAddDebt(@Param("paySerial") String paySerial);
 

@@ -838,8 +838,9 @@ public class GuestOutController {
             vipRemain = vip.getNotNullVipRemain();
         }
         for (DebtHistory debtHistory : debtHistoryList) {
-            //TODO:加个单位结算验证，如果已经被结了就不能叫回了
-            //if(debtHistory.getpa)
+            if(debtHistory.getNotNullCompanyPaid()){
+                throw new Exception("该房间转单位账已经参与单位结算，无法叫回");
+            }
             Debt debt = new Debt(debtHistory);
             debt.setPaySerial(null);
             debtList.add(debt);
@@ -871,10 +872,8 @@ public class GuestOutController {
             companyService.addConsume(debtPay.getCompany(), -debtPay.getDebtMoney());
         }
         /*逆向户籍转换，删除宾客历史，同时生成checkIn和checkInGroup(checkInHistory可以不删，反正总是要结账的)*/
-        //TODO:checkInHistory可以不删但是次数要减一
         checkOutRoomService.delete(checkOutRoomList);
         List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.get(new Query("check_out_serial=" + util.wrapWithBrackets(checkOutSerial)));
-        checkInHistoryLogService.delete(checkInHistoryLogList);
         List<CheckIn> checkInList = new ArrayList<>();
         for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
             CheckIn checkIn = new CheckIn(checkInHistoryLog);
@@ -891,8 +890,11 @@ public class GuestOutController {
         List<CheckInGuest> checkInGuestList = new ArrayList<>();
         for (CheckInHistory checkInHistory : checkInHistoryList) {
             checkInGuestList.add(new CheckInGuest(checkInHistory));
+            checkInHistory.setNum(checkInHistory.getNum()-1);
         }
         checkInGuestService.add(checkInGuestList);
+        checkInHistoryService.update(checkInHistoryList);
+        checkInHistoryLogService.delete(checkInHistoryLogList);
         /*操作员记录*/
         userLogService.addUserLog("叫回账单:" + checkOutSerial, userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
         return 0;

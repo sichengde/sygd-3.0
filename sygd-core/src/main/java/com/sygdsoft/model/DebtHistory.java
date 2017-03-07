@@ -65,6 +65,9 @@ public class DebtHistory extends BaseEntity{
     public Double getNotNullConsume(){
         return NullJudgement.nullToZero(consume);
     }
+    public Boolean getNotNullCompanyPaid(){
+        return NullJudgement.nullToZero(companyPaid);
+    }
 
     public String getPaySerial() {
         return paySerial;
