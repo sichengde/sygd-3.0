@@ -38,7 +38,7 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 根据时间获得发生额，分，房吧，零售和房费
      */
-    public String getSumByPointOfSale(Date beginTime, Date endTime, String pointOfSale) {
+    public Double getSumByPointOfSale(Date beginTime, Date endTime, String pointOfSale) {
         if (pointOfSale == null) {
             return debtIntegrationMapper.getSumConsume(beginTime, endTime);
         } else {

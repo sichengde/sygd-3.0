@@ -3,6 +3,7 @@ package com.sygdsoft.controller;
 import com.sygdsoft.model.HotelParseLine;
 import com.sygdsoft.model.HotelParseRow;
 import com.sygdsoft.model.PointOfSale;
+import com.sygdsoft.model.ReportJson;
 import com.sygdsoft.service.DebtIntegrationService;
 import com.sygdsoft.service.DeskDetailHistoryService;
 import com.sygdsoft.service.PointOfSaleService;
@@ -18,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
-import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 /**
  * Created by Administrator on 2016/11/29 0029.
@@ -36,7 +36,8 @@ public class HotelParseController {
     DeskDetailHistoryService deskDetailHistoryService;
 
     @RequestMapping(value = "hotelParse")
-    public List<HotelParseRow> hotelParse() throws Exception {
+    public List<HotelParseRow> hotelParse(@RequestBody ReportJson reportJson) throws Exception {
+        Date date=reportJson.getBeginTime();
         timeService.setNow();
         /*先获取有多少营业部门*/
         List<PointOfSale> pointOfSaleList = pointOfSaleService.get(null);
@@ -47,15 +48,37 @@ public class HotelParseController {
                 case "接待":
                     /*一行一行填写*/
                     String[] secondPointOfSales=pointOfSale.getSecondPointOfSale().split(" ");
+                    Double total1=0.0;
+                    Double total2=0.0;
+                    Double total3=0.0;
+                    Double total4=0.0;
+                    Double total5=0.0;
+                    Double total6=0.0;
+                    HotelParseRow row1=new HotelParseRow();
+                    hotelParseRowList.add(row1);
                     for (String secondPointOfSale : secondPointOfSales) {
-                        hotelParseRowList.add(this.getHotelSumByPointOfSale(secondPointOfSale));
+                        HotelParseRow hotelParseRow=this.getHotelSumByPointOfSale(secondPointOfSale,date);
+                        total1+=hotelParseRow.getDayTotal();
+                        total2+=hotelParseRow.getMonthTotal();
+                        total3+=hotelParseRow.getYearTotal();
+                        total4+=hotelParseRow.getDayHistoryTotal();
+                        total5+=hotelParseRow.getMonthHistoryTotal();
+                        total6+=hotelParseRow.getYearHistoryTotal();
+                        hotelParseRowList.add(hotelParseRow);
                     }
+                    row1.setPointOfSale("客房总计");
+                    row1.setDayTotal(total1);
+                    row1.setMonthTotal(total2);
+                    row1.setYearTotal(total3);
+                    row1.setDayHistoryTotal(total4);
+                    row1.setMonthHistoryTotal(total5);
+                    row1.setYearHistoryTotal(total6);
                     break;
                 case "餐饮":
                     String[] secondPointOfSaleList = pointOfSale.getSecondPointOfSale().split(" ");
-                    hotelParseRowList.add(this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale(), null));
+                    hotelParseRowList.add(this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale()+"总计", null,date));
                     for (String s : secondPointOfSaleList) {
-                        hotelParseRowList.add(this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale(), s));
+                        hotelParseRowList.add(this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale(), s,date));
                     }
                     break;
                 case "桑拿":
@@ -129,7 +152,7 @@ public class HotelParseController {
         return hotelParseLine;
     }
 
-    private HotelParseRow getHotelSumByPointOfSale(String pointOfSale) throws ParseException {
+    private HotelParseRow getHotelSumByPointOfSale(String pointOfSale,Date date) throws ParseException {
         HotelParseRow hotelParseRow = new HotelParseRow();
         hotelParseRow.setPointOfSale(pointOfSale);
         if (pointOfSale.equals("接待")) {
@@ -138,18 +161,17 @@ public class HotelParseController {
             hotelParseRow.setFatherFirstPointOfSale("接待");
         }
         hotelParseRow.setModule("接待");
-        Date today = timeService.getNow();
-        Date todayHistory = timeService.addYear(today, -1);
-        hotelParseRow.setDayTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinTime(today), timeService.getMaxTime(today), pointOfSale));
-        hotelParseRow.setMonthTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinMonth(today), timeService.getMaxMonth(today), pointOfSale));
-        hotelParseRow.setYearTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinYear(today), timeService.getMaxYear(today), pointOfSale));
+        Date todayHistory = timeService.addYear(date, -1);
+        hotelParseRow.setDayTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinTime(date), timeService.getMaxTime(date), pointOfSale));
+        hotelParseRow.setMonthTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinMonth(date), timeService.getMaxMonth(date), pointOfSale));
+        hotelParseRow.setYearTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinYear(date), timeService.getMaxYear(date), pointOfSale));
         hotelParseRow.setDayHistoryTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinTime(todayHistory), timeService.getMaxTime(todayHistory), pointOfSale));
         hotelParseRow.setMonthHistoryTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinMonth(todayHistory), timeService.getMaxMonth(todayHistory), pointOfSale));
         hotelParseRow.setYearHistoryTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinYear(todayHistory), timeService.getMaxYear(todayHistory), pointOfSale));
         return hotelParseRow;
     }
 
-    private HotelParseRow getCKSumByPointOfSale(String firstPointOfSale, String secondPointOfSale) throws ParseException {
+    private HotelParseRow getCKSumByPointOfSale(String firstPointOfSale, String secondPointOfSale,Date date) throws ParseException {
         HotelParseRow hotelParseRow = new HotelParseRow();
         hotelParseRow.setModule("餐饮");
         if (secondPointOfSale != null) {
@@ -158,14 +180,13 @@ public class HotelParseController {
         } else {
             hotelParseRow.setPointOfSale(firstPointOfSale);
         }
-        Date today = timeService.getNow();
-        Date todayHistory = timeService.addYear(today, -1);
-        hotelParseRow.setDayTotal(ifNotNullGetString(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinTime(today), timeService.getMaxTime(today), firstPointOfSale, secondPointOfSale)));
-        hotelParseRow.setMonthTotal(ifNotNullGetString(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinMonth(today), timeService.getMaxMonth(today), firstPointOfSale, secondPointOfSale)));
-        hotelParseRow.setYearTotal(ifNotNullGetString(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinYear(today), timeService.getMaxYear(today), firstPointOfSale, secondPointOfSale)));
-        hotelParseRow.setDayHistoryTotal(ifNotNullGetString(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinTime(todayHistory), timeService.getMaxTime(todayHistory), firstPointOfSale, secondPointOfSale)));
-        hotelParseRow.setMonthHistoryTotal(ifNotNullGetString(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinMonth(todayHistory), timeService.getMaxMonth(todayHistory), firstPointOfSale, secondPointOfSale)));
-        hotelParseRow.setYearHistoryTotal(ifNotNullGetString(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinYear(todayHistory), timeService.getMaxYear(todayHistory), firstPointOfSale, secondPointOfSale)));
+        Date todayHistory = timeService.addYear(date, -1);
+        hotelParseRow.setDayTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinTime(date), timeService.getMaxTime(date), firstPointOfSale, secondPointOfSale));
+        hotelParseRow.setMonthTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinMonth(date), timeService.getMaxMonth(date), firstPointOfSale, secondPointOfSale));
+        hotelParseRow.setYearTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinYear(date), timeService.getMaxYear(date), firstPointOfSale, secondPointOfSale));
+        hotelParseRow.setDayHistoryTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinTime(todayHistory), timeService.getMaxTime(todayHistory), firstPointOfSale, secondPointOfSale));
+        hotelParseRow.setMonthHistoryTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinMonth(todayHistory), timeService.getMaxMonth(todayHistory), firstPointOfSale, secondPointOfSale));
+        hotelParseRow.setYearHistoryTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinYear(todayHistory), timeService.getMaxYear(todayHistory), firstPointOfSale, secondPointOfSale));
         return hotelParseRow;
     }
 }

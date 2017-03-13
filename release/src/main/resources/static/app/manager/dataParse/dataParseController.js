@@ -1,4 +1,4 @@
-App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService','fieldService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService,fieldService) {
+App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', 'fieldService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService, fieldService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     var postBeginTime;
@@ -233,6 +233,13 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
             })
     };
+    /*发生额与结算款*/
+    $scope.debtAndPayReport = function (beginTime) {
+        webService.post('debtAndPayReport', {beginTime: beginTime})
+            .then(function (r) {
+
+            })
+    };
     /*客源人数分析*/
     $scope.guestSourceParseFields = [
         {name: '客源', id: 'guestSource'},
@@ -336,36 +343,36 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         }
     };
     /*单位挂账明细*/
-    $scope.companyDebtRichFields=fieldService.getCompanyDebtRichFields();
+    $scope.companyDebtRichFields = fieldService.getCompanyDebtRichFields();
     /*$scope.companyDebtDetailGet = function (paid, beginTime, endTime) {
-        var post = {};
-        post.beginTime = beginTime;
-        post.endTime = endTime;
-        post.paid = paid;
-        webService.post('companyDebtDetailGet', post)
-            .then(function (r) {
-                var rowData=[];
-                for (var i = 0; i < r.length; i++) {
-                    var company = r[i];
-                    var companyDebtList;
-                    if(company.CompanyDebtIntegration){
-                        companyDebtList=company.CompanyDebtIntegration;
-                    }else if(company.CompanyDebt){
-                        companyDebtList=company.CompanyDebt;
-                    }
-                    if(companyDebtList){//有明细
-                        for (var j = 0; j < companyDebtList.length; j++) {
-                            var companyDebt = companyDebtList[j];
+     var post = {};
+     post.beginTime = beginTime;
+     post.endTime = endTime;
+     post.paid = paid;
+     webService.post('companyDebtDetailGet', post)
+     .then(function (r) {
+     var rowData=[];
+     for (var i = 0; i < r.length; i++) {
+     var company = r[i];
+     var companyDebtList;
+     if(company.CompanyDebtIntegration){
+     companyDebtList=company.CompanyDebtIntegration;
+     }else if(company.CompanyDebt){
+     companyDebtList=company.CompanyDebt;
+     }
+     if(companyDebtList){//有明细
+     for (var j = 0; j < companyDebtList.length; j++) {
+     var companyDebt = companyDebtList[j];
 
-                        }
-                    }
-                }
-                $scope.showCompanyDebtDetailReport = true;
-                $scope.companyDebtReportData = r;
-                $scope.companyDebtReportList = r.companyDebtReportRowList;
-                $scope.queryMessageCompanyDebtReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
-            })
-    };*/
+     }
+     }
+     }
+     $scope.showCompanyDebtDetailReport = true;
+     $scope.companyDebtReportData = r;
+     $scope.companyDebtReportList = r.companyDebtReportRowList;
+     $scope.queryMessageCompanyDebtReport = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
+     })
+     };*/
     /*全店收入表*/
     $scope.hotelParseFields = [
         {name: '营业部门', id: 'pointOfSale'},
@@ -376,8 +383,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '当月历史同期', id: 'monthHistoryTotal'},
         {name: '当年历史同期', id: 'yearHistoryTotal'}
     ];
-    $scope.initHotelParse = function () {
-        webService.get('hotelParse')
+    $scope.hotelParseReport=function (beginTime) {
+        webService.post('hotelParse',{beginTime:beginTime})
             .then(function (r) {
                 $scope.hotelParseList = r;
             })
