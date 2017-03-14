@@ -1,4 +1,4 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.restaurant;
 
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.DeskDetailHistoryService;

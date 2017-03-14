@@ -1,17 +1,12 @@
 package com.sygdsoft.controller.room;
 
-import com.sygdsoft.controller.DailyReportController;
-import com.sygdsoft.controller.HotelParseController;
 import com.sygdsoft.model.CompanyPay;
 import com.sygdsoft.model.HotelParseRow;
 import com.sygdsoft.model.ReportJson;
-import com.sygdsoft.model.room.DailyReportReturn;
 import com.sygdsoft.model.room.DebtAndPayReturn;
 import com.sygdsoft.model.room.DebtAndPayRow;
 import com.sygdsoft.service.*;
-import com.sygdsoft.util.NullJudgement;
 import com.sygdsoft.util.SzMath;
-import org.omg.CORBA.portable.ValueInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

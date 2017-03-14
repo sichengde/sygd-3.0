@@ -1,4 +1,4 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.room;
 
 import com.sygdsoft.jsonModel.RoomCategoryLine;
 import com.sygdsoft.jsonModel.report.RoomCategoryRow;

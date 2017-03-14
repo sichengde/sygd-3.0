@@ -1,4 +1,4 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.room;
 
 import com.sygdsoft.model.HotelParseLine;
 import com.sygdsoft.model.HotelParseRow;

@@ -1,4 +1,4 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.common;
 
 import com.sygdsoft.model.FieldTemplate;
 import com.sygdsoft.model.SzTable;

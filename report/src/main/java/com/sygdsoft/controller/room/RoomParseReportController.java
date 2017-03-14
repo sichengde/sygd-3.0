@@ -162,6 +162,9 @@ public class RoomParseReportController {
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getSumRoomConsumeByDateGuestSource(beginTime, endTime);
         Integer index = 0;
         for (DebtIntegration debtIntegration : debtIntegrationList) {
+            if(debtIntegration==null){
+                continue;
+            }
             if (debtIntegration.getGuestSource() == null) {
                 continue;
             }

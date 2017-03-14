@@ -1,4 +1,4 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.restaurant;
 
 import com.sygdsoft.jsonModel.report.DeskCategoryOut;
 import com.sygdsoft.model.ReportJson;

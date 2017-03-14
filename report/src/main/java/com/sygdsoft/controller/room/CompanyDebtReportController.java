@@ -1,4 +1,4 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.room;
 
 import com.sygdsoft.jsonModel.report.CompanyDebtReportRow;
 import com.sygdsoft.model.Company;
