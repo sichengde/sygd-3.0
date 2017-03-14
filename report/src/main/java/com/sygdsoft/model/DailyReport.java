@@ -40,6 +40,16 @@ public class DailyReport {
         Field field=this.getClass().getDeclaredField("paramField"+index);
         field.set(this,value);
     }
+
+    /**
+     * 获取第N个域的值
+     * @return
+     */
+    public String getParamFieldN(Integer index)throws Exception{
+        Field field=this.getClass().getDeclaredField("paramField"+index);
+        return (String) field.get(this);
+    }
+
     public String getSecondPointOfSale() {
         return secondPointOfSale;
     }

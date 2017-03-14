@@ -23,7 +23,7 @@
                 </li>
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="debtAndPayReport(beginTime)" value="预览"></li>
             </div>
-            <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage" remark="roomCategorySaleRemark" items-per-page="20"></sz-table>
+            <sz-table fields="debtAndPayFields" items="debtAndPayList" button="add delete update" print="发生额与结算款分析" ng-if="debtAndPayList" query-message="debtAndPayQueryMessage" remark="debtAndPayRemark" items-per-page="20"></sz-table>
         </sz-pane>
         <sz-pane title="客房经营分析">
             <div ng-show="showRoomParseReport" ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>

@@ -3,6 +3,7 @@ package com.sygdsoft.sqlProvider;
 import com.sygdsoft.util.Util;
 
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Created by Administrator on 2016/9/11 0011.
@@ -18,6 +19,14 @@ public class DebtHistorySql {
             return "select sum(consume) consume from debt_history where point_of_sale="+util.wrapWithBrackets(pointOfSale)+" and self_account="+util.wrapWithBrackets(serial);
         }else {
             return "select sum(consume) consume from debt_history where point_of_sale="+util.wrapWithBrackets(pointOfSale)+" and group_account="+util.wrapWithBrackets(serial);
+        }
+    }
+    public String getHistoryConsume(Map<String, Object> parameters){
+        String pointOfSale=(String) parameters.get("pointOfSale");
+        if(pointOfSale==null){
+            return "select ifnull(sum(consume),0) consume from debt_history where consume>0 and done_time>#{beginTime} and done_time<#{endTime}";
+        }else {
+            return "select ifnull(sum(consume),0) consume from debt_history where consume>0 and done_time>#{beginTime} and done_time<#{endTime} and point_of_sale=#{pointOfSale}";
         }
     }
 }

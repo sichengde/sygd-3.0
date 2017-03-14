@@ -42,6 +42,12 @@ public class HotelParseController {
         /*先获取有多少营业部门*/
         List<PointOfSale> pointOfSaleList = pointOfSaleService.get(null);
         List<HotelParseRow> hotelParseRowList = new ArrayList<>();
+        Double totalFinal1=0.0;
+        Double totalFinal2=0.0;
+        Double totalFinal3=0.0;
+        Double totalFinal4=0.0;
+        Double totalFinal5=0.0;
+        Double totalFinal6=0.0;
         for (PointOfSale pointOfSale : pointOfSaleList) {
             String module = pointOfSale.getModule();
             switch (module) {
@@ -64,6 +70,12 @@ public class HotelParseController {
                         total4+=hotelParseRow.getDayHistoryTotal();
                         total5+=hotelParseRow.getMonthHistoryTotal();
                         total6+=hotelParseRow.getYearHistoryTotal();
+                        totalFinal1+=hotelParseRow.getDayTotal();
+                        totalFinal2+=hotelParseRow.getMonthTotal();
+                        totalFinal3+=hotelParseRow.getYearTotal();
+                        totalFinal4+=hotelParseRow.getDayHistoryTotal();
+                        totalFinal5+=hotelParseRow.getMonthHistoryTotal();
+                        totalFinal6+=hotelParseRow.getYearHistoryTotal();
                         hotelParseRowList.add(hotelParseRow);
                     }
                     row1.setPointOfSale("客房总计");
@@ -73,10 +85,20 @@ public class HotelParseController {
                     row1.setDayHistoryTotal(total4);
                     row1.setMonthHistoryTotal(total5);
                     row1.setYearHistoryTotal(total6);
+                    row1.setModule("接待");
+                    row1.setSum(true);
                     break;
                 case "餐饮":
                     String[] secondPointOfSaleList = pointOfSale.getSecondPointOfSale().split(" ");
-                    hotelParseRowList.add(this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale()+"总计", null,date));
+                    HotelParseRow hotelParseRow=this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale(), null,date);
+                    hotelParseRow.setSum(true);
+                    hotelParseRowList.add(hotelParseRow);
+                    totalFinal1+=hotelParseRow.getDayTotal();
+                    totalFinal2+=hotelParseRow.getMonthTotal();
+                    totalFinal3+=hotelParseRow.getYearTotal();
+                    totalFinal4+=hotelParseRow.getDayHistoryTotal();
+                    totalFinal5+=hotelParseRow.getMonthHistoryTotal();
+                    totalFinal6+=hotelParseRow.getYearHistoryTotal();
                     for (String s : secondPointOfSaleList) {
                         hotelParseRowList.add(this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale(), s,date));
                     }
@@ -86,6 +108,16 @@ public class HotelParseController {
                     break;
             }
         }
+        HotelParseRow rowLast=new HotelParseRow();
+        rowLast.setPointOfSale("总计");
+        rowLast.setDayTotal(totalFinal1);
+        rowLast.setMonthTotal(totalFinal2);
+        rowLast.setYearTotal(totalFinal3);
+        rowLast.setDayHistoryTotal(totalFinal4);
+        rowLast.setMonthHistoryTotal(totalFinal5);
+        rowLast.setYearHistoryTotal(totalFinal6);
+        rowLast.setSumTotal(true);
+        hotelParseRowList.add(rowLast);
         return hotelParseRowList;
     }
 
@@ -178,7 +210,7 @@ public class HotelParseController {
             hotelParseRow.setPointOfSale(secondPointOfSale);
             hotelParseRow.setFatherFirstPointOfSale(firstPointOfSale);
         } else {
-            hotelParseRow.setPointOfSale(firstPointOfSale);
+            hotelParseRow.setPointOfSale(firstPointOfSale+"总计");
         }
         Date todayHistory = timeService.addYear(date, -1);
         hotelParseRow.setDayTotal(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(timeService.getMinTime(date), timeService.getMaxTime(date), firstPointOfSale, secondPointOfSale));
