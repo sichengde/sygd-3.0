@@ -99,6 +99,13 @@ public class SzMath {
         return Double.valueOf(twoDecimal.format(var1));
     }
 
+    public Double formatTwoDecimalReturnDouble(String var1) {
+        if(var1==null){
+            return 0.0;
+        }
+        return Double.valueOf(twoDecimal.format(var1));
+    }
+
     public Double formatTwoDecimalReturnDouble(Double var1, Double var2) {
         if(var2==0){
             var2=1.0;

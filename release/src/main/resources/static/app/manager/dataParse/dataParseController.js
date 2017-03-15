@@ -234,10 +234,20 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             })
     };
     /*发生额与结算款*/
+    $scope.debtAndPayFields=[
+        {name:'营业部门',id:'title'},
+        {name:'当日发生额',id:'debtDay'},
+        {name:'当月发生额',id:'debtMonth'},
+        {name:'当年发生额',id:'debtYear'},
+        {name:'当日结算款',id:'payDay'},
+        {name:'当月结算款',id:'payMonth'},
+        {name:'当年结算款',id:'payYear'}
+    ];
     $scope.debtAndPayReport = function (beginTime) {
         webService.post('debtAndPayReport', {beginTime: beginTime})
             .then(function (r) {
-
+                $scope.debtAndPayList=r.debtAndPayRowList;
+                $scope.debtAndPayQueryMessage=dateFilter(beginTime, 'yyyy-MM-dd');
             })
     };
     /*客源人数分析*/

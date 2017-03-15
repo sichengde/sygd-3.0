@@ -13,6 +13,8 @@ public class HotelParseRow {
     private Double yearHistoryTotal;//当年历史同期
     private String module;//所属模块，便于二次曲线图的生成，前端不予以显示
     private String fatherFirstPointOfSale;//是否是二级营业部门，便于二次曲线图的生成，前端不予以显示
+    private Boolean sum;//个营业部门的合计
+    private Boolean sumTotal;//最终的合计
 
     public HotelParseRow() {
     }
@@ -25,6 +27,22 @@ public class HotelParseRow {
         this.dayHistoryTotal = dayHistoryTotal;
         this.monthHistoryTotal = monthHistoryTotal;
         this.yearHistoryTotal = yearHistoryTotal;
+    }
+
+    public Boolean getNotNullSum(){
+        if(sum==null){
+            return false;
+        }else {
+            return sum;
+        }
+    }
+
+    public Boolean getNotNullSumTotal(){
+        if(sumTotal==null){
+            return false;
+        }else {
+            return sumTotal;
+        }
     }
 
     public String getPointOfSale() {
@@ -97,5 +115,21 @@ public class HotelParseRow {
 
     public void setFatherFirstPointOfSale(String fatherFirstPointOfSale) {
         this.fatherFirstPointOfSale = fatherFirstPointOfSale;
+    }
+
+    public Boolean getSum() {
+        return sum;
+    }
+
+    public void setSum(Boolean sum) {
+        this.sum = sum;
+    }
+
+    public Boolean getSumTotal() {
+        return sumTotal;
+    }
+
+    public void setSumTotal(Boolean sumTotal) {
+        this.sumTotal = sumTotal;
     }
 }

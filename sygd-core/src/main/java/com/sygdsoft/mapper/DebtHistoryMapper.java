@@ -58,7 +58,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      * 计算该类别在该日期的结算款
      * pointOfSale指的是二级营业部门
      */
-    @Select("select ifnull(sum(consume),0) consume from debt_history where consume>0 and done_time>#{beginTime} and done_time<#{endTime} and point_of_sale=#{pointOfSale}")
+    @SelectProvider(type = DebtHistorySql.class, method = "getHistoryConsume")
     @ResultType(Double.class)
     Double getHistoryConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
 

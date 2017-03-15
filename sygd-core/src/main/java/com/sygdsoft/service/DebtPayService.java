@@ -58,67 +58,32 @@ public class DebtPayService extends BaseService<DebtPay> {
     SzMath szMath;
 
     /**
-     * 查找结账记录(自付账号)
+     * 查找结账记录
      */
+    /*自付账号*/
     public List<DebtPay> getListBySelfAccount(String selfAccount) {
         DebtPay debtPayQuery = new DebtPay();
         debtPayQuery.setSelfAccount(selfAccount);
         return debtPayMapper.select(debtPayQuery);
     }
 
-    /**
-     * 查找结账记录(公付账号)
-     */
-    public List<DebtPay> getListByGroupAccount(String groupAccount) {
-        DebtPay debtPayQuery = new DebtPay();
-        debtPayQuery.setSelfAccount(groupAccount);
-        return debtPayMapper.select(debtPayQuery);
-    }
-
-    /**
-     * 查找结账记录(公付账号)
-     */
+    /*结账序列号*/
     public List<DebtPay> getListByPaySerial(String paySerial) {
         DebtPay debtPayQuery = new DebtPay();
         debtPayQuery.setPaySerial(paySerial);
         return debtPayMapper.select(debtPayQuery);
     }
 
-    /**
-     * 获得该日期该币种的消费额通过时间
-     */
-    public Double getDebtMoneyByCurrencyDate(String currency, Date beginTime, Date endTime) {
-        return debtPayMapper.getDebtMoneyByCurrencyDate(currency, beginTime, endTime);
-    }
-
-    public List<DebtPay> getByCurrencyDate(String currency, Date beginTime, Date endTime) {
-        return debtPayMapper.getByCurrencyDate(currency, beginTime, endTime);
+    /*时间和币种*/
+    public List<DebtPay> getList(String userId, String currency, Date beginTime, Date endTime,String orderByList) {
+        return debtPayMapper.getList(userId,currency, beginTime, endTime,  orderByList);
     }
 
     /**
      * 获得该日期该币种的消费额
      */
-    public Double getDebtMoneyByCurrencyDateUser(String userId, String currency, Date beginTime, Date endTime) {
-        if(userId==null){
-            return debtPayMapper.getDebtMoneyByCurrencyDate(currency, beginTime, endTime);
-        }else {
-            return debtPayMapper.getDebtMoneyByDateUserCurrency(userId, beginTime, endTime, currency);
-        }
-    }
-
-    public List<DebtPay> getByCurrencyDateUser(String userId, String currency, Date beginTime, Date endTime) {
-        return debtPayMapper.getByDateUserCurrency(userId, beginTime, endTime, currency);
-    }
-
-    /**
-     * 获得该操作员该时间段有效币种（参与统计）的总和
-     */
-    public Double getDebtMoneyByDateUser(String userId,  Date beginTime, Date endTime) {
-        if(userId==null){
-            return debtPayMapper.getDebtMoneyByDate(beginTime, endTime);
-        }else {
-            return debtPayMapper.getDebtMoneyByDateUser(userId, beginTime, endTime);
-        }
+    public Double getDebtMoney(String userId, String currency,Boolean payTotal, Date beginTime, Date endTime) {
+        return debtPayMapper.getDebtMoney(userId, currency, payTotal, beginTime, endTime);
     }
 
     /**
@@ -130,12 +95,12 @@ public class DebtPayService extends BaseService<DebtPay> {
      * @param roomList     离店结算时的房号
      * @param groupAccount 离店结算时的公付账号
      */
-    public String parseCurrency(String currency, String currencyAdd, Double money, List<String> roomList, String groupAccount, String description,String paySerial,String pointOfSale,String secondPointOfSale) throws Exception {
+    public String parseCurrency(String currency, String currencyAdd, Double money, List<String> roomList, String groupAccount, String description, String paySerial, String pointOfSale, String secondPointOfSale) throws Exception {
         String changeDebt = "";
         switch (currency) {
             case "转房客"://转房客，新建一条账务
                 /*看看该客是不是在店*/
-                if(checkInService.getByRoomId(currencyAdd)==null || currencyAdd==null){
+                if (checkInService.getByRoomId(currencyAdd) == null || currencyAdd == null) {
                     throw new Exception("房间号不存在或者没有开房");
                 }
                 Debt debt = new Debt();
@@ -164,14 +129,14 @@ public class DebtPayService extends BaseService<DebtPay> {
                 }
                 if (groupAccount == null) {
                     if (roomList == null) {//不是客房结账
-                        changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, null,paySerial,pointOfSale);
+                        changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, null, paySerial, pointOfSale);
                     } else {
                         CheckIn checkIn = checkInService.getByRoomId(roomList.get(0));//在店户籍
-                        changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, checkIn.getSelfAccount(), checkIn.getGroupAccount(),paySerial,pointOfSale);
+                        changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, checkIn.getSelfAccount(), checkIn.getGroupAccount(), paySerial, pointOfSale);
                     }
                 } else {
                     CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
-                    changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, checkInGroup.getGroupAccount(),paySerial,pointOfSale);
+                    changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, checkInGroup.getGroupAccount(), paySerial, pointOfSale);
                 }
                 break;
             case "转单位"://转单位
@@ -183,7 +148,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 } catch (Exception e) {
                     throw new Exception("请输入签单单位和签单人");
                 }
-                changeDebt += companyService.companyAddDebt(company, lord, money,description,pointOfSale,secondPointOfSale,paySerial);
+                changeDebt += companyService.companyAddDebt(company, lord, money, description, pointOfSale, secondPointOfSale, paySerial);
                 break;
             case "宴请"://转宴请
                 String name;
@@ -194,15 +159,16 @@ public class DebtPayService extends BaseService<DebtPay> {
                 } catch (Exception e) {
                     throw new Exception("请输入宴请人和原因");
                 }
-                changeDebt += freemanService.freePay(name,reason, money);
+                changeDebt += freemanService.freePay(name, reason, money);
                 break;
         }
         return changeDebt;
     }
+
     /**
      * 账单取消后退回币种
      */
-    public void cancelPay(String currency, String currencyAdd, Double money,String serial,String pointOfSale) throws Exception {
+    public void cancelPay(String currency, String currencyAdd, Double money, String serial, String pointOfSale) throws Exception {
         switch (currency) {
             case "转房客"://把转的金额取消
                 debtService.deleteByCheckOutSerial(serial);
@@ -212,7 +178,7 @@ public class DebtPayService extends BaseService<DebtPay> {
             case "会员"://会员
                 String vipNumber = currencyAdd.split(" ")[0];
                 String payCategory = currencyAdd.split(" ")[1];
-                vipService.vipPay(vipNumber, payCategory, -money, "叫回", null, null,serial,pointOfSale);
+                vipService.vipPay(vipNumber, payCategory, -money, "叫回", null, null, serial, pointOfSale);
                 break;
             case "转单位"://转单位
                 String company = currencyAdd.split(" ")[0];

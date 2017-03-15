@@ -1,9 +1,10 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.common;
 
 import com.sygdsoft.model.*;
 import com.sygdsoft.model.room.ExchangeUserSmallJQReturn;
 import com.sygdsoft.model.room.ExchangeUserSmallJQRow;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +52,8 @@ public class ExchangeUserReport {
     OtherParamService otherParamService;
     @Autowired
     CompanyPayService companyPayService;
+    @Autowired
+    SzMath szMath;
 
     /**
      * 接待交班审核表
@@ -72,13 +75,12 @@ public class ExchangeUserReport {
             fieldTemplate = new FieldTemplate();
             String currencyString=currency.getCurrency();
             fieldTemplate.setField1(currency.getCurrency());//币种
-            Double roomPay=debtPayService.getDebtMoneyByCurrencyDateUser(userId,currencyString,beginTime, endTime);
-            fieldTemplate.setField2(ifNotNullGetString(roomPay));//结算款
-            fieldTemplate.setField3(ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId,currencyString,beginTime,endTime)));//预付
-            fieldTemplate.setField4(ifNotNullGetString(debtHistoryService.getTotalCancelDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//退预付
-            fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
-            fieldTemplate.setField6(ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
-            fieldTemplate.setField7(ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值
+            fieldTemplate.setField2(szMath.ifNotNullGetString(debtPayService.getDebtMoney(userId,currencyString,false,beginTime, endTime)));//结算款
+            fieldTemplate.setField3(szMath.ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId,currencyString,beginTime,endTime)));//预付
+            fieldTemplate.setField4(szMath.ifNotNullGetString(debtHistoryService.getTotalCancelDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//退预付
+            fieldTemplate.setField5(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
+            fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
+            fieldTemplate.setField7(szMath.ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值
             CompanyPay companyPayQuery=companyPayService.getSumPay(null,userId, currency.getCurrency(),beginTime, endTime);
             if(companyPayQuery!=null) {
                 fieldTemplate.setField8(ifNotNullGetString(companyPayQuery.getPay()));//单位付款
@@ -91,7 +93,7 @@ public class ExchangeUserReport {
         for (FieldTemplate template : templateList) {
             exchangeUserRowList.add(new ExchangeUserRow(template));
         }
-        Double payTotal=debtPayService.getDebtMoneyByDateUser(userId, beginTime, endTime);
+        Double payTotal=debtPayService.getDebtMoney(userId,null,true, beginTime, endTime);
         Double moneyIn=debtHistoryService.getTotalAddByUserTimeZone(userId, beginTime, endTime);//杂单
         Double moneyOut=debtHistoryService.getTotalDiscountByUserTimeZone(userId, beginTime, endTime);//冲账
         Double depositAll=debtService.getDepositMoneyAll();//在店押金
@@ -136,12 +138,12 @@ public class ExchangeUserReport {
             exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
             String currencyString=currency.getCurrency();
             exchangeUserSmallJQRow.setField2(currency.getCurrency());//币种
-            Double roomPay=debtPayService.getDebtMoneyByCurrencyDateUser(null,currencyString,beginTime, endTime);
+            Double roomPay=debtPayService.getDebtMoney(null,currencyString,false,beginTime, endTime);
             exchangeUserSmallJQRow.setField3(ifNotNullGetString(roomPay));//结算款
             exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
             consumeTotal+=roomPay;
         }
-        Double payTotal=debtPayService.getDebtMoneyByDateUser(null, beginTime, endTime);
+        Double payTotal=debtPayService.getDebtMoney(null,null,true, beginTime, endTime);
         /*在店押金*/
         Double depositAll=debtService.getDepositMoneyAll();//在店押金
         /*统计房吧零售*/
@@ -203,12 +205,12 @@ public class ExchangeUserReport {
             fieldTemplate = new FieldTemplate();
             String currencyString=currency.getCurrency();
             fieldTemplate.setField2(currency.getCurrency());//币种
-            Double roomPay=debtPayService.getDebtMoneyByCurrencyDateUser(userId,currencyString,beginTime, endTime);
+            Double roomPay=debtPayService.getDebtMoney(userId,currencyString,false,beginTime, endTime);
             fieldTemplate.setField3(ifNotNullGetString(roomPay));//结算款
             templateList.add(fieldTemplate);
             consumeTotal+=roomPay;
         }
-        Double payTotal=debtPayService.getDebtMoneyByDateUser(userId, beginTime, endTime);
+        Double payTotal=debtPayService.getDebtMoney(userId,null,true, beginTime, endTime);
         /*在店押金*/
         Double depositAll=debtService.getDepositMoneyAll();//在店押金
         /*统计房吧零售*/

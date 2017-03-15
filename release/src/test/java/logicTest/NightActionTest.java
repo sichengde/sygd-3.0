@@ -3,7 +3,7 @@ package logicTest;
 import application.ApplicationTest;
 import com.google.zxing.WriterException;
 import com.sygdsoft.controller.NightController;
-import com.sygdsoft.controller.SzTableReportController;
+import com.sygdsoft.controller.common.SzTableReportController;
 import com.sygdsoft.mapper.*;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;

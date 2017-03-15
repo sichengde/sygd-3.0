@@ -1,17 +1,18 @@
-package com.sygdsoft.controller;
+package com.sygdsoft.controller.room;
 
-import com.sygdsoft.model.DebtIntegration;
 import com.sygdsoft.model.GuestParse;
 import com.sygdsoft.model.GuestRoomCategoryParse;
 import com.sygdsoft.model.ReportJson;
-import com.sygdsoft.service.*;
+import com.sygdsoft.service.CheckInHistoryLogService;
+import com.sygdsoft.service.CheckInIntegrationService;
+import com.sygdsoft.service.GuestIntegrationService;
+import com.sygdsoft.service.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/11/26 0026.

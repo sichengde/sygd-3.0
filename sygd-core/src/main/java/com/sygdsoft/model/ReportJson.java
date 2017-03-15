@@ -12,6 +12,7 @@ public class ReportJson {
     private Date endTime;
     private String pointOfSale;
     private String param1;
+    private String currency;
     private Boolean paramBool;
     private String format;//pdf还是excel
     private Integer reportIndex;//当这个json作为数组第一个数据的返回值时，这个字段标注了想重打时的索引
@@ -87,5 +88,13 @@ public class ReportJson {
 
     public void setParamBool(Boolean paramBool) {
         this.paramBool = paramBool;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

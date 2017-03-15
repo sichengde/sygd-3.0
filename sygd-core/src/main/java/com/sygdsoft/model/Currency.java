@@ -17,11 +17,19 @@ public class Currency extends BaseEntity{
     }
 
     public boolean getNotNullScore(){
-        return NullJudgement.nullToZero(score);
+        if(score==null){
+            return false;
+        }else {
+            return score;
+        }
     }
 
     public boolean getNotNullPayTotal() {
-        return NullJudgement.nullToZero(score);
+        if (payTotal==null){
+            return false;
+        }else {
+            return payTotal;
+        }
     }
 
     public Currency(String currency) {
