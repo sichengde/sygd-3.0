@@ -48,7 +48,7 @@ public class DebtPayController {
         String currency = querySubReport.getCurrency();
         Date beginTime = querySubReport.getBeginTime();
         Date endTime = querySubReport.getEndTime();
-        return debtPayService.getByCurrencyDate(currency, beginTime, endTime);
+        return debtPayService.getList(null,currency, beginTime, endTime,null);
     }
 
     /**
@@ -61,10 +61,9 @@ public class DebtPayController {
         Date endTime = querySubReport.getEndTime();
         String userId = querySubReport.getUserId();
         if ("".equals(userId)) {
-            return debtPayService.getByCurrencyDate(currency, beginTime, endTime);
-        } else {
-            return debtPayService.getByCurrencyDateUser(userId, currency, beginTime, endTime);
+            userId=null;
         }
+        return debtPayService.getList(userId, currency, beginTime, endTime,null);
     }
 
     @RequestMapping(value = "lostRoomCheckOut")

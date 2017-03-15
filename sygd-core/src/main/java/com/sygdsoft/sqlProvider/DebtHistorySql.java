@@ -21,6 +21,7 @@ public class DebtHistorySql {
             return "select sum(consume) consume from debt_history where point_of_sale="+util.wrapWithBrackets(pointOfSale)+" and group_account="+util.wrapWithBrackets(serial);
         }
     }
+
     public String getHistoryConsume(Map<String, Object> parameters){
         String pointOfSale=(String) parameters.get("pointOfSale");
         if(pointOfSale==null){

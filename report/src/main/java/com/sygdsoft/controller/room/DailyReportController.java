@@ -122,7 +122,7 @@ public class DailyReportController {
                 Double money = 0.0;
                 switch (module) {
                     case "接待":
-                        money = debtPayService.getDebtMoneyByCurrencyDate(currencyString, beginTime, endTime);
+                        money = debtPayService.getDebtMoney(null,currencyString,false, beginTime, endTime);
                         break;
                     case "餐饮":
                         money=deskPayService.getDeskMoneyByCurrencyDatePointOfSale(firstPointOfSale,currencyString, beginTime, endTime);
@@ -142,8 +142,6 @@ public class DailyReportController {
                 totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
                 if(currency.getNotNullPayTotal()) {
                     totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
-                }else {
-                    totalCurrencyMoneyPerModuleRealMoney[field - 1]=0.0;
                 }
             }
             /*每个销售点的折扣*/

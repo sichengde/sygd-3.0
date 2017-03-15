@@ -58,20 +58,14 @@ public class CheckOutDetailReport {
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
+        String currencyQuery=reportJson.getCurrency();
         if ("".equals(userId)) {
             userId = null;
         }
         String format = reportJson.getFormat();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
-        Query query = new Query();
-        if (userId == null) {
-            query.setCondition("done_time >" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endTime)));
-        } else {
-            query.setCondition("done_time >" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endTime)) + " and user_id=" + util.wrapWithBrackets(userId));
-        }
-        query.setOrderByList(new String[]{"doneTime"});
-        List<DebtPay> debtPayList = debtPayService.get(query);
+        List<DebtPay> debtPayList = debtPayService.getList(userId, currencyQuery,beginTime, endTime, "done_time");
         FieldTemplate fieldTemplate;
         Double total = 0.0;//总的结账金额
         Map<String, Double> currencyMap = new HashMap<>();
@@ -89,6 +83,7 @@ public class CheckOutDetailReport {
                 }
                 fieldTemplate.setField6("true");
                 templateList.add(fieldTemplate);
+                Query query=new Query();
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
                 query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);

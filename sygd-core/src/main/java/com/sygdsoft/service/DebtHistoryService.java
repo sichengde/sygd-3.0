@@ -79,12 +79,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public Double getTotalDiscount(Date beginTime, Date endTime) {
         return debtHistoryMapper.getTotalDiscount(beginTime, endTime);
     }
-
     /**
-     * 获得该时间段内的每日客房发生额
+     * 计算该营业部门在该单子下的销售情况debtService里也有，这个主要用于补打账单
      */
-    public List<DebtHistory> getConsumePerDay(Date beginTime, Date endTime) {
-        return debtHistoryMapper.getConsumePerDay(beginTime, endTime);
+    public Double getTotalConsumeByPointOfSaleAndSerial(String pointOfSale, String serial) {
+        return debtHistoryMapper.getTotalConsumeByPointOfSaleAndSerial(pointOfSale, serial);
     }
 
     /**
@@ -154,25 +153,12 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     }
 
     /**
-     * 计算该营业部门在该单子下的销售情况debtService里也有，这个主要用于补打账单
-     */
-    public Double getTotalConsumeByPointOfSaleAndSerial(String pointOfSale, String serial) {
-        return debtHistoryMapper.getTotalConsumeByPointOfSaleAndSerial(pointOfSale, serial);
-    }
-
-    /**
      * 查找除了加收房租和小时房租之外的账务，根据结账序列号，主要用于叫回账单
      */
     public List<DebtHistory> getListExcludeAddDebt(String paySerial) {
         return debtHistoryMapper.getListExcludeAddDebt(paySerial);
     }
 
-    /**
-     * 获得加收房租和小时房租的总金额，根据结账序列号，主要用于叫回账单
-     */
-    public Double selectTotalConsumeDebtAdd(String paySerial) {
-        return debtHistoryMapper.selectTotalConsumeDebtAdd(paySerial);
-    }
 
     /**
      * 删除加收房租和小时房租的账务，根据结账序列号，主要用于叫回账单
