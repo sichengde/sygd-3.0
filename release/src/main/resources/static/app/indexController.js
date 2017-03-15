@@ -50,7 +50,7 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
             if(dataService.getAvailableModule().length==0){
                 webService.post('getRegisterNumber')
                     .then(function (s) {
-                        messageService.setMessage({type:'error',content:'请将注册序列号发给厂商:'+s.data});
+                        messageService.setMessage({type:'error',content:'请将注册序列号发给厂商:'+Math.random().toString().substring(2,10)+s.data+Math.random().toString().substring(2,10)});
                         popUpService.pop('message');
                     });
             }
