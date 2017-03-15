@@ -134,15 +134,15 @@ public class RegisterService {
         }
     }
 
-    private String getLocalSerial() throws IOException {
+    public String getLocalSerial() throws IOException {
         /*获取cpu序列号*/
-        long start = System.currentTimeMillis();
+        /*long start = System.currentTimeMillis();
         Process process = Runtime.getRuntime().exec(
                 new String[]{"wmic", "cpu", "get", "ProcessorId"});
         process.getOutputStream().close();
         Scanner sc = new Scanner(process.getInputStream());
         String property = sc.next();
-        String cpuSerial = sc.next();
+        String cpuSerial = sc.next();*/
         //System.out.println("cpuSerial:" + cpuSerial);
 
         /*获取硬盘序列号*/
@@ -171,7 +171,7 @@ public class RegisterService {
         }
         //System.out.println("diskSerial:" + diskSerial);
         /*获取主板序列号*/
-        String motherBoardSerial = "";
+        /*String motherBoardSerial = "";
         try {
             File file = File.createTempFile("realhowto", ".vbs");
             file.deleteOnExit();
@@ -195,14 +195,24 @@ public class RegisterService {
             input.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         //System.out.println("motherBoardSerial:" + motherBoardSerial.trim());
-        String s=cpuSerial+diskSerial;
+        String s=diskSerial;
             /*单数的话补个0*/
         if(s.length()%2==1){
             s+="0";
         }
-        return s;
+        /*去除乱七八糟的字符，设置为0*/
+        StringBuilder sb = new StringBuilder(s);
+        Integer int1 = null;
+        for (int i = 0; i < sb.length(); i++) {
+            try {
+                int1 = Integer.valueOf(String.valueOf(sb.charAt(i)), 16);
+            } catch (NumberFormatException e) {
+                sb.replace(i, i+1, "0");
+            }
+        }
+        return String.valueOf(sb);
     }
 
     public int getPass() {

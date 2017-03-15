@@ -47,6 +47,13 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
     dataService.initData(['refreshAvailableModuleList', 'refreshOtherParamList','refreshInterfaceDoorList','refreshProtocolList', 'refreshVipList'])
         .then(function () {
             $scope.nightDate=dataService.getOtherParamMapValue("账务日期");
+            if(dataService.getAvailableModule().length==0){
+                webService.post('getRegisterNumber')
+                    .then(function (s) {
+                        messageService.setMessage({type:'error',content:'请将注册序列号发给厂商:'+s.data});
+                        popUpService.pop('message');
+                    });
+            }
         });
     /*创建webSocket*/
     var stompClient = null;
