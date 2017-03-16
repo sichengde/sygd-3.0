@@ -1597,6 +1597,23 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 会员结账与历史联表
+     */
+    var deskPayRichList;
+    function refreshDeskPayRichList(p) {
+        p = p || {};
+        return webService.post('deskPayRichGet', p)
+            .then(function (d) {
+                deskPayRichList = d;
+                return d;
+            })
+    }
+
+    function getDeskPayRichList() {
+        return deskPayRichList;
+    }
+
+    /**
      * 需要initData的webService方法
      */
     function deskInGetWithDetail(p) {
@@ -1826,6 +1843,8 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getCompanyPayList:getCompanyPayList,
         refreshCompanyDebtRichList:refreshCompanyDebtRichList,
         getCompanyDebtRichList:getCompanyDebtRichList,
+        refreshDeskPayRichList:refreshDeskPayRichList,
+        getDeskPayRichList:getDeskPayRichList,
         deskInGetWithDetail:deskInGetWithDetail,
         initData: initData
     }

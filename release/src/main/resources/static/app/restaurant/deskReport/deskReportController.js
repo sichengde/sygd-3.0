@@ -41,11 +41,13 @@ App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 
         {name: '金额', id: 'total', sum: 'true'},
         {name: '占比', id: 'percent'}
     ];
-    $scope.deskPayFields = [
+    $scope.deskPayRichFields = [
+        {name: '餐台', id: 'desk', width: '69px', filter: 'input'},
         {name: '币种', id: 'currency', width: '69px', filter: 'list'},
         {name: '额外币种信息', id: 'currencyAdd', width: '89px', filter: 'input'},
         {name: '金额', id: 'payMoney', sum: 'true', width: '69px'},
-        {name: '时间', id: 'doneTime', width: '129px', desc: '0', filter: 'date', filterInit: 'today'},
+        {name: '开单时间', id: 'doTime', width: '129px', desc: '0', filter: 'date'},
+        {name: '结账时间', id: 'doneTime', width: '129px', desc: '0', filter: 'date', filterInit: 'today'},
         {name: '结算序列号', id: 'ckSerial', width: '159px', filter: 'input'},
         {name: '操作员', id: 'userId', width: '69px', filter: 'list'},
         {name: '营业部门', id: 'pointOfSale', width: '109px', filter: 'list'},

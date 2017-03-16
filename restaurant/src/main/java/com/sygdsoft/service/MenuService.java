@@ -33,9 +33,11 @@ public class MenuService extends BaseService<Menu>{
         List<Menu> menuList=new ArrayList<>();
         for (DeskDetail deskDetail : deskDetailList) {
             Menu menu=this.getByName(deskDetail.getFoodSign());
-            if(menu.getNotNullSellOut()){
-                menu.setRemain(menu.getRemain()-deskDetail.getNum());
-                menuList.add(menu);
+            if(menu!=null) {//临时菜找不到menu
+                if (menu.getNotNullSellOut()) {
+                    menu.setRemain(menu.getRemain() - deskDetail.getNum());
+                    menuList.add(menu);
+                }
             }
         }
         this.update(menuList);

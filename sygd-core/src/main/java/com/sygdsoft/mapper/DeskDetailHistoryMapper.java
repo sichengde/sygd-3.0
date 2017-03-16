@@ -4,6 +4,7 @@ import com.sygdsoft.jsonModel.HotelParseLineRow;
 import com.sygdsoft.jsonModel.report.DeskCategoryOut;
 import com.sygdsoft.jsonModel.report.DeskProfitOut;
 import com.sygdsoft.model.DeskDetailHistory;
+import com.sygdsoft.sqlProvider.DeskDetailHistorySql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.*;
 
@@ -147,4 +148,24 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
      */
     @Update("update desk_detail_history set disabled =true where ck_serial=#{serial}")
     void setDisabledBySerial(@Param("serial") String serial);
+
+    /**
+     * 根据查找列表
+     */
+    @SelectProvider(type = DeskDetailHistorySql.class,method = "getList")
+    @Results(value = {
+            @Result(property = "ckSerial", column = "ck_serial"),
+            @Result(property = "foodName", column = "food_name"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "pointOfSale", column = "point_of_sale"),
+            @Result(property = "doTime", column = "do_time"),
+            @Result(property = "foodSign", column = "food_sign"),
+            @Result(property = "doneTime", column = "done_time"),
+            @Result(property = "ifDiscount", column = "if_discount"),
+            @Result(property = "afterDiscount", column = "after_discount"),
+            @Result(property = "foodSet", column = "food_set"),
+            @Result(property = "cookRoom", column = "cook_room"),
+            @Result(property = "storageDone", column = "storage_done"),
+    })
+    List<DeskDetailHistory> getList(@Param("ckSerial") String ckSerial,  @Param("orderByList") String orderByList);
 }

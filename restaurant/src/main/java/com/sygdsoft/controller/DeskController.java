@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
+import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 /**
  * Created by 舒展 on 2016-07-14.
@@ -64,6 +65,8 @@ public class DeskController {
     CookRoomService cookRoomService;
     @Autowired
     DebtService debtService;
+    @Autowired
+    DeskControllerService deskControllerService;
 
     @RequestMapping(value = "deskAdd")
     public void deskAdd(@RequestBody Desk desk) throws Exception {
@@ -142,22 +145,17 @@ public class DeskController {
         deskInService.delete(deskIn);
         deskInHistoryService.add(deskInHistory);
         /*菜品明细转移到历史*/
-        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale);
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale,"category,do_time");
         List<DeskDetailHistory> deskDetailHistoryList = new ArrayList<>();
         List<FieldTemplate> templateList = new ArrayList<>();
+        /*处理报表*/
+        deskControllerService.generateDetail(deskDetailList, templateList);
         for (DeskDetail deskDetail : deskDetailList) {
             DeskDetailHistory deskDetailHistory = new DeskDetailHistory(deskDetail);
             deskDetailHistory.setCkSerial(serialService.getCkSerial());
             deskDetailHistory.setAfterDiscount(deskDetailHistory.getTotal() * discount);
             deskDetailHistory.setDoneTime(timeService.getNow());
             deskDetailHistoryList.add(deskDetailHistory);
-            /*打印信息*/
-            FieldTemplate fieldTemplate = new FieldTemplate();
-            fieldTemplate.setField1(deskDetailHistory.getFoodName());
-            fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getPrice()));
-            fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getNum()));
-            fieldTemplate.setField4(ifNotNullGetString(deskDetailHistory.getTotal()));
-            templateList.add(fieldTemplate);
         }
         deskDetailHistoryService.add(deskDetailHistoryList);
         deskDetailService.delete(deskDetailList);
@@ -207,19 +205,11 @@ public class DeskController {
         if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
             deskDetailService.getListByDeskGroup(desk, pointOfSale);
         } else {
-            deskDetailService.getListByDesk(desk, pointOfSale);
+            deskDetailService.getListByDesk(desk, pointOfSale,null);
         }
-        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale);
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale,"category,do_time");
         List<FieldTemplate> templateList = new ArrayList<>();
-        for (DeskDetail deskDetail : deskDetailList) {
-            /*打印信息*/
-            FieldTemplate fieldTemplate = new FieldTemplate();
-            fieldTemplate.setField1(deskDetail.getFoodName());
-            fieldTemplate.setField2(ifNotNullGetString(deskDetail.getPrice()));
-            fieldTemplate.setField3(ifNotNullGetString(deskDetail.getNum()));
-            fieldTemplate.setField4(ifNotNullGetString(deskDetail.getNotNullPrice() * deskDetail.getNum()));
-            templateList.add(fieldTemplate);
-        }
+        deskControllerService.generateDetail(deskDetailList, templateList);
         /*处理报表
         * param
         * 1.酒店名称
@@ -238,6 +228,7 @@ public class DeskController {
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
+
     /**
      * 餐饮补打结账单
      */
@@ -247,15 +238,8 @@ public class DeskController {
         DeskInHistory deskInHistory=deskInHistoryService.getByCkSerial(ckSerial);
         /*消费明细*/
         List<FieldTemplate> templateList = new ArrayList<>();
-        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getListByCkSerial(ckSerial);
-        for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {
-            FieldTemplate fieldTemplate = new FieldTemplate();
-            fieldTemplate.setField1(deskDetailHistory.getFoodName());
-            fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getPrice()));
-            fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getNum()));
-            fieldTemplate.setField4(ifNotNullGetString(deskDetailHistory.getTotal()));
-            templateList.add(fieldTemplate);
-        }
+        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial,"category,do_time");
+        deskControllerService.generateDetailHistory(deskDetailHistoryList, templateList);
         /*生成结账信息*/
         String changeDebt = "";//转账信息
         List<DeskPay> deskPayList = deskPayService.getByCkSerial(ckSerial);
@@ -289,7 +273,7 @@ public class DeskController {
         deskInHistoryService.delete(deskInHistory);
         /*增加点菜明细*/
         List<DeskDetail> deskDetailList = new ArrayList<>();
-        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getListByCkSerial(ckSerial);
+        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial,null);
         for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {
             deskDetailList.add(new DeskDetail(deskDetailHistory));
         }

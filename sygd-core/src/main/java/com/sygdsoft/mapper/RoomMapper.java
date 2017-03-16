@@ -47,6 +47,7 @@ public interface RoomMapper extends MyMapper<Room> {
     @Results(value = {
             @Result(property = "roomId",column = "room_id"),
             @Result(property = "totalBed",column = "total_bed"),
+            @Result(property = "ifRoom",column = "if_room"),
     })
     List<Room> getListByRoomIdString(@Param("roomId") String roomId);
 }

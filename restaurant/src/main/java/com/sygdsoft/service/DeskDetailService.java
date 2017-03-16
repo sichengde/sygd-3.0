@@ -60,18 +60,8 @@ public class DeskDetailService extends BaseService<DeskDetail> {
      * 通过桌号和销售点获得该桌账务列表，不进行聚合，主要用于数据计表
      */
     /*考虑营业部门*/
-    public List<DeskDetail> getListByDesk(String deskName, String pointOfSale) throws Exception {
-        DeskDetail deskDetailQuery=new DeskDetail();
-        deskDetailQuery.setDesk(deskName);
-        deskDetailQuery.setPointOfSale(pointOfSale);
-        return deskDetailMapper.select(deskDetailQuery);
-    }
-
-    /*不考虑营业部门*/
-    public List<DeskDetail> getListByDesk(String deskName) throws Exception {
-        DeskDetail deskDetailQuery=new DeskDetail();
-        deskDetailQuery.setDesk(deskName);
-        return deskDetailMapper.select(deskDetailQuery);
+    public List<DeskDetail> getListByDesk(String deskName, String pointOfSale,String orderByList) throws Exception {
+        return deskDetailMapper.getList(deskName, pointOfSale, orderByList);
     }
 
     /*根据厨房排序，用于电子划菜*/

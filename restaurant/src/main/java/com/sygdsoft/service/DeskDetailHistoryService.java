@@ -23,10 +23,8 @@ public class DeskDetailHistoryService extends BaseService<DeskDetailHistory> {
     /**
      * 通过结账序列号获得历史菜品列表
      */
-    public List<DeskDetailHistory> getListByCkSerial(String ckSerial) {
-        DeskDetailHistory deskDetailHistoryQuery = new DeskDetailHistory();
-        deskDetailHistoryQuery.setCkSerial(ckSerial);
-        return deskDetailHistoryMapper.select(deskDetailHistoryQuery);
+    public List<DeskDetailHistory> getList(String ckSerial,String orderByList) {
+        return deskDetailHistoryMapper.getList(ckSerial, orderByList);
     }
 
     /**
