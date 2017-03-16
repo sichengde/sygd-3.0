@@ -9,3 +9,7 @@ grant grant option on *.* to hotel@'%';
 create user 'hotel'@'%' identified by 'q123';
 grant all privileges on *.* to hotel@'%';
 grant grant option on *.* to hotel@'%';
+--------------------------------------------------------
+create user 'hotel'@'localhost' identified by 'q123';
+grant all privileges on *.* to hotel@'localhost';
+grant grant option on *.* to hotel@'localhost';
