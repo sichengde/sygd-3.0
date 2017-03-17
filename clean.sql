@@ -22,7 +22,7 @@ DELETE FROM vip_detail;
 DELETE FROM protocol where temp=1;
 UPDATE room SET state='可用房';
 DELETE FROM serial;
-INSERT INTO serial (id, pay_serial, book_serial, self_account, group_account, check_out_serial,desk_book_serial,ck_serial,storage_in_serial,storage_out_serial,sauna_out_serial,company_pay_serial,sauna_group_serial,company_pay_serial) VALUES (1,'001','001','001','001','001','001','001','001','001','001','001','001','001');
+INSERT INTO serial (id, pay_serial, book_serial, self_account, group_account, check_out_serial,desk_book_serial,ck_serial,storage_in_serial,storage_out_serial,sauna_out_serial,company_pay_serial,sauna_group_serial) VALUES (1,'001','001','001','001','001','001','001','001','001','001','001','001');
 
 DELETE FROM desk_detail;
 DELETE FROM desk_detail_history;
