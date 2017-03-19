@@ -4,6 +4,7 @@ import java.util.Date;
 
 /**
  * Created by 舒展 on 2016-04-27.
+ * 来店记录
  */
 public class CheckInHistoryLog extends BaseEntity {
     private String cardId;//证件号码

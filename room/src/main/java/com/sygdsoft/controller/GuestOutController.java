@@ -880,10 +880,15 @@ public class GuestOutController {
         checkOutRoomService.delete(checkOutRoomList);
         List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.get(new Query("check_out_serial=" + util.wrapWithBrackets(checkOutSerial)));
         List<CheckIn> checkInList = new ArrayList<>();
+        String lastRoomId="";
         for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
+            if(lastRoomId.equals(checkInHistoryLog.getRoomId())){//房号相同说明是通行房
+                continue;
+            }
             CheckIn checkIn = new CheckIn(checkInHistoryLog);
             checkIn.setConsume(debtService.getTotalConsumeByRoomId(checkIn.getRoomId()));
             checkInList.add(checkIn);
+            lastRoomId=checkIn.getRoomId();
         }
         checkInService.add(checkInList);//生成在店户籍
         if (debtPay.getGroupAccount() != null) {//如果是团队开房的话，生成团队信息
