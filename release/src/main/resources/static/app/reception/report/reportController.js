@@ -5,6 +5,7 @@
 App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'LoginService', '$route', 'webService', 'popUpService', 'dateFilter', '$window', 'messageService', function ($scope, host, dataService, util, LoginService, $route, webService, popUpService, dateFilter, $window, messageService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
+    var queryMessage={};
     dataService.refreshPointOfSaleList().then(function () {
         $scope.pointOfSaleList = dataService.getPointOfSale();
     });
@@ -172,7 +173,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
                 }
                 $scope.dailyReportFields.push({name: '合计', id: 'total'});
                 $scope.dailyReportList = r.dailyReportList;
-                $scope.dailyReportRemark='会员充值：'+r.vipPay+' 单位结算：'+r.companyPay+' 实际抵用：'+r.companyDebt;
+                $scope.dailyReportRemark = '会员充值：' + r.vipPay + ' 单位结算：' + r.companyPay + ' 实际抵用：' + r.companyDebt;
             });
     };
     $scope.dailyReportItemClick = function (item, id) {
@@ -254,4 +255,33 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
             }
         }
     };
+    /**
+     * 押金收款表
+     */
+    $scope.depositUserReportFields=[
+        {name:'操作员',id:'user'},
+        {name:'币种',id:'currency'},
+        {name:'押金',id:'deposit'}
+    ];
+
+    $scope.depositUserReport = function (beginTime, endTime) {
+        webService.post('depositUserReport', {
+            beginTime: beginTime,
+            endTime: endTime
+        })
+            .then(function (list) {
+                queryMessage.beginTime=beginTime;
+                queryMessage.endTime=endTime;
+                $scope.depositUserReportList=list;
+            })
+    };
+    /*查询押金明细*/
+    $scope.depositUserReportItemClick=function (item, id) {
+        var query={};
+        query.condition='currency='+util.wrapWithBrackets(item.currency)+' and user_id='+util.wrapWithBrackets(item.user)+' and do_time>'+util.wrapWithBrackets(dateFilter(queryMessage.beginTime,'yyyy-MM-dd HH:mm:ss'))+' and do_time<'+util.wrapWithBrackets(dateFilter(queryMessage.endTime,'yyyy-MM-dd HH:mm:ss'));
+        webService.post('debtIntegrationGet', query)
+            .then(function (r) {
+                popUpService.pop('debtDetail', null, null, r);
+            })
+    }
 }]);

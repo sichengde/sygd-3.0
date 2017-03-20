@@ -95,6 +95,30 @@
                 </ul>
             </div>
         </sz-pane>
+        <sz-pane title="收取押金统计">
+            <div class="tableDiv">
+                <ul>
+                    <li>
+                        时间：
+                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li style="margin-left: 0px;">至</li>
+                    <li>
+                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="depositUserReport(beginTime,endTime)" value="预览"></li>
+                </ul>
+                <sz-table ng-if="depositUserReportList" fields="depositUserReportFields" items="depositUserReportList" button="add update delete" items-per-page="20" item-click="depositUserReportItemClick(item,id)" print="押金收款表" query-message="queryMessageDepositUserReport" remark="remarkDepositUserReport"></sz-table>
+            </div>
+        </sz-pane>
         <div class="iframeTs">
             <iframe width="1000" height="800" name="iframeReport" id="iframeReport"></iframe>
         </div>

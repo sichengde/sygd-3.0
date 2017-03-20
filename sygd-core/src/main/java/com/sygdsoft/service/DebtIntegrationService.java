@@ -77,4 +77,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     public List<DebtIntegration> getSumConsumeByDatePointOfSale( Date beginTime,  Date endTime){
         return debtIntegrationMapper.getSumConsumeByDatePointOfSale(beginTime, endTime);
     }
+
+    /**
+     * 根据操作员币种聚合押金
+     */
+    public List<DebtIntegration> getSumDepositByDate(Date beginTime,Date endTime){
+        return debtIntegrationMapper.getSumDepositByDate(beginTime,endTime);
+    }
 }
