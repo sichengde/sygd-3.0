@@ -28,6 +28,7 @@ public class Debt extends BaseEntity {
     private String category;//账务类别，便于在账务明细中筛选
     private String fromRoom;//从来转入的，针对于转房客，主要用于如果是餐饮的话就是餐饮的结账序列号
     private String guestSource;//客源
+    private String company;//单位
 
     public Debt() {
     }
@@ -51,6 +52,7 @@ public class Debt extends BaseEntity {
         this.category=debt.getCategory();
         this.fromRoom=debt.getFromRoom();
         this.guestSource=debt.getGuestSource();
+        this.company=debt.getCompany();
     }
 
     public Debt(DebtHistory debtHistory){
@@ -72,6 +74,7 @@ public class Debt extends BaseEntity {
         this.category=debtHistory.getCategory();
         this.fromRoom=debtHistory.getFromRoom();
         this.guestSource=debtHistory.getGuestSource();
+        this.company=debtHistory.getCompany();
     }
 
     public Double getNotNullDeposit(){
@@ -227,5 +230,13 @@ public class Debt extends BaseEntity {
 
     public void setGuestSource(String guestSource) {
         this.guestSource = guestSource;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

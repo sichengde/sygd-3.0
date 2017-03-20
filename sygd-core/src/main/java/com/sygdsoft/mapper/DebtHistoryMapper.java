@@ -77,17 +77,17 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     /*操作员，时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where currency=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}" +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where currency=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}) a")
     @ResultType(Double.class)
     Double getTotalDiscountByUserTimeZone(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where currency=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime}" +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where currency=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime}) a")
     @ResultType(Double.class)
     Double getTotalDiscountByTimeZone(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
@@ -96,17 +96,17 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     /*操作员，时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where currency=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}" +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where currency=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}) a")
     @ResultType(Double.class)
     Double getTotalAddByUserTimeZone(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where currency=\'杂单\'  and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'杂单\'  and do_time>#{beginTime} and do_time<#{endTime}" +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where currency=\'杂单\' and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'杂单\' and do_time>#{beginTime} and do_time<#{endTime}) a")
     @ResultType(Double.class)
     Double getTotalAddByTimeZone(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
@@ -197,4 +197,10 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
 
     @Update("update debt_history set company_paid=true where id=#{id}")
     void setPaidById(@Param("id") Integer id);
+
+    /**
+     * 删除中间结算在debt_history表中产生的临时平账数据
+     */
+    @Delete("delete from debt_history where category=\'中间结算冲账\'")
+    void deleteMiddlePay();
 }

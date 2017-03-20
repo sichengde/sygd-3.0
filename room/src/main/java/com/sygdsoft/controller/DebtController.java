@@ -162,6 +162,7 @@ public class DebtController {
         debtHistory.setCurrencyAdd(null);
         debtHistory.setPaySerial(serialService.getPaySerial());
         debtHistory.setUserId(userService.getCurrentUser());
+        debtHistory.setCompany(company);
         Double money = debtHistory.getConsume();
         /*生成一条结账记录*/
         DebtPay debtPay = new DebtPay();
@@ -207,6 +208,10 @@ public class DebtController {
         String currency = debtHistory.getCurrency();
         String currencyAdd = debtHistory.getCurrencyAdd();
         Double money = debtHistory.getConsume();
+        /*判断是不是转单位*/
+        if("转单位".equals(currency)){
+            debtHistory.setCompany(currencyAdd.split(" ")[0]);
+        }
         /*生成一条结账记录*/
         DebtPay debtPay = new DebtPay();
         debtPay.setPaySerial(serialService.getPaySerial());

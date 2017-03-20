@@ -4,7 +4,7 @@
 App.controller('companyDepositController', ['$scope', 'webService', 'dataService', 'popUpService', 'util', function ($scope, webService, dataService, popUpService, util) {
         var company=popUpService.getParam();
         $scope.company=company.name;
-        dataService.initData(['refreshCompanyList', 'refreshCurrencyList'], [{condition: 'if_debt=\'y\''}, {condition: 'check_in=1'}])
+        dataService.initData(['refreshCompanyList', 'refreshCurrencyList'], [{condition: 'if_debt=true'}, {condition: 'check_in=1'}])
             .then(function () {
                 $scope.companyList = util.objectListToString(dataService.getCompanyList(), 'name');
                 $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');

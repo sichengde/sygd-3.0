@@ -92,6 +92,7 @@ public class HotelParseController {
                     String[] secondPointOfSaleList = pointOfSale.getSecondPointOfSale().split(" ");
                     HotelParseRow hotelParseRow=this.getCKSumByPointOfSale(pointOfSale.getFirstPointOfSale(), null,date);
                     hotelParseRow.setSum(true);
+                    hotelParseRow.setModule("餐饮");
                     hotelParseRowList.add(hotelParseRow);
                     totalFinal1+=hotelParseRow.getDayTotal();
                     totalFinal2+=hotelParseRow.getMonthTotal();

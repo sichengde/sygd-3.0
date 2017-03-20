@@ -65,9 +65,12 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         {name: '单位结算', id: 'companyPay'}
     ];
     $scope.exchangeUserReport = function (userId, beginTime, endTime, format) {
-        webService.post('exchangeUserReport', {userId: userId, beginTime: beginTime, endTime: endTime, format: format})
+        if (userId==''){
+            userId=null;
+        }
+        $scope.reportJson={userId: userId, beginTime: beginTime, endTime: endTime, format: format};
+        webService.post('exchangeUserReport', $scope.reportJson)
             .then(function (r) {
-                $scope.exchangeUserReportJQ = r;
                 $scope.exchangeUserReportList = r.exchangeUserRowList;
                 $scope.payTotal = r.payTotal;
                 $scope.moneyIn = r.moneyIn;
@@ -87,75 +90,6 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
         })
             .then(function (r) {
                 webService.openReport(r);
-            })
-    };
-    $scope.exchangeUserReportItemClick = function (item, id) {
-        var reportJson = $scope.exchangeUserReportJQ.reportJson;
-        var beginTimeDate = reportJson.beginTime;
-        var endTimeDate = reportJson.endTime;
-        var beginTime = dateFilter(reportJson.beginTime, 'yyyy-MM-dd HH:mm:ss');
-        var endTime = dateFilter(reportJson.endTime, 'yyyy-MM-dd HH:mm:ss');
-        var userId = reportJson.userId;
-        reportJson.currency = item.currency;
-        /*分析表头*/
-        switch (id) {
-            case 'pay':
-                webService.post('debtPayGetByDateCurrencyUserId', reportJson)
-                    .then(function (r) {
-                        popUpService.pop('debtPay', null, null, r);
-                    });
-                break;
-            case'deposit':
-                var conditionUser = '';
-                if (userId) {
-                    conditionUser = 'and user_id= ' + util.wrapWithBrackets(userId)
-                }
-                var p = {condition: ' deposit>0 ' + conditionUser + ' and currency= ' + util.wrapWithBrackets(reportJson.currency) + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime)}
-                webService.post('debtIntegrationGet', p)
-                    .then(function (r) {
-                        popUpService.pop('debtDetail', null, null, r);
-                    });
-                break;
-            case 'cancelDeposit':
-                var conditionUser = '';
-                if (userId) {
-                    conditionUser = 'and user_id= ' + util.wrapWithBrackets(userId)
-                }
-                var p = {condition: ' ((deposit IS NOT NULL AND done_time IS NOT NULL ' + ' and done_time> ' + util.wrapWithBrackets(beginTime) + ' and done_time<' + util.wrapWithBrackets(endTime) + ') or (deposit<0 and done_time IS NULL ' + ' and do_time> ' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime) + ' ))  ' + conditionUser + ' and currency= ' + util.wrapWithBrackets(reportJson.currency)}
-                webService.post('debtIntegrationGet', p)
-                    .then(function (r) {
-                        popUpService.pop('debtDetail', null, null, r);
-                    });
-                break;
-        }
-    };
-    $scope.moneyInDetail = function () {
-        var reportJson = $scope.exchangeUserReportJQ.reportJson;
-        var beginTime = dateFilter(reportJson.beginTime, 'yyyy-MM-dd HH:mm:ss');
-        var endTime = dateFilter(reportJson.endTime, 'yyyy-MM-dd HH:mm:ss');
-        var userId = reportJson.userId;
-        var p = {condition: 'currency=\'杂单\' and user_id=' + util.wrapWithBrackets(userId) + ' and do_time>' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime)};
-        webService.post('debtIntegrationGet', p)
-            .then(function (r) {
-                popUpService.pop('debtDetail', null, null, r);
-            })
-    };
-    $scope.moneyOutDetail = function () {
-        var reportJson = $scope.exchangeUserReportJQ.reportJson;
-        var beginTime = dateFilter(reportJson.beginTime, 'yyyy-MM-dd HH:mm:ss');
-        var endTime = dateFilter(reportJson.endTime, 'yyyy-MM-dd HH:mm:ss');
-        var userId = reportJson.userId;
-        var p = {condition: 'currency=\'冲账\' and user_id=' + util.wrapWithBrackets(userId) + ' and do_time>' + util.wrapWithBrackets(beginTime) + ' and do_time<' + util.wrapWithBrackets(endTime)};
-        webService.post('debtIntegrationGet', p)
-            .then(function (r) {
-                popUpService.pop('debtDetail', null, null, r);
-            })
-    };
-    $scope.depositAllDetail = function () {
-        var p = {condition: 'deposit>0 and ifnull(remark,0)!=\'已退\''};
-        webService.post('debtGet', p)
-            .then(function (r) {
-                popUpService.pop('debtDetail', null, null, r);
             })
     };
     /**

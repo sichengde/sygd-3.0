@@ -41,6 +41,10 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     @ResultType(Double.class)
     Double getSumConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
+    /*只获取单位的发生额*/
+    @Select("SELECT sum(di.consume) consume from debt_integration di LEFT JOIN company c on di.company=c.name WHERE di.company IS NOT NULL and c.if_debt = TRUE and di.do_time>#{beginTime} and di.do_time<#{endTime}")
+    @ResultType(Double.class)
+    Double getSumByCompany(@Param("beginTime")Date beginTime ,@Param("endTime")Date endTime);
     /**
      * 根据时间获得发生额（线性数据，包含了宴请）
      */

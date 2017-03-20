@@ -173,4 +173,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public void setPaidById(Integer id){
         debtHistoryMapper.setPaidById(id);
     }
+
+    /**
+     * 删除中间结算在debt_history表中产生的临时平账数据
+     */
+    public void deleteMiddlePay(){
+        debtHistoryMapper.deleteMiddlePay();
+    }
 }

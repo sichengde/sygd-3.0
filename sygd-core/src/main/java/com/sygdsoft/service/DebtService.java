@@ -63,6 +63,7 @@ public class DebtService extends BaseService<Debt>{
         debt.setGuestSource(checkIn.getGuestSource());
         debt.setSelfAccount(checkIn.getSelfAccount());
         debt.setGroupAccount(checkIn.getGroupAccount());
+        debt.setCompany(checkIn.getCompany());
         debtMapper.insert(debt);
         this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(),debt.getDeposit());
     }
@@ -77,6 +78,7 @@ public class DebtService extends BaseService<Debt>{
             debt.setSelfAccount(checkIn.getSelfAccount());
             debt.setGroupAccount(checkIn.getGroupAccount());
             debt.setGuestSource(checkIn.getGuestSource());
+            debt.setCompany(checkIn.getCompany());
             this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(),debt.getDeposit());
         }
         debtMapper.insertList(debtList);
@@ -114,7 +116,7 @@ public class DebtService extends BaseService<Debt>{
     /*刨除中间结算的冲账*/
     public List<Debt> getListByRoomIdPure(String roomId) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id="+util.wrapWithBrackets(roomId)+" and ifnull(consume,0)>=0");
+        example.createCriteria().andCondition("room_id="+util.wrapWithBrackets(roomId)+" and category!= \'中间结算冲账\'");
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");

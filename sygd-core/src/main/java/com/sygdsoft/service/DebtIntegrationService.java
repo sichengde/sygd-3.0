@@ -47,6 +47,13 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     }
 
     /**
+     * 根据时间获取单位发生额
+     */
+    public Double getSumByCompany(Date beginTime, Date endTime) {
+        return debtIntegrationMapper.getSumByCompany(beginTime, endTime);
+    }
+
+    /**
      * 根据时间获得发生额，分，房吧，零售和房费
      */
     public List<HotelParseLineRow> getSumDateLineByPointOfSale(Date beginTime, Date endTime, String pointOfSale) {
@@ -67,21 +74,21 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 获得时间段内客源消费情况（只算房费）
      */
-    public List<DebtIntegration> getSumRoomConsumeByDateGuestSource( Date beginTime, Date endTime) {
-        return debtIntegrationMapper.getSumRoomConsumeByDateGuestSource( beginTime, endTime);
+    public List<DebtIntegration> getSumRoomConsumeByDateGuestSource(Date beginTime, Date endTime) {
+        return debtIntegrationMapper.getSumRoomConsumeByDateGuestSource(beginTime, endTime);
     }
 
     /**
      * 根据营业部门聚合消费
      */
-    public List<DebtIntegration> getSumConsumeByDatePointOfSale( Date beginTime,  Date endTime){
+    public List<DebtIntegration> getSumConsumeByDatePointOfSale(Date beginTime, Date endTime) {
         return debtIntegrationMapper.getSumConsumeByDatePointOfSale(beginTime, endTime);
     }
 
     /**
      * 根据操作员币种聚合押金
      */
-    public List<DebtIntegration> getSumDepositByDate(Date beginTime,Date endTime){
-        return debtIntegrationMapper.getSumDepositByDate(beginTime,endTime);
+    public List<DebtIntegration> getSumDepositByDate(Date beginTime, Date endTime) {
+        return debtIntegrationMapper.getSumDepositByDate(beginTime, endTime);
     }
 }

@@ -23,7 +23,7 @@ public class CheckIn extends BaseEntity{
     private String remark;//备注
     private Double finalRoomPrice;//开房房价
     private String protocol;//协议价格编码
-    private String company;//协议价格编码
+    private String company;//单位
     private String vipNumber;//会员编号
     private Double deposit;//押金
     private Double consume;//消费

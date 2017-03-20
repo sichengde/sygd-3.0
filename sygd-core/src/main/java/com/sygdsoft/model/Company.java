@@ -19,7 +19,7 @@ public class Company extends BaseEntity{
     private Double debt;//单位欠款
     private String protocol;//适用于哪种房价协议
     private Date limitTime;//有效日期
-    private String ifDebt;//允许挂账
+    private Boolean ifDebt;//允许挂账
     private String saleMan;//销售人员
     private String phone;//联系方式
     @Transient
@@ -100,11 +100,11 @@ public class Company extends BaseEntity{
         this.limitTime = limitTime;
     }
 
-    public String getIfDebt() {
+    public Boolean getIfDebt() {
         return ifDebt;
     }
 
-    public void setIfDebt(String ifDebt) {
+    public void setIfDebt(Boolean ifDebt) {
         this.ifDebt = ifDebt;
     }
 

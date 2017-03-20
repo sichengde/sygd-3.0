@@ -39,11 +39,14 @@ public class DebtAndPayReportController {
     VipIntegrationService vipIntegrationService;
     @Autowired
     CompanyPayService companyPayService;
+    @Autowired
+    DebtIntegrationService debtIntegrationService;
 
     @RequestMapping(value = "debtAndPayReport")
     public DebtAndPayReturn debtAndPayReport(@RequestBody ReportJson reportJson) throws Exception {
         Date date = reportJson.getBeginTime();
         DebtAndPayReturn debtAndPayReturn = new DebtAndPayReturn();
+        debtAndPayReturn.setDeskPayDay(0.0);
         List<DebtAndPayRow> debtAndPayRowList = new ArrayList<>();
         DebtAndPayRow debtAndPayRow;
         /*先生成全店收入表*/
@@ -68,26 +71,26 @@ public class DebtAndPayReportController {
                     total1 += debtAndPayRow.getPayDay();
                     total2 += debtAndPayRow.getPayMonth();
                     total3 += debtAndPayRow.getPayYear();
+                    debtAndPayReturn.setRoomPayDay(debtAndPayRow.getPayDay());//在这设置界面上的客房结算款超链接
                 } else {
                     debtAndPayRow.setPayDay(debtHistoryService.getHistoryConsume(timeService.getMinTime(date), timeService.getMaxTime(date), hotelParseRow.getPointOfSale()));
                     debtAndPayRow.setPayMonth(debtHistoryService.getHistoryConsume(timeService.getMinMonth(date), timeService.getMaxMonth(date), hotelParseRow.getPointOfSale()));
                     debtAndPayRow.setPayYear(debtHistoryService.getHistoryConsume(timeService.getMinYear(date), timeService.getMaxYear(date), hotelParseRow.getPointOfSale()));
                 }
-            } else {
-                if (hotelParseRow.getNotNullSumTotal()) {//最终的合计
-                    debtAndPayRow.setPayDay(total1);
-                    debtAndPayRow.setPayMonth(total2);
-                    debtAndPayRow.setPayYear(total3);
-                } else {
-                    debtAndPayRow.setPayDay(debtAndPayRow.getDebtDay());
-                    debtAndPayRow.setPayMonth(debtAndPayRow.getDebtMonth());
-                    debtAndPayRow.setPayYear(debtAndPayRow.getDebtYear());
-                    if(hotelParseRow.getNotNullSum()){
-                        total1 += debtAndPayRow.getPayDay();
-                        total2 += debtAndPayRow.getPayMonth();
-                        total3 += debtAndPayRow.getPayYear();
-                    }
+            } else if ("餐饮".equals(hotelParseRow.getModule())) {
+                debtAndPayRow.setPayDay(debtAndPayRow.getDebtDay());
+                debtAndPayRow.setPayMonth(debtAndPayRow.getDebtMonth());
+                debtAndPayRow.setPayYear(debtAndPayRow.getDebtYear());
+                if (hotelParseRow.getNotNullSum()) {
+                    total1 += debtAndPayRow.getPayDay();
+                    total2 += debtAndPayRow.getPayMonth();
+                    total3 += debtAndPayRow.getPayYear();
+                    debtAndPayReturn.setDeskPayDay(debtAndPayReturn.getDeskPayDay()+debtAndPayRow.getPayDay());
                 }
+            } else if (hotelParseRow.getNotNullSumTotal()) {
+                debtAndPayRow.setPayDay(total1);
+                debtAndPayRow.setPayMonth(total2);
+                debtAndPayRow.setPayYear(total3);
             }
             debtAndPayRowList.add(debtAndPayRow);
         }
@@ -131,7 +134,12 @@ public class DebtAndPayReportController {
         debtAndPayRowList.add(debtAndPayRow1);
 
         debtAndPayRowList.add(debtAndPayRow2);
+
+        /*计算单位发生额*/
+        debtAndPayReturn.setCompanyGenerate(debtIntegrationService.getSumByCompany(timeService.getMinTime(date), timeService.getMaxTime(date)));
+
         debtAndPayReturn.setDebtAndPayRowList(debtAndPayRowList);
+
         return debtAndPayReturn;
     }
 }

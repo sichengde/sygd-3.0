@@ -12,7 +12,7 @@ App.controller('companyController',['$scope','popUpService','dataService','util'
         {name:'有效日期',id:'limitTime',date:'short',width:'150px'},
         {name:'销售员',id:'saleMan',width:'100px'},
         {name:'联系方式',id:'phone',width:'150px'},
-        {name:'允许挂账',id:'ifDebt',width:'100px',default:'n',selectId:'2'}
+        {name:'允许挂账',id:'ifDebt',width:'100px',boolean:'true'}
     ];
     $scope.debtPayFields=[
         {name:'单位名称',id:'company',width:'230px'},

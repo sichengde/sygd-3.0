@@ -1,0 +1,6 @@
+<sz-table ng-if="exchangeUserReportList" fields="exchangeUserReportFields" items="exchangeUserReportList" button="add update delete" items-per-page="20" item-click="exchangeUserReportItemClick(item,id)" print="交班审核表" query-message="queryMessageExchangeUser" remark="remarkExchangeUser"></sz-table>
+<div class="tableFoot" ng-show="exchangeUserReportList" style="text-align: left">
+    <span ng-click="moneyInDetail()" class="class2">杂单明细</span>
+    <span ng-click="moneyOutDetail()" class="class2">冲账明细</span>
+    <span ng-click="depositAllDetail()" class="class2">在店押金明细</span>
+</div>

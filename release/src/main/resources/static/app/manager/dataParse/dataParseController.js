@@ -246,8 +246,22 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     $scope.debtAndPayReport = function (beginTime) {
         webService.post('debtAndPayReport', {beginTime: beginTime})
             .then(function (r) {
+                $scope.reportJson={
+                    beginTime:util.getTodayMin(beginTime),
+                    endTime:util.getTodayMin(beginTime)
+                };
                 $scope.debtAndPayList=r.debtAndPayRowList;
+                $scope.roomPayDay=r.roomPayDay;
+                $scope.deskPayDay=r.deskPayDay;
+                $scope.companyGenerate=r.companyGenerate;
                 $scope.debtAndPayQueryMessage=dateFilter(beginTime, 'yyyy-MM-dd');
+            })
+    };
+    /*弹出交班审核表*/
+    $scope.currencyDetailJQ=function () {
+        webService.post('exchangeUserReport',$scope.reportJson)
+            .then(function (r) {
+
             })
     };
     /*客源人数分析*/

@@ -20,7 +20,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '有效日期', id: 'limitTime', width: '100px', date: 'short'},
         {name: '销售员', id: 'saleMan', width: '100px'},
         {name: '联系方式', id: 'phone', width: '150px'},
-        {name: '允许挂账', id: 'ifDebt', width: '100px', default: 'y', selectId: '2'}
+        {name: '允许挂账', id: 'ifDebt', width: '100px',boolean:'true'}
     ];
 
     //单位签单人
@@ -72,7 +72,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '操作时间', id: 'doTime', desc: '0'},
         {name: '操作员号', id: 'userId'}
     ];
-    $scope.condition = 'if_debt=\'y\'';
+    $scope.condition = 'if_debt=true';
     $scope.companySelectList = [];
     $scope.companyLordSelectList = [];
     /*挂账明细默认不显示*/

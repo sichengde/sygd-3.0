@@ -491,7 +491,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             return webService.post('guestOutMiddle', guestOut)
                 .then(
                     function (d) {
-                        guestOutReCall(d,guestOut);
+                        guestOutReCall(d,'guestOutMiddle',guestOut);
                     }
                 );
         }
@@ -502,7 +502,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                     webService.post('guestOut', guestOut)
                         .then(
                             function (d) {
-                                guestOutReCall(d,guestOut);
+                                guestOutReCall(d,'guestOut',guestOut);
                             }
                         );
                 })
@@ -510,13 +510,13 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             return webService.post('guestOut', guestOut)
                 .then(
                     function (d) {
-                        guestOutReCall(d,guestOut);
+                        guestOutReCall(d,'guestOut',guestOut);
                     }
                 );
         }
     };
 
-    function guestOutReCall(i,guestOut) {
+    function guestOutReCall(i,path,guestOut) {
         /*弹出打印预览界面*/
         webService.openReport(i);
         if(!guestOut.real){
@@ -524,7 +524,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             messageService.actionChoose()
                 .then(function () {
                     guestOut.real=true;//之前不是真实计表的话，在此计表
-                    webService.post('guestOut', guestOut)
+                    webService.post(path, guestOut)
                         .then(function (i) {
                             /*关闭该页面*/
                             popUpService.close('guestOut');

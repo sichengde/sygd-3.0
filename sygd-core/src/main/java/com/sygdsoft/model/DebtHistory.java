@@ -30,6 +30,7 @@ public class DebtHistory extends BaseEntity{
     private String remark;//备注（例如押金已退）
     private String fromRoom;//从哪转入的（针对于转房客结算）
     private String guestSource;//客源
+    private String company;//单位
     private Boolean companyPaid;//标记单位结算是否支付了该笔账务，针对精确的单位结算
     @Transient
     private String currencyAdd;//结账币种附加信息（会员号，单位名等等，主要用于商品零售）
@@ -56,6 +57,7 @@ public class DebtHistory extends BaseEntity{
         this.remark=debt.getRemark();
         this.fromRoom=debt.getFromRoom();
         this.guestSource=debt.getGuestSource();
+        this.company=debt.getCompany();
     }
 
     public Double getNotNullDeposit(){
@@ -235,5 +237,13 @@ public class DebtHistory extends BaseEntity{
 
     public void setCompanyPaid(Boolean companyPaid) {
         this.companyPaid = companyPaid;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

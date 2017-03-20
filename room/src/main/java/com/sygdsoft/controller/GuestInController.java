@@ -182,6 +182,7 @@ public class GuestInController {
             debt.setProtocol(checkIn.getProtocol());
             debt.setUserId(checkIn.getUserId());
             debt.setCategory(debtService.deposit);
+            debt.setCompany(checkIn.getCompany());
             debtService.add(debt);
             if (nowTime.compareTo(limit) < 0 && nowTime.compareTo(nightTime) > 0) {//需要直接产生一笔房费
                 debt = new Debt();
@@ -219,6 +220,7 @@ public class GuestInController {
                 /*有领队房就录入到领队房里，没有就录入到第一个房间里*/
                 debt.setRoomId(checkInGroup.getLeaderRoom());
                 debt.setCategory(debtService.deposit);
+                debt.setCompany(checkInGroup.getCompany());
                 debtService.add(debt);
             }
             /*凌晨房判断*/

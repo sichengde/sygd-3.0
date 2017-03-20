@@ -133,6 +133,10 @@ public class GuestOutController {
     @RequestMapping("guestOutMiddle")
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOutMiddle(@RequestBody GuestOutMiddle guestOutMiddle) throws Exception {
+        Boolean real=guestOutMiddle.getNotNullReal();
+        if(!real) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
         timeService.setNow();//当前时间
         serialService.setPaySerial();//生成结账序列号
         List<Debt> debtList = guestOutMiddle.getDebtList();
@@ -167,7 +171,11 @@ public class GuestOutController {
             debt.setCategory(debtService.payMiddle);
             debt.setSelfAccount(checkIn.getSelfAccount());
             debt.setRoomId(checkIn.getRoomId());
+            debt.setCompany(checkIn.getCompany());
             debtService.add(debt);
+            DebtHistory debtHistory=new DebtHistory(debt);
+            debtHistory.setConsume(payMoney);
+            debtHistoryService.add(debtHistory);
             remarkAdd+="不指定账务";
         }
         /*更新在店户籍余额*/
@@ -765,6 +773,8 @@ public class GuestOutController {
             }
         }
         debtService.delete(debtList);
+        /*删除中间结算在debt_history表中产生的临时平账数据*/
+        debtHistoryService.deleteMiddlePay();
     }
 
     /**

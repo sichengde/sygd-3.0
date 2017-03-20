@@ -29,7 +29,7 @@ public interface DebtPayMapper extends MyMapper<DebtPay> {
             @Result(property = "vipNumber", column = "vip_number"),
             @Result(property = "userId", column = "user_id"),
     })
-    List<DebtPay> getList(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime,String orderByList);
+    List<DebtPay> getList(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("orderByList") String orderByList);
 
 
     /**

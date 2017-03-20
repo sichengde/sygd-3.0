@@ -26,7 +26,7 @@ App.directive('szPay', function () {
                 currencyPay.currencyAdd1 = null;
                 currencyPay.currencyAdd2 = null;
                 if(currencyPay.currency=='转单位'){
-                    dataService.refreshCompanyList({condition: 'if_debt=\'y\''})
+                    dataService.refreshCompanyList({condition: 'if_debt=true'})
                         .then(function (r) {
                             /*初始化可供选择的单位结账数组*/
                             $scope.companyList = dataService.getCompanyList();

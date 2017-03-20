@@ -17,8 +17,17 @@ public class GuestOutMiddle {
     private String again;//补打
     private String paySerial;//结账序列号，补打时有用
     private List<Debt> debtList;//账务明细，根据账务中间结算时用
+    private Boolean real;//真实结算，针对于辽阳宾馆这种喜欢结账之后再确认的
 
     public GuestOutMiddle() {
+    }
+
+    public Boolean getNotNullReal(){
+        if(real==null){
+            return false;
+        }else {
+            return real;
+        }
     }
 
     public String getGroupAccount() {
@@ -83,5 +92,13 @@ public class GuestOutMiddle {
 
     public void setPayMoney(Double payMoney) {
         this.payMoney = payMoney;
+    }
+
+    public Boolean getReal() {
+        return real;
+    }
+
+    public void setReal(Boolean real) {
+        this.real = real;
     }
 }
