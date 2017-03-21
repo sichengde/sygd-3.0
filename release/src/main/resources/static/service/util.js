@@ -299,8 +299,13 @@ App.factory('util', [function () {
     /**
      * 把当前的时间设为0点，主要用于初始化报表时间范围
      */
-    function getTodayMin() {
-        var today=new Date();
+    function getTodayMin(date) {
+        var today;
+        if(!date) {
+            today = new Date();
+        }else {
+            today=angular.copy(date);
+        }
         today.setHours(0);
         today.setMinutes(0);
         today.setSeconds(0);
@@ -323,8 +328,13 @@ App.factory('util', [function () {
     /**
      * 把当前的时间设为24点，主要用于初始化报表时间范围
      */
-    function getTodayMax() {
-        var today=new Date();
+    function getTodayMax(date) {
+        var today;
+        if(!date) {
+            today = new Date();
+        }else {
+            today=angular.copy(date);
+        }
         today.setHours(24);
         today.setMinutes(0);
         today.setSeconds(0);

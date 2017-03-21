@@ -248,7 +248,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             .then(function (r) {
                 $scope.reportJson={
                     beginTime:util.getTodayMin(beginTime),
-                    endTime:util.getTodayMin(beginTime)
+                    endTime:util.getTodayMax(beginTime)
                 };
                 $scope.debtAndPayList=r.debtAndPayRowList;
                 $scope.roomPayDay=r.roomPayDay;
@@ -257,11 +257,25 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 $scope.debtAndPayQueryMessage=dateFilter(beginTime, 'yyyy-MM-dd');
             })
     };
-    /*弹出交班审核表*/
+    /*弹出交班审核表--接待*/
     $scope.currencyDetailJQ=function () {
         webService.post('exchangeUserReport',$scope.reportJson)
             .then(function (r) {
-
+                popUpService.pop('exchangeUserJQPop',null,null,{r:r,reportJson:$scope.reportJson});
+            })
+    };
+    /*弹出交班审核表--餐饮*/
+    $scope.currencyDetailCK=function () {
+        webService.post('exchangeUserReport',$scope.reportJson)
+            .then(function (r) {
+                popUpService.pop('exchangeUserJQPop',null,null,{r:r,reportJson:$scope.reportJson});
+            })
+    };
+    /*弹出单位明细*/
+    $scope.companyGenerate=function () {
+        webService.post('exchangeUserReport',$scope.reportJson)
+            .then(function (r) {
+                popUpService.pop('exchangeUserJQPop',null,null,{r:r,reportJson:$scope.reportJson});
             })
     };
     /*客源人数分析*/

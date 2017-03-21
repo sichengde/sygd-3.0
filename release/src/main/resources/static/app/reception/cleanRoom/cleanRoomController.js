@@ -3,9 +3,9 @@
  */
 App.controller('cleanRoomController', ['$scope', 'popUpService', 'webService', 'messageService', 'dataService','util', function ($scope, popUpService, webService, messageService, dataService,util) {
     $scope.roomList = popUpService.getParam();
-    dataService.refreshUserList()
+    dataService.refreshCleanRoomManList()
         .then(function () {
-            $scope.userList = util.objectListToString(dataService.getUserList(),'userId');
+            $scope.userList = util.objectListToString(dataService.getCleanRoomManList(),'user');
         });
     $scope.cleanRoom = function () {
         var cleanRoomPost = {};

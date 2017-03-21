@@ -2,7 +2,7 @@
     <div class="littlePop" sz-pop-top drag>
         <div class="littlePopBox">
             <h1>开通会员卡</h1>
-            <p style="text-align: left">
+            <p style="text-align: left" ng-if="!idRight">
                 <button sz-read-key="vipPost.idNumber" enter-method="readCard()">刷卡</button>
                 <font color="#c60000">*注：请先点此按钮刷卡</font></p>
             <div ng-if="idRight">

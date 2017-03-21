@@ -66,7 +66,6 @@ public class ExchangeUserReport {
         if("".equals(userId)){
             userId=null;
         }
-        String format=reportJson.getFormat();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
         List<Currency> currencyList=currencyService.get(null);
@@ -108,7 +107,7 @@ public class ExchangeUserReport {
         paramList.add(ifNotNullGetString(payTotal));//param7
         String[] param=new String[paramList.size()];
         paramList.toArray(param);
-        reportJson.setReportIndex(reportService.generateReport(templateList, param,"exchangeUser",format ));
+        reportJson.setReportIndex(reportService.generateReport(templateList, param,"exchangeUser","pdf" ));
         exchangeUserJQ.setDepositAll(depositAll);
         exchangeUserJQ.setExchangeUserRowList(exchangeUserRowList);
         exchangeUserJQ.setMoneyIn(moneyIn);

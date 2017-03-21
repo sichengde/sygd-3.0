@@ -5,6 +5,9 @@ App.controller('vipCreateController', ['$scope', 'dataService', 'util', 'LoginSe
     $scope.currencyPayList = [];//sz-pay
     $scope.currencyPayList[0] = {};//使用sz-pay必须在父控制器声明这两个变量
     $scope.vipPost = {};
+    if(dataService.getOtherParamMapValue("无卡会员")=='y'){
+        $scope.idRight=true;
+    }
     var p1 = {condition: 'check_in=1'};
     dataService.initData(['refreshCurrencyList', 'refreshVipIdNumberList'], [p1])
         .then(function () {

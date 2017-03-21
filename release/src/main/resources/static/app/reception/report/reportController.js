@@ -54,20 +54,7 @@ App.controller('reportController', ['$scope', 'host', 'dataService', 'util', 'Lo
     /**
      * 交班审核表
      */
-    $scope.exchangeUserReportFields = [
-        {name: '币种', id: 'currency'},
-        {name: '结算款', id: 'pay'},
-        {name: '预付款', id: 'deposit'},
-        {name: '退预付款', id: 'cancelDeposit'},
-        {name: '预订订金', id: 'subscription'},
-        {name: '退订金', id: 'cancelSubscription'},
-        {name: '会员充值', id: 'vipRecharge'},
-        {name: '单位结算', id: 'companyPay'}
-    ];
     $scope.exchangeUserReport = function (userId, beginTime, endTime, format) {
-        if (userId==''){
-            userId=null;
-        }
         $scope.reportJson={userId: userId, beginTime: beginTime, endTime: endTime, format: format};
         webService.post('exchangeUserReport', $scope.reportJson)
             .then(function (r) {
