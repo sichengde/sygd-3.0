@@ -30,7 +30,7 @@
                     </li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="exchangeUserCk(userId,beginTime,endTime)" value="查询"></li>
                 </ul>
-                <sz-table fields="exchangeUserCkReportFields" items="exchangeUserCkReportList" item-click="exchangeUserCkReportItemClick(item,id)" button="add update delete" ng-if="exchangeUserCkReportList" print="交班审核表" query-message="queryMessage" items-per-page="15"></sz-table>
+                <sz-exchange-user-report-ck></sz-exchange-user-report-ck>
             </div>
         </sz-pane>
         <sz-pane title="菜品统计表">
@@ -157,7 +157,7 @@
         </sz-pane>
     </sz-tab>
 </div>
-<sz-pop-up refresh="refresh()" name="restaurant/deskPay/deskPay.html"></sz-pop-up>
+<sz-pop-up name="restaurant/deskPay/deskPay.html"></sz-pop-up>
 <sz-pop-up name="reception/vip/vipDetail/vipDetail.html"></sz-pop-up>
 <sz-pop-up name="restaurant/rightClickDesk/rightClickDesk.html" back="white"></sz-pop-up>
 <sz-pop-up name="restaurant/deskDetailHistory/deskDetailHistory.html"></sz-pop-up>

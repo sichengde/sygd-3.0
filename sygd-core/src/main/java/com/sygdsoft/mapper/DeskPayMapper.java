@@ -1,6 +1,7 @@
 package com.sygdsoft.mapper;
 
 import com.sygdsoft.model.DeskPay;
+import com.sygdsoft.sqlProvider.DeskPaySql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.*;
 
@@ -17,12 +18,9 @@ public interface DeskPayMapper extends MyMapper<DeskPay> {
      * 消费额
      */
     /*时间段，币种，操作员*/
-    @Select("select sum(pay_money) deskMoney from desk_pay where user_id = #{userId} and done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and ifnull(disabled,false)=false")
-    Double getDeskMoneyByCurrencyDateUser(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("currency") String currency);
-
-    /*时间段，币种*/
-    @Select("select sum(pay_money) deskMoney from desk_pay where done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and ifnull(disabled,false)=false")
-    Double getDeskMoneyByCurrencyDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("currency") String currency);
+    @SelectProvider(type = DeskPaySql.class,method = "getPay")
+    @ResultType(value = Double.class)
+    Double getPay(@Param("userId") String userId, @Param("currency") String currency,@Param("pointOfSale") String pointOfSale,@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间段，币种，营业部门*/
     @Select("select ifnull(sum(pay_money),0) deskMoney from desk_pay where point_of_sale = #{pointOfSale} and done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and ifnull(disabled,false)=false")

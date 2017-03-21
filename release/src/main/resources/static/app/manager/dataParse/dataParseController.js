@@ -234,49 +234,47 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             })
     };
     /*发生额与结算款*/
-    $scope.debtAndPayFields=[
-        {name:'营业部门',id:'title'},
-        {name:'当日发生额',id:'debtDay'},
-        {name:'当月发生额',id:'debtMonth'},
-        {name:'当年发生额',id:'debtYear'},
-        {name:'当日结算款',id:'payDay'},
-        {name:'当月结算款',id:'payMonth'},
-        {name:'当年结算款',id:'payYear'}
+    $scope.debtAndPayFields = [
+        {name: '营业部门', id: 'title'},
+        {name: '当日发生额', id: 'debtDay'},
+        {name: '当月发生额', id: 'debtMonth'},
+        {name: '当年发生额', id: 'debtYear'},
+        {name: '当日结算款', id: 'payDay'},
+        {name: '当月结算款', id: 'payMonth'},
+        {name: '当年结算款', id: 'payYear'}
     ];
     $scope.debtAndPayReport = function (beginTime) {
         webService.post('debtAndPayReport', {beginTime: beginTime})
             .then(function (r) {
-                $scope.reportJson={
-                    beginTime:util.getTodayMin(beginTime),
-                    endTime:util.getTodayMax(beginTime)
+                $scope.reportJson = {
+                    beginTime: util.getTodayMin(beginTime),
+                    endTime: util.getTodayMax(beginTime)
                 };
-                $scope.debtAndPayList=r.debtAndPayRowList;
-                $scope.roomPayDay=r.roomPayDay;
-                $scope.deskPayDay=r.deskPayDay;
-                $scope.companyGenerate=r.companyGenerate;
-                $scope.debtAndPayQueryMessage=dateFilter(beginTime, 'yyyy-MM-dd');
+                $scope.debtAndPayList = r.debtAndPayRowList;
+                $scope.roomPayDay = r.roomPayDay;
+                $scope.deskPayDay = r.deskPayDay;
+                $scope.companyGenerate = r.companyGenerate;
+                $scope.companyGenerateCk = r.companyGenerateCk;
+                $scope.debtAndPayQueryMessage = dateFilter(beginTime, 'yyyy-MM-dd');
             })
     };
     /*弹出交班审核表--接待*/
-    $scope.currencyDetailJQ=function () {
-        webService.post('exchangeUserReport',$scope.reportJson)
+    $scope.currencyDetailJQ = function () {
+        webService.post('exchangeUserReport', $scope.reportJson)
             .then(function (r) {
-                popUpService.pop('exchangeUserJQPop',null,null,{r:r,reportJson:$scope.reportJson});
+                popUpService.pop('exchangeUserJQPop', null, null, {r: r, reportJson: $scope.reportJson});
             })
     };
     /*弹出交班审核表--餐饮*/
-    $scope.currencyDetailCK=function () {
-        webService.post('exchangeUserReport',$scope.reportJson)
+    $scope.currencyDetailCK = function () {
+        webService.post('exchangeUserCkReport', $scope.reportJson)
             .then(function (r) {
-                popUpService.pop('exchangeUserJQPop',null,null,{r:r,reportJson:$scope.reportJson});
+                popUpService.pop('exchangeUserCKPop', null, null, {r: r, reportJson: $scope.reportJson});
             })
     };
     /*弹出单位明细*/
-    $scope.companyGenerate=function () {
-        webService.post('exchangeUserReport',$scope.reportJson)
-            .then(function (r) {
-                popUpService.pop('exchangeUserJQPop',null,null,{r:r,reportJson:$scope.reportJson});
-            })
+    $scope.companyGenerateClick = function () {
+        popUpService.pop('popCompanyGenerate', null, null, {reportJson: $scope.reportJson});
     };
     /*客源人数分析*/
     $scope.guestSourceParseFields = [
@@ -421,8 +419,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '当月历史同期', id: 'monthHistoryTotal'},
         {name: '当年历史同期', id: 'yearHistoryTotal'}
     ];
-    $scope.hotelParseReport=function (beginTime) {
-        webService.post('hotelParse',{beginTime:beginTime})
+    $scope.hotelParseReport = function (beginTime) {
+        webService.post('hotelParse', {beginTime: beginTime})
             .then(function (r) {
                 $scope.hotelParseList = r;
             })

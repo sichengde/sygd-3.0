@@ -24,6 +24,7 @@ public class DebtIntegration {
     private String vipNumber;//会员编号，针对于用会员余额作为押金的顾客
     private String category;//账务类别，便于在账务明细中筛选
     private String guestSource;//客源
+    private String company;//单位
     @Transient
     private String count;
     @Transient
@@ -182,5 +183,13 @@ public class DebtIntegration {
 
     public void setGuestSource(String guestSource) {
         this.guestSource = guestSource;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

@@ -31,19 +31,8 @@ public class DeskPayService extends BaseService<DeskPay> {
     /**
      * 获得该日期该币种的消费额(餐饮,不带pos点)
      */
-    public Double getDeskMoneyByCurrencyDateUser(String userId, String currency, Date beginTime, Date endTime) {
-        if (userId == null) {
-            return deskPayMapper.getDeskMoneyByCurrencyDate(beginTime, endTime, currency);
-        } else {
-            return deskPayMapper.getDeskMoneyByCurrencyDateUser(userId, beginTime, endTime, currency);
-        }
-    }
-
-    /**
-     * 获得该日期该币种的消费额(餐饮,不带销售员，带pos点（一级营业部门）)
-     */
-    public Double getDeskMoneyByCurrencyDatePointOfSale(String pointOfSale, String currency, Date beginTime, Date endTime) {
-        return deskPayMapper.getDeskMoneyByCurrencyDatePointOfSale(pointOfSale, beginTime, endTime, currency);
+    public Double getPay(String userId, String currency,String pointOfSale, Date beginTime, Date endTime) {
+        return deskPayMapper.getPay(userId,currency ,pointOfSale, beginTime,endTime);
     }
 
     /**

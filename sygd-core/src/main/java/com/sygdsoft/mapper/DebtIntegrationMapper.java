@@ -5,9 +5,7 @@ import com.sygdsoft.jsonModel.RoomCategoryLine;
 import com.sygdsoft.jsonModel.report.RoomCategoryRow;
 import com.sygdsoft.util.MyMapper;
 import com.sygdsoft.model.DebtIntegration;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 import java.util.List;
@@ -45,6 +43,16 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     @Select("SELECT sum(di.consume) consume from debt_integration di LEFT JOIN company c on di.company=c.name WHERE di.company IS NOT NULL and c.if_debt = TRUE and di.do_time>#{beginTime} and di.do_time<#{endTime}")
     @ResultType(Double.class)
     Double getSumByCompany(@Param("beginTime")Date beginTime ,@Param("endTime")Date endTime);
+
+    /*只获取有单位发生额的数组*/
+    @Select("SELECT * from debt_integration di LEFT JOIN company c on di.company=c.name WHERE di.company IS NOT NULL and c.if_debt = TRUE and di.do_time>#{beginTime} and di.do_time<#{endTime} order by di.company")
+    @Results(value = {
+            @Result(property = "doTime", column = "do_time"),
+            @Result(property = "pointOfSale", column = "point_of_sale"),
+            @Result(property = "roomId", column = "room_id"),
+            @Result(property = "userId", column = "user_id"),
+    })
+    List<DebtIntegration> getListByCompany(@Param("beginTime")Date beginTime ,@Param("endTime")Date endTime);
     /**
      * 根据时间获得发生额（线性数据，包含了宴请）
      */

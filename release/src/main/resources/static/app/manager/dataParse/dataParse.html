@@ -35,7 +35,8 @@
             <div class="tableFoot" ng-show="debtAndPayList" style="text-align: left">
                 <span ng-click="currencyDetailJQ()" class="class2">{{'客房当日结算'+roomPayDay}}</span>
                 <span ng-click="currencyDetailCK()" class="class2">{{'餐饮当日结算'+deskPayDay}}</span>
-                <span ng-click="companyGenerate()" class="class2">{{'单位当日发生'+companyGenerate}}</span>
+                <span ng-click="companyGenerateClick()" class="class2">{{'单位当日发生-客房'+companyGenerate}}</span>
+                <span ng-click="companyGenerateClick()" class="class2">{{'单位当日发生-餐饮'+companyGenerateCk}}</span>
             </div>
         </sz-pane>
         <sz-pane title="客房经营分析">
@@ -236,4 +237,6 @@
 </div>
 <sz-pop-up name="manager/popCanvas/popCanvas.html"></sz-pop-up>
 <sz-pop-up name="manager/dataParse/popExchangeUser/exchangeUserJQPop.html"></sz-pop-up>
+<sz-pop-up name="manager/dataParse/popExchangeUser/exchangeUserCKPop.html"></sz-pop-up>
+<sz-pop-up name="manager/dataParse/popCompanyGenerate/popCompanyGenerate.html"></sz-pop-up>
 <sz-pop-up name="reception/companyDebt/popCompanyDebt/popCompanyDebt.html"></sz-pop-up>

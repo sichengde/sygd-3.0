@@ -125,7 +125,7 @@ public class DailyReportController {
                         money = debtPayService.getDebtMoney(null,currencyString,false, beginTime, endTime);
                         break;
                     case "餐饮":
-                        money=deskPayService.getDeskMoneyByCurrencyDatePointOfSale(firstPointOfSale,currencyString, beginTime, endTime);
+                        money=deskPayService.getPay(null,currencyString,firstPointOfSale, beginTime, endTime);
                         break;
                     case "桑拿":
                         break;

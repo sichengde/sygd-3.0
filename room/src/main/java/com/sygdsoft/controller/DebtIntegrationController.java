@@ -25,4 +25,5 @@ public class DebtIntegrationController {
     public List<DebtIntegration> debtIntegrationGet(@RequestBody Query query) throws Exception {
         return debtIntegrationService.get(query);
     }
+
 }

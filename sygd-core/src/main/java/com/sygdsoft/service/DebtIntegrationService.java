@@ -54,6 +54,13 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     }
 
     /**
+     * 根据时间获取单位发生额
+     */
+    public List<DebtIntegration> getListByCompany(Date beginTime, Date endTime) {
+        return debtIntegrationMapper.getListByCompany(beginTime, endTime);
+    }
+
+    /**
      * 根据时间获得发生额，分，房吧，零售和房费
      */
     public List<HotelParseLineRow> getSumDateLineByPointOfSale(Date beginTime, Date endTime, String pointOfSale) {

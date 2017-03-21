@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-09-18.
  */
-App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 'util', 'dateFilter', 'LoginService', 'dataService', 'host', function ($scope, webService, popUpService, util, dateFilter, LoginService, dataService, host) {
+App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 'util', 'dateFilter', 'LoginService', 'dataService', 'fieldService', function ($scope, webService, popUpService, util, dateFilter, LoginService, dataService, fieldService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     dataService.refreshPointOfSaleList({condition: 'module=\'餐饮\''}).then(function () {
@@ -41,18 +41,7 @@ App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 
         {name: '金额', id: 'total', sum: 'true'},
         {name: '占比', id: 'percent'}
     ];
-    $scope.deskPayRichFields = [
-        {name: '餐台', id: 'desk', width: '69px', filter: 'input'},
-        {name: '币种', id: 'currency', width: '69px', filter: 'list'},
-        {name: '额外币种信息', id: 'currencyAdd', width: '89px', filter: 'input'},
-        {name: '金额', id: 'payMoney', sum: 'true', width: '69px'},
-        {name: '开单时间', id: 'doTime', width: '129px', desc: '0', filter: 'date'},
-        {name: '结账时间', id: 'doneTime', width: '129px', desc: '0', filter: 'date', filterInit: 'today'},
-        {name: '结算序列号', id: 'ckSerial', width: '159px', filter: 'input'},
-        {name: '操作员', id: 'userId', width: '69px', filter: 'list'},
-        {name: '营业部门', id: 'pointOfSale', width: '109px', filter: 'list'},
-        {name: '被取消', id: 'disabled', width: '69px', boolean: 'true', filter: 'list'}
-    ];
+    $scope.deskPayRichFields = fieldService.getDeskPayRichFields();
     $scope.deskInHistoryFields = [
         {name: '结账流水号', id: 'ckSerial', filter: 'input'},
         {name: '桌号', id: 'desk', filter: 'list'},
@@ -114,41 +103,13 @@ App.controller('deskReportController', ['$scope', 'webService', 'popUpService', 
      * 交班审核表数据生成
      */
     $scope.exchangeUserCk = function (userId, beginTime, endTime) {
-        webService.post('exchangeUserCkReport', {userId: userId, beginTime: beginTime, endTime: endTime})
+        $scope.reportJson={userId: userId, beginTime: beginTime, endTime: endTime};
+        webService.post('exchangeUserCkReport', $scope.reportJson)
             .then(function (r) {
                 $scope.exchangeUserCkReportList = r;
                 /*生成交班审核表的查询信息，用来传递给jasper*/
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss') + '  操作员:' + (userId ? userId : '全部');
             })
-    };
-    /**
-     * 点击交班审核表一个项目时，显示明细
-     */
-    $scope.exchangeUserCkReportItemClick = function (item, id) {
-        /*查询*/
-        var itemWithQuery = $scope.exchangeUserCkReportList[0].reportJson;
-        var user = util.wrapWithBrackets(itemWithQuery.userId);
-        var beginTime = util.wrapWithBrackets(dateFilter(itemWithQuery.beginTime, 'yyyy-MM-dd HH:mm:ss'));
-        var endTime = util.wrapWithBrackets(dateFilter(itemWithQuery.endTime, 'yyyy-MM-dd HH:mm:ss'));
-        var currency = util.wrapWithBrackets(item.currency);
-        var whereUser = '';
-        if (itemWithQuery.userId) {
-            whereUser = 'user_id = ' + user + ' and ';
-        }
-        if (id == 'payMoney') {
-            var p = {condition: whereUser + 'done_time > ' + beginTime + ' and done_time< ' + endTime + ' and currency=' + currency + ' and ifnull(disabled,false)=false'};
-            webService.post('deskPayGet', p)
-                .then(function (r) {
-                    popUpService.pop('deskPay', null, null, r);
-                })
-        }
-        if (id == 'vipMoney') {
-            var p = {condition: whereUser + 'do_time > ' + beginTime + ' and do_time< ' + endTime + ' and currency=' + currency};
-            webService.post('vipIntegrationGet', p)
-                .then(function (r) {
-                    popUpService.pop('vipDetail', null, null, r);
-                })
-        }
     };
     /**
      * 提交销售流水报表统计

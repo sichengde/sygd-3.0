@@ -13,7 +13,7 @@ public class DeskPay extends BaseEntity{
     private String ckSerial;
     private String userId;
     private String pointOfSale;
-    private Boolean disabled;
+    private Boolean disabled;//是否可用状态，例如使用自助餐冲减之后，该值则为true，表示该条记录忽略
 
     public DeskPay() {
     }

@@ -1,6 +1,7 @@
 package com.sygdsoft.controller.room;
 
 import com.sygdsoft.model.CompanyPay;
+import com.sygdsoft.model.DebtIntegration;
 import com.sygdsoft.model.HotelParseRow;
 import com.sygdsoft.model.ReportJson;
 import com.sygdsoft.model.room.DebtAndPayReturn;
@@ -41,6 +42,8 @@ public class DebtAndPayReportController {
     CompanyPayService companyPayService;
     @Autowired
     DebtIntegrationService debtIntegrationService;
+    @Autowired
+    DeskPayService deskPayService;
 
     @RequestMapping(value = "debtAndPayReport")
     public DebtAndPayReturn debtAndPayReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -135,11 +138,20 @@ public class DebtAndPayReportController {
 
         debtAndPayRowList.add(debtAndPayRow2);
 
-        /*计算单位发生额*/
+        /*计算单位发生额-客房*/
         debtAndPayReturn.setCompanyGenerate(debtIntegrationService.getSumByCompany(timeService.getMinTime(date), timeService.getMaxTime(date)));
+        /*餐饮单位发生额*/
+        debtAndPayReturn.setCompanyGenerateCk(deskPayService.getPay(null,"转单位",null,timeService.getMinTime(date), timeService.getMaxTime(date)));
 
         debtAndPayReturn.setDebtAndPayRowList(debtAndPayRowList);
 
         return debtAndPayReturn;
+    }
+
+    @RequestMapping(value = "getCompanyGenerateDetail")
+    List<DebtIntegration> getCompanyGenerateDetail(@RequestBody ReportJson reportJson){
+        Date beginTime=reportJson.getBeginTime();
+        Date endTime=reportJson.getEndTime();
+        return debtIntegrationService.getListByCompany(beginTime, endTime);
     }
 }
