@@ -9,6 +9,7 @@ public class CurrencyPost {
     private String currency;
     private String currencyAdd;
     private Double money;
+    private Double deposit;
 
     public CurrencyPost() {
     }
@@ -47,4 +48,11 @@ public class CurrencyPost {
         this.money = money;
     }
 
+    public Double getDeposit() {
+        return deposit;
+    }
+
+    public void setDeposit(Double deposit) {
+        this.deposit = deposit;
+    }
 }

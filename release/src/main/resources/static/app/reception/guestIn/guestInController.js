@@ -11,6 +11,10 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     /*在店宾客对象和数组*/
     $scope.checkInGuest = {};
     $scope.checkInGuestList = [];
+    /*预付数组*/
+    $scope.depositList = [
+        {currency: '人民币'}
+    ];
     var bookIn = false;//预定开房，如果是预定开房，则监听不起作用，只阻止一次
     $scope.checkInGuestFields = [
         {name: '姓名', id: 'name', width: '100px', notNull: 'true'},
@@ -67,7 +71,6 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             $scope.protocolList = dataService.getProtocolList();
             /*押金币种*/
             $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');
-            $scope.currency = '人民币';
             /*单位名称*/
             $scope.companyList = dataService.getCompanyList();
             /*初始化当前时间和预计离店时间*/
@@ -127,10 +130,13 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                             })
                     } else {
                         /*普通客史提示*/
-                        webService.post('getHistoryRoomPriceByCardId',[guestInfo.cardId,$scope.room.category])
+                        webService.post('getHistoryRoomPriceByCardId', [guestInfo.cardId, $scope.room.category])
                             .then(function (r) {
-                                if(r){
-                                    messageService.setMessage({content: '该宾客上次使用:'+$scope.room.category+'的房价为'+r,type:'alert'});
+                                if (r) {
+                                    messageService.setMessage({
+                                        content: '该宾客上次使用:' + $scope.room.category + '的房价为' + r,
+                                        type: 'alert'
+                                    });
                                     popUpService.pop('message');
                                 }
                             });
@@ -140,6 +146,14 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             });
         /*测试时*/
         //$scope.checkInGuestList.push({name: '舒展', cardId: '123456789012345678', bed: '1'});
+    };
+    /*增加一条预付*/
+    $scope.manyDeposit = function () {
+        $scope.depositList.push({currency: '人民币'});
+    };
+    /*删除一条预付*/
+    $scope.deleteCurrency = function (d) {
+        util.deleteFromArray($scope.depositList, null, d);
     };
     /*监听单位和房租方式的的变化，从而设置房价协议*/
     var watch = $scope.$watchGroup(['roomPriceCategory', 'room.category', 'company', 'vip'], function () {
@@ -184,8 +198,8 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         $scope.protocolShowList = protocolFilter($scope.protocolList, $scope.roomPriceCategory, $scope.room.category, $scope.company, $scope.vip);
         /*如果有押金则转为预付*/
         if (book.subscription) {
-            $scope.deposit = book.subscription;
-            $scope.currency = book.currency;
+            $scope.depositList[0].deposit = book.subscription;
+            $scope.depositList[0].currency = book.currency;
         }
         bookIn = true;
     };
@@ -198,18 +212,21 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             popUpService.pop('message');
             return;
         }
-        if (!$scope.deposit) {
-            $scope.deposit = 0;
-        }
-        if (isNaN($scope.deposit)) {
-            messageService.setMessage({type: 'error', content: '您输入的预付款不是数字'});
-            popUpService.pop('message');
-            return;
-        }
-        if ($scope.currency == '会员' && !$scope.vip) {
-            messageService.setMessage({type: 'error', content: '您选择用会员余额充当押金，但还没有读取会员卡'});
-            popUpService.pop('message');
-            return;
+        for (var i = 0; i < $scope.depositList.length; i++) {
+            var d = $scope.depositList[i];
+            if (!d.deposit) {
+                d.deposit = 0;
+            }
+            if (isNaN(d.deposit)) {
+                messageService.setMessage({type: 'error', content: '您输入的预付款不是数字'});
+                popUpService.pop('message');
+                return;
+            }
+            if (d.currency == '会员' && !$scope.vip) {
+                messageService.setMessage({type: 'error', content: '您选择用会员余额充当押金，但还没有读取会员卡'});
+                popUpService.pop('message');
+                return;
+            }
         }
         checkIn.roomId = $scope.room.roomId;
         checkIn.roomCategory = $scope.room.category;
@@ -237,11 +254,10 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             checkIn.company = $scope.company.name;
         }
         checkIn.vipNumber = $scope.vip ? $scope.vip.vipNumber : null;
-        checkIn.currency = $scope.currency;
-        checkIn.deposit = $scope.deposit;
         checkIn.roomPriceCategory = $scope.roomPriceCategory;
         checkIn.userId = LoginService.getUser();
         guestIn.checkInList = [checkIn];
+        guestIn.currencyPostList = $scope.depositList;
         angular.forEach($scope.checkInGuestList, function (item) {
             item.roomId = $scope.room.roomId;
         });
@@ -264,7 +280,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                         popUpService.close('guestIn');
                         /*本地记录选择的客源*/
                         localStorage.setItem('guestInGuestSourceIndex', $scope.guestSourceList.indexOf($scope.guestSource));
-                    },function () {
+                    }, function () {
                         popUpService.close('guestIn');
                     })
             });

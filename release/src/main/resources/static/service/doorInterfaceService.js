@@ -48,7 +48,7 @@ App.factory('doorInterfaceService', ['messageService', 'dateFilter', '$q', 'popU
                 var roomId=doorIdMap[doorId].roomId;
                 /*说明门锁接口读不出来时间，所以只能通过在店户籍粗略查找*/
                 if(date=='false'){
-                    var query={condition:'room_id='+util.wrapWithBrackets(roomId)}
+                    var query={condition:'room_id='+util.wrapWithBrackets(roomId)};
                     dataService.refreshCheckInList(query)
                         .then(function (ci) {
                             if(ci[0]){

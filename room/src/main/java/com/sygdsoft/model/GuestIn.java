@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.model.CheckIn;
 import com.sygdsoft.model.CheckInGuest;
 
@@ -12,6 +13,7 @@ public class GuestIn {
     private List<CheckIn> checkInList;
     private List<CheckInGuest> checkInGuestList;
     private CheckInGroup checkInGroup;
+    private List<CurrencyPost> currencyPostList;
     private Book book;//预定开房
     private String again;//补打标志
     private Protocol protocol;//自定义房价时会传递进来自定义的开房价格
@@ -72,5 +74,13 @@ public class GuestIn {
 
     public void setProtocol(Protocol protocol) {
         this.protocol = protocol;
+    }
+
+    public List<CurrencyPost> getCurrencyPostList() {
+        return currencyPostList;
+    }
+
+    public void setCurrencyPostList(List<CurrencyPost> currencyPostList) {
+        this.currencyPostList = currencyPostList;
     }
 }

@@ -90,17 +90,21 @@
                       sz-not-null button="update" right-click="rightClickGuest"></sz-table>
         </div>
         <table class="tableBorderfff">
-            <tr>
-                <td style="width:100px;">预付款：</td>
-                <td><input type="text" name="total" class="input" ng-model="deposit"
-                           style="width: 100px;"></td>
+            <tr ng-repeat="d in depositList">
+                <td style="width:100px;">
+                    <span class="red" ng-click="manyDeposit()" style="margin-top: 10px; cursor: pointer">+</span>
+                    预付款：
+                    <span class="red" ng-click="deleteCurrency(d)" ng-show="$index>0" style="margin-top: 10px; cursor: pointer">-</span>
+                </td>
+                <td>
+                    <input type="text" name="total" class="input" ng-model="d.deposit" style="width: 100px;">
+                </td>
                 <td style="width:100px;">支付方式：</td>
                 <td style="width: 550px">
-                    <select style="width: 130px;" ng-options="x for x in currencyList" ng-model="currency">
+                    <select style="width: 130px;" ng-options="x for x in currencyList" ng-model="d.currency">
                     </select>
                     <span ng-if="currency=='会员'" class="red">&nbsp;* 支付方式为会员时会先冻结该笔金额</span>
                 </td>
-
             </tr>
             <tr>
                 <td>特殊要求：</td>
