@@ -42,9 +42,9 @@ public class ModuleService {
             new Module("预定", "BOOK", new String[]{
             }),*/
             new Module("库存", "storage", new String[]{
-                    "系统设置",
+                    "库存参数",
                     "库存管理",
-                    "报表查询"
+                    "库存报表"
             }),
             new Module("经理查询", "manager", new String[]{
                     "实时状态","宾客信息","数据分析","报表预览"

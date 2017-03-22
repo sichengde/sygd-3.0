@@ -224,12 +224,12 @@ App.factory('LoginService', [function () {
             class: 'icon-inbox'
         },
         {
-            name: '参数设置',
+            name: '库存参数',
             href: '/storageParam/',
             class: 'icon-cog'
         },
         {
-            name: '报表查询',
+            name: '库存报表',
             href: 'storageReport',
             class: 'icon-file-alt'
         }
