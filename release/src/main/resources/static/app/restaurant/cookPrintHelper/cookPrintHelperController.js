@@ -1,4 +1,4 @@
-App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', 'dateFilter', 'webService', function ($scope, dataService, util, dateFilter, webService) {
+App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', 'dateFilter', 'webService','agGridService', function ($scope, dataService, util, dateFilter, webService,agGridService) {
     var rowData;
     $scope.refresh = function () {
         rowData = [];
@@ -51,96 +51,6 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', 'd
                 }
                 $scope.gridOptions.api.setRowData(rowData);
             });
-        /*var a = [
-         {
-         group: '中餐厅',
-         participants: [
-         {
-         group: '101',
-         participants: [
-         {
-         group: '海鲜',
-         participants: [
-         {name: '黄花鱼', num: '1', cooked: false},
-         {name: '扇贝', num: '5', cooked: false}
-         ]
-         },
-         {
-         group: '酒水',
-         participants: [
-         {name: '可乐', num: '10', cooked: true},
-         {name: '雪碧', num: '10', cooked: true}
-         ]
-         }
-         ]
-         },
-         {
-         group: '102',
-         title: '酒水',
-         participants: [
-         {
-         group: '海鲜',
-         participants: [
-         {name: '黄花鱼', num: '1', cooked: false},
-         {name: '扇贝', num: '5', cooked: false}
-         ]
-         },
-         {
-         group: '酒水',
-         participants: [
-         {name: '可乐', num: '10', cooked: true},
-         {name: '雪碧', num: '10', cooked: true}
-         ]
-         }
-         ]
-         }
-         ]
-         },
-         {
-         group: '西餐厅',
-         participants: [
-         {
-         group: '202',
-         participants: [
-         {
-         group: '面点',
-         participants: [
-         {name: '馒头', num: '1', cooked: true},
-         {name: '花卷', num: '5', cooked: false}
-         ]
-         },
-         {
-         group: '热菜',
-         participants: [
-         {name: '小鸡炖蘑菇', num: '1', cooked: false},
-         {name: '干豆腐', num: '1', cooked: false}
-         ]
-         }
-         ]
-         },
-         {
-         group: '203',
-         participants: [
-         {
-         group: '面点',
-         participants: [
-         {name: '馒头', num: '1', cooked: true},
-         {name: '花卷', num: '5', cooked: false}
-         ]
-         },
-         {
-         group: '热菜',
-         participants: [
-         {name: '小鸡炖蘑菇', num: '1', cooked: false},
-         {name: '干豆腐', num: '1', cooked: false}
-         ]
-         }
-         ]
-         }
-         ]
-         }
-         ];
-         $scope.gridOptions.api.setRowData(a)*/
     };
     $scope.refresh();
     var columnDefs = [
@@ -148,9 +58,9 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', 'd
         {headerName: "名称", field: "name"},
         {headerName: "数量", field: "num"},
         {headerName: "备注", field: "remark"},
-        {headerName: "下菜时间", field: "doTime", cellRenderer: timeCellRender},
+        {headerName: "下菜时间", field: "doTime", cellRenderer: agGridService.stdTimeRender},
         {
-            headerName: "已做", field: "cooked", cellRenderer: innerCellRenderer
+            headerName: "已做", field: "cooked", cellRenderer: agGridService.stdBoolRender
         }
     ];
     $scope.gridOptions = {
@@ -209,26 +119,6 @@ App.controller('cookPrintHelperController', ['$scope', 'dataService', 'util', 'd
             ];
 
             return result;
-        }
-    }
-
-    function innerCellRenderer(params) {
-        if (!params.node.group) {
-            if (params.value) {
-                return '是';
-            } else {
-                return '否';
-            }
-        } else {
-            return '';
-        }
-    }
-
-    function timeCellRender(params) {
-        if (!params.node.group) {
-            return dateFilter(params.value, 'yyyy-MM-dd HH:mm:ss');
-        } else {
-            return '';
         }
     }
 

@@ -1,4 +1,4 @@
-App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', 'fieldService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService, fieldService) {
+App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', 'fieldService','agGridService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService, fieldService,agGridService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     var postBeginTime;
@@ -6,15 +6,6 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     /**
      * 客房经营状况
      */
-    var localeText = {
-        export: '导出',
-        csvExport: '导出为CSV',
-        excelExport: '导出XLS',
-        copy: '复制',
-        paste: '粘贴',
-        copyWithHeaders: '复制标题',
-        toolPanel: '工具栏'
-    }
     var columnDefs = [
         {
             headerName: '',
@@ -146,7 +137,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             /*this.columnApi.autoSizeColumns(allColumnIds);*/
             /*this.api.sizeColumnsToFit();*/
         },
-        localeText: localeText
+        localeText: agGridService.getLocalText
     };
     $scope.range = '年';
     $scope.showRoomParseReport = false;
@@ -174,30 +165,16 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                             row[pointOfSaleId] = parseFloat(row.income[rowIndex]);
                         }
                     }
-                }
-                ;
+                };
                 $scope.gridOptions.api.setColumnDefs(columnDefs);
                 $scope.gridOptions.api.setRowData(r);
-                var allColumnIds = [];
-                getColumnDef(columnDefs, allColumnIds);
+                var allColumnIds =[];
+                agGridService.getColumnDef(columnDefs,allColumnIds);
                 $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
                 $scope.gridOptions.api.ensureColumnVisible('totalPointOfSaleConsume');
                 $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
             })
     };
-    function getColumnDef(defs, allColumnIds) {
-        defs.forEach(function (columnDef) {
-            if (columnDef.children) {
-                getColumnDef(columnDef.children, allColumnIds)
-            } else {
-                if (columnDef.field) {
-                    allColumnIds.push(columnDef.field);
-                } else {
-                    allColumnIds.push(columnDef.colId);
-                }
-            }
-        });
-    }
 
     $scope.RoomParseReportExport = function () {
         $scope.gridOptions.api.exportDataAsExcel({

@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-07-15.
  */
-App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService', 'util', '$route', 'fieldService', 'messageService','dateFilter', function ($scope, popUpService, dataService, util, $route, fieldService, messageService,dateFilter) {
+App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService', 'util', '$route', 'fieldService', 'messageService', 'dateFilter', 'agGridService', function ($scope, popUpService, dataService, util, $route, fieldService, messageService, dateFilter, agGridService) {
     if ($route.current.params.mode == 'edit') {
         $scope.editable = true;
     }
@@ -20,7 +20,7 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         {name: '有效日期', id: 'limitTime', width: '100px', date: 'short'},
         {name: '销售员', id: 'saleMan', width: '100px'},
         {name: '联系方式', id: 'phone', width: '150px'},
-        {name: '允许挂账', id: 'ifDebt', width: '100px',boolean:'true'}
+        {name: '允许挂账', id: 'ifDebt', width: '100px', boolean: 'true'}
     ];
 
     //单位签单人
@@ -178,66 +178,92 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         popUpService.pop('companyPay', null, null, post);
     };
     /*单位挂账汇总*/
-    $scope.setInit=function () {
-        $scope.showCompanySummaryReport=false;
+    $scope.setInit = function () {
+        $scope.showCompanySummaryReport = false;
     };
-    var companySummaryFields=[
-        {headerName: "单位名称", field: 'company',rowGroupIndex:0},
+    var companySummaryFields = [
+        {headerName: "单位名称", field: 'company', rowGroupIndex: 0},
         {headerName: "签单人", field: "lord"},
         {headerName: "宾客", field: "name"},
         {headerName: "金额", field: "debt", aggFunc: 'sum'},
-        {headerName: "挂账时间", field: "companyDoTime"},
+        {headerName: "挂账时间", field: "companyDoTime", cellRenderer: agGridService.stdTimeRender},
         {headerName: "备注", field: "description"},
         {headerName: "模块", field: "pointOfSale"},
-        {headerName: "发生时间", field: "debtDoTime"},
+        {headerName: "发生时间", field: "debtDoTime", cellRenderer: agGridService.stdTimeRender},
         {headerName: "统计部门", field: "secondPointOfSale"},
         {headerName: "房号", field: "roomId"},
         {headerName: "接待员", field: "userId"},
         {headerName: "类型", field: "category"},
-        {headerName: "已结标志", field: "companyPaid"}
+        {headerName: "已结标志", field: "companyPaid", cellRenderer: agGridService.stdBoolRender}
     ];
 
-    $scope.companySummaryGridOptions= {
+    $scope.companySummaryGridOptions = {
         columnDefs: companySummaryFields,
+        animateRows: true,
+        enableColResize: true,
         rowData: null,
         groupUseEntireRow: true,
-        groupRowInnerRenderer: groupRowInnerRendererFunc
+        groupRowInnerRenderer: groupRowInnerRendererFunc,
+        getContextMenuItems: getContextMenuItems,
+        localeText: agGridService.getLocalText
     };
+    function getContextMenuItems() {
+        var params = {};
+        params.processCellCallback = function (params) {
+            if(params.column.cellRenderer){
+                return params.column.cellRenderer(params);
+            }else {
+                return params.value;
+            }
+        };
+        var result = [
+            { // custom item
+                name: '导出excel ',
+                action: function () {
+                    $scope.companySummaryGridOptions.api.exportDataAsExcel(params);
+                }
+            }
+        ];
+
+        return result;
+    }
+
     function groupRowInnerRendererFunc(params) {
-        var html='';
+        var html = '';
         html += '<span> COUNTRY_NAME</span>'.replace('COUNTRY_NAME', params.node.key);
         html += '<span> 项目: COUNT</span>'.replace('COUNT', params.node.allChildrenCount);
         html += '<span> 欠款: GOLD_COUNT</span>'.replace('GOLD_COUNT', params.data.debt);
 
         return html;
     }
-    $scope.companySummaryReport=function (module, company, beginTime, endTime) {
-        var query={};
-        query.orderByList=['company'];
-        query.condition=' company_paid=false';
-        if(module!='全部'){
-            query.condition+=' and point_of_sale='+util.wrapWithBrackets(module);
+
+    $scope.companySummaryReport = function (module, company, beginTime, endTime, range) {
+        var query = {};
+        query.orderByList = ['company'];
+        query.condition = ' company_paid=false';
+        if (module != '全部') {
+            query.condition += ' and point_of_sale=' + util.wrapWithBrackets(module);
         }
-        if($scope.range=='发') {
-            if (!beginTime) {
+        if (range == '发') {
+            if (beginTime) {
                 query.condition += ' and debt_do_time>' + util.wrapWithBrackets(dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss'))
             }
-            if (!endTime) {
+            if (endTime) {
                 query.condition += ' and debt_do_time<' + util.wrapWithBrackets(dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss'))
             }
         }
-        if($scope.range=='挂'){
-            if (!beginTime) {
+        if (range == '挂') {
+            if (beginTime) {
                 query.condition += ' and company_do_time>' + util.wrapWithBrackets(dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss'))
             }
-            if (!endTime) {
+            if (endTime) {
                 query.condition += ' and company_do_time<' + util.wrapWithBrackets(dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss'))
             }
         }
         dataService.refreshCompanyDebtRichList(query)
             .then(function (r) {
                 $scope.companySummaryGridOptions.api.setRowData(r);
-                $scope.showCompanySummaryReport=true;
+                $scope.showCompanySummaryReport = true;
             })
     }
 }]);
