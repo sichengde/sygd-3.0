@@ -43,11 +43,41 @@
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyPayThis()" value="结算已选明细"></li>
             </ul>
         </sz-pane>
-        <!--<sz-pane title="单位欠款报表">
-            <div style="width: 1000px;">
-                <div ag-grid="gridOptions" class="ag-fresh" style="height: 100%;"></div>
+        <sz-pane title="单位未结汇总" init="setInit()">
+            <div ng-show="showCompanySummaryReport" ag-grid="companySummaryGridOptions" class="ag-fresh" style="height: 500px;"></div>
+            <div class="tableDiv" ng-show="!showCompanySummaryReport">
+                <ul>
+                    <li>模块：<select style="width: 105px;" class="tableSelect" ng-model="module" ng-options="x for x in ['全部','接待','餐饮']" ng-init="module='全部'">
+                    </select></li>
+                    <li>单位名称：<input ng-model="company" type="text" style="float: none; width: 80px;">
+                    </li>
+                    <li>
+                        时间：
+                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li style="margin-left: 0px;">至</li>
+                    <li>
+                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="btn-group">
+                            <label class="btn btn-primary" ng-model="range" uib-btn-radio="'挂'" uncheckable>挂账时间</label>
+                            <label class="btn btn-primary" ng-model="range" uib-btn-radio="'发'" uncheckable>发生时间</label>
+                        </div>
+                    </li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companySummaryReport(module,company,beginTime,endTime)" value="预览"></li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReportExport()" value="导出xls"></li>
+                </ul>
             </div>
-        </sz-pane>-->
+        </sz-pane>
     </sz-tab>
     <!-- 弹出界面 -->
     <sz-pop-up refresh="refresh()" name="reception/companyDebt/companyPay/companyPay.html"></sz-pop-up>

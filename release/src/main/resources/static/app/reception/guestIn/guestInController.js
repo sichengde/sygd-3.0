@@ -212,6 +212,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             popUpService.pop('message');
             return;
         }
+        var totalDeposit=0;
         for (var i = 0; i < $scope.depositList.length; i++) {
             var d = $scope.depositList[i];
             if (!d.deposit) {
@@ -227,8 +228,10 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                 popUpService.pop('message');
                 return;
             }
+            totalDeposit+=parseInt(d.deposit);
         }
         checkIn.roomId = $scope.room.roomId;
+        checkIn.deposit = totalDeposit;
         checkIn.roomCategory = $scope.room.category;
         checkIn.reachTime = $scope.now;
         $scope.leave.setHours($scope.hour);

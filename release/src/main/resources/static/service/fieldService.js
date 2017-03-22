@@ -71,9 +71,25 @@ App.factory('fieldService', [function () {
         }
     }
 
+    /**
+     * szTable与ag-grid转换
+     */
+    function szTableToAgGrid(fields) {
+        var newAgGrid=[];
+        for (var i = 0; i < fields.length; i++) {
+            var obj = fields[i];
+            var newA={};
+            newA.headerName=obj.name;
+            newA.field=obj.id;
+            newAgGrid.push(newA);
+        }
+        return newAgGrid;
+    }
+
     return {
         getCompanyDebtRichFields: getCompanyDebtRichFields,
         getDeskPayRichFields: getDeskPayRichFields,
-        getDebtIntegrationFields: getDebtIntegrationFields
+        getDebtIntegrationFields: getDebtIntegrationFields,
+        szTableToAgGrid: szTableToAgGrid
     }
 }]);

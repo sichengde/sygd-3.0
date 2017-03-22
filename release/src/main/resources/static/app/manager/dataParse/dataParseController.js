@@ -61,8 +61,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             for (var i = 0; i < guestSourceList.length; i++) {
                 var guestSource = guestSourceList[i].guestSource;
                 var countCategory = guestSourceList[i].countCategory;
-                if (countCategory != lastCategory) {
-                    if (lastCategory != '') {
+                if (countCategory !== lastCategory) {
+                    if (lastCategory !== '') {
                         totalStr = totalStr.substring(0, totalStr.length - 1);
                         guestSourceCategory.children.push({
                             headerName: '总计',
@@ -109,7 +109,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             var secondPointOfSale = dataService.getPointOfSale()[0].secondPointOfSale.split(' ');
             var totalPointOfSaleConsumeValueGetter = '';
             for (var i = 0; i < secondPointOfSale.length; i++) {
-                if (secondPointOfSale[i] == '房费') {
+                if (secondPointOfSale[i] === '房费') {
                     continue;
                 }
                 columnDefs[2].children.push({headerName: secondPointOfSale[i], field: secondPointOfSale[i]});

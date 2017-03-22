@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-07-15.
  */
-App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService', 'util', '$route', 'fieldService', 'messageService', function ($scope, popUpService, dataService, util, $route, fieldService, messageService) {
+App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService', 'util', '$route', 'fieldService', 'messageService','dateFilter', function ($scope, popUpService, dataService, util, $route, fieldService, messageService,dateFilter) {
     if ($route.current.params.mode == 'edit') {
         $scope.editable = true;
     }
@@ -176,5 +176,68 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
             return
         }
         popUpService.pop('companyPay', null, null, post);
+    };
+    /*单位挂账汇总*/
+    $scope.setInit=function () {
+        $scope.showCompanySummaryReport=false;
+    };
+    var companySummaryFields=[
+        {headerName: "单位名称", field: 'company',rowGroupIndex:0},
+        {headerName: "签单人", field: "lord"},
+        {headerName: "宾客", field: "name"},
+        {headerName: "金额", field: "debt", aggFunc: 'sum'},
+        {headerName: "挂账时间", field: "companyDoTime"},
+        {headerName: "备注", field: "description"},
+        {headerName: "模块", field: "pointOfSale"},
+        {headerName: "发生时间", field: "debtDoTime"},
+        {headerName: "统计部门", field: "secondPointOfSale"},
+        {headerName: "房号", field: "roomId"},
+        {headerName: "接待员", field: "userId"},
+        {headerName: "类型", field: "category"},
+        {headerName: "已结标志", field: "companyPaid"}
+    ];
+
+    $scope.companySummaryGridOptions= {
+        columnDefs: companySummaryFields,
+        rowData: null,
+        groupUseEntireRow: true,
+        groupRowInnerRenderer: groupRowInnerRendererFunc
+    };
+    function groupRowInnerRendererFunc(params) {
+        var html='';
+        html += '<span> COUNTRY_NAME</span>'.replace('COUNTRY_NAME', params.node.key);
+        html += '<span> 项目: COUNT</span>'.replace('COUNT', params.node.allChildrenCount);
+        html += '<span> 欠款: GOLD_COUNT</span>'.replace('GOLD_COUNT', params.data.debt);
+
+        return html;
+    }
+    $scope.companySummaryReport=function (module, company, beginTime, endTime) {
+        var query={};
+        query.orderByList=['company'];
+        query.condition=' company_paid=false';
+        if(module!='全部'){
+            query.condition+=' and point_of_sale='+util.wrapWithBrackets(module);
+        }
+        if($scope.range=='发') {
+            if (!beginTime) {
+                query.condition += ' and debt_do_time>' + util.wrapWithBrackets(dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss'))
+            }
+            if (!endTime) {
+                query.condition += ' and debt_do_time<' + util.wrapWithBrackets(dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss'))
+            }
+        }
+        if($scope.range=='挂'){
+            if (!beginTime) {
+                query.condition += ' and company_do_time>' + util.wrapWithBrackets(dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss'))
+            }
+            if (!endTime) {
+                query.condition += ' and company_do_time<' + util.wrapWithBrackets(dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss'))
+            }
+        }
+        dataService.refreshCompanyDebtRichList(query)
+            .then(function (r) {
+                $scope.companySummaryGridOptions.api.setRowData(r);
+                $scope.showCompanySummaryReport=true;
+            })
     }
 }]);

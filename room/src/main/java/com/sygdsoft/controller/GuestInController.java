@@ -367,6 +367,12 @@ public class GuestInController {
         List<CheckIn> checkInList = new ArrayList<>();
         checkInList.add(checkIn);
         guestIn.setCheckInList(checkInList);
+        List<CurrencyPost> currencyPostList=new ArrayList<>();
+        CurrencyPost currencyPost=new CurrencyPost();
+        currencyPost.setCurrency(debt.getCurrency());
+        currencyPost.setDeposit(debt.getDeposit());
+        currencyPostList.add(currencyPost);
+        guestIn.setCurrencyPostList(currencyPostList);
         if (debt.getGroupAccount() == null) {
             List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(debt.getRoomId());
             guestIn.setCheckInGuestList(checkInGuestList);

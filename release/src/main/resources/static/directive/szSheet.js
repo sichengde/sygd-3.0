@@ -16,8 +16,8 @@ App.directive('szTab', [function () {
                 });
                 pane.selected = true;
                 $scope.chooseItem({d:pane.title});
+                pane.init();
                 angular.element("#iframeReport").css("display","none");
-
             };
 
             this.addPane = function (pane) {
@@ -37,7 +37,8 @@ App.directive('szTab', [function () {
             restrict: 'E',
             transclude: true,
             scope: {
-                title: '@'
+                title: '@',
+                init:'&'
             },
             link: function (scope, element, attr, tabsCtrl) {
                 tabsCtrl.addPane(scope);

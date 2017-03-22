@@ -1,7 +1,10 @@
 <div class="tanchuang" ng-controller="GuestOutController" ng-if="pop" drag>
     <dl class="tctit"><h1>客人账单</h1></dl>
     <div class="tcDiv">
-        <dl class="tcTopName">主账单号：<span style="margin-right: 10px;">{{checkInGroup?checkInGroup.groupAccount:checkIn.selfAccount}}</span></dl>
+        <dl class="tcTopName">
+            主账单号：
+            <span style="margin-right: 10px;">{{checkInGroup?checkInGroup.groupAccount:checkIn.selfAccount}}</span>
+        </dl>
         <table class="tableBordernone" style="margin-top: 5px;">
             <tr>
                 <td class="ppp">
@@ -79,7 +82,7 @@
                     <span class="red" ng-click="manyCurrency()" style="margin-top: 10px; cursor: pointer">+分单</span>
                 </td>
                 <td ng-show="!debtPayMiddleMode">客人预付：</td>
-                <td ng-show="!debtPayMiddleMode">￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}}</td>
+                <td ng-show="!debtPayMiddleMode">￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}} ({{room.checkInGroup?checkInGroup.deposit:checkIn.deposit-totalConsume}})</td>
                 <td>备注：</td>
                 <td style="width: 350px;"><input type="text" style="width: 300px;" ng-model="remark"></td>
             </tr>
