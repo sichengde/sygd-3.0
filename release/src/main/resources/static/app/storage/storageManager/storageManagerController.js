@@ -199,6 +199,6 @@ App.controller('storageManagerController', ['$scope', 'dataService', 'util', 'we
         {name:'单位',id:'unit'},
         {name:'单价',id:'price'},
         {name:'余量',id:'remain'},
-        {name:'总金额',id:'total',exp:'price*remain',sum:'true'}
+        {name:'总金额',id:'total',exp:'(price*remain).toFixed(2)',sum:'true'}
     ];
 }]);

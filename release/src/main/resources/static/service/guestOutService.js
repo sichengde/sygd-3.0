@@ -7,7 +7,7 @@ App.factory('guestOutService', ['dataService','util', function (dataService,util
      * 传入的参数为房间对象，如果含有groupAccount则为团队房，否则是散客房
      */
     function initData(room) {
-        var p2 = {orderByListDesc: ['timeLimit']};
+        var p2 = {orderByListDesc: ['tiLimit']};
         var p;
         if (room.checkInGroup) {
             /*是会员开房就要刷新会员数据*/

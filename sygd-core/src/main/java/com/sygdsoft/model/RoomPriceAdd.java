@@ -6,7 +6,7 @@ package com.sygdsoft.model;
 public class RoomPriceAdd extends BaseEntity {
     private String beginTime;//起始时间
     private String endTime;//终止时间
-    private String timeLimit;//时限
+    private String tiLimit;//时限
     private String roomAddByMultiple;//房租折扣
     private String roomAddStatic;//房租固定
     private Boolean vip;//会员类别
@@ -30,12 +30,12 @@ public class RoomPriceAdd extends BaseEntity {
         this.endTime = endTime;
     }
 
-    public String getTimeLimit() {
-        return timeLimit;
+    public String getTiLimit() {
+        return tiLimit;
     }
 
-    public void setTimeLimit(String timeLimit) {
-        this.timeLimit = timeLimit;
+    public void setTiLimit(String tiLimit) {
+        this.tiLimit = tiLimit;
     }
 
     public String getRoomAddByMultiple() {

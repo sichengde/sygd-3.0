@@ -43,6 +43,6 @@ public interface StorageInDetailMapper extends MyMapper<StorageInDetail> {
     /**
      * 根据仓库名称删除
      */
-    @Delete("delete from storage_in_detail where house={house}")
+    @Delete("delete from storage_in_detail where house=#{house}")
     void deleteByHouse(@Param("house") String house);
 }

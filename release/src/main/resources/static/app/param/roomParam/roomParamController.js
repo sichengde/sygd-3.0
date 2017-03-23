@@ -10,7 +10,7 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
         {name: '客源归类', id: 'countCategory',notNull: 'true'}
     ];
     $scope.roomPriceAddFields = [
-        {name: '时间节点', id: 'timeLimit', width: '120px'},
+        {name: '时间节点', id: 'tiLimit', width: '120px'},
         {name: '房价倍率', id: 'roomAddByMultiple', width: '120px'},
         {name: '静态房价', id: 'roomAddStatic', width: '120px'},
         {name: '会员时间', id: 'vip', width: '120px',boolean:'true'}

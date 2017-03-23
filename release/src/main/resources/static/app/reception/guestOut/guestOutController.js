@@ -416,7 +416,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                     }
                 }
                 for (var j = 0; j < $scope.roomPriceAddList.length; j++) {
-                    var timeLimit = new Date('2050-01-01 ' + $scope.roomPriceAddList[j].timeLimit);
+                    var timeLimit = new Date('2050-01-01 ' + $scope.roomPriceAddList[j].tiLimit);
                     /*获取时间成功之后判断是否加收房租*/
                     if ($scope.nowTime.getHours() * 60 + $scope.nowTime.getMinutes() > timeLimit.getHours() * 60 + timeLimit.getMinutes()) {
                         /*加收房租对象*/

@@ -20,6 +20,7 @@
         <module>release</module>
         <module>parameter</module>
         <module>report</module>
+        <module>extra</module>
     </modules>
 
     <parent>
