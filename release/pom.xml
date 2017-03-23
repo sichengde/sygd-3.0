@@ -47,6 +47,11 @@
             <artifactId>sauna</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>sygdSoft</groupId>
+            <artifactId>extra</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -8,8 +8,17 @@ public class ExchangeUserSmallJQRow {
     private String field2;
     private String field3;
     private String field4;
+    private Boolean shop;//是不是房吧需要用的，给别的表用，前端不显示
 
     public ExchangeUserSmallJQRow() {
+    }
+
+    public Boolean getNotNullShop(){
+        if(shop==null){
+            return false;
+        }else {
+            return shop;
+        }
     }
 
     public String getField1() {
@@ -42,5 +51,13 @@ public class ExchangeUserSmallJQRow {
 
     public void setField4(String field4) {
         this.field4 = field4;
+    }
+
+    public Boolean getShop() {
+        return shop;
+    }
+
+    public void setShop(Boolean shop) {
+        this.shop = shop;
     }
 }

@@ -124,6 +124,7 @@ public class ExchangeUserReport {
     public ExchangeUserSmallJQReturn exchangeUserReportSmallMobile(@RequestBody ReportJson reportJson)throws Exception{
         Date beginTime=reportJson.getBeginTime();
         Date endTime=reportJson.getEndTime();
+        String userId=reportJson.getUserId();
         timeService.setNow();
         List<ExchangeUserSmallJQRow> exchangeUserSmallJQRowList = new ArrayList<>();
         List<Currency> currencyList=currencyService.get(null);
@@ -137,16 +138,16 @@ public class ExchangeUserReport {
             exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
             String currencyString=currency.getCurrency();
             exchangeUserSmallJQRow.setField2(currency.getCurrency());//币种
-            Double roomPay=debtPayService.getDebtMoney(null,currencyString,false,beginTime, endTime);
+            Double roomPay=debtPayService.getDebtMoney(userId,currencyString,false,beginTime, endTime);
             exchangeUserSmallJQRow.setField3(ifNotNullGetString(roomPay));//结算款
             exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
             consumeTotal+=roomPay;
         }
-        Double payTotal=debtPayService.getDebtMoney(null,null,true, beginTime, endTime);
+        Double payTotal=debtPayService.getDebtMoney(userId,null,true, beginTime, endTime);
         /*在店押金*/
         Double depositAll=debtService.getDepositMoneyAll();//在店押金
         /*统计房吧零售*/
-        List<RoomShopDetail> roomShopDetailList=roomShopDetailService.getRetailByDoneTimeUser(null,beginTime, endTime);//商品零售明细
+        List<RoomShopDetail> roomShopDetailList=roomShopDetailService.getRetailByDoneTimeUser(userId,beginTime, endTime);//商品零售明细
         ExchangeUserSmallJQRow exchangeUserSmallJQRowWait = new ExchangeUserSmallJQRow();
         exchangeUserSmallJQRowWait.setField1("商品零售");
         exchangeUserSmallJQRowList.add(exchangeUserSmallJQRowWait);
@@ -156,6 +157,7 @@ public class ExchangeUserReport {
             exchangeUserSmallJQRow.setField2(roomShopDetail.getItem());
             exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNum()+" "+roomShopDetail.getUnit()));
             exchangeUserSmallJQRow.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
+            exchangeUserSmallJQRow.setShop(true);
             tempTotalConsume+=roomShopDetail.getTotalMoney();
             exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
         }
@@ -165,13 +167,14 @@ public class ExchangeUserReport {
         exchangeUserSmallJQRowWait.setField1("房吧销售");
         exchangeUserSmallJQRowList.add(exchangeUserSmallJQRowWait);
         tempTotalConsume=0.0;//准备回记消费合计
-        roomShopDetailList=roomShopDetailService.getSumRoomShopByDoneTimeUser(null, beginTime, endTime);//房吧明细
+        roomShopDetailList=roomShopDetailService.getSumRoomShopByDoneTimeUser(userId, beginTime, endTime);//房吧明细
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
             tempTotalConsume+=roomShopDetail.getTotalMoney();
             exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
             exchangeUserSmallJQRow.setField2(roomShopDetail.getItem());
             exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNum()+" "+roomShopDetail.getUnit()));
             exchangeUserSmallJQRow.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
+            exchangeUserSmallJQRow.setShop(true);
             exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
         }
         exchangeUserSmallJQRowWait.setField2(String.valueOf(tempTotalConsume));

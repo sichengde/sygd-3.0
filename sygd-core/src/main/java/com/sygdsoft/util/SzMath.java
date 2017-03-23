@@ -103,7 +103,7 @@ public class SzMath {
         if(var1==null){
             return 0.0;
         }
-        return Double.valueOf(twoDecimal.format(var1));
+        return Double.valueOf(var1);
     }
 
     public Double formatTwoDecimalReturnDouble(Double var1, Double var2) {
