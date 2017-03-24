@@ -117,6 +117,31 @@ App.controller('storageManagerController', ['$scope', 'dataService', 'util', 'we
             popUpService.pop('message');
             return;
         }
+        if(!$scope.storageIn.approver){
+            messageService.setMessage({type:'error',content:'请填写批准人'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageIn.deptIn){
+            messageService.setMessage({type:'error',content:'请填写购买部门'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageIn.buyer){
+            messageService.setMessage({type:'error',content:'请填写采购员'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageIn.category){
+            messageService.setMessage({type:'error',content:'请填写入库类型'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageIn.buyTime){
+            messageService.setMessage({type:'error',content:'请填写购买时间'});
+            popUpService.pop('message');
+            return
+        }
         var post = {};
         $scope.storageIn.deptIn = $scope.storageIn.deptIn.name;
         post.storageInDetailList = $scope.storageInDetailList;
@@ -134,6 +159,26 @@ App.controller('storageManagerController', ['$scope', 'dataService', 'util', 'we
             messageService.setMessage({type: 'error', content: '出库信息没有保存'});
             popUpService.pop('message');
             return;
+        }
+        if(!$scope.storageOut.approver){
+            messageService.setMessage({type:'error',content:'请填写批准人'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageOut.deptOut){
+            messageService.setMessage({type:'error',content:'请填领用部门'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageOut.saveMan){
+            messageService.setMessage({type:'error',content:'请填领用人'});
+            popUpService.pop('message');
+            return
+        }
+        if(!$scope.storageOut.category){
+            messageService.setMessage({type:'error',content:'请填写出库类型'});
+            popUpService.pop('message');
+            return
         }
         var post = {};
         $scope.storageOut.deptOut = $scope.storageOut.deptOut.name;
