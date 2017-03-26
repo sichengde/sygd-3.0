@@ -3,6 +3,8 @@ package com.sygdsoft.controller;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +55,9 @@ public class DebtController {
     @Autowired
     CheckInService checkInService;
 
+    //TODO: 发现bug之后就可以删了
+    private static final Logger logger = LoggerFactory.getLogger(DebtController.class);
+
     @RequestMapping(value = "debtGet")
     public List<Debt> debtGet(@RequestBody Query query) throws Exception {
         return debtService.get(query);
@@ -87,7 +92,7 @@ public class DebtController {
      * 房吧录入
      */
     @RequestMapping(value = "roomShopIn")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Integer roomShopIn(@RequestBody RoomShopIn roomShopIn) throws Exception {
         /*解析传进来的参数*/
         String roomId = roomShopIn.getRoomId();
@@ -103,7 +108,13 @@ public class DebtController {
         debt.setConsume(Double.valueOf(money));
         debt.setBed(bed);
         debt.setCategory(debtService.roomShopIn);
+        debt.setUserId(userService.getCurrentUser());
+        //TODO: 发现bug之后就可以删了
+        CheckIn checkIn = checkInService.getByRoomId(roomId);
+        logger.info(timeService.getNowLong()+":"+"房吧入账前checkIn消费:"+checkIn.getConsume()+"房吧消费:"+Double.valueOf(money)+"操作员:"+userService.getCurrentUser());
         debtService.addDebt(debt);
+        checkIn = checkInService.getByRoomId(roomId);
+        logger.info(timeService.getNowLong()+":"+"房吧入账前checkIn消费:"+checkIn.getConsume());
         /*创建房吧明细账务*/
         List<RoomShopDetail> roomShopDetailList = roomShopIn.getRoomShopDetailList();
         String selfAccount = checkInService.getSelfAccount(roomId);
@@ -120,7 +131,7 @@ public class DebtController {
      * 杂单冲账(客房)
      */
     @RequestMapping(value = "otherConsumeRoom")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Integer addOtherConsumeRoom(@RequestBody Debt debt) throws Exception {
         String msg;
         if (debt.getConsume() > 0) {
@@ -151,7 +162,7 @@ public class DebtController {
      * 杂单冲账(单位)
      */
     @RequestMapping(value = "otherConsumeCompany")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Integer addOtherConsumeCompany(@RequestBody DebtHistory debtHistory) throws Exception {
         serialService.setPaySerial();
         timeService.setNow();
