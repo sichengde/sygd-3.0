@@ -73,31 +73,37 @@ public class ShenBeiTiChengController {
         query.setCondition(condition);
         query.setOrderByList(new String[]{"reachTime"});
         List<CheckInIntegration> checkInIntegrationList = checkInIntegrationService.get(query);
-        Map<String,Double> currencyMap=new HashMap<>();
+        Map<String, Double> currencyMap = new HashMap<>();
+        Double totalDeposit = 0.0;
+        Double totalRoomPrice = 0.0;
+        Double totalFinal = 0.0;
         for (CheckInIntegration checkInIntegration : checkInIntegrationList) {
             fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(checkInIntegration.getRoomId());
             fieldTemplate.setField2(timeService.dateToStringLong(checkInIntegration.getReachTime()));
             fieldTemplate.setField3(szMath.formatTwoDecimal(checkInIntegration.getFinalRoomPrice()));
             fieldTemplateList.add(fieldTemplate);
+            totalRoomPrice += checkInIntegration.getFinalRoomPrice();
             query = new Query();
             condition = "self_account=" + util.wrapWithBrackets(checkInIntegration.getSelfAccount()) + " and ifNull(deposit,0)>0";
             query.setCondition(condition);
             List<DebtIntegration> debtIntegrationList = debtIntegrationService.get(query);
+
             for (DebtIntegration debtIntegration : debtIntegrationList) {
                 if ("押金".equals(debtIntegration.getCurrency())) {
+                    totalDeposit += debtIntegration.getDeposit();
                 } else {
-                    String currency=debtIntegration.getCurrency();
-                    Double deposit=debtIntegration.getDeposit();
+                    String currency = debtIntegration.getCurrency();
+                    Double deposit = debtIntegration.getDeposit();
                     fieldTemplate = new FieldTemplate();
                     fieldTemplate.setField1("实付:");
                     fieldTemplate.setField4(szMath.formatTwoDecimal(deposit));
                     fieldTemplate.setField5(currency);
                     fieldTemplateList.add(fieldTemplate);
-                    if(currencyMap.containsKey(currency)){
-                        currencyMap.put(currency,currencyMap.get(currency)+deposit);
-                    }else {
-                        currencyMap.put(currency,deposit);
+                    if (currencyMap.containsKey(currency)) {
+                        currencyMap.put(currency, currencyMap.get(currency) + deposit);
+                    } else {
+                        currencyMap.put(currency, deposit);
                     }
                 }
             }
@@ -111,10 +117,15 @@ public class ShenBeiTiChengController {
         fieldTemplateList.add(fieldTemplate);
         for (String s : currencyMap.keySet()) {
             fieldTemplate = new FieldTemplate();
-            fieldTemplate.setField1(s+":");
+            fieldTemplate.setField1(s + ":");
             fieldTemplate.setField3(szMath.formatTwoDecimal(currencyMap.get(s)));
             fieldTemplateList.add(fieldTemplate);
         }
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField1("总房价");
+        fieldTemplate.setField3(szMath.formatTwoDecimal(totalRoomPrice));
+        totalFinal += totalRoomPrice;
+        fieldTemplateList.add(fieldTemplate);
         /*分割线*/
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField8("true");
@@ -131,18 +142,19 @@ public class ShenBeiTiChengController {
         query.setCondition(condition);
         query.setOrderByList(new String[]{"doneTime"});
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.get(query);
-        Double total=0.0;
+        Double total = 0.0;
         for (DebtIntegration debtIntegration : debtIntegrationList) {
             fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(debtIntegration.getRoomId());
             fieldTemplate.setField2(timeService.dateToStringLong(debtIntegration.getDoneTime()));
             fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegration.getConsume()));
             fieldTemplateList.add(fieldTemplate);
-            total+= debtIntegration.getConsume();
+            total += debtIntegration.getConsume();
         }
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("总计:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(total));
+        totalFinal += total;
         fieldTemplateList.add(fieldTemplate);
         /*分割线*/
         fieldTemplate = new FieldTemplate();
@@ -154,7 +166,7 @@ public class ShenBeiTiChengController {
         fieldTemplateList.add(fieldTemplate);
         ExchangeUserSmallJQReturn exchangeUserSmallJQReturn = exchangeUserReport.exchangeUserReportSmallMobile(reportJson);
         List<ExchangeUserSmallJQRow> exchangeUserSmallJQRowList = exchangeUserSmallJQReturn.getExchangeUserSmallJQRowList();
-        total=0.0;
+        total = 0.0;
         for (ExchangeUserSmallJQRow exchangeUserSmallJQRow : exchangeUserSmallJQRowList) {
             if (exchangeUserSmallJQRow.getNotNullShop()) {
                 fieldTemplate = new FieldTemplate();
@@ -162,12 +174,13 @@ public class ShenBeiTiChengController {
                 fieldTemplate.setField2(exchangeUserSmallJQRow.getField3());
                 fieldTemplate.setField3(exchangeUserSmallJQRow.getField4());
                 fieldTemplateList.add(fieldTemplate);
-                total+=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3());
+                total += szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3());
             }
         }
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("总计:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(total));
+        totalFinal += total;
         fieldTemplateList.add(fieldTemplate);
         /*分割线*/
         fieldTemplate = new FieldTemplate();
@@ -182,19 +195,35 @@ public class ShenBeiTiChengController {
         condition = "leave_time>" + util.wrapWithBrackets(timeService.dateToStringLong(timeService.getMaxTime(new Date())));
         query.setCondition(condition);
         List<CheckIn> checkInList = checkInService.get(query);
-        total=0.0;
+        total = 0.0;
         for (CheckIn checkIn : checkInList) {
             fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(checkIn.getRoomId());
             fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
             fieldTemplate.setField3(szMath.formatTwoDecimal(checkIn.getFinalRoomPrice()));
             fieldTemplateList.add(fieldTemplate);
-            total+=checkIn.getFinalRoomPrice();
+            total += checkIn.getFinalRoomPrice();
         }
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("预计房租:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(total));
+        totalFinal += total;
         fieldTemplateList.add(fieldTemplate);
+        /*分割线*/
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField8("true");
+        fieldTemplateList.add(fieldTemplate);
+        /*四项总计*/
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField1("四项总计:");
+        fieldTemplate.setField3(szMath.formatTwoDecimal(totalFinal));
+        fieldTemplateList.add(fieldTemplate);
+        /*总押金*/
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField1("总押金:");
+        fieldTemplate.setField3(szMath.formatTwoDecimal(totalDeposit));
+        fieldTemplateList.add(fieldTemplate);
+        totalFinal += total;
         String[] parameters = new String[3];
         parameters[0] = timeService.dateToStringLong(beginTime);
         parameters[1] = timeService.dateToStringLong(endTime);
