@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
@@ -90,8 +91,16 @@ public class GuestOutController {
     @RequestMapping(value = "guestOut", method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
-        Boolean real=guestOut.getNotNullReal();
-        if(!real) {
+        //TODO: 离店数据校验,发现bug之后就可以删了
+        for (String roomId : guestOut.getRoomIdList()) {
+            CheckIn checkIn = checkInService.getByRoomId(roomId);
+            Double totalConsume = debtService.getTotalConsumeByRoomId(roomId);
+            if (!Objects.equals(totalConsume, checkIn.getConsume())){
+                throw new Exception(roomId+"消费合计不准确，请联系厂家维护人员");
+            }
+        }
+        Boolean real = guestOut.getNotNullReal();
+        if (!real) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         /*获取有用信息*/
@@ -133,8 +142,8 @@ public class GuestOutController {
     @RequestMapping("guestOutMiddle")
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOutMiddle(@RequestBody GuestOutMiddle guestOutMiddle) throws Exception {
-        Boolean real=guestOutMiddle.getNotNullReal();
-        if(!real) {
+        Boolean real = guestOutMiddle.getNotNullReal();
+        if (!real) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         timeService.setNow();//当前时间
@@ -152,12 +161,12 @@ public class GuestOutController {
             checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
             checkIn = checkInService.getByRoomId(checkInGroup.getLeaderRoom());
         }
-        String remarkAdd="";
+        String remarkAdd = "";
         if (debtList != null) {//根据明细来的中间结算
             /*账务转移到历史账务*/
             newDebtHistory(debtList);
             debtService.delete(debtList);
-            remarkAdd+="指定账务";
+            remarkAdd += "指定账务";
         } else {//指定钱数的中间结算
             /*插入一条负的账务*/
             Debt debt = new Debt();
@@ -173,15 +182,15 @@ public class GuestOutController {
             debt.setRoomId(checkIn.getRoomId());
             debt.setCompany(checkIn.getCompany());
             debtService.add(debt);
-            DebtHistory debtHistory=new DebtHistory(debt);
+            DebtHistory debtHistory = new DebtHistory(debt);
             debtHistory.setConsume(payMoney);
             debtHistoryService.add(debtHistory);
-            remarkAdd+="不指定账务";
+            remarkAdd += "不指定账务";
         }
         /*更新在店户籍余额*/
         debtService.updateGuestInMoney(checkIn.getRoomId(), -payMoney, 0.0);
         /*生成结账信息*/
-        String changeDebt = this.debtPayProcess(guestOutMiddle.getCurrencyPayList(), roomIdList, groupAccount, "中间结算"+remarkAdd);
+        String changeDebt = this.debtPayProcess(guestOutMiddle.getCurrencyPayList(), roomIdList, groupAccount, "中间结算" + remarkAdd);
         /*操作员记录*/
         String userAction = "中间结算:" + roomService.roomListToString(roomIdList) + changeDebt;
         userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOutMiddle, serialService.getPaySerial());
@@ -412,7 +421,7 @@ public class GuestOutController {
             debtPayService.add(debtPay);
             changeDebt += " 币种:" + currency + "/" + money;
             /*通过币种判断结账类型*/
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待","离店");
+            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "离店");
             this.checkVip(groupAccount, roomIdList, currency, money);
         }
         return changeDebt;
@@ -483,7 +492,7 @@ public class GuestOutController {
             List<CheckInHistory> checkInHistoryList = new ArrayList<>();
             List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
             List<CheckInHistoryLog> checkInHistoryLogList = new ArrayList<>();
-            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList,checkInHistoryUpdateList, checkInHistoryLogList, checkIn.getSelfAccount(), checkInGuestCardIdList);
+            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInHistoryLogList, checkIn.getSelfAccount(), checkInGuestCardIdList);
             checkInHistoryLogService.add(checkInHistoryLogList);
             checkInHistoryService.add(checkInHistoryList);
             checkInHistoryService.update(checkInHistoryUpdateList);
@@ -508,13 +517,13 @@ public class GuestOutController {
     /**
      * 宾客户籍等转换，返回在店宾客姓名字符串
      */
-    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList,List<CheckInHistory> checkInHistoryUpdateList, List<CheckInHistoryLog> checkInHistoryLogList, String selfAccount, List<String> checkInGuestCardIdList) throws Exception {
+    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList, List<CheckInHistoryLog> checkInHistoryLogList, String selfAccount, List<String> checkInGuestCardIdList) throws Exception {
         String guestName = "";
         for (CheckInGuest checkInGuest : checkInGuestList) {
             CheckIn checkIn = checkInService.getByRoomId(checkInGuest.getRoomId());
             guestName += checkInGuest.getName() + ",";
-            CheckInHistory checkInHistoryOld=checkInHistoryService.getByCardId(checkInGuest.getCardId());//之前来过的
-            if ( checkInHistoryOld== null) {//如果该宾客没来过，加一条
+            CheckInHistory checkInHistoryOld = checkInHistoryService.getByCardId(checkInGuest.getCardId());//之前来过的
+            if (checkInHistoryOld == null) {//如果该宾客没来过，加一条
                 if (checkInGuestCardIdList.indexOf(checkInGuest.getCardId()) == -1) {//信息去重，这里只考虑录入时录入错了的情况
                     CheckInHistory checkInHistory = new CheckInHistory(checkInGuest);
                     checkInHistory.setLastTime(timeService.getNow());
@@ -522,8 +531,8 @@ public class GuestOutController {
                     checkInHistoryList.add(checkInHistory);
                     checkInGuestCardIdList.add(checkInGuest.getCardId());
                 }
-            }else {//来过的话更新一下来店次数
-                checkInHistoryOld.setNum(checkInHistoryOld.getNum()+1);
+            } else {//来过的话更新一下来店次数
+                checkInHistoryOld.setNum(checkInHistoryOld.getNum() + 1);
                 checkInHistoryUpdateList.add(checkInHistoryOld);
             }
             CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);//来过没来过的，都在住房记录里加一条
@@ -853,7 +862,7 @@ public class GuestOutController {
             vipRemain = vip.getNotNullVipRemain();
         }
         for (DebtHistory debtHistory : debtHistoryList) {
-            if(debtHistory.getNotNullCompanyPaid()){
+            if (debtHistory.getNotNullCompanyPaid()) {
                 throw new Exception("该房间转单位账已经参与单位结算，无法叫回");
             }
             Debt debt = new Debt(debtHistory);
@@ -890,15 +899,15 @@ public class GuestOutController {
         checkOutRoomService.delete(checkOutRoomList);
         List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.get(new Query("check_out_serial=" + util.wrapWithBrackets(checkOutSerial)));
         List<CheckIn> checkInList = new ArrayList<>();
-        String lastRoomId="";
+        String lastRoomId = "";
         for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
-            if(lastRoomId.equals(checkInHistoryLog.getRoomId())){//房号相同说明是通行房
+            if (lastRoomId.equals(checkInHistoryLog.getRoomId())) {//房号相同说明是通行房
                 continue;
             }
             CheckIn checkIn = new CheckIn(checkInHistoryLog);
             checkIn.setConsume(debtService.getTotalConsumeByRoomId(checkIn.getRoomId()));
             checkInList.add(checkIn);
-            lastRoomId=checkIn.getRoomId();
+            lastRoomId = checkIn.getRoomId();
         }
         checkInService.add(checkInList);//生成在店户籍
         if (debtPay.getGroupAccount() != null) {//如果是团队开房的话，生成团队信息
@@ -910,7 +919,7 @@ public class GuestOutController {
         List<CheckInGuest> checkInGuestList = new ArrayList<>();
         for (CheckInHistory checkInHistory : checkInHistoryList) {
             checkInGuestList.add(new CheckInGuest(checkInHistory));
-            checkInHistory.setNum(checkInHistory.getNum()-1);
+            checkInHistory.setNum(checkInHistory.getNum() - 1);
         }
         checkInGuestService.add(checkInGuestList);
         checkInHistoryService.update(checkInHistoryList);
