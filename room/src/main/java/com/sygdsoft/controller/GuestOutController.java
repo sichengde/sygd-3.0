@@ -7,6 +7,7 @@ import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +85,8 @@ public class GuestOutController {
     CheckOutGroupService checkOutGroupService;
     @Autowired
     ProtocolService protocolService;
+    @Autowired
+    SzMath szMath;
 
     /**
      * 结算分为团队结算和单人结算
@@ -92,13 +95,26 @@ public class GuestOutController {
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
         //TODO: 离店数据校验,发现bug之后就可以删了
+        Double totalTest=0.0;
         for (String roomId : guestOut.getRoomIdList()) {
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             Double totalConsume = debtService.getTotalConsumeByRoomId(roomId);
             if (!Objects.equals(totalConsume, checkIn.getConsume())){
                 throw new Exception(roomId+"消费合计不准确，请联系厂家维护人员");
             }
+            totalTest+=szMath.nullToZero(totalConsume);
         }
+        Double totalCurrency=0.0;
+        for (CurrencyPost currencyPost : guestOut.getCurrencyPayList()) {
+            totalCurrency+=currencyPost.getMoney();
+        }
+        for (Debt debt : guestOut.getDebtAddList()) {
+            totalTest+=debt.getConsume();
+        }
+        if(!Objects.equals(totalCurrency, totalTest)){
+            throw new Exception("结账金额有变动，请重新进入结账页面");
+        }
+        //TODO: 离店数据校验,发现bug之后就可以删了--完毕
         Boolean real = guestOut.getNotNullReal();
         if (!real) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
