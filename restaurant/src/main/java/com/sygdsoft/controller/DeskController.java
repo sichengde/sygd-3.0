@@ -279,13 +279,13 @@ public class DeskController {
         }
         deskDetailService.add(deskDetailList);
         deskDetailHistoryService.delete(deskDetailHistoryList);
-        /*删除结账信息*/
-        deskPayService.deleteByCkSerial(ckSerial);
-        deskPayService.setDisabledBySerial(deskInHistory.getCkSerial());//明细数据设置为不可用
         List<DeskPay> deskPayList = deskPayService.getByCkSerial(deskInHistory.getCkSerial());
         for (DeskPay deskPay : deskPayList) {
             debtPayService.cancelPay(deskPay.getCurrency(), deskPay.getCurrencyAdd(), deskPay.getPayMoney(), deskPay.getCkSerial(),"餐饮");
         }
+        /*删除结账信息*/
+        deskPayService.deleteByCkSerial(ckSerial);
+        deskPayService.setDisabledBySerial(deskInHistory.getCkSerial());//明细数据设置为不可用
         /*操作员日志记录*/
         userLogService.addUserLog("叫回餐饮账单:" + ckSerial, userLogService.desk, userLogService.deskOutReverse,ckSerial);
         return 0;

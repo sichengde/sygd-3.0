@@ -46,7 +46,7 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     public void deleteBySerial(String paySerial) throws Exception {
         CompanyDebt companyDebt = new CompanyDebt();
         companyDebt.setPaySerial(paySerial);
-        this.delete(companyDebt);
+        companyDebtMapper.delete(companyDebt);
     }
 
     /**

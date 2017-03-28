@@ -39,7 +39,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      * （账务历史表中的预付信息加一起就是退的预付，因为默认结账自动退预付）
      */
     /*操作员，币种，时间段*/
-    @Select("(select sum(deposit) deposit from debt_history where user_id = #{userId} and done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and deposit>0")
+    @Select("select sum(deposit) deposit from debt_history where user_id = #{userId} and done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and deposit>0")
     @ResultType(Double.class)
     Double getTotalCancelDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 

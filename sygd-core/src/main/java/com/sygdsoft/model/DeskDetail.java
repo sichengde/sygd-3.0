@@ -38,16 +38,18 @@ public class DeskDetail extends BaseEntity {
 
     public DeskDetail(DeskDetailHistory deskDetailHistory) {
         this.foodName=deskDetailHistory.getFoodName();
-        this.foodSign=deskDetailHistory.getFoodSign();
         this.price=deskDetailHistory.getPrice();
         this.num=deskDetailHistory.getNum();
         this.desk=deskDetailHistory.getDesk();
         this.userId=deskDetailHistory.getUserId();
         this.pointOfSale=deskDetailHistory.getPointOfSale();
         this.doTime=deskDetailHistory.getDoTime();
-        this.ifDiscount=deskDetailHistory.getIfDiscount();
+        this.foodSign=deskDetailHistory.getFoodSign();
+        this.category = deskDetailHistory.getCategory();
         this.remark=deskDetailHistory.getRemark();
+        this.unit=deskDetailHistory.getUnit();
         this.cookRoom=deskDetailHistory.getCookRoom();
+        this.ifDiscount=deskDetailHistory.getIfDiscount();
         this.foodSet=deskDetailHistory.getFoodSet();
         this.cargo = deskDetailHistory.getCargo();
         this.storageDone = deskDetailHistory.getStorageDone();
