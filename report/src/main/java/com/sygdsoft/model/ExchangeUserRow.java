@@ -8,6 +8,7 @@ public class ExchangeUserRow {
     private String pay;
     private String deposit;
     private String cancelDeposit;
+    private String cancelDepositSingle;
     private String subscription;
     private String cancelSubscription;
     private String vipRecharge;
@@ -20,10 +21,11 @@ public class ExchangeUserRow {
         this.pay=fieldTemplate.getField2();
         this.deposit=fieldTemplate.getField3();
         this.cancelDeposit=fieldTemplate.getField4();
-        this.subscription=fieldTemplate.getField5();
-        this.cancelSubscription=fieldTemplate.getField6();
-        this.vipRecharge=fieldTemplate.getField7();
-        this.companyPay=fieldTemplate.getField8();
+        this.cancelDepositSingle=fieldTemplate.getField5();
+        this.subscription=fieldTemplate.getField6();
+        this.cancelSubscription=fieldTemplate.getField7();
+        this.vipRecharge=fieldTemplate.getField8();
+        this.companyPay=fieldTemplate.getField9();
     }
 
     public String getCurrency() {
@@ -88,5 +90,13 @@ public class ExchangeUserRow {
 
     public void setCompanyPay(String companyPay) {
         this.companyPay = companyPay;
+    }
+
+    public String getCancelDepositSingle() {
+        return cancelDepositSingle;
+    }
+
+    public void setCancelDepositSingle(String cancelDepositSingle) {
+        this.cancelDepositSingle = cancelDepositSingle;
     }
 }

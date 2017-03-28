@@ -10,15 +10,48 @@ App.controller('depositInController',['$scope','dataService','receptionService',
     if (guestList) {
         $scope.nameString = guestList.join(',');
     }
-    dataService.initData(['refreshCurrencyList','refreshCheckInGuestList'])
+    $scope.currency='人民币';
+    $scope.currencyBack='人民币';
+    var p1 = {condition: 'check_in=1'};
+    dataService.initData(['refreshCurrencyList','refreshCheckInGuestList'],[p1])
         .then(function () {
             $scope.currencyList=util.objectListToString(dataService.getCurrencyList(),'currency');
-            $scope.currency='人民币';
             checkInGuestList=dataService.getCheckInGuestList();
         });
-    /*退押金*/
+    /*整退预付*/
     $scope.cancelDeposit=function () {
         popUpService.pop('cancelDeposit',null,null,{room:$scope.room.roomId});
+    };
+    /*单退押金*/
+    $scope.cancelDepositSingle=function () {
+        if(!$scope.moneyBack){
+            messageService.setMessage({type:'error',content:'退预付不可以为空'});
+            popUpService.pop('message');
+            return;
+        }
+        if($scope.moneyBack<=0){
+            messageService.setMessage({type:'error',content:'退预付必须大于0'});
+            popUpService.pop('message');
+            return;
+        }
+        if($scope.currencyBack=='会员'){
+            messageService.setMessage({type:'error',content:'退预付不可以为会员币种，请选择单退预付(整)'});
+            popUpService.pop('message');
+            return;
+        }
+        var debtPost={};
+        debtPost.roomId=$scope.room.roomId;
+        debtPost.pointOfSale='房费';
+        debtPost.deposit=-$scope.moneyBack;
+        debtPost.currency=$scope.currencyBack;
+        debtPost.roomId=$scope.room.roomId;
+        debtPost.category='单退押金';
+        debtPost.description='单退预付';
+        webService.post('cancelDepositSingle',debtPost)
+            .then(function () {
+                messageService.actionSuccess();
+                popUpService.close('depositIn');
+            })
     };
     /**
      * 收取预付，暂时不考虑会员卡余额预付

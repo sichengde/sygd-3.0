@@ -38,14 +38,14 @@ public interface DebtMapper extends MyMapper<Debt> {
     /**
      * 获得全部的在店押金值
      */
-    @Select("select ifnull(sum(deposit),0) from debt where deposit>0 and ifnull(remark,0)!=\'已退\'")
+    @Select("select ifnull(sum(deposit),0) from debt where deposit is not null")
     @ResultType(Double.class)
     Double getDepositMoneyAll();
 
     /**
      * 获得全部的在店押金数组
      */
-    @Select("select * from debt where deposit>0 and ifnull(remark,0)!=\'已退\'")
+    @Select("select * from debt where deposit is not null")
     List<Debt> getDepositListAll();
 
     /**

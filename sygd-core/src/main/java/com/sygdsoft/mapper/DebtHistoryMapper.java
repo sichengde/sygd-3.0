@@ -39,18 +39,12 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      * （账务历史表中的预付信息加一起就是退的预付，因为默认结账自动退预付）
      */
     /*操作员，币种，时间段*/
-    @Select("select sum(a.deposit) deposit from " +
-            "(select sum(deposit) deposit from debt_history where user_id = #{userId} and done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} " +
-            "union " +
-            "select abs(sum(deposit)) deposit from debt where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0) a")
+    @Select("(select sum(deposit) deposit from debt_history where user_id = #{userId} and done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and deposit>0")
     @ResultType(Double.class)
     Double getTotalCancelDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*币种，时间段*/
-    @Select("select sum(a.deposit) deposit from " +
-            "(select sum(deposit) deposit from debt_history where done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} " +
-            "union " +
-            "select abs(sum(deposit)) deposit from debt where do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0) a")
+    @Select("select sum(deposit) deposit from debt_history where done_time > #{beginTime} and done_time< #{endTime} and currency=#{currency} and deposit>0")
     @ResultType(Double.class)
     Double getTotalCancelDepositByCurrencyDate(@Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 

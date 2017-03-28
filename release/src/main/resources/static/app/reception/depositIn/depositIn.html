@@ -47,9 +47,24 @@
             </tr>
         </table>
 
+        <table class="tableBorderfff" style="width: 800px;">
+            <tr>
+                <td style="width: 100px;color: red">退预付金额：</td>
+                <td><input type="text" ng-model="moneyBack" id="totalBack" class="input" style="width: 80px"></td>
+                <td>币种：</td>
+                <td style="width: 320px;">
+                    <select ng-options="x for x in currencyList" ng-model="currencyBack" style="width: 100px;"></select>
+                </td>
+                <td style="width: 90px"></td>
+                <td style="width: 80px">
+                </td>
+            </tr>
+        </table>
+
         <dl class="button">
-            <input type="button" class="sbe" value="确认付款" ng-click="depositIn()">
-            <input class="sbe" type="button" value="单退预付" ng-click="cancelDeposit()">
+            <input type="button" class="sbe" value="收取预付" ng-click="depositIn()">
+            <input class="sbe" type="button" value="单退预付" ng-click="cancelDepositSingle()">
+            <input class="sbe" type="button" value="单退预付(整)" ng-click="cancelDeposit()">
         </dl>
     </div>
 

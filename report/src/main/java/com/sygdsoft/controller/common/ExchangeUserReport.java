@@ -54,6 +54,8 @@ public class ExchangeUserReport {
     CompanyPayService companyPayService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    DebtIntegrationService debtIntegrationService;
 
     /**
      * 接待交班审核表
@@ -77,12 +79,13 @@ public class ExchangeUserReport {
             fieldTemplate.setField2(szMath.ifNotNullGetString(debtPayService.getDebtMoney(userId,currencyString,false,beginTime, endTime)));//结算款
             fieldTemplate.setField3(szMath.ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId,currencyString,beginTime,endTime)));//预付
             fieldTemplate.setField4(szMath.ifNotNullGetString(debtHistoryService.getTotalCancelDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//退预付
-            fieldTemplate.setField5(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
-            fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
-            fieldTemplate.setField7(szMath.ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值
+            fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//单退预付
+            fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
+            fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
+            fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值
             CompanyPay companyPayQuery=companyPayService.getSumPay(null,userId, currency.getCurrency(),beginTime, endTime);
             if(companyPayQuery!=null) {
-                fieldTemplate.setField8(ifNotNullGetString(companyPayQuery.getPay()));//单位付款
+                fieldTemplate.setField9(ifNotNullGetString(companyPayQuery.getPay()));//单位付款
             }
             templateList.add(fieldTemplate);
         }

@@ -7,6 +7,7 @@ App.directive('szExchangeUserReportJq', function () {
                 {name: '结算款', id: 'pay'},
                 {name: '预付款', id: 'deposit'},
                 {name: '退预付款', id: 'cancelDeposit'},
+                {name: '单退预付', id: 'cancelDepositSingle'},
                 {name: '预订订金', id: 'subscription'},
                 {name: '退订金', id: 'cancelSubscription'},
                 {name: '会员充值', id: 'vipRecharge'},
@@ -79,7 +80,7 @@ App.directive('szExchangeUserReportJq', function () {
                     })
             };
             $scope.depositAllDetail = function () {
-                var p = {condition: 'deposit>0 and ifnull(remark,0)!=\'已退\''};
+                var p = {condition: 'deposit is not null'};
                 webService.post('debtGet', p)
                     .then(function (r) {
                         popUpService.pop('debtDetail', null, null, r);

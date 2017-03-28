@@ -98,8 +98,8 @@ public class GuestOutController {
         Double totalTest=0.0;
         for (String roomId : guestOut.getRoomIdList()) {
             CheckIn checkIn = checkInService.getByRoomId(roomId);
-            Double totalConsume = debtService.getTotalConsumeByRoomId(roomId);
-            if (!Objects.equals(totalConsume, checkIn.getConsume())){
+            Double totalConsume = szMath.nullToZero(debtService.getTotalConsumeByRoomId(roomId));
+            if (!Objects.equals(totalConsume, szMath.nullToZero(checkIn.getConsume()))){
                 throw new Exception(roomId+"消费合计不准确，请联系厂家维护人员");
             }
             totalTest+=szMath.nullToZero(totalConsume);
@@ -842,6 +842,7 @@ public class GuestOutController {
         String selfAccount = debtPay.getSelfAccount();
         String paySerial = debtPay.getPaySerial();
         String checkOutSerial = debtPay.getCheckOutSerial();
+        timeService.setNow();
         /*如果有会员标志，先获取，方便之后查看余额什么的*/
         Vip vip = null;
         if (debtPay.getVipNumber() != null) {

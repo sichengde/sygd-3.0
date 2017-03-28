@@ -3,6 +3,7 @@ package com.sygdsoft.mapper;
 import com.sygdsoft.jsonModel.HotelParseLineRow;
 import com.sygdsoft.jsonModel.RoomCategoryLine;
 import com.sygdsoft.jsonModel.report.RoomCategoryRow;
+import com.sygdsoft.sqlProvider.DebtIntegrationSql;
 import com.sygdsoft.util.MyMapper;
 import com.sygdsoft.model.DebtIntegration;
 import org.apache.ibatis.annotations.*;
@@ -88,4 +89,11 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
      */
     @Select("SELECT sum(deposit) deposit,user_id userId,currency FROM debt_integration WHERE do_time>#{beginTime} AND do_time<#{endTime} and deposit is not null GROUP BY user_id,currency")
     List<DebtIntegration> getSumDepositByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
+     * 根据操作员，币种，时间，算出单退押金总和
+     */
+    @SelectProvider(type = DebtIntegrationSql.class,method = "getDepositByUserCurrencyDate")
+    @ResultType(Double.class)
+    Double getDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

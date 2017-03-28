@@ -64,7 +64,19 @@ public class DebtController {
     }
 
     /**
-     * 退预付
+     * 单退预付
+     */
+    @RequestMapping(value = "cancelDepositSingle")
+    @Transactional(rollbackFor = Exception.class)
+    public void cancelDepositSingle(@RequestBody Debt debt) throws Exception{
+        timeService.setNow();
+        debt.setDoTime(timeService.getNow());
+        debt.setUserId(userService.getCurrentUser());
+        debtService.addDebt(debt);
+    }
+
+    /**
+     * 整退预付
      */
     @RequestMapping(value = "cancelDeposit")
     @Transactional(rollbackFor = Exception.class)

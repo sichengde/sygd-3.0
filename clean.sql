@@ -12,6 +12,7 @@ DELETE FROM check_in_history_log;
 DELETE FROM check_out;
 DELETE FROM check_out_group;
 DELETE FROM check_out_room;
+DELETE FROM cook_room;
 DELETE FROM guest_map_check_in;
 DELETE FROM debt;
 DELETE FROM debt_history;

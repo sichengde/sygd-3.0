@@ -98,4 +98,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     public List<DebtIntegration> getSumDepositByDate(Date beginTime, Date endTime) {
         return debtIntegrationMapper.getSumDepositByDate(beginTime, endTime);
     }
+
+    /**
+     * 根据操作员，币种，时间，算出单退押金总和
+     */
+    public Double getSumCancelDeposit(String userId, String currency, Date beginTime, Date endTime){
+        return debtIntegrationMapper.getDepositByUserCurrencyDate(userId, currency, beginTime, endTime);
+    }
 }
