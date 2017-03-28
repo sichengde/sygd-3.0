@@ -2,12 +2,15 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.mapper.GroupIntegrationMapper;
 import com.sygdsoft.mapper.GuestIntegrationMapper;
+import com.sygdsoft.model.CountryGuestRow;
 import com.sygdsoft.model.GuestIntegration;
 import com.sygdsoft.model.OtherParam;
+import org.joda.time.chrono.LimitChronology;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2017-02-09.
@@ -53,5 +56,12 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
      */
     public String getTotalSum(Date beginTime,Date endTime){
         return guestIntegrationMapper.getTotalSum(beginTime,endTime);
+    }
+
+    /**
+     * 根据时间获得列表
+     */
+    public List<CountryGuestRow> getList(Date beginTime, Date endTime){
+        return guestIntegrationMapper.getList(beginTime,endTime);
     }
 }

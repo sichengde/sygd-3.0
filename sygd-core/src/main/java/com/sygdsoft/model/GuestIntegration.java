@@ -10,6 +10,7 @@ public class GuestIntegration extends BaseEntity{
     private String country;
     private String selfAccount;
     private Date reachTime;
+    private Boolean ifIn;
 
     public GuestIntegration() {
     }
@@ -44,5 +45,13 @@ public class GuestIntegration extends BaseEntity{
 
     public void setReachTime(Date reachTime) {
         this.reachTime = reachTime;
+    }
+
+    public Boolean getIfIn() {
+        return ifIn;
+    }
+
+    public void setIfIn(Boolean ifIn) {
+        this.ifIn = ifIn;
     }
 }

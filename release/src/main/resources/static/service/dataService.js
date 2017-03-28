@@ -1614,6 +1614,23 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
     }
 
     /**
+     * 证件号配对
+     */
+    var cardMapCityList;
+    function refreshCardMapCityList(p) {
+        p = p || {};
+        return webService.post('cardMapCityGet', p)
+            .then(function (d) {
+                cardMapCityList = d;
+                return d;
+            })
+    }
+
+    function getCardMapCityList() {
+        return cardMapCityList;
+    }
+
+    /**
      * 需要initData的webService方法
      */
     function deskInGetWithDetail(p) {
@@ -1845,6 +1862,8 @@ App.factory('dataService', ['webService', 'util', '$q', function (webService, ut
         getCompanyDebtRichList:getCompanyDebtRichList,
         refreshDeskPayRichList:refreshDeskPayRichList,
         getDeskPayRichList:getDeskPayRichList,
+        refreshCardMapCityList:refreshCardMapCityList,
+        getCardMapCityList:getCardMapCityList,
         deskInGetWithDetail:deskInGetWithDetail,
         initData: initData
     }

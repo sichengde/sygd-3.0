@@ -1,4 +1,4 @@
-App.controller('guestInfoController', ['$scope', 'webService', 'dataService','util', function ($scope, webService, dataService,util) {
+App.controller('guestInfoController', ['$scope', 'webService', 'dataService','util','dateFilter', function ($scope, webService, dataService,util,dateFilter) {
     /*在店宾客*/
     $scope.checkInGuestFields = [
         {name: '姓名', id: 'name', width: '100px'},
@@ -68,5 +68,18 @@ App.controller('guestInfoController', ['$scope', 'webService', 'dataService','ut
         {name:'当前消费',id:'consume',sum:'true'},
         {name:'操作员',id:'userId'},
         {name:'营业部门',id:'pointOfSale'}
-    ]
+    ];
+    /*查询宾客国籍分析*/
+    $scope.countryFields=[
+        {name:'地址',id:'addr'},
+        {name:'总接待数',id:'total',sum:'true'},
+        {name:'在店数',id:'now',sum:'true'}
+    ];
+    $scope.countryGuestReport=function (beginTime, endTime) {
+        webService.post('countryGuestReport',{beginTime:beginTime,endTime:endTime})
+            .then(function (r) {
+                $scope.countryList=r;
+                $scope.countryQueryMessage = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
+            })
+    }
 }]);

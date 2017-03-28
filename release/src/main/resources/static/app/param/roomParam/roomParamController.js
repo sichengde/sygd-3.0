@@ -81,8 +81,9 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
             $scope.selectList[0] = util.objectListToString(dataService.getRoomCategoryList(), 'category');
             $scope.selectRoomShopList[0] = util.objectListToString(dataService.getSaleCountList(), 'name');
         });
-    /*批量增加房号弹窗*/
-    $scope.addMany=function () {
-
-    }
+    /*证件号城市配对*/
+    $scope.cardMapCityFields=[
+        {name:'证件号前几位',id:'card'},
+        {name:'对应地区',id:'city'}
+    ]
 }]);

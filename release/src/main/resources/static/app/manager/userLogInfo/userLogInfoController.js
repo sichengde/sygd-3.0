@@ -105,6 +105,7 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
         {name: '入账时间', id: 'doTime', width: '180px', filter: 'date', desc: '0'},
         {name: '结算时间', id: 'doneTime', width: '180px', filter: 'date'},
         {name: '类型', id: 'category', width: '180px', filter: 'list'},
+        {name: '部门', id: 'pointOfSale', width: '180px', filter: 'list'},
         {name: '操作员', id: 'userId', width: '180px', filter: 'list'},
         {name: '备注', id: 'remark', width: '200px'}
     ];
