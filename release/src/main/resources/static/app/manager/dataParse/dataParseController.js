@@ -177,8 +177,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             })
     };
 
-    $scope.RoomParseReportExport = function () {
-        $scope.gridOptions.api.exportDataAsExcel({
+    $scope.exportAgGrid = function (param) {
+        param.api.exportDataAsExcel({
             columnGroups: true,
             skipGroups: false
         });
@@ -221,36 +221,81 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '当月结算款', id: 'payMonth'},
         {name: '当年结算款', id: 'payYear'}
     ];
-    var column = [
+    $scope.setDebtAndPayInit = function () {
+        $scope.showDebtAndPayReport = false;
+    };
+    var debtAndPayColumn = [
         {headerName: '营业部门', field: 'title'},
         {
-            headerName: '当日发生额',  marryChildren: true,
+            headerName: '当日发生额', marryChildren: true,
             children: [
                 {headerName: '全部', field: 'debtDay'},
                 {headerName: '已结', field: 'paid'},
-                {headerName: '参与统计', field: 'paidReal'}
+                {headerName: '应缴', field: 'paidReal'}
             ]
         },
         {
-            headerName: '当月发生额',  marryChildren: true,
+            headerName: '当月发生额', marryChildren: true,
             children: [
                 {headerName: '全部', field: 'debtMonth'},
                 {headerName: '已结', field: 'paid'},
-                {headerName: '参与统计', field: 'paidReal'}
+                {headerName: '应缴', field: 'paidReal'}
             ]
         },
         {
-            headerName: '当年发生额',  marryChildren: true,
+            headerName: '当年发生额', marryChildren: true,
             children: [
                 {headerName: '全部', field: 'debtYear'},
                 {headerName: '已结', field: 'paid'},
-                {headerName: '参与统计', field: 'paidReal'}
+                {headerName: '应缴', field: 'paidReal'}
             ]
         },
-        {headerName: '当日结算款', field: 'payDay'},
-        {headerName: '当月结算款', field: 'payMonth'},
-        {headerName: '当年结算款', field: 'payYear'}
+        {
+            headerName: '当日结算款', marryChildren: true,
+            children: [
+                {headerName: '全部', field: 'payDay'},
+                {headerName: '应缴', field: 'paidReal'},
+                {headerName: '本段', field: 'paid'}
+            ]
+        },
+        {
+            headerName: '当月结算款', marryChildren: true,
+            children: [
+                {headerName: '全部', field: 'payMonth'},
+                {headerName: '应缴', field: 'paidReal'},
+                {headerName: '本段', field: 'paid'}
+            ]
+        },
+        {
+            headerName: '当年结算款', marryChildren: true,
+            children: [
+                {headerName: '全部', field: 'payYear'},
+                {headerName: '应缴', field: 'paidReal'},
+                {headerName: '本段', field: 'paid'}
+            ]
+        }
     ];
+    $scope.debtAndPayGridOptions = {
+        columnDefs: debtAndPayColumn,
+        animateRows: true,
+        enableColResize: true,
+        rowData: null,
+        getContextMenuItems: getContextMenuItems,
+        localeText: agGridService.getLocalText
+    };
+    function getContextMenuItems(param) {
+        var exportParams = {
+            columnGroups:true
+        };
+        return [
+            { // custom item
+                name: '导出excel ',
+                action: function () {
+                    param.api.exportDataAsExcel(exportParams);
+                }
+            }
+        ];
+    }
     $scope.debtAndPayReport = function (beginTime) {
         webService.post('debtAndPayReport', {beginTime: beginTime})
             .then(function (r) {
@@ -264,6 +309,9 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 $scope.companyGenerate = r.companyGenerate;
                 $scope.companyGenerateCk = r.companyGenerateCk;
                 $scope.debtAndPayQueryMessage = dateFilter(beginTime, 'yyyy-MM-dd');
+                /*agGrid*/
+                $scope.debtAndPayGridOptions.api.setRowData(r.debtAndPayRowList);
+                $scope.showDebtAndPayReport = true;
             })
     };
     /*弹出交班审核表--接待*/
@@ -352,10 +400,10 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
      */
     $scope.companyDebtReportFields = [
         {name: '单位名称', id: 'company'},
-        {name: '期初余额', id: 'remain'},
-        {name: '期间发生额', id: 'debtGenerate'},
-        {name: '期间回款', id: 'back'},
-        {name: '期末余额', id: 'debt'}
+        {name: '期初余额', id: 'remain',sum:'true'},
+        {name: '期间发生额', id: 'debtGenerate',sum:'true'},
+        {name: '期间回款', id: 'back',sum:'true'},
+        {name: '期末余额', id: 'debt',sum:'true'}
     ];
     $scope.companyDebtReport = function (beginTime, endTime) {
         var post = {};

@@ -23,8 +23,9 @@
             </div>
             <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage" remark="roomCategorySaleRemark" items-per-page="20"></sz-table>
         </sz-pane>
-        <sz-pane title="发生与结算">
-            <div class="tableDiv">
+        <sz-pane title="发生与结算" init="setDebtAndPayInit()">
+            <div ng-show="showDebtAndPayReport" ag-grid="debtAndPayGridOptions" class="ag-fresh" style="height: 500px;"></div>
+            <div class="tableDiv" ng-show="!showDebtAndPayReport">
                 <li>
                     日期：
                     <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
@@ -55,7 +56,7 @@
                         </div>
                     </li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(beginTime,range)" value="预览"></li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReportExport()" value="导出xls"></li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="exportAgGrid(gridOptions)" value="导出xls"></li>
                 </ul>
             </div>
         </sz-pane>
@@ -182,7 +183,7 @@
                     <li>说明：分单的单位账优先按照房费统计</li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyDebtReport(beginTime,endTime)" value="预览"></li>
                 </ul>
-                <sz-table ng-if="companyDebtReportList" fields="companyDebtReportFields" items="companyDebtReportList" button="add update delete" items-per-page="20" print="单位欠款分析" query-message="queryMessageCompanyDebtReport" item-click="companyDebtReportItemClick(item,id)"></sz-table>
+                <sz-table ng-if="companyDebtReportList" fields="companyDebtReportFields" items="companyDebtReportList" button="add update delete" items-per-page="2000" print="单位欠款分析" query-message="queryMessageCompanyDebtReport" item-click="companyDebtReportItemClick(item,id)"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="单位挂账明细">

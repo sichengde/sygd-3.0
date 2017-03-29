@@ -207,25 +207,23 @@ App.controller('companyDebtController', ['$scope', 'popUpService', 'dataService'
         getContextMenuItems: getContextMenuItems,
         localeText: agGridService.getLocalText
     };
-    function getContextMenuItems() {
-        var params = {};
-        params.processCellCallback = function (params) {
+    function getContextMenuItems(param) {
+        var exportParams = {};
+        exportParams.processCellCallback = function (params) {
             if(params.column.cellRenderer){
                 return params.column.cellRenderer(params);
             }else {
                 return params.value;
             }
         };
-        var result = [
+        return [
             { // custom item
                 name: '导出excel ',
                 action: function () {
-                    $scope.companySummaryGridOptions.api.exportDataAsExcel(params);
+                    param.api.exportDataAsExcel(exportParams);
                 }
             }
         ];
-
-        return result;
     }
 
     function groupRowInnerRendererFunc(params) {

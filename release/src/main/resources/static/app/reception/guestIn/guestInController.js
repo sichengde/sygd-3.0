@@ -169,6 +169,10 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             bookIn = false;
         }
     });
+    /*监听预住天数*/
+    var watch = $scope.$watch('days', function () {
+        calculateLeaveTime();
+    });
     /*添加宾客后前检查是不是会议房，如果是的话设置床位号，（后期去掉会议房判断，普通房也有床位）*/
     var watch2 = $scope.$watchCollection('checkInGuestList', function (newValue, oldValue) {
         if (newValue.length > oldValue.length) {

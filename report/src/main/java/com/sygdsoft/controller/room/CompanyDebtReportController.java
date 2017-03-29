@@ -62,9 +62,17 @@ public class CompanyDebtReportController {
                 totalPayDebt=companyPay.getDebt();
             }
             companyDebtReportRow.setRemain(szMath.formatTwoDecimalReturnDouble(totalDebt-totalPayDebt));
-            companyDebtReportRow.setDebtGenerate(companyDebtIntegrationService.getDebtByCompanyDate(companyName, beginTime, endTime));
-            companyDebtReportRow.setBack(companyDebtHistoryService.getBackMoney(companyName, beginTime, endTime));
-            companyDebtReportRow.setDebt(company.getDebt());
+            companyDebtReportRow.setDebtGenerate(szMath.nullToZero(companyDebtIntegrationService.getDebtByCompanyDate(companyName, beginTime, endTime)));
+            companyDebtReportRow.setBack(szMath.nullToZero(companyDebtHistoryService.getBackMoney(companyName, beginTime, endTime)));
+            /*同理期初余额*/
+            totalDebt=szMath.nullToZero(companyDebtIntegrationService.getDebtByCompanyDate(companyName, beginTimeHistory, endTime));
+            companyPay=companyPayService.getSumPay(companyName, null,null,beginTimeHistory, endTime);
+            if(companyPay==null){
+                totalPayDebt=0.0;
+            }else {
+                totalPayDebt=companyPay.getDebt();
+            }
+            companyDebtReportRow.setDebt(szMath.formatTwoDecimalReturnDouble(totalDebt-totalPayDebt));
             companyDebtReportRowList.add(companyDebtReportRow);
         }
         companyDebtReportData.setCompanyDebtReportRowList(companyDebtReportRowList);
