@@ -81,8 +81,6 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             } else {
                 $scope.leave = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
             }
-            $scope.hour = $scope.leave.getHours();
-            $scope.min = $scope.leave.getMinutes();
             vipNumberList = util.objectListToString(dataService.getVipList(), 'vipNumber');
         });
     /**
@@ -161,6 +159,11 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             $scope.protocolShowList = protocolFilter($scope.protocolList, $scope.roomPriceCategory, $scope.room.category, $scope.company, $scope.vip);
             if ($scope.protocolShowList) {
                 $scope.protocol = $scope.protocolShowList[0];
+                if($scope.roomPriceCategory=='小时房'&&$scope.protocol.base){
+                    /*小时房的话自动设置离店时间更新*/
+                    $scope.showLeaveTimeDetail=true;
+                    $scope.leave=(new Date()).valueOf()+$scope.protocol.base*60*60*1000;
+                }
             }
         } else {
             bookIn = false;
@@ -234,8 +237,6 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         checkIn.deposit = totalDeposit;
         checkIn.roomCategory = $scope.room.category;
         checkIn.reachTime = $scope.now;
-        $scope.leave.setHours($scope.hour);
-        $scope.leave.setMinutes($scope.min);
         checkIn.leaveTime = $scope.leave;
         checkIn.guestSource = $scope.guestSource;
         checkIn.vip = $scope.mainGuest ? 1 : 0;

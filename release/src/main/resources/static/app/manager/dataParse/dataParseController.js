@@ -1,4 +1,4 @@
-App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', 'fieldService','agGridService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService, fieldService,agGridService) {
+App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', 'fieldService', 'agGridService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService, fieldService, agGridService) {
     $scope.beginTime = util.getTodayMin();
     $scope.endTime = util.getTodayMax();
     var postBeginTime;
@@ -165,11 +165,12 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                             row[pointOfSaleId] = parseFloat(row.income[rowIndex]);
                         }
                     }
-                };
+                }
+                ;
                 $scope.gridOptions.api.setColumnDefs(columnDefs);
                 $scope.gridOptions.api.setRowData(r);
-                var allColumnIds =[];
-                agGridService.getColumnDef(columnDefs,allColumnIds);
+                var allColumnIds = [];
+                agGridService.getColumnDef(columnDefs, allColumnIds);
                 $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
                 $scope.gridOptions.api.ensureColumnVisible('totalPointOfSaleConsume');
                 $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
@@ -210,7 +211,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
             })
     };
-    /*发生额与结算款*/
+    /*发生额与结算款-agGrid*/
     $scope.debtAndPayFields = [
         {name: '营业部门', id: 'title'},
         {name: '当日发生额', id: 'debtDay'},
@@ -219,6 +220,36 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '当日结算款', id: 'payDay'},
         {name: '当月结算款', id: 'payMonth'},
         {name: '当年结算款', id: 'payYear'}
+    ];
+    var column = [
+        {headerName: '营业部门', field: 'title'},
+        {
+            headerName: '当日发生额',  marryChildren: true,
+            children: [
+                {headerName: '全部', field: 'debtDay'},
+                {headerName: '已结', field: 'paid'},
+                {headerName: '参与统计', field: 'paidReal'}
+            ]
+        },
+        {
+            headerName: '当月发生额',  marryChildren: true,
+            children: [
+                {headerName: '全部', field: 'debtMonth'},
+                {headerName: '已结', field: 'paid'},
+                {headerName: '参与统计', field: 'paidReal'}
+            ]
+        },
+        {
+            headerName: '当年发生额',  marryChildren: true,
+            children: [
+                {headerName: '全部', field: 'debtYear'},
+                {headerName: '已结', field: 'paid'},
+                {headerName: '参与统计', field: 'paidReal'}
+            ]
+        },
+        {headerName: '当日结算款', field: 'payDay'},
+        {headerName: '当月结算款', field: 'payMonth'},
+        {headerName: '当年结算款', field: 'payYear'}
     ];
     $scope.debtAndPayReport = function (beginTime) {
         webService.post('debtAndPayReport', {beginTime: beginTime})
