@@ -1,17 +1,43 @@
 <div id="content" class="ddDing">
     <sz-tab>
         <sz-pane title="协议单位">
-                <div style="max-width: 1200px">
-                    <sz-table fields="companyFields" select-list="companySelectList" row-click="chooseCompany(d)" head="true" title="点击查看消费明细"></sz-table>
-                </div>
+            <div style="max-width: 1200px">
+                <sz-table fields="companyFields" select-list="companySelectList" row-click="chooseCompany(d)" head="true" title="点击查看消费明细"></sz-table>
+            </div>
 
-                <div class="clear"></div>
-                <div class="detailTable">
-                    <h1>消费明细</h1>
-                    <sz-table fields="debtPayFields" button="add update delete" head="true" search-condition="initCondition"
-                              right-click="rightClickDebt"></sz-table>
-                </div>
+            <div class="clear"></div>
+            <div class="detailTable">
+                <h1>消费明细</h1>
+                <sz-table fields="debtPayFields" button="add update delete" head="true" search-condition="initCondition"
+                          right-click="rightClickDebt"></sz-table>
+            </div>
 
+        </sz-pane>
+    </sz-tab>
+    <sz-tab>
+        <sz-pane title="消费明细" init="setInitCompanyConsume()">
+            <div ng-show="showCompanyConsumeReport" ag-grid="companyConsumeGridOptions" class="ag-fresh" style="height: 500px;"></div>
+            <div class="tableDiv" ng-show="!showCompanyConsumeReport">
+                <ul>
+                    <li>
+                        时间：
+                        <input ng-model="beginTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li style="margin-left: 0px;">至</li>
+                    <li>
+                        <input ng-model="endTime" uib-datepicker-popup type="text" class="tableTime">
+                        <div class="timeSfm" style="float: right">
+                            <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
+                                            show-seconds="true"></uib-timepicker>
+                        </div>
+                    </li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="companyConsumeReport(beginTime,endTime)" value="预览"></li>
+                </ul>
+            </div>
         </sz-pane>
     </sz-tab>
 </div>

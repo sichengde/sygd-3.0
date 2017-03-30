@@ -1,6 +1,7 @@
 package com.sygdsoft.mapper;
 
 import com.sygdsoft.model.RoomShopDetail;
+import com.sygdsoft.sqlProvider.RoomShopDetailSql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.*;
 
@@ -60,4 +61,18 @@ public interface RoomShopDetailMapper extends MyMapper<RoomShopDetail> {
      */
     @Update("update room_shop_detail set storage_done=true")
     void setStorageDoneTrue();
+
+    /**
+     * 根据时间和操作员查询
+     */
+    @SelectProvider(type = RoomShopDetailSql.class,method = "getList")
+    @Results(value = {
+            @Result(property = "totalMoney",column = "total_money"),
+            @Result(property = "doTime",column = "do_time"),
+            @Result(property = "paySerial",column = "pay_serial"),
+            @Result(property = "selfAccount",column = "self_account"),
+            @Result(property = "userId",column = "user_id"),
+            @Result(property = "storageDone",column = "storage_done"),
+    })
+    List<RoomShopDetail> getList(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

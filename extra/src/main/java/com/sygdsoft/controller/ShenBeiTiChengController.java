@@ -37,6 +37,10 @@ public class ShenBeiTiChengController {
     SzMath szMath;
     @Autowired
     ExchangeUserReport exchangeUserReport;
+    @Autowired
+    RoomShopDetailService roomShopDetailService;
+    @Autowired
+    DebtService debtService;
 
     /**
      * 报表说明
@@ -85,11 +89,68 @@ public class ShenBeiTiChengController {
             fieldTemplateList.add(fieldTemplate);
             totalRoomPrice += checkInIntegration.getFinalRoomPrice();
             query = new Query();
-            condition = "self_account=" + util.wrapWithBrackets(checkInIntegration.getSelfAccount()) + " and ifNull(deposit,0)>0";
+            condition = "description=\'开房押金录入\' and self_account=" + util.wrapWithBrackets(checkInIntegration.getSelfAccount()) + " and ifNull(deposit,0)>0";
             query.setCondition(condition);
             List<DebtIntegration> debtIntegrationList = debtIntegrationService.get(query);
 
             for (DebtIntegration debtIntegration : debtIntegrationList) {
+                if ("押金".equals(debtIntegration.getCurrency())) {
+                    totalDeposit += debtIntegration.getDeposit();
+                } else {
+                    String currency = debtIntegration.getCurrency();
+                    Double deposit = debtIntegration.getDeposit();
+                    fieldTemplate = new FieldTemplate();
+                    fieldTemplate.setField1("实付:");
+                    fieldTemplate.setField4(szMath.formatTwoDecimal(deposit));
+                    fieldTemplate.setField5(currency);
+                    fieldTemplateList.add(fieldTemplate);
+                    if (currencyMap.containsKey(currency)) {
+                        currencyMap.put(currency, currencyMap.get(currency) + deposit);
+                    } else {
+                        currencyMap.put(currency, deposit);
+                    }
+                }
+            }
+        }
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField6("续住情况：");//第一行
+        fieldTemplateList.add(fieldTemplate);
+        /*续住情况*/
+        query = new Query();
+        condition = "ifNull(deposit,0)>0 and description=\'押金单独补录\' and do_time>" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and do_time<" + util.wrapWithBrackets(timeService.dateToStringLong(endTime));
+        query.setCondition(condition);
+        query.setOrderByList(new String[]{"roomId"});
+        List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(query);
+        String lastRoomId = "";
+        for (DebtIntegration debtIntegration : debtIntegrationList1) {
+            if (lastRoomId.equals(debtIntegration.getRoomId())) {
+/*算押金*/
+                if ("押金".equals(debtIntegration.getCurrency())) {
+                    totalDeposit += debtIntegration.getDeposit();
+                } else {
+                    String currency = debtIntegration.getCurrency();
+                    Double deposit = debtIntegration.getDeposit();
+                    fieldTemplate = new FieldTemplate();
+                    fieldTemplate.setField1("实付:");
+                    fieldTemplate.setField4(szMath.formatTwoDecimal(deposit));
+                    fieldTemplate.setField5(currency);
+                    fieldTemplateList.add(fieldTemplate);
+                    if (currencyMap.containsKey(currency)) {
+                        currencyMap.put(currency, currencyMap.get(currency) + deposit);
+                    } else {
+                        currencyMap.put(currency, deposit);
+                    }
+                }
+            }else {
+                /*算房费*/
+                CheckInIntegration checkInIntegration = checkInIntegrationService.getByRoomId(debtIntegration.getRoomId());
+                fieldTemplate = new FieldTemplate();
+                fieldTemplate.setField1(checkInIntegration.getRoomId());
+                fieldTemplate.setField2(timeService.dateToStringLong(debtIntegration.getDoTime()));
+                fieldTemplate.setField3(szMath.formatTwoDecimal(checkInIntegration.getFinalRoomPrice()));
+                fieldTemplateList.add(fieldTemplate);
+                totalRoomPrice += checkInIntegration.getFinalRoomPrice();
+                /*算押金*/
                 if ("押金".equals(debtIntegration.getCurrency())) {
                     totalDeposit += debtIntegration.getDeposit();
                 } else {
@@ -135,7 +196,7 @@ public class ShenBeiTiChengController {
         fieldTemplate.setField1("加收房租：");//第一行
         fieldTemplateList.add(fieldTemplate);
         query = new Query();
-        condition = "category=\'加收房租\' and done_time>" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time<" + util.wrapWithBrackets(timeService.dateToStringLong(endTime));
+        condition = "category=\'加收房租\' and description NOT LIKE \'加收房租(当日来当日走)%\' and done_time>" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime)) + " and done_time<" + util.wrapWithBrackets(timeService.dateToStringLong(endTime));
         if (user != null) {
             condition += " and user_id=" + util.wrapWithBrackets(user);
         }
@@ -164,18 +225,15 @@ public class ShenBeiTiChengController {
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("房吧零售：");//第一行
         fieldTemplateList.add(fieldTemplate);
-        ExchangeUserSmallJQReturn exchangeUserSmallJQReturn = exchangeUserReport.exchangeUserReportSmallMobile(reportJson);
-        List<ExchangeUserSmallJQRow> exchangeUserSmallJQRowList = exchangeUserSmallJQReturn.getExchangeUserSmallJQRowList();
+        List<RoomShopDetail> roomShopDetailList = roomShopDetailService.getList(user, beginTime, endTime);//商品零售明细
         total = 0.0;
-        for (ExchangeUserSmallJQRow exchangeUserSmallJQRow : exchangeUserSmallJQRowList) {
-            if (exchangeUserSmallJQRow.getNotNullShop()) {
-                fieldTemplate = new FieldTemplate();
-                fieldTemplate.setField1(exchangeUserSmallJQRow.getField2());
-                fieldTemplate.setField2(exchangeUserSmallJQRow.getField3());
-                fieldTemplate.setField3(exchangeUserSmallJQRow.getField4());
-                fieldTemplateList.add(fieldTemplate);
-                total += szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3());
-            }
+        for (RoomShopDetail roomShopDetail : roomShopDetailList) {
+            fieldTemplate = new FieldTemplate();
+            fieldTemplate.setField1(roomShopDetail.getItem());
+            fieldTemplate.setField2(roomShopDetail.getNum() + roomShopDetail.getUnit());
+            fieldTemplate.setField3(szMath.formatTwoDecimal(roomShopDetail.getTotalMoney()));
+            fieldTemplateList.add(fieldTemplate);
+            total += szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3());
         }
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("总计:");
@@ -188,24 +246,30 @@ public class ShenBeiTiChengController {
         fieldTemplateList.add(fieldTemplate);
         /*统计今日不离店*/
         fieldTemplate = new FieldTemplate();
-        fieldTemplate.setField6("今日不离店：");//第一行
+        fieldTemplate.setField6("预付房租未离店：");//第一行
         fieldTemplate.setField7("预离时间");//第一行
         fieldTemplateList.add(fieldTemplate);
         query = new Query();
-        condition = "leave_time>" + util.wrapWithBrackets(timeService.dateToStringLong(timeService.getMaxTime(new Date())));
+        condition = "leave_time>" + util.wrapWithBrackets(timeService.dateToStringLong(endTime))+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(beginTime));
         query.setCondition(condition);
         List<CheckIn> checkInList = checkInService.get(query);
         total = 0.0;
         for (CheckIn checkIn : checkInList) {
-            fieldTemplate = new FieldTemplate();
-            fieldTemplate.setField1(checkIn.getRoomId());
-            fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
-            fieldTemplate.setField3(szMath.formatTwoDecimal(checkIn.getFinalRoomPrice()));
-            fieldTemplateList.add(fieldTemplate);
-            total += checkIn.getFinalRoomPrice();
+            query = new Query();
+            condition = " self_account=" + util.wrapWithBrackets(checkIn.getSelfAccount()) + " and ifNull(deposit,0)>0 and do_time>" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime))+" and do_time<"+util.wrapWithBrackets(timeService.dateToStringLong(endTime));
+            query.setCondition(condition);
+            List<Debt> debtList=debtService.get(query);
+            if (debtList.size()==0) {
+                fieldTemplate = new FieldTemplate();
+                fieldTemplate.setField1(checkIn.getRoomId());
+                fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
+                fieldTemplate.setField3(szMath.formatTwoDecimal(checkIn.getFinalRoomPrice()));
+                fieldTemplateList.add(fieldTemplate);
+                total += checkIn.getFinalRoomPrice();
+            }
         }
         fieldTemplate = new FieldTemplate();
-        fieldTemplate.setField1("预计房租:");
+        fieldTemplate.setField1("已收房租:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(total));
         totalFinal += total;
         fieldTemplateList.add(fieldTemplate);

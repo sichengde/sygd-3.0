@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/6/19 0019.
  */
-App.controller('companyController',['$scope','popUpService','dataService','util',function ($scope,popUpService, dataService, util) {
+App.controller('companyController',['$scope','popUpService','dataService','util','agGridService','webService','dateFilter',function ($scope,popUpService, dataService, util,agGridService,webService,dateFilter) {
     $scope.companyFields=[
         {name:'序号',id:'id',width:'70px'},
         {name:'单位名称',id:'name',width:'250px'},
@@ -24,6 +24,8 @@ App.controller('companyController',['$scope','popUpService','dataService','util'
         {name:'结账种类',id:'debtCategory',width:'150px'},
         {name:'操作员',id:'userId',width:'100px'}
     ];
+    $scope.beginTime = util.getTodayMin();
+    $scope.endTime = util.getTodayMax();
     $scope.companySelectList=[];
     /*账务明细默认不显示*/
     $scope.initCondition='id=-1';
@@ -42,4 +44,18 @@ App.controller('companyController',['$scope','popUpService','dataService','util'
             $scope.companySelectList[1]=util.objectListToString(dataService.getCompanyCategoryList(),'category');
             $scope.companySelectList[2]=dataService.getBooleanList;
         });
+    /*初始化*/
+    $scope.setInitCompanyConsume=function () {
+        $scope.showCompanyConsumeReport=false;
+    };
+    /*查询单位发生额*/
+    $scope.companyConsumeReport=function (beginTime, endTime) {
+        var query={};
+        query.condition='company is not null do_time>'+util.wrapWithBrackets(dateFilter(beginTime,'yyyy-MM-dd HH:mm:ss'))+' and do_time<'+util.wrapWithBrackets(dateFilter(endTime,'yyyy-MM-dd HH:mm:ss'));
+        query.orderByList=['company'];
+        webService.post('debtIntegrationGet',query)
+            .then(function (r) {
+
+            })
+    }
 }]);

@@ -2,6 +2,7 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.report.GuestSourceRoomCategoryRow;
 import com.sygdsoft.mapper.CheckInIntegrationMapper;
+import com.sygdsoft.model.CheckIn;
 import com.sygdsoft.model.CheckInIntegration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,14 @@ public class CheckInIntegrationService extends BaseService<CheckInIntegration>{
      */
     public Integer getSumForeignerNumByDate(Date beginTime,Date endTime){
         return checkInIntegrationMapper.getSumForeignerNumByDate(beginTime,endTime);
+    }
+
+    /**
+     * 获得房间对象
+     */
+    public CheckInIntegration getByRoomId(String roomId) {
+        CheckInIntegration checkInIntegrationQuery = new CheckInIntegration();
+        checkInIntegrationQuery.setRoomId(roomId);
+        return checkInIntegrationMapper.selectOne(checkInIntegrationQuery);
     }
 }

@@ -17,6 +17,12 @@ public class RoomShopDetailService extends BaseService<RoomShopDetail>{
     @Autowired
     RoomShopDetailMapper roomShopDetailMapper;
     /**
+     * 根据时间和操作员查询
+     */
+    public List<RoomShopDetail> getList(String userId,Date beginTime, Date endTime){
+        return roomShopDetailMapper.getList(userId,beginTime,endTime);
+    }
+    /**
      * 链接结账时间表查询时间段内的房吧明细
      */
     public List<RoomShopDetail> getRoomShopByDoneTime(Date beginTime, Date endTime){

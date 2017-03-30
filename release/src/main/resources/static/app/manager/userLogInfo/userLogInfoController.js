@@ -100,12 +100,14 @@ App.controller('userLogInfoController', ['$scope', 'dataService', 'dateFilter', 
     ];
     $scope.debtIntegrationFields = [
         {name: '房号', id: 'roomId', width: '70px', filter: 'list'},
-        {name: '金额', exp: 'consume*1+deposit*1', width: '70px'},
+        {name: '消费', id: 'consume', width: '70px',sum:'true'},
+        {name: '押金', id: 'deposit', width: '70px'},
         {name: '币种', id: 'currency', width: '70px', filter: 'list'},
         {name: '入账时间', id: 'doTime', width: '180px', filter: 'date', desc: '0'},
         {name: '结算时间', id: 'doneTime', width: '180px', filter: 'date'},
         {name: '类型', id: 'category', width: '180px', filter: 'list'},
         {name: '部门', id: 'pointOfSale', width: '180px', filter: 'list'},
+        {name: '协议单位', id: 'company', width: '180px', filter: 'input'},
         {name: '操作员', id: 'userId', width: '180px', filter: 'list'},
         {name: '备注', id: 'remark', width: '200px'}
     ];
