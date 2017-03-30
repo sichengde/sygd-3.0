@@ -186,7 +186,10 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             }
         } else {
             if (!$scope.vip) {//没有会员信息，有宾客信息，查找会员身份证号
-                $scope.vip = angular.copy(util.getValueByField(dataService.getVipList(), 'cardId', newValue.cardId));
+                var vip=angular.copy(util.getValueByField(dataService.getVipList(), 'cardId', newValue.cardId));
+                if(vip) {
+                    $scope.vip =vip;//存在再赋值，否则会触发watcher重置protocol
+                }
                 if ($scope.vip) {
                     $scope.vip.cardIdAdd = true;//通过身份证添加的
                 }
