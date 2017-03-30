@@ -196,6 +196,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '加收房', id: 'addDay'},
         {name: '小时房', id: 'hourRoom'},
         {name: '总计房费', id: 'totalConsume'},
+        {name: '加收房费', id: 'addConsume'},
         {name: '平均房价', id: 'averagePrice'},
         {name: 'REVPAR', id: 'revper'},
         {name: '出租率', id: 'averageRent'}
@@ -205,6 +206,26 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         postEndTime = endTime;
         webService.post('roomCategorySaleReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
+                //TODO:假数据
+                r.roomCategoryRowList=[
+                    {
+                        category:'普通标间',
+                        total:'124',
+                        empty:'30',
+                        repair:'1',
+                        self:'0',
+                        backUp:'0',
+                        rent:'74',
+                        allDay:'50',
+                        addDay:'8',
+                        hourRoom:'12',
+                        totalConsume:'13600',
+                        addConsume:'760',
+                        averagePrice:'',
+                        revper:'',
+                        averageRent:'59.68'
+                    }
+                ];
                 $scope.roomCategorySaleList = r.roomCategoryRowList;
                 $scope.roomCategorySaleRemark = r.remark;
                 $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');

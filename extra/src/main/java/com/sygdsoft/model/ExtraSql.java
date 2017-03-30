@@ -12,7 +12,7 @@ public class ExtraSql {
         String userId=(String) params.get("userId");
         String basic="SELECT  item,num,total_money totalMoney,unit,currency FROM room_shop_detail LEFT JOIN debt_pay ON room_shop_detail.pay_serial = debt_pay.pay_serial where do_time>#{beginTime} and do_time < #{endTime}";
         if(userId!=null){
-            basic+="and user_id=#{userId}";
+            basic+=" and room_shop_detail.user_id=#{userId}";
         }
         return basic;
     }
