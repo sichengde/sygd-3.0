@@ -49,13 +49,51 @@ App.controller('companyController',['$scope','popUpService','dataService','util'
         $scope.showCompanyConsumeReport=false;
     };
     /*查询单位发生额*/
+    var companyConsumeFields = [
+        {headerName: "协议单位", field: "company",rowGroupIndex: 0},
+        {headerName: "房号", field: 'roomId'},
+        {headerName: "消费", field: "consume",aggFunc: 'sum'},
+        {headerName: "押金", field: "deposit"},
+        {headerName: "入账时间", field: "doTime",cellRenderer: agGridService.stdTimeRender},
+        {headerName: "类型", field: "category"},
+        {headerName: "部门", field: "pointOfSale",rowGroupIndex: 1},
+        {headerName: "操作员", field: "userId"},
+        {headerName: "备注", field: "remark"}
+    ];
+    $scope.companyConsumeGridOptions = {
+        columnDefs: companyConsumeFields,
+        animateRows: true,
+        enableColResize: true,
+        rowData: null,
+        getContextMenuItems: getContextMenuItems,
+        localeText: agGridService.getLocalText
+    };
+    function getContextMenuItems(param) {
+        var exportParams = {};
+        exportParams.processCellCallback = function (params) {
+            if(params.column.cellRenderer){
+                return params.column.cellRenderer(params);
+            }else {
+                return params.value;
+            }
+        };
+        return [
+            { // custom item
+                name: '导出excel ',
+                action: function () {
+                    param.api.exportDataAsExcel(exportParams);
+                }
+            }
+        ];
+    }
     $scope.companyConsumeReport=function (beginTime, endTime) {
         var query={};
-        query.condition='company is not null do_time>'+util.wrapWithBrackets(dateFilter(beginTime,'yyyy-MM-dd HH:mm:ss'))+' and do_time<'+util.wrapWithBrackets(dateFilter(endTime,'yyyy-MM-dd HH:mm:ss'));
+        query.condition='company is not null and do_time>'+util.wrapWithBrackets(dateFilter(beginTime,'yyyy-MM-dd HH:mm:ss'))+' and do_time<'+util.wrapWithBrackets(dateFilter(endTime,'yyyy-MM-dd HH:mm:ss'));
         query.orderByList=['company'];
         webService.post('debtIntegrationGet',query)
             .then(function (r) {
-
+                $scope.companyConsumeGridOptions.api.setRowData(r);
+                $scope.showCompanyConsumeReport = true;
             })
     }
 }]);

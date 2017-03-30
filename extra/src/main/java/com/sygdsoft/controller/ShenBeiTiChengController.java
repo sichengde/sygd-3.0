@@ -2,6 +2,7 @@ package com.sygdsoft.controller;
 
 import com.sygdsoft.controller.common.ExchangeUserReport;
 import com.sygdsoft.jsonModel.Query;
+import com.sygdsoft.mapper.ShenBeiTiChengMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.model.room.ExchangeUserSmallJQReturn;
 import com.sygdsoft.model.room.ExchangeUserSmallJQRow;
@@ -41,6 +42,8 @@ public class ShenBeiTiChengController {
     RoomShopDetailService roomShopDetailService;
     @Autowired
     DebtService debtService;
+    @Autowired
+    ShenBeiTiChengMapper shenBeiTiChengMapper;
 
     /**
      * 报表说明
@@ -225,21 +228,43 @@ public class ShenBeiTiChengController {
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("房吧零售：");//第一行
         fieldTemplateList.add(fieldTemplate);
-        List<RoomShopDetail> roomShopDetailList = roomShopDetailService.getList(user, beginTime, endTime);//商品零售明细
+        List<RoomShopDetailWithCurrency> roomShopDetailWithCurrencyList=shenBeiTiChengMapper.getRoomShop(user, beginTime, endTime);
         total = 0.0;
-        for (RoomShopDetail roomShopDetail : roomShopDetailList) {
+        currencyMap = new HashMap<>();
+        for (RoomShopDetailWithCurrency roomShopDetailWithCurrency : roomShopDetailWithCurrencyList) {
             fieldTemplate = new FieldTemplate();
-            fieldTemplate.setField1(roomShopDetail.getItem());
-            fieldTemplate.setField2(roomShopDetail.getNum() + roomShopDetail.getUnit());
-            fieldTemplate.setField3(szMath.formatTwoDecimal(roomShopDetail.getTotalMoney()));
+            fieldTemplate.setField1(roomShopDetailWithCurrency.getItem());
+            fieldTemplate.setField2(roomShopDetailWithCurrency.getNum() + roomShopDetailWithCurrency.getUnit());
+            if(roomShopDetailWithCurrency.getCurrency()!=null) {
+                String currency=roomShopDetailWithCurrency.getCurrency();
+                Double money=roomShopDetailWithCurrency.getTotalMoney();
+                fieldTemplate.setField4(szMath.formatTwoDecimal(roomShopDetailWithCurrency.getTotalMoney()));
+                fieldTemplate.setField5(szMath.ifNotNullGetString(roomShopDetailWithCurrency.getCurrency()));
+                if (currencyMap.containsKey(currency)) {
+                    currencyMap.put(currency, currencyMap.get(currency) + money);
+                } else {
+                    currencyMap.put(currency, money);
+                }
+            }else {
+                fieldTemplate.setField3(szMath.formatTwoDecimal(roomShopDetailWithCurrency.getTotalMoney()));
+            }
             fieldTemplateList.add(fieldTemplate);
-            total += szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3());
+            total += szMath.formatTwoDecimalReturnDouble(roomShopDetailWithCurrency.getTotalMoney());
         }
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField1("总计:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(total));
         totalFinal += total;
         fieldTemplateList.add(fieldTemplate);
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField6("零售小计：");//第一行
+        fieldTemplateList.add(fieldTemplate);
+        for (String s : currencyMap.keySet()) {
+            fieldTemplate = new FieldTemplate();
+            fieldTemplate.setField1(s + ":");
+            fieldTemplate.setField3(szMath.formatTwoDecimal(currencyMap.get(s)));
+            fieldTemplateList.add(fieldTemplate);
+        }
         /*分割线*/
         fieldTemplate = new FieldTemplate();
         fieldTemplate.setField8("true");
@@ -287,7 +312,6 @@ public class ShenBeiTiChengController {
         fieldTemplate.setField1("总押金:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(totalDeposit));
         fieldTemplateList.add(fieldTemplate);
-        totalFinal += total;
         String[] parameters = new String[3];
         parameters[0] = timeService.dateToStringLong(beginTime);
         parameters[1] = timeService.dateToStringLong(endTime);

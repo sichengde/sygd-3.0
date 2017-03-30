@@ -11,10 +11,7 @@
                 <sz-table fields="debtPayFields" button="add update delete" head="true" search-condition="initCondition"
                           right-click="rightClickDebt"></sz-table>
             </div>
-
         </sz-pane>
-    </sz-tab>
-    <sz-tab>
         <sz-pane title="消费明细" init="setInitCompanyConsume()">
             <div ng-show="showCompanyConsumeReport" ag-grid="companyConsumeGridOptions" class="ag-fresh" style="height: 500px;"></div>
             <div class="tableDiv" ng-show="!showCompanyConsumeReport">
