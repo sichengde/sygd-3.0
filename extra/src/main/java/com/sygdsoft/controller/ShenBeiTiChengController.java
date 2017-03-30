@@ -309,8 +309,13 @@ public class ShenBeiTiChengController {
         fieldTemplateList.add(fieldTemplate);
         /*总押金*/
         fieldTemplate = new FieldTemplate();
-        fieldTemplate.setField1("总押金:");
+        fieldTemplate.setField1("收取押金:");
         fieldTemplate.setField3(szMath.formatTwoDecimal(totalDeposit));
+        fieldTemplateList.add(fieldTemplate);
+        /*总押金*/
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField1("在店押金:");
+        fieldTemplate.setField3(szMath.formatTwoDecimal(shenBeiTiChengMapper.getDepositMoneyAll()));
         fieldTemplateList.add(fieldTemplate);
         String[] parameters = new String[3];
         parameters[0] = timeService.dateToStringLong(beginTime);
