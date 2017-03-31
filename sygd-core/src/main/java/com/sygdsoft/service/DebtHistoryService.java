@@ -36,8 +36,12 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 查询该时间段该操作员的退预付
      */
-    public Double getTotalCancelDepositByUserCurrencyDate(String userId, String currency, Date beginTime, Date endTime) {
+    public Double getTotalCancelDeposit(String userId, String currency, Date beginTime, Date endTime) {
         return debtHistoryMapper.getTotalCancelDeposit(userId, currency, beginTime, endTime);
+    }
+
+    public List<DebtHistory> getCancelDeposit(String userId, String currency, Date beginTime, Date endTime) {
+        return debtHistoryMapper.getCancelDeposit(userId, currency, beginTime, endTime);
     }
 
     /**

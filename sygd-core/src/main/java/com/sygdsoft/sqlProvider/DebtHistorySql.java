@@ -39,4 +39,13 @@ public class DebtHistorySql {
         }
         return basic;
     }
+
+    public String getCancelDeposit(Map<String,Object> parameters){
+        String userId=(String) parameters.get("userId");
+        String basic="select * from debt_history LEFT JOIN debt_pay ON debt_history.pay_serial=debt_pay.pay_serial where debt_history.done_time > #{beginTime} and debt_history.done_time< #{endTime} and debt_history.currency=#{currency} and debt_history.deposit>0";
+        if(userId!=null){
+            basic+=" and debt_pay.user_id = #{userId}";
+        }
+        return basic;
+    }
 }

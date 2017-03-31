@@ -42,6 +42,9 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     @ResultType(Double.class)
     Double getTotalCancelDeposit(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
+    @SelectProvider(type = DebtHistorySql.class,method = "getCancelDeposit")
+    List<DebtHistory> getCancelDeposit(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
     /**
      * 计算该类别在该日期的结算款
      * pointOfSale指的是二级营业部门

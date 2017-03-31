@@ -22,7 +22,7 @@ public interface ShenBeiTiChengMapper extends MyMapper<RoomShopDetailWithCurrenc
     /**
      * 获得全部的在店押金值
      */
-    @Select("select ifnull(sum(deposit),0) from debt where deposit is not null and currency=\'押金\'")
+    @Select("select ifnull(sum(deposit),0) from debt where deposit is not null and currency=\'押金\' or currency = \'人民币\'")
     @ResultType(Double.class)
     Double getDepositMoneyAll();
 }

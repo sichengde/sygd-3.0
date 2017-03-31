@@ -78,7 +78,7 @@ public class ExchangeUserReport {
             fieldTemplate.setField1(currency.getCurrency());//币种
             fieldTemplate.setField2(szMath.ifNotNullGetString(debtPayService.getDebtMoney(userId,currencyString,false,beginTime, endTime)));//结算款
             fieldTemplate.setField3(szMath.ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId,currencyString,beginTime,endTime)));//预付
-            fieldTemplate.setField4(szMath.ifNotNullGetString(debtHistoryService.getTotalCancelDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//退预付
+            fieldTemplate.setField4(szMath.ifNotNullGetString(debtHistoryService.getTotalCancelDeposit(userId, currencyString, beginTime, endTime)));//退预付
             fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//单退预付
             fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金

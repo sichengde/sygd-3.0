@@ -32,4 +32,16 @@ public class DebtHistoryController {
         String checkOutSerial=string.getData();
         return debtHistoryService.debtHistoryGetByCheckOutSerial(checkOutSerial);
     }
+
+    /**
+     * 根结账表联表查询押金，带操作员
+     */
+    @RequestMapping(value = "getByPayUser")
+    public List<DebtHistory> getByPayUser(@RequestBody ReportJson reportJson){
+        String userId=reportJson.getUserId();
+        String currency=reportJson.getCurrency();
+        Date beginTime=reportJson.getBeginTime();
+        Date endTime=reportJson.getEndTime();
+        return debtHistoryService.getCancelDeposit(userId, currency, beginTime, endTime);
+    }
 }
