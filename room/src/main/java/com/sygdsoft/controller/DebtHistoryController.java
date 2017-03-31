@@ -39,6 +39,9 @@ public class DebtHistoryController {
     @RequestMapping(value = "getByPayUser")
     public List<DebtHistory> getByPayUser(@RequestBody ReportJson reportJson){
         String userId=reportJson.getUserId();
+        if("".equals(userId)){
+            userId=null;
+        }
         String currency=reportJson.getCurrency();
         Date beginTime=reportJson.getBeginTime();
         Date endTime=reportJson.getEndTime();
