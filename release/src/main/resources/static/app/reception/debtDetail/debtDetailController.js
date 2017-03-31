@@ -6,7 +6,7 @@ App.controller('debtDetailController', ['$scope', 'dataService', 'util', 'recept
         {name: '房号', id: 'roomId'},
         {name: '项目名称', id: 'description'},
         {name: '消费', id: 'consume', sum: 'true'},
-        {name: '押金', id: 'deposit'},
+        {name: '押金', id: 'deposit',sum: 'true'},
         {name: '支付方式', id: 'currency',filter:'list'},
         {name: '入账时间', id: 'doTime'},
         {name: '备注', id: 'remark'},

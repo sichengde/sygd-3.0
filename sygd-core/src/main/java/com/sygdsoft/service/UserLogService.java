@@ -6,6 +6,7 @@ import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,7 +116,7 @@ public class UserLogService extends BaseService<UserLog> {
     /**
      * 增加一条操作员记录（指定操作员）
      */
-    public int addUserLog(String action, String module, String category,String user,String keyWord){
+    public int addUserLog(String action, String module, String category,String user,String keyWord) throws IOException {
         UserLog userLog = new UserLog();
         userLog.setUserId(user);
         userLog.setAction(action);
