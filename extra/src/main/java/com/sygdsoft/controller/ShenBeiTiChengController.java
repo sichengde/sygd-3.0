@@ -146,7 +146,7 @@ public class ShenBeiTiChengController {
                 }
             }else {
                 /*算房费*/
-                CheckInIntegration checkInIntegration = checkInIntegrationService.getByRoomId(debtIntegration.getRoomId());
+                CheckInIntegration checkInIntegration = checkInIntegrationService.getBySelfAccount(debtIntegration.getSelfAccount());
                 fieldTemplate = new FieldTemplate();
                 fieldTemplate.setField1(checkInIntegration.getRoomId());
                 fieldTemplate.setField2(timeService.dateToStringLong(debtIntegration.getDoTime()));

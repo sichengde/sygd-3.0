@@ -45,4 +45,10 @@ public class CheckInIntegrationService extends BaseService<CheckInIntegration>{
         checkInIntegrationQuery.setRoomId(roomId);
         return checkInIntegrationMapper.selectOne(checkInIntegrationQuery);
     }
+
+    public CheckInIntegration getBySelfAccount(String selfAccount) {
+        CheckInIntegration checkInIntegrationQuery = new CheckInIntegration();
+        checkInIntegrationQuery.setSelfAccount(selfAccount);
+        return checkInIntegrationMapper.selectOne(checkInIntegrationQuery);
+    }
 }
