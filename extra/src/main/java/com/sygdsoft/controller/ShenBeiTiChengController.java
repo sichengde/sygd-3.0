@@ -275,7 +275,7 @@ public class ShenBeiTiChengController {
         fieldTemplate.setField7("预离时间");//第一行
         fieldTemplateList.add(fieldTemplate);
         query = new Query();
-        condition = "leave_time>" + util.wrapWithBrackets(timeService.dateToStringLong(endTime))+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(beginTime));
+        condition = "leave_time>" + util.wrapWithBrackets(timeService.dateToStringLong(endTime))+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(timeService.getMinTime(beginTime)));
         query.setCondition(condition);
         List<CheckIn> checkInList = checkInService.get(query);
         total = 0.0;

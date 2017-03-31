@@ -43,6 +43,20 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     Double getTotalCancelDeposit(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     @SelectProvider(type = DebtHistorySql.class,method = "getCancelDeposit")
+    @Results(value = {
+            @Result(property = "userId",column = "debt_pay.user_id"),
+            @Result(property = "doTime", column = "do_time"),
+            @Result(property = "pointOfSale", column = "point_of_sale"),
+            @Result(property = "selfAccount", column = "self_account"),
+            @Result(property = "groupAccount", column = "group_account"),
+            @Result(property = "roomId", column = "room_id"),
+            @Result(property = "paySerial", column = "pay_serial"),
+            @Result(property = "doneTime", column = "done_time"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "vipNumber", column = "vip_number"),
+            @Result(property = "fromRoom", column = "from_room"),
+            @Result(property = "companyPaid", column = "company_paid"),
+    })
     List<DebtHistory> getCancelDeposit(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
