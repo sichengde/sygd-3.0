@@ -247,7 +247,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 repair: '2',
                 self: '0',
                 backUp: '0',
-                rent: '134',
+                rent: '130',
                 allDay: '87',
                 addDay: '15',
                 hourRoom: '28',
