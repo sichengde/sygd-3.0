@@ -69,11 +69,10 @@ public class NightService {
         }
         roomService.update(roomList);
         /*收房租,房态设置为脏房*/
-
         List<CheckIn> checkInList = checkInService.get(new Query("if_room = true"));
         for (CheckIn checkIn : checkInList) {
-            if (checkIn.getRoomPriceCategory().equals(roomPriceService.hour)) {//小时房夜审自动转换为日租房
-                checkIn.setRoomPriceCategory(roomPriceService.day);
+            if (checkIn.getRoomPriceCategory().equals(roomPriceService.hour)) {//小时房夜审不加房租
+                continue;
             }
             /*如果是当日来的凌晨房，则不加收房费*/
             Debt debt = new Debt();
