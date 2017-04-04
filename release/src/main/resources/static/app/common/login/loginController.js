@@ -145,7 +145,7 @@ App.controller('LoginController', ['$scope', 'LoginService', 'dataService', 'uti
                 var nightTime = dataService.getOtherParamMapValue('夜审时间');
                 var time = dateFilter(r, 'HH:mm:ss');
                 var day = dateFilter(r, 'yyyy-MM-dd');
-                if (day != debtDay && time > nightTime) {
+                if (day > debtDay && time > nightTime) {
                     messageService.setMessage({type:'alert',content: '当前服务器时间:' + day + ' ' + time + ' ,上次夜审时间：' + lastNight + ' ,自动夜审似乎没有完成，请核对房费和日期后在账务工具中手动补做'});
                     popUpService.pop('message');
                 }

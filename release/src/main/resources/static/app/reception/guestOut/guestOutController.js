@@ -17,7 +17,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
     $scope.enableCancelDebtAdd = dataService.getOtherParamMapValue('允许不加收房租') == 'y';
     $scope.ifDebtAdd = true;
     //TODO: 增加一条数据校验，针对瑞佳提出的房吧错账，如果对了之后可以删除
-    
+
     guestOutService.initData($scope.room)
         .then(function () {
             $scope.debtList = dataService.getDebtList();
@@ -329,14 +329,17 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                     $scope.overTime = '超时' + var1[0] + '小时' + var1[1] + '分' + var1[2] + '秒';
                     var stepTime = util.timestampByTimeString(protocol.step);
                     price = protocol.roomPrice * 1 + Math.ceil(overTime / stepTime) * protocol.stepPrice;
+                    description = '小时房基础房租:' + protocol.roomPrice + '超时房租:' + Math.ceil(overTime / stepTime) * protocol.stepPrice;//正常情况说明
                     if (!protocol.maxPrice) {//如果没定义最大房租，则取日租房的房价
+                        //转日租房说明
                         var protocolDay = protocolService.getProtocolObj(checkIn.protocol, checkIn.roomCategory, '日租房');
                         protocol.maxPrice = protocolDay.roomPrice;
+                        description='小时房超时转日租房房租:'+protocolDay.roomPrice;
                     }
                     if (price > protocol.maxPrice) {
                         price = protocol.maxPrice;
+                        description='小时房超时取最大房租:'+price;
                     }
-                    description = '小时房基础房租:' + protocol.roomPrice + '超时房租:' + Math.ceil(overTime / stepTime) * protocol.stepPrice;
                 } else {
                     price = protocol.roomPrice;
                     description = '小时房房租' + protocol.roomPrice;
