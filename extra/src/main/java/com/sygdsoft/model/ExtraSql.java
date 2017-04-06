@@ -16,4 +16,13 @@ public class ExtraSql {
         }
         return basic;
     }
+
+    public String getListNoCurrency(Map<String,Object> params){
+        String userId=(String) params.get("userId");
+        String basic="SELECT  item,sum(num) num FROM room_shop_detail LEFT JOIN debt_pay ON room_shop_detail.pay_serial = debt_pay.pay_serial where do_time>#{beginTime} and do_time < #{endTime} GROUP BY item";
+        if(userId!=null){
+            basic+=" and room_shop_detail.user_id=#{userId}";
+        }
+        return basic;
+    }
 }

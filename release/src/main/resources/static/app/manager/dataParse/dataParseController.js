@@ -191,7 +191,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '维修', id: 'repair'},
         {name: '自用', id: 'self'},
         {name: '备用', id: 'backUp'},
-        {name: '出租', id: 'rent'},
+        {name: '出租', id: 'rentFake',exp:'addDay+allDay+hourRoom'},
         {name: '全日房', id: 'allDay'},
         {name: '加收房', id: 'addDay'},
         {name: '小时房', id: 'hourRoom'},

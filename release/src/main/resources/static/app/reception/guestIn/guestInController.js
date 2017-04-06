@@ -76,8 +76,17 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             /*初始化当前时间和预计离店时间*/
             $scope.now = util.newDateNow(dataService.getTimeNow());
             var time = dataService.getOtherParamMapValue('离店时间');
+            var timeNightBegin = dataService.getOtherParamMapValue('夜审时间');
+            var timeNightEnd = dataService.getOtherParamMapValue('凌晨房时段');
             if (time != 'n') {
-                $scope.leave = util.newDateAndTime(new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000), time)
+                /*判断是不是在凌晨房时段间，凌晨房预离时间默认当天*/
+                var nightBegin=util.newDateAndTime($scope.now, timeNightBegin);
+                var nightEnd=util.newDateAndTime($scope.now, timeNightEnd);
+                if($scope.now>nightBegin&&$scope.now<nightEnd){
+                    $scope.leave = util.newDateAndTime($scope.now, time)
+                }else {
+                    $scope.leave = util.newDateAndTime(new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000), time)
+                }
             } else {
                 $scope.leave = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
             }

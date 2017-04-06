@@ -20,6 +20,12 @@ public interface ShenBeiTiChengMapper extends MyMapper<RoomShopDetailWithCurrenc
     List<RoomShopDetailWithCurrency> getRoomShop(@Param("userId") String userId, @Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
 
     /**
+     * 获取房吧账务不包含币种
+     */
+    @SelectProvider(type = ExtraSql.class,method = "getListNoCurrency")
+    List<RoomShopDetailWithCurrency> getRoomShopNoCurrency(@Param("userId") String userId, @Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
+
+    /**
      * 获得全部的在店押金值
      */
     @Select("select ifnull(sum(deposit),0) from debt where deposit is not null and currency=\'押金\' or currency = \'人民币\'")

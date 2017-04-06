@@ -257,12 +257,22 @@ public class ShenBeiTiChengController {
         totalFinal += total;
         fieldTemplateList.add(fieldTemplate);
         fieldTemplate = new FieldTemplate();
-        fieldTemplate.setField6("零售小计：");//第一行
+        fieldTemplate.setField6("币种小计：");//第一行
         fieldTemplateList.add(fieldTemplate);
         for (String s : currencyMap.keySet()) {
             fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(s + ":");
             fieldTemplate.setField3(szMath.formatTwoDecimal(currencyMap.get(s)));
+            fieldTemplateList.add(fieldTemplate);
+        }
+        List<RoomShopDetailWithCurrency> roomShopDetailNoCurrencyList=shenBeiTiChengMapper.getRoomShop(user, beginTime, endTime);
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField6("品名小计：");//第一行
+        fieldTemplateList.add(fieldTemplate);
+        for (RoomShopDetailWithCurrency roomShopDetailWithCurrency : roomShopDetailNoCurrencyList) {
+            fieldTemplate = new FieldTemplate();
+            fieldTemplate.setField1(roomShopDetailWithCurrency.getItem());
+            fieldTemplate.setField2(roomShopDetailWithCurrency.getNum());
             fieldTemplateList.add(fieldTemplate);
         }
         /*分割线*/
