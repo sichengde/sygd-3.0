@@ -57,6 +57,9 @@ public class CheckInController {
         /*先获取原来的checkIn便于对比改没改房价*/
         CheckIn checkIn1=checkInService.get(new Query("id="+checkIn.getId())).get(0);
         /*修改在店户籍*/
+        /*将消费和押金设置为之前的，因为该步骤并不应该改变这些*/
+        checkIn.setConsume(checkIn1.getConsume());
+        checkIn.setDeposit(checkIn1.getDeposit());
         checkInService.update(checkIn);
         /*如果是可编辑房价的话，还要修改房价协议*/
         if(otherParamService.getValueByName("可编辑房价").equals("y") && checkIn1.getFinalRoomPrice()==checkIn.getFinalRoomPrice()) {

@@ -10,7 +10,7 @@ App.controller('OtherConsumeController', ['$scope', 'webService', 'dataService',
             $scope.pointOfSaleList = r[0].secondPointOfSale.split(' ');
             $scope.pointOfSale = $scope.pointOfSaleList[0];
         });
-    if ($scope.company.name) {
+    if ($scope.company&&$scope.company.name) {
         dataService.refreshCompanyLordList({condition: 'company=' + util.wrapWithBrackets($scope.company.name)})
             .then(function (r) {
                 $scope.companyLordListShow = util.objectListToString(r, 'name');

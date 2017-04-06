@@ -105,7 +105,7 @@ public class DebtController {
      */
     @RequestMapping(value = "roomShopIn")
     @Transactional(rollbackFor = Exception.class)
-    public Integer roomShopIn(@RequestBody RoomShopIn roomShopIn) throws Exception {
+    public void roomShopIn(@RequestBody RoomShopIn roomShopIn) throws Exception {
         /*解析传进来的参数*/
         String roomId = roomShopIn.getRoomId();
         String money = roomShopIn.getMoney();
@@ -121,12 +121,11 @@ public class DebtController {
         debt.setBed(bed);
         debt.setCategory(debtService.roomShopIn);
         debt.setUserId(userService.getCurrentUser());
-        //TODO: 发现bug之后就可以删了
-        CheckIn checkIn = checkInService.getByRoomId(roomId);
-        logger.info(timeService.getNowLong()+":"+"房吧入账前checkIn消费:"+checkIn.getConsume()+"房吧消费:"+Double.valueOf(money)+"操作员:"+userService.getCurrentUser());
+        //CheckIn checkIn = checkInService.getByRoomId(roomId);
+        //logger.info(timeService.getNowLong()+":"+"房吧入账前checkIn消费:"+checkIn.getConsume()+"房吧消费:"+Double.valueOf(money)+"操作员:"+userService.getCurrentUser());
         debtService.addDebt(debt);
-        checkIn = checkInService.getByRoomId(roomId);
-        logger.info(timeService.getNowLong()+":"+"房吧入账前checkIn消费:"+checkIn.getConsume());
+        //checkIn = checkInService.getByRoomId(roomId);
+        //logger.info(timeService.getNowLong()+":"+"房吧入账后checkIn消费:"+checkIn.getConsume());
         /*创建房吧明细账务*/
         List<RoomShopDetail> roomShopDetailList = roomShopIn.getRoomShopDetailList();
         String selfAccount = checkInService.getSelfAccount(roomId);
@@ -136,7 +135,6 @@ public class DebtController {
             roomShopDetail.setSelfAccount(selfAccount);
         }
         roomShopDetailService.add(roomShopDetailList);
-        return 1;
     }
 
     /**
