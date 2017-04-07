@@ -3,7 +3,7 @@
  */
 'use strict';
 
-App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'popUpService', 'protocolService', 'host', 'messageService', 'readIdCardService', 'doorInterfaceService', 'dateFilter', 'LoginService', function ($scope, util, webService, dataService, receptionService, protocolFilter, popUpService, protocolService, host, messageService, readIdCardService, doorInterfaceService, dateFilter, LoginService) {
+App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataService', 'receptionService', 'protocolFilter', 'popUpService', 'protocolService', 'host', 'messageService', 'readIdCardService', 'doorInterfaceService', 'dateFilter', 'LoginService','$q', function ($scope, util, webService, dataService, receptionService, protocolFilter, popUpService, protocolService, host, messageService, readIdCardService, doorInterfaceService, dateFilter, LoginService,$q) {
     /*要提交的对象*/
     var guestIn = {};
     /*开房信息对象*/
@@ -229,7 +229,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
         if (!$scope.protocol) {
             messageService.setMessage({type: 'error', content: '您还没选择房价协议'});
             popUpService.pop('message');
-            return;
+            return $q.resolve();
         }
         var totalDeposit=0;
         for (var i = 0; i < $scope.depositList.length; i++) {
@@ -240,14 +240,19 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             if (isNaN(d.deposit)) {
                 messageService.setMessage({type: 'error', content: '您输入的预付款不是数字'});
                 popUpService.pop('message');
-                return;
+                return $q.resolve();
             }
             if (d.currency == '会员' && !$scope.vip) {
                 messageService.setMessage({type: 'error', content: '您选择用会员余额充当押金，但还没有读取会员卡'});
                 popUpService.pop('message');
-                return;
+                return $q.resolve();
             }
             totalDeposit+=parseInt(d.deposit);
+        }
+        if($scope.checkInGuestList.length==0){
+            messageService.setMessage({type: 'error', content: '请输入客人信息'});
+            popUpService.pop('message');
+            return $q.resolve();
         }
         checkIn.roomId = $scope.room.roomId;
         checkIn.deposit = totalDeposit;
@@ -315,6 +320,8 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
      */
     /*根据来期和预住天数计算出离期*/
     function calculateLeaveTime() {
-        $scope.leave = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
+        if($scope.now) {
+            $scope.leave = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
+        }
     }
 }]);
