@@ -16,6 +16,9 @@ public interface RoomStateReportMapper extends MyMapper<RoomStateReport>{
     @Delete("delete from room_state_report where report_time=#{date}")
     void deleteByDate(@Param("date") Date date);
 
-    @Select("SELECT sum(total) total ,sum(rent) rent FROM room_state_report WHERE report_time>#{beginTime} AND report_time<#{endTime}")
+    @Select("SELECT \'总计\' category, sum(total) total, sum(empty) empty, sum(repair) repair, sum(self) self, sum(back_up) backUp, sum(rent) rent, sum(total_real) totalReal, sum(all_day_room) allDayRoom, sum(hour_room) hourRoom, sum(add_room) addRoom, sum(all_day_room_consume) allDayRoomConsume, sum(hour_room_consume) hourRoomConsume, sum(add_room_consume) addRoomConsume, sum(night_room) nightRoom, sum(night_room_consume) nightRoomConsume FROM room_state_report WHERE report_time>=#{beginTime} AND report_time<=#{endTime}")
     RoomStateReport getSumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    @Select("SELECT category, sum(total) total, sum(empty) empty, sum(repair) repair, sum(self) self, sum(back_up) backUp, sum(rent) rent, sum(total_real) totalReal, sum(all_day_room) allDayRoom, sum(hour_room) hourRoom, sum(add_room) addRoom, sum(all_day_room_consume) allDayRoomConsume, sum(hour_room_consume) hourRoomConsume, sum(add_room_consume) addRoomConsume, sum(night_room) nightRoom, sum(night_room_consume) nightRoomConsume FROM room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} group by category")
+    List<RoomStateReport> getSumByDateCategory(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

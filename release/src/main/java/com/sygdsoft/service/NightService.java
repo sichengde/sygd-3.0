@@ -55,6 +55,8 @@ public class NightService {
     DebtIntegrationService debtIntegrationService;
     @Autowired
     CheckInService checkInService;
+    @Autowired
+    NightDateService nightDateService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic()throws Exception{
@@ -62,7 +64,6 @@ public class NightService {
         /*清除所有的当日锁房*/
         Query query=new Query();
         query.setOrderByList(new String[]{"category"});
-        query.setCondition("if_room=true");
         List<Room> roomList = roomService.get(query);
         for (Room room : roomList) {
             room.setTodayLock(null);
@@ -115,29 +116,49 @@ public class NightService {
         deskBookHistoryService.add(deskBookHistoryList);
         /*生成房类统计报表*/
         Date debtDate=timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
+        Date beginDateTime=nightDateService.getByDate(debtDate);
+        Date endDateTime=timeService.getNow();
         roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
         List<RoomStateReport> roomStateReportList=new ArrayList<>();
         String oldCategory=null;
         Integer total=0;
+        Integer totalReal=0;
         Integer empty=0;
         Integer repair=0;
         Integer self=0;
         Integer backUp=0;
         Integer rent=0;
+        Integer hourRoom=0;
+        Integer addRoom=0;
+        Integer nightRoom=0;
+        Integer allDayRoom=0;
+        Double allDayRoomConsume=0.0;
+        Double hourRoomConsume=0.0;
+        Double addRoomConsume=0.0;
+        Double nightRoomConsume=0.0;
         for (Room room : roomList) {//roomList在之前已经根据房类排列好了
             /*新建一行*/
             if(!room.getCategory().equals(oldCategory)){
                 if(oldCategory!=null){//插入之前的
                     /*计算重复出租*/
                     /*计算总计房租*/
-                    RoomStateReport roomStateReport=new RoomStateReport(oldCategory,total, empty, repair, self, backUp, rent,debtDate );
+                    RoomStateReport roomStateReport=new RoomStateReport(oldCategory, total, totalReal, empty, repair, self, backUp, rent, allDayRoom, hourRoom, addRoom, nightRoom, allDayRoomConsume, hourRoomConsume, addRoomConsume, nightRoomConsume, debtDate);
                     roomStateReportList.add(roomStateReport);
                     total=0;
+                    totalReal=0;
                     empty=0;
                     repair=0;
                     self=0;
                     backUp=0;
                     rent=0;
+                    hourRoom=0;
+                    addRoom=0;
+                    nightRoom=0;
+                    allDayRoom=0;
+                    allDayRoomConsume=0.0;
+                    hourRoomConsume=0.0;
+                    addRoomConsume=0.0;
+                    nightRoomConsume=0.0;
                 }
                 oldCategory=room.getCategory();
             }
@@ -148,6 +169,12 @@ public class NightService {
                     break;
                 case "团队房":
                 case "散客房":
+                    /*判断是不是全日房*/
+                    CheckIn checkIn=checkInService.getByRoomId(room.getRoomId());
+                    if(checkIn.getRoomPriceCategory().equals("日租房")){
+                        allDayRoom++;
+                        allDayRoomConsume+=checkIn.getFinalRoomPrice();
+                    }
                     rent++;
                     break;
                 case "维修房":
@@ -160,20 +187,39 @@ public class NightService {
                     backUp++;
                     break;
             }
+            if(room.getNotNullIfRoom()){
+                totalReal++;
+            }
             total++;
-            /*看看有没有重复出租*/
-            List<DebtIntegration> debtIntegrationList=debtIntegrationService.get(new Query("description=\'凌晨房费\' and room_id="+util.wrapWithBrackets(room.getRoomId()) +" and do_time like "+util.wrapWithBrackets(timeService.dateToStringShort(debtDate)+"%")));
-            if(debtIntegrationList.size()>0){
-                total++;
-                rent++;
+            List<DebtIntegration> debtIntegrationList;
+            String dateAndRoomCondition= " and room_id="+util.wrapWithBrackets(room.getRoomId()) +" and do_time > "+util.wrapWithBrackets(timeService.dateToStringLong(beginDateTime))+" and do_time < "+util.wrapWithBrackets(timeService.dateToStringLong(endDateTime));
+            /*计算时间段内的小时房*/
+            debtIntegrationList=debtIntegrationService.get(new Query("category=\'小时房费\'"+dateAndRoomCondition));
+            for (DebtIntegration debtIntegration : debtIntegrationList) {
+                hourRoom++;
+                hourRoomConsume+=debtIntegration.getConsume();
+            }
+            /*计算时间段内的加收房*/
+            debtIntegrationList=debtIntegrationService.get(new Query("category=\'加收房租\'"+dateAndRoomCondition));
+            for (DebtIntegration debtIntegration : debtIntegrationList) {
+                addRoom++;
+                addRoomConsume+=debtIntegration.getConsume();
+            }
+            /*计算时间段内的凌晨房*/
+            debtIntegrationList=debtIntegrationService.get(new Query("category=\'凌晨房费\'"+dateAndRoomCondition));
+            for (DebtIntegration debtIntegration : debtIntegrationList) {
+                nightRoom++;
+                nightRoomConsume+=debtIntegration.getConsume();
             }
         }
         /*最后一个插入*/
-        RoomStateReport roomStateReport=new RoomStateReport(oldCategory,total, empty, repair, self, backUp, rent,debtDate );
+        RoomStateReport roomStateReport = new RoomStateReport(oldCategory, total, totalReal, empty, repair, self, backUp, rent, allDayRoom, hourRoom, addRoom, nightRoom, allDayRoomConsume, hourRoomConsume, addRoomConsume, nightRoomConsume, debtDate);
         roomStateReportList.add(roomStateReport);
         roomStateReportService.add(roomStateReportList);
         /*设置最近一次夜审时间*/
         otherParamService.updateValueByName("上次夜审", timeService.getNowLong());
+        /*设置该账务日期的夜审时间*/
+        nightDateService.setNightAction(debtDate);
         /*设置账务时间加一天*/
         otherParamService.updateValueByName("账务日期",timeService.dateToStringShort(timeService.addDay(otherParamService.getValueByName("账务日期"),1)));
         /*清除临时报表缓存*/

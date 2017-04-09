@@ -33,9 +33,11 @@ public interface DebtPayMapper extends MyMapper<DebtPay> {
 
 
     /**
-     * 获得消费额
+     * 获得结算款
      */
     @SelectProvider(type = DebtPaySql.class,method = "getDebtMoney")
     @ResultType(Double.class)
     Double getDebtMoney(@Param("userId") String userId,@Param("currency") String currency,@Param("payTotal") Boolean payTotal, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+
 }

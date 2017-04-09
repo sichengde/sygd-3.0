@@ -14,29 +14,22 @@ import java.util.List;
 
 /**
  * Created by 舒展 on 2016-09-07.
+ * 发生额不包括转房客
  */
 @Service
 @SzMapper(id = "debtIntegration")
 public class DebtIntegrationService extends BaseService<DebtIntegration> {
     @Autowired
     DebtIntegrationMapper debtIntegrationMapper;
-
     /**
-     * 根据时间获得房类销售分析
+     * 根据发生时间获得消费总额
      */
-    public List<RoomCategoryRow> parseRoomCategoryDebt(Date beginTime, Date endTime) {
-        return debtIntegrationMapper.parseRoomCategoryDebt(beginTime, endTime);
+    public Double getSumConsumeByDoTime(Date beginTime, Date endTime, String pointOfSale){
+        return debtIntegrationMapper.getSumConsumeByDoTime(beginTime, endTime, pointOfSale);
     }
 
     /**
-     * 获得时间段内该房类走势
-     */
-    public List<RoomCategoryLine> parseRoomCategoryDebtLine(Date beginTime, Date endTime, String category) {
-        return debtIntegrationMapper.parseRoomCategoryDebtLine(beginTime, endTime, category);
-    }
-
-    /**
-     * 根据时间获得发生额，分，房吧，零售和房费
+     * 根据发生时间和营业部门获得发生额
      */
     public Double getSumByPointOfSale(Date beginTime, Date endTime, String pointOfSale) {
         if (pointOfSale == null) {
@@ -44,20 +37,6 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
         } else {
             return debtIntegrationMapper.getSumByPointOfSale(beginTime, endTime, pointOfSale);
         }
-    }
-
-    /**
-     * 根据时间获取单位发生额
-     */
-    public Double getSumByCompany(Date beginTime, Date endTime) {
-        return debtIntegrationMapper.getSumByCompany(beginTime, endTime);
-    }
-
-    /**
-     * 根据时间获取单位发生额
-     */
-    public List<DebtIntegration> getListByCompany(Date beginTime, Date endTime) {
-        return debtIntegrationMapper.getListByCompany(beginTime, endTime);
     }
 
     /**
@@ -69,13 +48,6 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
         } else {
             return debtIntegrationMapper.getSumDateLineByPointOfSale(beginTime, endTime, pointOfSale);
         }
-    }
-
-    /**
-     * 根据时间获得全日房费总数
-     */
-    public Double getSumAllDayConsumeByDate(Date beginTime, Date endTime) {
-        return debtIntegrationMapper.getSumAllDayConsumeByDate(beginTime, endTime);
     }
 
     /**
@@ -102,7 +74,14 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 根据操作员，币种，时间，算出单退押金总和
      */
-    public Double getSumCancelDeposit(String userId, String currency, Date beginTime, Date endTime){
+    public Double getSumCancelDeposit(String userId, String currency, Date beginTime, Date endTime) {
         return debtIntegrationMapper.getDepositByUserCurrencyDate(userId, currency, beginTime, endTime);
+    }
+
+    /**
+     * 获得时间段内该房类走势
+     */
+    public List<RoomCategoryLine> parseRoomCategoryDebtLine(Date beginTime, Date endTime, String category) {
+        return debtIntegrationMapper.parseRoomCategoryDebtLine(beginTime, endTime, category);
     }
 }

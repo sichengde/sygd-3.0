@@ -15,11 +15,6 @@ import java.util.List;
  * Created by 舒展 on 2016-09-07.
  */
 public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
-    /**
-     * 根据时间获得房类销售分析
-     */
-    @Select("SELECT  count(*)     count,  sum(consume) consume,  a.category,  a.categoryRoom,  rsr.total,  rsr.empty,  rsr.repair,  rsr.self,  rsr.backUp,  rsr.rent FROM (SELECT debt_integration.category category, consume, room.category             categoryRoom FROM debt_integration LEFT JOIN room ON debt_integration.room_id = room.room_id WHERE debt_integration.category IN ('全日房费', '小时房费', '加收房租') AND debt_integration.do_time >#{beginTime} and debt_integration.do_time<#{endTime} ) a LEFT JOIN (SELECT category, sum(total) total, sum(empty) empty, sum(repair) repair, sum(self) self, sum(back_up) backUp, sum(rent) rent FROM room_state_report WHERE report_time>=#{beginTime} and report_time<=#{endTime} GROUP BY category) rsr ON rsr.category=a.categoryRoom GROUP BY a.category ,a.categoryRoom ORDER BY categoryRoom")
-    List<RoomCategoryRow> parseRoomCategoryDebt(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 获得时间段内该房类走势
@@ -40,20 +35,6 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     @ResultType(Double.class)
     Double getSumConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
-    /*只获取单位的发生额*/
-    @Select("SELECT sum(di.consume) consume from debt_integration di LEFT JOIN company c on di.company=c.name WHERE di.company IS NOT NULL and c.if_debt = TRUE and di.do_time>#{beginTime} and di.do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getSumByCompany(@Param("beginTime")Date beginTime ,@Param("endTime")Date endTime);
-
-    /*只获取有单位发生额的数组*/
-    @Select("SELECT * from debt_integration di LEFT JOIN company c on di.company=c.name WHERE di.company IS NOT NULL and c.if_debt = TRUE and di.do_time>#{beginTime} and di.do_time<#{endTime} order by di.company")
-    @Results(value = {
-            @Result(property = "doTime", column = "do_time"),
-            @Result(property = "pointOfSale", column = "point_of_sale"),
-            @Result(property = "roomId", column = "room_id"),
-            @Result(property = "userId", column = "user_id"),
-    })
-    List<DebtIntegration> getListByCompany(@Param("beginTime")Date beginTime ,@Param("endTime")Date endTime);
     /**
      * 根据时间获得发生额（线性数据，包含了宴请）
      */
@@ -64,13 +45,6 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     /*啥也不分，分，房吧，零售和房费*/
     @Select("SELECT calendar.date date,ifnull(money,0) money FROM calendar LEFT JOIN (SELECT ifnull(sum(consume), 0) money,date_format(do_time,'%Y-%m-%d') date FROM debt_integration WHERE ifnull(category, '未定义') != '转入' AND do_time >#{beginTime} and do_time<#{endTime} GROUP BY date) a ON calendar.date=a.date WHERE calendar.date>#{beginTime} AND calendar.date<#{endTime} ORDER BY calendar.date")
     List<HotelParseLineRow> getSumDateLineConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /**
-     * 根据时间获得全日房费总数
-     */
-    @Select("select sum(consume) consume from debt_integration where do_time>#{beginTime} and do_time<#{endTime} and category='全日房费'")
-    @ResultType(Integer.class)
-    Double getSumAllDayConsumeByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 获得时间段内客源消费情况（只算房费）
@@ -96,4 +70,11 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     @SelectProvider(type = DebtIntegrationSql.class,method = "getDepositByUserCurrencyDate")
     @ResultType(Double.class)
     Double getDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
+     * 根据发生时间获得消费总额
+     */
+    @SelectProvider(type = DebtIntegrationSql.class,method = "getSumConsumeByDoTime")
+    @ResultType(Double.class)
+    Double getSumConsumeByDoTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
 }

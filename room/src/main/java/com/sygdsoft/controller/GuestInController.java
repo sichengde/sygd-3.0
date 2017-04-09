@@ -190,19 +190,21 @@ public class GuestInController {
                 debt.setCompany(checkIn.getCompany());
                 debtService.add(debt);
             }
-            if (nowTime.compareTo(limit) < 0 && nowTime.compareTo(nightTime) > 0) {//需要直接产生一笔房费
-                debt = new Debt();
-                debt.setDoTime(timeService.getNow());
-                debt.setPointOfSale(pointOfSaleService.FF);
-                debt.setConsume(checkIn.getFinalRoomPrice());
-                debt.setCurrency("挂账");
-                debt.setDescription("凌晨房费");
-                debt.setSelfAccount(serialService.getSelfAccount());
-                debt.setRoomId(checkIn.getRoomId());
-                debt.setProtocol(checkIn.getProtocol());
-                debt.setUserId(checkIn.getUserId());
-                debt.setCategory(debtService.allDayPrice);
-                debtService.addDebt(debt);
+            if (nowTime.compareTo(limit) < 0 && nowTime.compareTo(nightTime) > 0) {//需要直接产生一笔房费，凌晨房
+                if(checkIn.getRoomPriceCategory().equals("日租房")) {//小时房不产生凌晨房费
+                    debt = new Debt();
+                    debt.setDoTime(timeService.getNow());
+                    debt.setPointOfSale(pointOfSaleService.FF);
+                    debt.setConsume(checkIn.getFinalRoomPrice());
+                    debt.setCurrency("挂账");
+                    debt.setDescription("凌晨房费");
+                    debt.setSelfAccount(serialService.getSelfAccount());
+                    debt.setRoomId(checkIn.getRoomId());
+                    debt.setProtocol(checkIn.getProtocol());
+                    debt.setUserId(checkIn.getUserId());
+                    debt.setCategory("凌晨房费");
+                    debtService.addDebt(debt);
+                }
             }
             /*如果押金币种是会员，则需要先冻结这部分资金*/
             if (currencyService.HY.equals(checkIn.getCurrency())) {

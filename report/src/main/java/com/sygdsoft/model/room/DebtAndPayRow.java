@@ -4,70 +4,80 @@ package com.sygdsoft.model.room;
  * Created by Administrator on 2017/3/13 0013.
  */
 public class DebtAndPayRow {
-    private String title;
-    private Double debtDay;
-    private Double debtMonth;
-    private Double debtYear;
-    private Double payDay;
-    private Double payMonth;
-    private Double payYear;
+    private String pointOfSale;//营业部门
+    private Double undoneBefore;//期初未结
+    private Double debt;//期间发生
+    private Double debtPay;//期间结算
+    private Double toCompany;//转单位
+    private Double lost;//转哑房
+    private Double undoneLast;//期末未结
 
     public DebtAndPayRow() {
     }
 
-    public String getTitle() {
-        return title;
+    public DebtAndPayRow(String pointOfSale) {
+        this.pointOfSale = pointOfSale;
+        this.undoneBefore = 0.0;
+        this.debt = 0.0;
+        this.debtPay = 0.0;
+        this.toCompany = 0.0;
+        this.lost = 0.0;
+        this.undoneLast = 0.0;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getPointOfSale() {
+        return pointOfSale;
     }
 
-    public Double getDebtDay() {
-        return debtDay;
+    public void setPointOfSale(String pointOfSale) {
+        this.pointOfSale = pointOfSale;
     }
 
-    public void setDebtDay(Double debtDay) {
-        this.debtDay = debtDay;
+    public Double getUndoneBefore() {
+        return undoneBefore;
     }
 
-    public Double getDebtMonth() {
-        return debtMonth;
+    public void setUndoneBefore(Double undoneBefore) {
+        this.undoneBefore = undoneBefore;
     }
 
-    public void setDebtMonth(Double debtMonth) {
-        this.debtMonth = debtMonth;
+    public Double getDebt() {
+        return debt;
     }
 
-    public Double getDebtYear() {
-        return debtYear;
+    public void setDebt(Double debt) {
+        this.debt = debt;
     }
 
-    public void setDebtYear(Double debtYear) {
-        this.debtYear = debtYear;
+    public Double getDebtPay() {
+        return debtPay;
     }
 
-    public Double getPayDay() {
-        return payDay;
+    public void setDebtPay(Double debtPay) {
+        this.debtPay = debtPay;
     }
 
-    public void setPayDay(Double payDay) {
-        this.payDay = payDay;
+    public Double getToCompany() {
+        return toCompany;
     }
 
-    public Double getPayMonth() {
-        return payMonth;
+    public void setToCompany(Double toCompany) {
+        this.toCompany = toCompany;
     }
 
-    public void setPayMonth(Double payMonth) {
-        this.payMonth = payMonth;
+    public Double getLost() {
+        return lost;
     }
 
-    public Double getPayYear() {
-        return payYear;
+    public void setLost(Double lost) {
+        this.lost = lost;
     }
 
-    public void setPayYear(Double payYear) {
-        this.payYear = payYear;
+    public Double getUndoneLast() {
+        return undoneLast;
+    }
+
+    public void setUndoneLast(Double undoneLast) {
+        this.undoneLast = undoneLast;
     }
 }

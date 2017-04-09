@@ -12,7 +12,6 @@ import java.util.List;
 
 /**
  * Created by 舒展 on 2016-04-13.
- * 发生额算法：consume>0 账务历史付款方式不是转房客
  */
 public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     /**
@@ -114,12 +113,6 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
             " select sum(consume) consume from debt_history where category=\'杂单\' and do_time>#{beginTime} and do_time<#{endTime}) a")
     @ResultType(Double.class)
     Double getTotalAddByTimeZone(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /**
-     * 获得该时间段内的每日客房发生额
-     */
-    @Select("SELECT calendar.date doTime ,ifnull(b.consume,0) consume FROM calendar LEFT JOIN (select sum(a.consume) consume,a.date from (select sum(consume) consume,date_format(do_time,'%Y-%m-%d') date from debt where consume>0 and date_format(do_time,'%Y-%m-%d')>=date_format(#{beginTime},'%Y-%m-%d') and date_format(do_time,'%Y-%m-%d')<=date_format(#{endTime},'%Y-%m-%d') GROUP BY date UNION select sum(consume) consume,date_format(do_time,'%Y-%m-%d') date from debt_history where consume>0 and date_format(do_time,'%Y-%m-%d')>=date_format(#{beginTime},'%Y-%m-%d') and date_format(do_time,'%Y-%m-%d')<=date_format(#{endTime},'%Y-%m-%d') and pay_serial NOT IN (SELECT pay_serial FROM debt_pay WHERE currency='转房客') GROUP BY date) a GROUP BY a.date) b ON calendar.date=b.date where date_format(calendar.date,'%Y-%m-%d')>=date_format(#{beginTime},'%Y-%m-%d') and date_format(calendar.date,'%Y-%m-%d')<=date_format(#{endTime},'%Y-%m-%d') ORDER BY doTime")
-    List<DebtHistory> getConsumePerDay(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 计算该营业部门在该单子下的销售情况

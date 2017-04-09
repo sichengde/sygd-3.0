@@ -70,6 +70,14 @@ public class Room extends BaseEntity{
         }
     }
 
+    public Boolean getNotNullIfRoom() {
+        if(ifRoom==null){
+            return false;
+        }else {
+            return ifRoom;
+        }
+    }
+
     public String getRoomId() {
         return roomId;
     }

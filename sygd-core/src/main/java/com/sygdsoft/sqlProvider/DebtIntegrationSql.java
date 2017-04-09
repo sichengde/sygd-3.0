@@ -16,4 +16,13 @@ public class DebtIntegrationSql {
         }
         return basic;
     }
+
+    public String getSumConsumeByDoTime(Map<String, Object> parameters){
+        String pointOfSale= (String) parameters.get("pointOfSale");
+        String basic="SELECT abs(sum(consume)) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
+        if(pointOfSale!=null){
+            basic+=" and point_of_sale = #{pointOfSale}";
+        }
+        return basic;
+    }
 }

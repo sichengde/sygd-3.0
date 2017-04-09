@@ -10,10 +10,6 @@ public class DebtAndPayReturn {
     private Double companyDebt;
     private Double companyPay;
     private Double vipPay;
-    private Double roomPayDay;//当日结算款(客房)
-    private Double deskPayDay;//当日结算款(餐厅)
-    private Double companyGenerate;//当日单位发生额(所有开房有单位的)
-    private Double companyGenerateCk;//当日单位发生额(所有开房有单位的)餐饮
 
     public DebtAndPayReturn() {
     }
@@ -48,37 +44,5 @@ public class DebtAndPayReturn {
 
     public void setVipPay(Double vipPay) {
         this.vipPay = vipPay;
-    }
-
-    public Double getRoomPayDay() {
-        return roomPayDay;
-    }
-
-    public void setRoomPayDay(Double roomPayDay) {
-        this.roomPayDay = roomPayDay;
-    }
-
-    public Double getDeskPayDay() {
-        return deskPayDay;
-    }
-
-    public void setDeskPayDay(Double deskPayDay) {
-        this.deskPayDay = deskPayDay;
-    }
-
-    public Double getCompanyGenerate() {
-        return companyGenerate;
-    }
-
-    public void setCompanyGenerate(Double companyGenerate) {
-        this.companyGenerate = companyGenerate;
-    }
-
-    public Double getCompanyGenerateCk() {
-        return companyGenerateCk;
-    }
-
-    public void setCompanyGenerateCk(Double companyGenerateCk) {
-        this.companyGenerateCk = companyGenerateCk;
     }
 }

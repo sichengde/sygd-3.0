@@ -44,42 +44,19 @@ public class RoomCategorySaleReport {
      */
     @RequestMapping(value = "roomCategorySaleReport")
     public RoomCategoryParse roomCategorySaleReport(@RequestBody ReportJson reportJson) throws Exception {
-        Date beginTime = reportJson.getBeginTime();
-        Date endTime = reportJson.getEndTime();
-        List<RoomCategoryRow> roomCategoryRowList = debtIntegrationService.parseRoomCategoryDebt(beginTime, endTime);
-        /*没有数据的话直接返回空*/
-        if (roomCategoryRowList.size() == 0) {
-            return null;
-        }
-        if(roomCategoryRowList.size()==1){
-            if(roomCategoryRowList.get(0).getTotal()==null){
-                return null;
-            }
-        }
+        Date beginTime = timeService.getMinTime(reportJson.getBeginTime());
+        Date endTime = timeService.getMinTime(reportJson.getEndTime());
         /*效验roomStateReport表中有没有数据*/
+        List<RoomStateReport> roomCategoryRowList=roomStateReportService.getSumByDateCategory(beginTime, endTime);
         RoomStateReport roomStateReport=roomStateReportService.getSumByDate(beginTime, endTime);
-        if(roomStateReport==null){
-            return null;
-        }
-        Date beginTimeHistory = timeService.addYear(beginTime, -1);
-        Date endTimeHistory = timeService.addYear(endTime, -1);
-        List<RoomCategoryRow> roomCategoryRowHistoryList = debtIntegrationService.parseRoomCategoryDebt(beginTimeHistory, endTimeHistory);//历史同期数据
+        roomCategoryRowList.add(roomStateReport);
         RoomCategoryParse roomCategoryParse = new RoomCategoryParse();
-        roomCategoryParse.setRoomCategoryRowList(this.parseData(roomCategoryRowList));
-        roomCategoryParse.setRoomCategoryRowHistoryList(this.parseData(roomCategoryRowHistoryList));
+        roomCategoryParse.setRoomStateReportList(roomCategoryRowList);
         /*设置备注信息*/
         String remark="接待人数："+checkInIntegrationService.getSumNumByDate(beginTime, endTime);
         remark+=",接待团队"+groupIntegrationService.getSumByDate(beginTime, endTime);
         remark+=",接待外宾"+checkInIntegrationService.getSumForeignerNumByDate(beginTime, endTime);
         roomCategoryParse.setRemark(remark);
-        /*再填充线性数据，暂时没用*/
-        /*Map map=new HashMap();
-        List<RoomCategory> roomCategoryList=roomCategoryService.get(null);
-        for (RoomCategory roomCategory : roomCategoryList) {
-            map.put(roomCategory.getCategory(),debtIntegrationService.parseRoomCategoryDebtLine(beginTime, endTime, roomCategory.getCategory()));
-            map.put("去年:"+roomCategory.getCategory(),debtIntegrationService.parseRoomCategoryDebtLine(beginTimeHistory, endTimeHistory, roomCategory.getCategory()));
-        }
-        roomCategoryParse.setRoomCategoryMap(map);*/
         return roomCategoryParse;
     }
 

@@ -49,7 +49,7 @@ public class RoomParseReportController {
 
     @RequestMapping("RoomParseReport")
     public List<RoomParseReportRow> RoomParseReport(@RequestBody RoomParseReportQuery roomParseReportQuery) throws Exception {
-        Date date = roomParseReportQuery.getDate();
+        /*Date date = roomParseReportQuery.getDate();
         Date beginTime;
         Date endTime;
         List<RoomParseReportRow> roomParseReportRowList = new ArrayList<>();
@@ -60,7 +60,7 @@ public class RoomParseReportController {
         }
         switch (roomParseReportQuery.getRange()) {
             case "月":
-                /*分为3个10天*/
+                *//*分为3个10天*//*
                 beginTime = timeService.getMinMonth(date);
                 beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addDay(beginTime, 10);
@@ -76,7 +76,7 @@ public class RoomParseReportController {
                 this.parseSubmit(roomParseReportRowList);
                 break;
             case "季":
-                /*分为3个月，每个月3个10天*/
+                *//*分为3个月，每个月3个10天*//*
                 beginTime = timeService.getMinQuarter(date);
                 beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addDay(beginTime, 10);
@@ -120,7 +120,7 @@ public class RoomParseReportController {
                 this.parseSubmit(roomParseReportRowList);
                 break;
             case "年":
-                /*分为4个季度，每个季度3个月*/
+                *//*分为4个季度，每个季度3个月*//*
                 beginTime = timeService.getMinYear(date);
                 beginTime=timeService.adjustDay(beginTime);
                 endTime = timeService.addMonth(beginTime, 1);
@@ -136,12 +136,12 @@ public class RoomParseReportController {
                     }
                 }
                 break;
-        }
-        return roomParseReportRowList;
+        }*/
+        return null;
     }
 
     private void parseData(Date beginTime, Date endTime, List<RoomParseReportRow> roomParseReportRowList, String monthTitle) throws Exception {
-        RoomParseReportRow roomParseReportRow = new RoomParseReportRow();
+        /*RoomParseReportRow roomParseReportRow = new RoomParseReportRow();
         roomParseReportRow.setMonth(monthTitle);//设置左边第一栏
         RoomStateReport roomStateReport = roomStateReportService.getSumByDate(beginTime, endTime);
         if (roomStateReport != null) {
@@ -158,7 +158,7 @@ public class RoomParseReportController {
         roomParseReportRow.setForeigner(szMath.nullToZero(checkInIntegrationService.getSumForeignerNumByDate(beginTime, endTime)));//外宾接待数量
         List<String> incomeList = new ArrayList<>();
         List<String> incomeTitleList = new ArrayList<>();
-        /*分析客源房费*/
+        *//*分析客源房费*//*
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getSumRoomConsumeByDateGuestSource(beginTime, endTime);
         Integer index = 0;
         for (DebtIntegration debtIntegration : debtIntegrationList) {
@@ -173,7 +173,7 @@ public class RoomParseReportController {
             index++;
         }
         roomParseReportRow.setGuestSourceIndex(index);
-                /*分析二级营业部门销售情况*/
+                *//*分析二级营业部门销售情况*//*
         Double totalConsume = 0.0;
         debtIntegrationList = debtIntegrationService.getSumConsumeByDatePointOfSale(beginTime, endTime);
         for (DebtIntegration debtIntegration : debtIntegrationList) {
@@ -195,7 +195,7 @@ public class RoomParseReportController {
         }
         roomParseReportRow.setIncome(incomeList);
         roomParseReportRow.setIncomeTitle(incomeTitleList);
-        roomParseReportRowList.add(roomParseReportRow);
+        roomParseReportRowList.add(roomParseReportRow);*/
     }
 
     private void clearSubmit() {

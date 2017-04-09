@@ -191,226 +191,52 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '维修', id: 'repair'},
         {name: '自用', id: 'self'},
         {name: '备用', id: 'backUp'},
-        {name: '出租', id: 'rentFake',exp:'addDay*1+allDay*1+hourRoom*1'},
-        {name: '全日房', id: 'allDay'},
-        {name: '加收房', id: 'addDay'},
+        {name: '出租', id: 'rentFake', exp: 'allDayRoom*1+addRoom*1+hourRoom*1+nightRoom*1'},
+        {name: '全日房', id: 'allDayRoom'},
+        {name: '加收房', id: 'addRoom'},
         {name: '小时房', id: 'hourRoom'},
-        {name: '总计房费', id: 'totalConsume'},
-        {name: '加收房费', id: 'addConsume'},
-        {name: '平均房价', id: 'averagePrice'},
-        {name: 'REVPAR', id: 'revper'},
-        {name: '出租率', id: 'averageRent'}
+        {name: '凌晨房', id: 'nightRoom'},
+        {name: '全日房费', id: 'allDayRoomConsume'},
+        {name: '加收房费', id: 'addRoomConsume'},
+        {name: '小时房费', id: 'hourRoomConsume'},
+        {name: '凌晨房费', id: 'nightRoomConsume'},
+        {name: '总计房费', id:'totalConsume',exp: 'allDayRoomConsume*1+addRoomConsume*1+hourRoomConsume*1+ nightRoomConsume*1'},
+        {name: '平均房价', id:'ava',exp: '((allDayRoomConsume*1+nightRoomConsume*1)/(allDayRoom*1+nightRoom*1)).toFixed(2)'},
+        {name: 'REVPAR', id:'REVPAR',exp: '((allDayRoomConsume*1+nightRoomConsume*1)/totalReal*1).toFixed(2)'},
+        {name: '出租率', id: 'averageRent',exp:'(rent/total).toFixed(2)'}
     ];
     $scope.roomCategorySaleReport = function (beginTime, endTime) {
-        //TODO:假数据
-        var r = {};
-        r.remark = '接待人数:214,接待团队:11,接待外宾:1';
-        r.roomCategoryRowList = [
-            {
-                category: '普通标间',
-                total: '124',
-                empty: '49',
-                repair: '1',
-                self: '0',
-                backUp: '0',
-                rent: '74',
-                allDay: '50',
-                addDay: '8',
-                hourRoom: '16',
-                totalConsume: '13600',
-                addConsume: '760',
-                averagePrice: '173.51',
-                revper: '103.54',
-                averageRent: '59.68'
-            },
-            {
-                category: '标准套间',
-                total: '78',
-                empty: '21',
-                repair: '1',
-                self: '0',
-                backUp: '0',
-                rent: '56',
-                allDay: '37',
-                addDay: '7',
-                hourRoom: '12',
-                totalConsume: '11890',
-                addConsume: '880',
-                averagePrice: '196.60',
-                revper: '141.15',
-                averageRent: '71.80'
-            },
-            {
-                category: '合计',
-                total: '202',
-                empty: '70',
-                repair: '2',
-                self: '0',
-                backUp: '0',
-                rent: '130',
-                allDay: '87',
-                addDay: '15',
-                hourRoom: '28',
-                totalConsume: '25490',
-                addConsume: '1640',
-                averagePrice: '183.46',
-                revper: '118.07',
-                averageRent: '64.35'
-            }
-        ];
-        $scope.roomCategorySaleList = r.roomCategoryRowList;
-        $scope.roomCategorySaleRemark = r.remark;
-        $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
-        //TODO:假数据完事
         //TODO:真数据
-        /*postBeginTime = beginTime;
-         postEndTime = endTime;
-         webService.post('roomCategorySaleReport', {beginTime: beginTime, endTime: endTime})
-         .then(function (r) {
-         $scope.roomCategorySaleList = r.roomCategoryRowList;
-         $scope.roomCategorySaleRemark = r.remark;
-         $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
-         echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
-         })*/
+        postBeginTime = beginTime;
+        postEndTime = endTime;
+        webService.post('roomCategorySaleReport', {beginTime: beginTime, endTime: endTime})
+            .then(function (r) {
+                $scope.roomCategorySaleList = r.roomStateReportList;
+                $scope.roomCategorySaleRemark = r.remark;
+                $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
+                //echartService.generateChartCompare(r.roomCategoryRowList, r.roomCategoryRowHistoryList, 'category', 'totalConsume');
+            })
     };
-    /*发生额与结算款-agGrid*/
+    /*发生额与结算款*/
     $scope.debtAndPayFields = [
-        {name: '营业部门', id: 'title'},
-        {name: '当日发生额', id: 'debtDay'},
-        {name: '当月发生额', id: 'debtMonth'},
-        {name: '当年发生额', id: 'debtYear'},
-        {name: '当日结算款', id: 'payDay'},
-        {name: '当月结算款', id: 'payMonth'},
-        {name: '当年结算款', id: 'payYear'}
+        {name: '营业部门', id: 'pointOfSale'},
+        {name: '期初未结', id: 'undoneBefore'},
+        {name: '期间发生', id: 'debt'},
+        {name: '期间结算', id: 'debtPay'},
+        {name: '转单位', id: 'toCompany'},
+        {name: '转哑房', id: 'lost'},
+        {name: '期末未结', id: 'undoneLast'}
     ];
-    $scope.setDebtAndPayInit = function () {
-        $scope.showDebtAndPayReport = false;
-    };
-    var debtAndPayColumn = [
-        {headerName: '营业部门', field: 'title'},
-        {
-            headerName: '当日发生额', marryChildren: true,
-            children: [
-                {headerName: '全部', field: 'debtDay'},
-                {headerName: '已结', field: 'paidDay'},
-                {headerName: '应缴', field: 'paidRealDay'}
-            ]
-        },
-        {
-            headerName: '当月发生额', marryChildren: true,
-            children: [
-                {headerName: '全部', field: 'debtMonth'},
-                {headerName: '已结', field: 'paidMonth'},
-                {headerName: '应缴', field: 'paidRealMonth'}
-            ]
-        },
-        {
-            headerName: '当年发生额', marryChildren: true,
-            children: [
-                {headerName: '全部', field: 'debtYear'},
-                {headerName: '已结', field: 'paidYear'},
-                {headerName: '应缴', field: 'paidRealYear'}
-            ]
-        },
-        {
-            headerName: '当日结算款', marryChildren: true,
-            children: [
-                {headerName: '全部', field: 'payDay'},
-                {headerName: '应缴', field: 'realDay'},
-                {headerName: '本段', field: 'paidDay'}
-            ]
-        },
-        {
-            headerName: '当月结算款', marryChildren: true,
-            children: [
-                {headerName: '全部', field: 'payMonth'},
-                {headerName: '应缴', field: 'realMonth'},
-                {headerName: '本段', field: 'paidMonth'}
-            ]
-        },
-        {
-            headerName: '当年结算款', marryChildren: true,
-            children: [
-                {headerName: '全部', field: 'payYear'},
-                {headerName: '应缴', field: 'realYear'},
-                {headerName: '本段', field: 'paidYear'}
-            ]
-        }
-    ];
-    $scope.debtAndPayGridOptions = {
-        columnDefs: debtAndPayColumn,
-        animateRows: true,
-        enableColResize: true,
-        rowData: null,
-        getContextMenuItems: getContextMenuItems,
-        localeText: agGridService.getLocalText
-    };
-    function getContextMenuItems(param) {
-        var exportParams = {
-            columnGroups: true
-        };
-        return [
-            { // custom item
-                name: '导出excel ',
-                action: function () {
-                    param.api.exportDataAsExcel(exportParams);
-                }
-            }
-        ];
-    }
-
-    $scope.debtAndPayReport = function (beginTime) {
-        webService.post('debtAndPayReport', {beginTime: beginTime})
+    $scope.debtAndPayReport = function (beginTime,endTime) {
+        webService.post('debtAndPayReport', {beginTime: beginTime,endTime:endTime})
             .then(function (r) {
-                $scope.reportJson = {
-                    beginTime: util.getTodayMin(beginTime),
-                    endTime: util.getTodayMax(beginTime)
-                };
                 $scope.debtAndPayList = r.debtAndPayRowList;
-                $scope.roomPayDay = r.roomPayDay;
-                $scope.deskPayDay = r.deskPayDay;
-                $scope.companyGenerate = r.companyGenerate;
-                $scope.companyGenerateCk = r.companyGenerateCk;
-                $scope.debtAndPayQueryMessage = dateFilter(beginTime, 'yyyy-MM-dd');
-                /*agGrid*/
-                //TODO:假数据
-                for (var i = 0; i < r.debtAndPayRowList.length; i++) {
-                    var obj = r.debtAndPayRowList[i];
-                    if (obj.title == '单位回款' || obj.title == '单位回款抵用') {
-                        continue;
-                    }
-                    obj.paidDay = obj.debtDay/2;
-                    obj.paidRealDay = obj.debtDay/2;
-                    obj.paidMonth = obj.debtMonth/2;
-                    obj.paidRealMonth = obj.debtMonth/2;
-                    obj.paidYear = obj.debtYear/2;
-                    obj.paidRealYear = obj.debtYear/2;
-                    obj.realDay = obj.payDay/2;
-                    obj.realMonth = obj.payMonth/2;
-                    obj.realYear = obj.payYear/2;
-                }
-                //TODO:假数据完事
-                $scope.debtAndPayGridOptions.api.setRowData(r.debtAndPayRowList);
-                $scope.showDebtAndPayReport = true;
+                $scope.companyDebt = r.companyDebt;
+                $scope.companyPay = r.companyPay;
+                $scope.vipPay = r.vipPay;
+                $scope.debtAndPayRemark='单位回款:'+$scope.companyDebt+ ',单位回款抵用:'+$scope.companyPay+ ',会员充值:'+$scope.vipPay;
+                $scope.debtAndPayQueryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
             })
-    };
-    /*弹出交班审核表--接待*/
-    $scope.currencyDetailJQ = function () {
-        webService.post('exchangeUserReport', $scope.reportJson)
-            .then(function (r) {
-                popUpService.pop('exchangeUserJQPop', null, null, {r: r, reportJson: $scope.reportJson});
-            })
-    };
-    /*弹出交班审核表--餐饮*/
-    $scope.currencyDetailCK = function () {
-        webService.post('exchangeUserCkReport', $scope.reportJson)
-            .then(function (r) {
-                popUpService.pop('exchangeUserCKPop', null, null, {r: r, reportJson: $scope.reportJson});
-            })
-    };
-    /*弹出单位明细*/
-    $scope.companyGenerateClick = function () {
-        popUpService.pop('popCompanyGenerate', null, null, {reportJson: $scope.reportJson});
     };
     /*客源人数分析*/
     $scope.guestSourceParseFields = [

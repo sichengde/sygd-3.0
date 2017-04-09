@@ -30,4 +30,11 @@ public class RoomStateReportService extends BaseService<RoomStateReport>{
     public RoomStateReport getSumByDate(Date beginTime,Date endTime){
         return roomStateReportMapper.getSumByDate(beginTime,endTime);
     }
+
+    /**
+     * 获得某段时期内的总和（分房类）
+     */
+    public List<RoomStateReport> getSumByDateCategory(Date beginTime,Date endTime){
+        return roomStateReportMapper.getSumByDateCategory(beginTime,endTime);
+    }
 }

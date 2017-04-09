@@ -5,8 +5,8 @@ import com.sygdsoft.model.PointOfSale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,11 +49,22 @@ public class PointOfSaleService extends BaseService<PointOfSale>{
     /**
      * 获得餐饮模块的所有营业部门
      */
-    public List<PointOfSale> getByModule(String module){
+    public List<PointOfSale> getCKPointOfSaleList(){
         PointOfSale pointOfSaleQuery=new PointOfSale();
-        pointOfSaleQuery.setModule(module);
+        pointOfSaleQuery.setModule("餐饮");
         return pointOfSaleMapper.select(pointOfSaleQuery);
     }
 
-
+    /**
+     * 获得接待的所有二级营业部门
+     */
+    public List<String> getRoomPointOfSaleList(){
+        PointOfSale pointOfSaleQuery=new PointOfSale();
+        pointOfSaleQuery.setModule("接待");
+        PointOfSale pointOfSale=pointOfSaleMapper.selectOne(pointOfSaleQuery);
+        String[] secondPointOfSales=pointOfSale.getSecondPointOfSale().split(" ");
+        List<String> out=new ArrayList<>();
+        Collections.addAll(out,secondPointOfSales );
+        return out;
+    }
 }
