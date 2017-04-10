@@ -28,9 +28,9 @@
             </div>
             <sz-table fields="debtAndPayFields" items="debtAndPayList" button="add delete update" print="发生额与结算款分析" ng-if="debtAndPayList" query-message="debtAndPayQueryMessage" remark="debtAndPayRemark" items-per-page="20"></sz-table>
         </sz-pane>
-        <sz-pane title="客房经营分析">
+        <sz-pane title="客房经营分析" init="setShowRoomParseReportFalse()">
             <div ng-show="showRoomParseReport" ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>
-            <div class="tableDiv">
+            <div class="tableDiv" ng-show="!showRoomParseReport">
                 <ul>
                     <li>
                         日期：
