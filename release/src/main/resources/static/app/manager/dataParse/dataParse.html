@@ -29,7 +29,7 @@
             <sz-table fields="debtAndPayFields" items="debtAndPayList" button="add delete update" print="发生额与结算款分析" ng-if="debtAndPayList" query-message="debtAndPayQueryMessage" remark="debtAndPayRemark" items-per-page="20"></sz-table>
         </sz-pane>
         <sz-pane title="客房经营分析" init="setShowRoomParseReportFalse()">
-            <div ng-show="showRoomParseReport" ag-grid="gridOptions" class="ag-fresh" style="height: 500px;"></div>
+            <div ng-show="showRoomParseReport" ag-grid="roomParseGridOptions" class="ag-fresh" style="height: 500px;"></div>
             <div class="tableDiv" ng-show="!showRoomParseReport">
                 <ul>
                     <li>
@@ -44,7 +44,7 @@
                         </div>
                     </li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(beginTime,range)" value="预览"></li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="exportAgGrid(gridOptions)" value="导出xls"></li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="exportAgGrid(roomParseGridOptions)" value="导出xls"></li>
                 </ul>
             </div>
         </sz-pane>

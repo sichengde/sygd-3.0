@@ -27,8 +27,8 @@ public class CheckInIntegrationService extends BaseService<CheckInIntegration>{
     /**
      * 获得一段时间内的总人数
      */
-    public Integer getSumNumByDate(Date beginTime,Date endTime){
-        return checkInIntegrationMapper.getSumNumByDate(beginTime,endTime);
+    public Integer getSumNumByDate(Date beginTime,Date endTime,String guestSource){
+        return checkInIntegrationMapper.getSumNumByDate(beginTime,endTime,guestSource);
     }
     /**
      * 获得一段时间内的外宾人数
@@ -40,12 +40,6 @@ public class CheckInIntegrationService extends BaseService<CheckInIntegration>{
     /**
      * 获得房间对象
      */
-    public CheckInIntegration getByRoomId(String roomId) {
-        CheckInIntegration checkInIntegrationQuery = new CheckInIntegration();
-        checkInIntegrationQuery.setRoomId(roomId);
-        return checkInIntegrationMapper.selectOne(checkInIntegrationQuery);
-    }
-
     public CheckInIntegration getBySelfAccount(String selfAccount) {
         CheckInIntegration checkInIntegrationQuery = new CheckInIntegration();
         checkInIntegrationQuery.setSelfAccount(selfAccount);

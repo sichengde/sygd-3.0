@@ -53,7 +53,7 @@ public class RoomCategorySaleReport {
         RoomCategoryParse roomCategoryParse = new RoomCategoryParse();
         roomCategoryParse.setRoomStateReportList(roomCategoryRowList);
         /*设置备注信息*/
-        String remark="接待人数："+checkInIntegrationService.getSumNumByDate(beginTime, endTime);
+        String remark="接待人数："+checkInIntegrationService.getSumNumByDate(beginTime, endTime,null);
         remark+=",接待团队"+groupIntegrationService.getSumByDate(beginTime, endTime);
         remark+=",接待外宾"+checkInIntegrationService.getSumForeignerNumByDate(beginTime, endTime);
         roomCategoryParse.setRemark(remark);

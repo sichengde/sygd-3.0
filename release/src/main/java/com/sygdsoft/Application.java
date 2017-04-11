@@ -5,14 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.ServerSocket;
 
 /**
  * @author liuzh
@@ -28,10 +24,7 @@ public class Application extends WebMvcConfigurerAdapter {
             System.out.println(args[0]);
         }
         try {
-            InetAddress theAddress = InetAddress.getByName("127.0.0.1");
-            Socket socket = new Socket(theAddress,8080);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            new ServerSocket(8080);
         } catch (IOException e) {
             return;
         }

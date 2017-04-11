@@ -29,7 +29,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             exp: '((allDayRoomConsume*1+nightRoomConsume*1)/(allDayRoom*1+nightRoom*1)).toFixed(2)'
         },
         {name: 'REVPAR', id: 'REVPAR', exp: '((allDayRoomConsume*1+nightRoomConsume*1)/totalReal*1).toFixed(2)'},
-        {name: '出租率', id: 'averageRent', exp: '(rent/total).toFixed(2)'}
+        {name: '出租率', id: 'averageRent', exp: '(rent/totalReal).toFixed(2)'}
     ];
     $scope.roomCategorySaleReport = function (beginTime, endTime) {
         webService.post('roomCategorySaleReport', {beginTime: beginTime, endTime: endTime})
@@ -66,7 +66,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     $scope.setShowRoomParseReportFalse=function () {
         $scope.showRoomParseReport=false;
     };
-    var columnDefs = [
+    var roomParseColumnDefs = [
         {
             headerName: '',
             marryChildren: true,
@@ -84,6 +84,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 {
                     headerName: "接待人次",
                     marryChildren: true,
+                    groupId: 'guestIn',
+                    openByDefault: false,
                     children: [
                         {
                             headerName:'总计',
@@ -103,7 +105,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                     headerName: '房费',
                     marryChildren: true,
                     groupId: 'roomConsume',
-                    openByDefault: true,
+                    openByDefault: false,
                     children: []
                 }
             ]
@@ -120,7 +122,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             var guestSourceCategory;
             for (var i = 0; i < guestSourceList.length; i++) {
                 /*接待人次按客源统计*/
-                columnDefs[1].children[3].children.push({
+                roomParseColumnDefs[1].children[3].children.push({
                     headerName: guestSourceList[i].guestSource,
                     field:'num'
                 });
@@ -144,7 +146,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                         openByDefault: true,
                         children: []
                     };
-                    columnDefs[2].children[0].children.push(guestSourceCategory);
+                    roomParseColumnDefs[2].children[0].children.push(guestSourceCategory);
                     lastCategory = countCategory;
                 }
                 guestSourceCategory.children.push({
@@ -164,7 +166,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 valueGetter: totalStr
             });
             totalRoomConsumeValueGetter = totalRoomConsumeValueGetter.substring(0, totalRoomConsumeValueGetter.length - 1);
-            columnDefs[2].children[0].children.push({
+            roomParseColumnDefs[2].children[0].children.push({
                 headerName: '总计',
                 colId: 'totalRoomConsume',
                 valueGetter: totalRoomConsumeValueGetter
@@ -177,20 +179,20 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 if (secondPointOfSale[i] === '房费') {
                     continue;
                 }
-                columnDefs[2].children.push({headerName: secondPointOfSale[i], field: secondPointOfSale[i]});
-                columnDefs[2].children.push({headerName: '次数', field: secondPointOfSale[i] + '次数'});
+                roomParseColumnDefs[2].children.push({headerName: secondPointOfSale[i], field: secondPointOfSale[i]});
+                roomParseColumnDefs[2].children.push({headerName: '次数', field: secondPointOfSale[i] + '次数'});
                 totalPointOfSaleConsumeValueGetter += 'getValue("' + secondPointOfSale[i] + '")+';
                 pointOfSaleIds.push(secondPointOfSale[i]);
                 pointOfSaleIds.push(secondPointOfSale[i] + '次数');
             }
             /*未定义*/
-            columnDefs[2].children.push({headerName: "未定义", field: "未定义"});
-            columnDefs[2].children.push({headerName: '次数', field: '未定义次数'});
+            roomParseColumnDefs[2].children.push({headerName: "未定义", field: "未定义"});
+            roomParseColumnDefs[2].children.push({headerName: '次数', field: '未定义次数'});
             totalPointOfSaleConsumeValueGetter += 'getValue("未定义")+';
             pointOfSaleIds.push("未定义");
             pointOfSaleIds.push('未定义次数');
             totalPointOfSaleConsumeValueGetter += totalRoomConsumeValueGetter;
-            columnDefs[2].children.push({
+            roomParseColumnDefs[2].children.push({
                 headerName: '总计',
                 colId: 'totalPointOfSaleConsume',
                 valueGetter: totalPointOfSaleConsumeValueGetter,
@@ -198,8 +200,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             });
             pointOfSaleIds.push('totalPointOfSaleConsume');
         });
-    $scope.gridOptions = {
-        columnDefs: columnDefs,
+    $scope.roomParseGridOptions = {
+        columnDefs: roomParseColumnDefs,
         enableColResize: true,
         defaultColDef: {
             editable: true
@@ -217,7 +219,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     $scope.showRoomParseReport = false;
     $scope.RoomParseReport = function (beginTime, range) {
         $scope.showRoomParseReport = true;
-        webService.post('RoomParseReport', {date: beginTime, range: range})
+        webService.post('roomParseReport', {date: beginTime, range: range})
             .then(function (r) {
                 for (var i = 0; i < r.length; i++) {
                     var row = r[i];
@@ -241,13 +243,13 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                     }
                 }
                 ;
-                $scope.gridOptions.api.setColumnDefs(columnDefs);
-                $scope.gridOptions.api.setRowData(r);
+                $scope.roomParseGridOptions.api.setColumnDefs(roomParseColumnDefs);
+                $scope.roomParseGridOptions.api.setRowData(r);
                 var allColumnIds = [];
-                agGridService.getColumnDef(columnDefs, allColumnIds);
-                $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
-                $scope.gridOptions.api.ensureColumnVisible('totalPointOfSaleConsume');
-                $scope.gridOptions.columnApi.autoSizeColumns(allColumnIds);
+                agGridService.getColumnDef(roomParseColumnDefs, allColumnIds);
+                $scope.roomParseGridOptions.columnApi.autoSizeColumns(allColumnIds);
+                $scope.roomParseGridOptions.api.ensureColumnVisible('totalPointOfSaleConsume');
+                $scope.roomParseGridOptions.columnApi.autoSizeColumns(allColumnIds);
             })
     };
 
@@ -265,6 +267,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         {name: '消费总计', id: 'totalConsume'}
     ];
     $scope.guestSourceParseReport = function (beginTime, endTime) {
+        /*有问题，不包括在店客人，应该包括*/
         webService.post('guestSourceParseReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
                 $scope.guestSourceParseList = r.guestParseRowList;

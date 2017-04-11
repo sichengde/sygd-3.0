@@ -3,10 +3,12 @@ package com.sygdsoft.mapper;
 import com.sygdsoft.jsonModel.report.GuestSourceRoomCategoryRow;
 import com.sygdsoft.model.CheckInIntegration;
 import com.sygdsoft.model.InCategory;
+import com.sygdsoft.sqlProvider.CheckInIntegrationSql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +28,7 @@ public interface CheckInIntegrationMapper extends MyMapper<CheckInIntegration> {
     Integer getSumForeignerNumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     @Select("SELECT count(*) FROM check_in_integration cii LEFT JOIN guest_integration gi on cii.self_account=gi.self_account WHERE cii.reach_time>#{beginTime} AND cii.reach_time<#{endTime}")
+    @SelectProvider(type = CheckInIntegrationSql.class,method = "getSumNum")
     @ResultType(Integer.class)
-    Integer getSumNumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    Integer getSumNumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") String guestSource);
 }

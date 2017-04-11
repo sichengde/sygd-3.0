@@ -5,6 +5,7 @@ import com.sygdsoft.model.RoomStateReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class RoomStateReportService extends BaseService<RoomStateReport>{
     @Autowired
     RoomStateReportMapper roomStateReportMapper;
+    @Autowired
+    TimeService timeService;
 
     /**
      * 通过日期删除该天的数据（夜审前）
@@ -27,14 +30,14 @@ public class RoomStateReportService extends BaseService<RoomStateReport>{
     /**
      * 获得某段时期内的总和（不分房类）
      */
-    public RoomStateReport getSumByDate(Date beginTime,Date endTime){
-        return roomStateReportMapper.getSumByDate(beginTime,endTime);
+    public RoomStateReport getSumByDate(Date beginTime,Date endTime) throws ParseException {
+        return roomStateReportMapper.getSumByDate(timeService.getMinTime(beginTime),timeService.getMinTime(endTime));
     }
 
     /**
      * 获得某段时期内的总和（分房类）
      */
-    public List<RoomStateReport> getSumByDateCategory(Date beginTime,Date endTime){
-        return roomStateReportMapper.getSumByDateCategory(beginTime,endTime);
+    public List<RoomStateReport> getSumByDateCategory(Date beginTime,Date endTime) throws ParseException {
+        return roomStateReportMapper.getSumByDateCategory(timeService.getMinTime(beginTime),timeService.getMinTime(endTime));
     }
 }

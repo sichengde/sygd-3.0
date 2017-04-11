@@ -12,9 +12,10 @@ public class RoomParseReportRow {
     private String averageRent;//住客率
     private String averagePrice;//平均房价
     private String revper;//总房价除以客房总数
-    private Integer guestNum;//接待人次
     private Integer groupNum;//接待团队
     private Integer foreigner;//外宾
+    private List<String> guestNum;//接待人数
+    private List<String> guestTitle;//接待人数表头
     private List<String> income;//收入数组
     private List<String> incomeTitle;//收入数组表头
     private Integer guestSourceIndex;//从第几位开始客源分析结束
@@ -53,14 +54,6 @@ public class RoomParseReportRow {
 
     public void setRevper(String revper) {
         this.revper = revper;
-    }
-
-    public Integer getGuestNum() {
-        return guestNum;
-    }
-
-    public void setGuestNum(Integer guestNum) {
-        this.guestNum = guestNum;
     }
 
     public Integer getGroupNum() {
@@ -109,5 +102,21 @@ public class RoomParseReportRow {
 
     public void setGuestSourceIndex(Integer guestSourceIndex) {
         this.guestSourceIndex = guestSourceIndex;
+    }
+
+    public List<String> getGuestNum() {
+        return guestNum;
+    }
+
+    public void setGuestNum(List<String> guestNum) {
+        this.guestNum = guestNum;
+    }
+
+    public List<String> getGuestTitle() {
+        return guestTitle;
+    }
+
+    public void setGuestTitle(List<String> guestTitle) {
+        this.guestTitle = guestTitle;
     }
 }
