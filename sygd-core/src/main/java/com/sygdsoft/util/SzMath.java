@@ -10,50 +10,28 @@ import java.text.NumberFormat;
  */
 @Component
 public class SzMath {
-    private DecimalFormat df = new DecimalFormat("##0.00%");
+    private DecimalFormat percent = new DecimalFormat("##0.00%");
     private DecimalFormat twoDecimal = new DecimalFormat("##0.00");
     private NumberFormat nt = NumberFormat.getPercentInstance();
 
-    public String getPercent(Double var1, Double var2) {
-        return df.format(var1 / var2);
-    }
-
-    public String getPercent(Integer var1, Double var2) {
-        return df.format(var1 * 1.0 / var2);
-    }
-
-    public String getPercent(Double var1, Integer var2) {
-        return df.format(var1 / (var2 * 1.0));
-    }
-
-    public String getPercent(Integer var1, Integer var2) {
-        return df.format(var1 * 1.0 / (var2 * 1.0));
-    }
-
-    public String formatPercent(Double number) {
-        nt.setMinimumFractionDigits(2);
-        return nt.format(number);
-    }
-
     public String formatPercent(Double var1, Double var2) {
-        nt.setMinimumFractionDigits(2);
-        return nt.format(var1 / var2);
+        return percent.format(var1 / var2);
     }
 
     public String formatPercent(Integer var1, Double var2) {
-        nt.setMinimumFractionDigits(2);
-        return nt.format(var1 * 1.0 / var2);
+        return percent.format(var1 * 1.0 / var2);
     }
 
     public String formatPercent(Double var1, Integer var2) {
-        nt.setMinimumFractionDigits(2);
-        return nt.format(var1 / (var2 * 1.0));
+        return percent.format(var1 / (var2 * 1.0));
     }
 
     public String formatPercent(Integer var1, Integer var2) {
-        NumberFormat nt = NumberFormat.getPercentInstance();
-        nt.setMinimumFractionDigits(2);
-        return nt.format(var1 * 1.0 / (var2 * 1.0));
+        return percent.format(var1 * 1.0 / (var2 * 1.0));
+    }
+
+    public String formatPercent(Double number) {
+        return percent.format(number);
     }
 
     public String formatTwoDecimal(Double var1) {
@@ -65,6 +43,8 @@ public class SzMath {
     }
 
     public String formatTwoDecimal(Double var1, Double var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1.0;
         }
@@ -72,6 +52,8 @@ public class SzMath {
     }
 
     public String formatTwoDecimal(Integer var1, Double var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1.0;
         }
@@ -79,6 +61,8 @@ public class SzMath {
     }
 
     public String formatTwoDecimal(Double var1, Integer var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1;
         }
@@ -86,6 +70,8 @@ public class SzMath {
     }
 
     public String formatTwoDecimal(Integer var1, Integer var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1;
         }
@@ -107,6 +93,8 @@ public class SzMath {
     }
 
     public Double formatTwoDecimalReturnDouble(Double var1, Double var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1.0;
         }
@@ -114,6 +102,8 @@ public class SzMath {
     }
 
     public Double formatTwoDecimalReturnDouble(Integer var1, Double var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1.0;
         }
@@ -121,6 +111,8 @@ public class SzMath {
     }
 
     public Double formatTwoDecimalReturnDouble(Double var1, Integer var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1;
         }
@@ -128,6 +120,8 @@ public class SzMath {
     }
 
     public Double formatTwoDecimalReturnDouble(Integer var1, Integer var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         if(var2==0){
             var2=1;
         }
@@ -167,4 +161,5 @@ public class SzMath {
             return s;
         }
     }
+
 }

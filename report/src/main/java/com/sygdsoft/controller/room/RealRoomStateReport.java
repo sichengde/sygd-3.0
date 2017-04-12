@@ -93,13 +93,13 @@ public class RealRoomStateReport {
         model.addAttribute("jrMainDataSource", jrDataSource);
         model.addAttribute("parameter1", timeService.getNowLong());
         model.addAttribute("parameter2", userService.getCurrentUser());
-        model.addAttribute("parameter3", String.valueOf(nullRoom)+"/"+szMath.getPercent(nullRoom,length));
-        model.addAttribute("parameter4", String.valueOf(inRoom)+"/"+szMath.getPercent(inRoom,length));
-        model.addAttribute("parameter5", String.valueOf(dirtyRoom)+"/"+szMath.getPercent(dirtyRoom,length));
-        model.addAttribute("parameter6", String.valueOf(repairRoom)+"/"+szMath.getPercent(repairRoom,length));
-        model.addAttribute("parameter7", String.valueOf(bookRoom)+"/"+szMath.getPercent(bookRoom,length));
-        model.addAttribute("parameter8", szMath.getPercent(totalPrice,sumCheckInRoom));
-        model.addAttribute("parameter9", szMath.getPercent(totalPrice,length));
+        model.addAttribute("parameter3", String.valueOf(nullRoom)+"/"+szMath.formatPercent(nullRoom,length));
+        model.addAttribute("parameter4", String.valueOf(inRoom)+"/"+szMath.formatPercent(inRoom,length));
+        model.addAttribute("parameter5", String.valueOf(dirtyRoom)+"/"+szMath.formatPercent(dirtyRoom,length));
+        model.addAttribute("parameter6", String.valueOf(repairRoom)+"/"+szMath.formatPercent(repairRoom,length));
+        model.addAttribute("parameter7", String.valueOf(bookRoom)+"/"+szMath.formatPercent(bookRoom,length));
+        model.addAttribute("parameter8", szMath.formatPercent(totalPrice,sumCheckInRoom));
+        model.addAttribute("parameter9", szMath.formatPercent(totalPrice,length));
         model.addAttribute("parameter10", totalPrice);
         return "reportView";
     }

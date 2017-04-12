@@ -129,7 +129,7 @@ public class RoomParseReportController {
                 }
                 break;
         }
-        return null;
+        return roomParseReportRowList;
     }
 
     private void parseData(Date beginTime, Date endTime, List<RoomParseReportRow> roomParseReportRowList, String monthTitle) throws Exception {
@@ -145,21 +145,19 @@ public class RoomParseReportController {
             roomParseReportRow.setAveragePrice(szMath.formatTwoDecimal(allDayRoomConsume+nightRoomConsume, nightRoom+allDayRoom));//设置平均房价
             roomParseReportRow.setRevper(szMath.formatTwoDecimal(roomStateReport.getAllDayRoomConsume(), roomStateReport.getTotalReal()));//设置REVPER
         }
-        List<String> guestNumList=new ArrayList<>();
-        List<String> guestTitleList=new ArrayList<>();
+        List<String> titleList=new ArrayList<>();
+        List<String> titleValueList=new ArrayList<>();
         /*接待总人数*/
-        guestTitleList.add("总人次");
-        guestNumList.add(String.valueOf(szMath.nullToZero(checkInIntegrationService.getSumNumByDate(beginTime, endTime,null))));//接待总人数
+        titleList.add("总人次");
+        titleValueList.add(String.valueOf(szMath.nullToZero(checkInIntegrationService.getSumNumByDate(beginTime, endTime,null))));//接待总人数
         /*按客源分析*/
         List<GuestSource> guestSourceList=guestSourceService.get(null);
         for (GuestSource guestSource : guestSourceList) {
-            guestTitleList.add(guestSource.getGuestSource());
-            guestNumList.add(String.valueOf(szMath.nullToZero(checkInIntegrationService.getSumNumByDate(beginTime, endTime,guestSource.getGuestSource()))));//接待总人数
+            titleList.add(guestSource.getGuestSource()+"人数");
+            titleValueList.add(String.valueOf(szMath.nullToZero(checkInIntegrationService.getSumNumByDate(beginTime, endTime,guestSource.getGuestSource()))));//接待总人数
         }
         roomParseReportRow.setGroupNum(szMath.nullToZero(groupIntegrationService.getSumByDate(beginTime, endTime)));//团队接待数量
         roomParseReportRow.setForeigner(szMath.nullToZero(checkInIntegrationService.getSumForeignerNumByDate(beginTime, endTime)));//外宾接待数量
-        List<String> incomeList = new ArrayList<>();
-        List<String> incomeTitleList = new ArrayList<>();
         /*分析客源房费*/
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getSumRoomConsumeByDateGuestSource(beginTime, endTime);
         Integer index = 0;
@@ -170,33 +168,27 @@ public class RoomParseReportController {
             if (debtIntegration.getGuestSource() == null) {
                 continue;
             }
-            incomeList.add(ifNotNullGetString(debtIntegration.getConsume()));
-            incomeTitleList.add(debtIntegration.getGuestSource());
-            index++;
+            titleValueList.add(ifNotNullGetString(debtIntegration.getConsume()));
+            titleList.add(debtIntegration.getGuestSource()+"房费");
         }
-        roomParseReportRow.setGuestSourceIndex(index);
-                /*分析二级营业部门销售情况*/
+        /*分析二级营业部门销售情况*/
         debtIntegrationList = debtIntegrationService.getSumConsumeByDatePointOfSale(beginTime, endTime);
         for (DebtIntegration debtIntegration : debtIntegrationList) {
             if (debtIntegration.getPointOfSale() == null) {
-                incomeList.add(ifNotNullGetString(debtIntegration.getConsume()));
-                incomeTitleList.add("未定义");
-                incomeList.add(debtIntegration.getCount());
-                incomeTitleList.add("未定义次数");
+                titleValueList.add(ifNotNullGetString(debtIntegration.getConsume()));
+                titleList.add("未定义");
                 continue;
             }
             if (debtIntegration.getPointOfSale().equals("房费")) {
                 continue;
             }
-            incomeList.add(ifNotNullGetString(debtIntegration.getConsume()));
-            incomeTitleList.add(debtIntegration.getPointOfSale());
-            incomeList.add(debtIntegration.getCount());
-            incomeTitleList.add(debtIntegration.getPointOfSale() + "次数");
+            titleValueList.add(ifNotNullGetString(debtIntegration.getConsume()));
+            titleList.add(debtIntegration.getPointOfSale());
+            titleValueList.add(debtIntegration.getCount());
+            titleList.add(debtIntegration.getPointOfSale() + "次数");
         }
-        roomParseReportRow.setIncome(incomeList);
-        roomParseReportRow.setIncomeTitle(incomeTitleList);
-        roomParseReportRow.setGuestNum(guestNumList);
-        roomParseReportRow.setGuestTitle(guestTitleList);
+        roomParseReportRow.setTitleValueList(titleValueList);
+        roomParseReportRow.setTitleList(titleList);
         roomParseReportRowList.add(roomParseReportRow);
     }
 
@@ -204,9 +196,9 @@ public class RoomParseReportController {
     private void parseSubmit(List<RoomParseReportRow> roomParseReportRowList) {
         RoomParseReportRow roomParseReportRow = new RoomParseReportRow();
         roomParseReportRow.setMonth("小计");//设置左边第一栏
-        roomParseReportRow.setAverageRent(szMath.formatTwoDecimal(this.rentSubmit, this.totalSubmit));//设置住客率
-        roomParseReportRow.setAveragePrice(szMath.formatTwoDecimal(this.consumeSubmit, this.rentSubmit));//设置平均房价
-        roomParseReportRow.setRevper(szMath.formatTwoDecimal(this.consumeSubmit, this.rentSubmit));//设置REVPER
+        //roomParseReportRow.setAverageRent(szMath.formatTwoDecimal(this.rentSubmit, this.totalSubmit));//设置住客率
+        //roomParseReportRow.setAveragePrice(szMath.formatTwoDecimal(this.consumeSubmit, this.rentSubmit));//设置平均房价
+        //roomParseReportRow.setRevper(szMath.formatTwoDecimal(this.consumeSubmit, this.rentSubmit));//设置REVPER
         roomParseReportRowList.add(roomParseReportRow);
     }
 

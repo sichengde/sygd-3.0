@@ -84,12 +84,13 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 {
                     headerName: "接待人次",
                     marryChildren: true,
-                    groupId: 'guestIn',
                     openByDefault: false,
+                    groupId: 'guestIn',
                     children: [
                         {
-                            headerName:'总计',
-                            field:'guestNum'
+                            headerName:'总计人次',
+                            colId: '总计人次',
+                            volatile: true
                         }
                     ]
                 },
@@ -120,20 +121,23 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             var lastCategory = '';
             var totalStr = '';
             var guestSourceCategory;
+            var guestSourceValueGetter='';
             for (var i = 0; i < guestSourceList.length; i++) {
+                var guestSource = guestSourceList[i].guestSource;
                 /*接待人次按客源统计*/
                 roomParseColumnDefs[1].children[3].children.push({
-                    headerName: guestSourceList[i].guestSource,
-                    field:'num'
+                    headerName: guestSource,
+                    columnGroupShow: 'open',
+                    field:guestSource+'人数'
                 });
-                var guestSource = guestSourceList[i].guestSource;
+                pointOfSaleIds.push(guestSourceList[i].guestSource+'人数');
                 var countCategory = guestSourceList[i].countCategory;
                 if (countCategory !== lastCategory) {
                     if (lastCategory !== '') {
                         totalStr = totalStr.substring(0, totalStr.length - 1);
                         guestSourceCategory.children.push({
-                            headerName: '总计',
-                            colId: '总计',
+                            headerName: lastCategory+'总计',
+                            colId: lastCategory+'总计',
                             valueGetter: totalStr
                         });
                         totalStr = '';
@@ -151,23 +155,27 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 }
                 guestSourceCategory.children.push({
                     headerName: guestSource,
-                    colId: guestSource,
-                    field: guestSource,
+                    colId: guestSource+'房费',
+                    field: guestSource+'房费',
                     columnGroupShow: 'open'
                 });
-                pointOfSaleIds.push(guestSourceList[i].guestSource);
-                totalRoomConsumeValueGetter += 'getValue("' + guestSourceList[i].guestSource + '")+';
+                pointOfSaleIds.push(guestSourceList[i].guestSource+'房费');
+                totalRoomConsumeValueGetter += 'getValue("' + guestSourceList[i].guestSource + '房费")+';
                 totalStr += 'getValue("' + guestSourceList[i].guestSource + '")+';
+                guestSourceValueGetter += 'getValue("' + guestSourceList[i].guestSource + '人数")+';
             }
+            roomParseColumnDefs[1].children[3].children[0].valueGetter=guestSourceValueGetter.substring(0, guestSourceValueGetter.length - 1);
             totalStr = totalStr.substring(0, totalStr.length - 1);
+            /*最后一项二级客源总计*/
             guestSourceCategory.children.push({
-                headerName: '总计',
-                colId: '总计',
+                headerName: lastCategory+'总计',
+                colId: lastCategory+'总计',
                 valueGetter: totalStr
             });
             totalRoomConsumeValueGetter = totalRoomConsumeValueGetter.substring(0, totalRoomConsumeValueGetter.length - 1);
+            /*房费总计*/
             roomParseColumnDefs[2].children[0].children.push({
-                headerName: '总计',
+                headerName: '房费总计',
                 colId: 'totalRoomConsume',
                 valueGetter: totalRoomConsumeValueGetter
             });
@@ -187,13 +195,11 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             }
             /*未定义*/
             roomParseColumnDefs[2].children.push({headerName: "未定义", field: "未定义"});
-            roomParseColumnDefs[2].children.push({headerName: '次数', field: '未定义次数'});
             totalPointOfSaleConsumeValueGetter += 'getValue("未定义")+';
             pointOfSaleIds.push("未定义");
-            pointOfSaleIds.push('未定义次数');
             totalPointOfSaleConsumeValueGetter += totalRoomConsumeValueGetter;
             roomParseColumnDefs[2].children.push({
-                headerName: '总计',
+                headerName: '收入总计',
                 colId: 'totalPointOfSaleConsume',
                 valueGetter: totalPointOfSaleConsumeValueGetter,
                 volatile: true
@@ -233,16 +239,16 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                         continue;
                     }
                     for (var j = 0; j < pointOfSaleIds.length; j++) {
+                        /*解析title*/
                         var pointOfSaleId = pointOfSaleIds[j];
-                        var rowIndex = row.incomeTitle.indexOf(pointOfSaleId);
+                        var rowIndex = row.titleList.indexOf(pointOfSaleId);
                         if (rowIndex == -1) {
                             row[pointOfSaleId] = 0;
                         } else {
-                            row[pointOfSaleId] = parseFloat(row.income[rowIndex]);
+                            row[pointOfSaleId] = parseFloat(row.titleValueList[rowIndex]);
                         }
                     }
                 }
-                ;
                 $scope.roomParseGridOptions.api.setColumnDefs(roomParseColumnDefs);
                 $scope.roomParseGridOptions.api.setRowData(r);
                 var allColumnIds = [];
@@ -262,7 +268,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     /*客源人数分析*/
     $scope.guestSourceParseFields = [
         {name: '客源', id: 'guestSource'},
-        {name: '开房', id: 'num'},
+        {name: '人数', id: 'guestNum'},
+        {name: '开房数', id: 'checkInNum'},
         {name: '平均消费', id: 'averageConsume'},
         {name: '消费总计', id: 'totalConsume'}
     ];

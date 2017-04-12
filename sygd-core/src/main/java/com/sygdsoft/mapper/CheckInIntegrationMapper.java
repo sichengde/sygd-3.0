@@ -27,7 +27,6 @@ public interface CheckInIntegrationMapper extends MyMapper<CheckInIntegration> {
     @ResultType(Integer.class)
     Integer getSumForeignerNumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
-    @Select("SELECT count(*) FROM check_in_integration cii LEFT JOIN guest_integration gi on cii.self_account=gi.self_account WHERE cii.reach_time>#{beginTime} AND cii.reach_time<#{endTime}")
     @SelectProvider(type = CheckInIntegrationSql.class,method = "getSumNum")
     @ResultType(Integer.class)
     Integer getSumNumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") String guestSource);
