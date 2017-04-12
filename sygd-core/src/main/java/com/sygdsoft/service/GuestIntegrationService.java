@@ -26,7 +26,7 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
     /**
      * 获取本地客人总数，根据时间判断
      */
-    public String getLocalGuestSum(Date beginTime,Date endTime) throws Exception {
+    public Integer getLocalGuestSum(Date beginTime,Date endTime) throws Exception {
         String firstNum= null;
         try {
             firstNum = otherParamService.getValueByName("本地身份证");
@@ -40,7 +40,7 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
     /**
      * 获得外地客人总数
      */
-    public String getOtherGuestSum(Date beginTime,Date endTime) throws Exception {
+    public Integer getOtherGuestSum(Date beginTime,Date endTime) throws Exception {
         String firstNum= null;
         try {
             firstNum = otherParamService.getValueByName("本地身份证");

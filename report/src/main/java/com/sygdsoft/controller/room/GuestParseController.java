@@ -38,8 +38,6 @@ public class GuestParseController {
         GuestParse guestParse = new GuestParse();
         guestParse.setGuestParseRowList(checkInHistoryLogService.guestSourceParse(beginTime, endTime));
         guestParse.setGuestParseRowListHistory(checkInHistoryLogService.guestSourceParse(beginTimeHistory, endTimeHistory));
-        String remark="本地客人:"+guestIntegrationService.getLocalGuestSum(beginTime, endTime)+",外地客人:"+guestIntegrationService.getOtherGuestSum(beginTime, endTime);
-        guestParse.setRemark(remark);
         return guestParse;
     }
 

@@ -24,16 +24,16 @@ public interface GuestIntegrationMapper extends MyMapper<GuestIntegration>{
     /**
      * 获取本地客人总数
      */
-    @Select("SELECT count(*) FROM guest_integration WHERE card_id LIKE #{firstNum} and reach_time>#{beginTime} and reach_time<#{endTime}")
-    @ResultType(String.class)
-    String getLocalGuestSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("firstNum") String firstNum);
+    @SelectProvider(type =GuestIntegrationSql.class,method ="getLocalGuestSum" )
+    @ResultType(Integer.class)
+    Integer getLocalGuestSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("firstNum") String firstNum);
 
     /**
      * 获得外地客人总数
      */
-    @Select("SELECT count(*) FROM guest_integration WHERE card_id not LIKE #{firstNum}  and reach_time>#{beginTime} and reach_time<#{endTime}")
-    @ResultType(String.class)
-    String getOtherGuestSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("firstNum") String firstNum);
+    @SelectProvider(type =GuestIntegrationSql.class,method ="getOtherGuestSum" )
+    @ResultType(Integer.class)
+    Integer getOtherGuestSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("firstNum") String firstNum);
 
     /**
      * 根据时间获得列表

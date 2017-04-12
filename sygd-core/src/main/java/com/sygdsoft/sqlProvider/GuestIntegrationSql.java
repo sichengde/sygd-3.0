@@ -26,4 +26,31 @@ public class GuestIntegrationSql {
         basic+=" ) AS detail GROUP BY addr;";
         return basic;
     }
+
+    public String getLocalGuestSum(Map<String, Object> parameters){
+        String basic="SELECT count(*) FROM guest_integration WHERE card_id LIKE #{firstNum} ";
+        Date beginTime=(Date) parameters.get("beginTime");
+        Date endTime=(Date) parameters.get("endTime");
+        if(beginTime!=null){
+                basic += "and reach_time>#{beginTime} ";
+        }
+        if(endTime!=null){
+                basic += "and reach_time<#{endTime} ";
+        }
+        return basic;
+    }
+
+    public String getOtherGuestSum(Map<String, Object> parameters){
+        String basic="SELECT count(*) FROM guest_integration WHERE card_id not LIKE #{firstNum} ";
+        Date endTime=(Date) parameters.get("endTime");
+        Date beginTime=(Date) parameters.get("beginTime");
+        if(beginTime!=null){
+                basic += "and reach_time>#{beginTime} ";
+        }
+        if(endTime!=null){
+                basic += "and reach_time<#{endTime} ";
+        }
+        return basic;
+    }
+
 }

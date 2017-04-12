@@ -209,16 +209,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     $scope.roomParseGridOptions = {
         columnDefs: roomParseColumnDefs,
         enableColResize: true,
-        defaultColDef: {
-            editable: true
-        },
-        //angularCompileRows: true,
         rowData: null,
-        onGridReady: function () {
-            /*this.columnApi.setColumnGroupOpened('roomConsume', true);*/
-            /*this.columnApi.autoSizeColumns(allColumnIds);*/
-            /*this.api.sizeColumnsToFit();*/
-        },
         localeText: agGridService.getLocalText
     };
     $scope.range = '年';
@@ -265,22 +256,28 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             skipGroups: false
         });
     };
-    /*客源人数分析*/
-    $scope.guestSourceParseFields = [
-        {name: '客源', id: 'guestSource'},
-        {name: '人数', id: 'guestNum'},
-        {name: '开房数', id: 'checkInNum'},
-        {name: '平均消费', id: 'averageConsume'},
-        {name: '消费总计', id: 'totalConsume'}
+    /*客源分析*/
+    $scope.setShowGuestSourceReportFalse=function () {
+        $scope.showGuestSourceReport=false;
+    };
+    var guestSourceColumns=[
+        {headerName:'客源',field:'guestSource'},
+        {headerName:'人数',field:'guestNum'},
+        {headerName:'开房数',field:'checkInNum'},
+        {headerName:'平均消费',field:'averageConsume'},
+        {headerName:'消费总计',field:'totalConsume'}
     ];
+    $scope.guestSourceGridOptions = {
+        columnDefs: guestSourceColumns,
+        rowData: null,
+        enableColResize: true,
+        localeText: agGridService.getLocalText
+    };
     $scope.guestSourceParseReport = function (beginTime, endTime) {
-        /*有问题，不包括在店客人，应该包括*/
         webService.post('guestSourceParseReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
-                $scope.guestSourceParseList = r.guestParseRowList;
-                $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
-                $scope.guestSourceParseRemark = r.remark;
-                echartService.generateChartCompare(r.guestParseRowList, r.guestParseRowListHistory, 'guestSource', 'totalConsume');
+                $scope.showGuestSourceReport=true;
+                $scope.guestSourceGridOptions.api.setRowData(r.guestParseRowList);
             })
     };
     /*客源房类分析*/

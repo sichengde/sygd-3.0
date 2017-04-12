@@ -2,6 +2,7 @@ package com.sygdsoft.controller.room;
 
 import com.sygdsoft.model.ReportJson;
 import com.sygdsoft.model.CountryGuestRow;
+import com.sygdsoft.model.room.CountryGuestReturn;
 import com.sygdsoft.service.GuestIntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +19,16 @@ import java.util.List;
 public class CountryGuestReportController {
     @Autowired
     GuestIntegrationService guestIntegrationService;
+    @Autowired
+    GuestIntegrationService getGuestIntegrationService;
     @RequestMapping(value = "countryGuestReport")
-    public List<CountryGuestRow> countryGuestReport(@RequestBody ReportJson reportJson){
+    public CountryGuestReturn countryGuestReport(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime=reportJson.getBeginTime();
         Date endTime=reportJson.getEndTime();
-        return guestIntegrationService.getList(beginTime, endTime);
+        //TODO: 根据整数日期排列
+        CountryGuestReturn countryGuestReturn=new CountryGuestReturn();
+        countryGuestReturn.setCountryGuestRowList(guestIntegrationService.getList(beginTime, endTime));
+        countryGuestReturn.setRemark("本地客人:"+guestIntegrationService.getLocalGuestSum(beginTime, endTime)+",外地客人:"+guestIntegrationService.getOtherGuestSum(beginTime, endTime));
+        return countryGuestReturn;
     }
 }

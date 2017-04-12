@@ -78,7 +78,8 @@ App.controller('guestInfoController', ['$scope', 'webService', 'dataService','ut
     $scope.countryGuestReport=function (beginTime, endTime) {
         webService.post('countryGuestReport',{beginTime:beginTime,endTime:endTime})
             .then(function (r) {
-                $scope.countryList=r;
+                $scope.countryList=r.countryGuestRowList;
+                $scope.countryRemark=r.remark;
                 $scope.countryQueryMessage = dateFilter(beginTime, 'yyyy-MM-dd HH:mm:ss') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd HH:mm:ss');
             })
     }
