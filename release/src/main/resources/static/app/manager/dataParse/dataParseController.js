@@ -63,8 +63,8 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     /**
      * 客房经营状况
      */
-    $scope.setShowRoomParseReportFalse=function () {
-        $scope.showRoomParseReport=false;
+    $scope.setShowRoomParseReportFalse = function () {
+        $scope.showRoomParseReport = false;
     };
     var roomParseColumnDefs = [
         {
@@ -88,7 +88,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                     groupId: 'guestIn',
                     children: [
                         {
-                            headerName:'总计人次',
+                            headerName: '总计人次',
                             colId: '总计人次',
                             volatile: true
                         }
@@ -121,23 +121,23 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             var lastCategory = '';
             var totalStr = '';
             var guestSourceCategory;
-            var guestSourceValueGetter='';
+            var guestSourceValueGetter = '';
             for (var i = 0; i < guestSourceList.length; i++) {
                 var guestSource = guestSourceList[i].guestSource;
                 /*接待人次按客源统计*/
                 roomParseColumnDefs[1].children[3].children.push({
                     headerName: guestSource,
                     columnGroupShow: 'open',
-                    field:guestSource+'人数'
+                    field: guestSource + '人数'
                 });
-                pointOfSaleIds.push(guestSourceList[i].guestSource+'人数');
+                pointOfSaleIds.push(guestSourceList[i].guestSource + '人数');
                 var countCategory = guestSourceList[i].countCategory;
                 if (countCategory !== lastCategory) {
                     if (lastCategory !== '') {
                         totalStr = totalStr.substring(0, totalStr.length - 1);
                         guestSourceCategory.children.push({
-                            headerName: lastCategory+'总计',
-                            colId: lastCategory+'总计',
+                            headerName: lastCategory + '总计',
+                            colId: lastCategory + '总计',
                             valueGetter: totalStr
                         });
                         totalStr = '';
@@ -155,21 +155,21 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 }
                 guestSourceCategory.children.push({
                     headerName: guestSource,
-                    colId: guestSource+'房费',
-                    field: guestSource+'房费',
+                    colId: guestSource + '房费',
+                    field: guestSource + '房费',
                     columnGroupShow: 'open'
                 });
-                pointOfSaleIds.push(guestSourceList[i].guestSource+'房费');
+                pointOfSaleIds.push(guestSourceList[i].guestSource + '房费');
                 totalRoomConsumeValueGetter += 'getValue("' + guestSourceList[i].guestSource + '房费")+';
                 totalStr += 'getValue("' + guestSourceList[i].guestSource + '")+';
                 guestSourceValueGetter += 'getValue("' + guestSourceList[i].guestSource + '人数")+';
             }
-            roomParseColumnDefs[1].children[3].children[0].valueGetter=guestSourceValueGetter.substring(0, guestSourceValueGetter.length - 1);
+            roomParseColumnDefs[1].children[3].children[0].valueGetter = guestSourceValueGetter.substring(0, guestSourceValueGetter.length - 1);
             totalStr = totalStr.substring(0, totalStr.length - 1);
             /*最后一项二级客源总计*/
             guestSourceCategory.children.push({
-                headerName: lastCategory+'总计',
-                colId: lastCategory+'总计',
+                headerName: lastCategory + '总计',
+                colId: lastCategory + '总计',
                 valueGetter: totalStr
             });
             totalRoomConsumeValueGetter = totalRoomConsumeValueGetter.substring(0, totalRoomConsumeValueGetter.length - 1);
@@ -257,16 +257,56 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         });
     };
     /*客源分析*/
-    $scope.setShowGuestSourceReportFalse=function () {
-        $scope.showGuestSourceReport=false;
+    $scope.setShowGuestSourceReportFalse = function () {
+        $scope.showGuestSourceReport = false;
     };
-    var guestSourceColumns=[
-        {headerName:'客源',field:'guestSource'},
-        {headerName:'人数',field:'guestNum'},
-        {headerName:'开房数',field:'checkInNum'},
-        {headerName:'平均消费',field:'averageConsume'},
-        {headerName:'消费总计',field:'totalConsume'}
+    var guestSourceColumns = [
+        {headerName: '客源', field: 'guestSource'},
+        {headerName: '人数', field: 'guestNum'},
+        {
+            headerName: '开房数',
+            marryChildren: true,
+            openByDefault: false,
+            children: [
+                {
+                    headerName: '总房数',
+                    colId: '总房数',
+                    field: 'checkInNum',
+                    volatile: true
+                }
+            ]
+        },
+        {headerName: '平均消费', field: 'averageConsume'},
+        {
+            headerName: '消费总计',
+            marryChildren: true,
+            openByDefault: false,
+            children: [
+                {
+                    headerName: '总消费',
+                    colId: '总消费',
+                    field: 'totalConsume',
+                    volatile: true
+                }
+            ]
+        }
     ];
+    dataService.refreshRoomCategoryList()
+        .then(function (roomCategoryList) {
+            for (var i = 0; i < roomCategoryList.length; i++) {
+                var roomCategory = roomCategoryList[i];
+                guestSourceColumns[2].children.push({
+                    headerName: roomCategory.category,
+                    field:roomCategory.category+'房数',
+                    columnGroupShow: 'open'
+                });
+                guestSourceColumns[4].children.push({
+                    headerName: roomCategory.category,
+                    field:roomCategory.category+'消费',
+                    columnGroupShow: 'open'
+                })
+            }
+        })
     $scope.guestSourceGridOptions = {
         columnDefs: guestSourceColumns,
         rowData: null,
@@ -276,7 +316,7 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     $scope.guestSourceParseReport = function (beginTime, endTime) {
         webService.post('guestSourceParseReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
-                $scope.showGuestSourceReport=true;
+                $scope.showGuestSourceReport = true;
                 $scope.guestSourceGridOptions.api.setRowData(r.guestParseRowList);
             })
     };
