@@ -9,6 +9,7 @@ import java.util.Map;
 public class GuestIntegrationSql {
     public GuestIntegrationSql() {
     }
+
     public String getList(Map<String, Object> parameters){
         String basic="SELECT count(*) total,ifnull(addr,'未定义') addr,sum(if_in) now FROM ( SELECT   card_id,   concat(country,ifnull(city,'')) addr,   self_account,   reach_time,   if_in, city FROM guest_integration LEFT JOIN card_map_city ON card_id LIKE concat(card,'%') ";
         Date beginTime=(Date) parameters.get("beginTime");
@@ -27,28 +28,38 @@ public class GuestIntegrationSql {
         return basic;
     }
 
-    public String getLocalGuestSum(Map<String, Object> parameters){
-        String basic="SELECT count(*) FROM guest_integration WHERE card_id LIKE #{firstNum} ";
-        Date beginTime=(Date) parameters.get("beginTime");
-        Date endTime=(Date) parameters.get("endTime");
+    public String getSumNum(Map<String,Object> map){
+        Date beginTime=(Date) map.get("beginTime");
+        Date endTime=(Date) map.get("endTime");
+        String guestSource=(String) map.get("guestSource");
+        String cardIdFirstFour=(String) map.get("cardIdFirstFour");
+        Boolean like=(Boolean) map.get("like");
+        Boolean foreigner=(Boolean) map.get("foreigner");
+        String basic="SELECT count(*) FROM guest_integration ";
+        String add="";
         if(beginTime!=null){
-                basic += "and reach_time>#{beginTime} ";
+            add += " and reach_time>#{beginTime} ";
         }
         if(endTime!=null){
-                basic += "and reach_time<#{endTime} ";
+            add += " and reach_time<#{endTime} ";
         }
-        return basic;
-    }
-
-    public String getOtherGuestSum(Map<String, Object> parameters){
-        String basic="SELECT count(*) FROM guest_integration WHERE card_id not LIKE #{firstNum} ";
-        Date endTime=(Date) parameters.get("endTime");
-        Date beginTime=(Date) parameters.get("beginTime");
-        if(beginTime!=null){
-                basic += "and reach_time>#{beginTime} ";
+        if(guestSource!=null){
+            add+=" and guest_source=#{guestSource}";
         }
-        if(endTime!=null){
-                basic += "and reach_time<#{endTime} ";
+        if(cardIdFirstFour!=null){
+            if(like){
+                add+=" and card_id LIKE #{cardIdFirstFour}";
+            }else {
+                add+=" and card_id NOT LIKE #{cardIdFirstFour}";
+            }
+        }
+        if(foreigner!=null){
+            if(foreigner){
+                add+=" and ifnull(country,'中国')!='中国'";
+            }
+        }
+        if(!"".equals(add)){
+            basic+=" where "+add.substring(4,add.length());
         }
         return basic;
     }

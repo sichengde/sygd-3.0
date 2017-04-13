@@ -8,12 +8,28 @@ import java.util.Map;
 public class CheckInIntegrationSql {
     public CheckInIntegrationSql() {
     }
-
-    public String getSumNum(Map<String,Object> map){
+    public String getSumCount(Map<String,Object> map){
         String guestSource=(String) map.get("guestSource");
-        String basic="SELECT count(*) FROM check_in_integration cii LEFT JOIN guest_integration gi on cii.self_account=gi.self_account WHERE cii.reach_time>#{beginTime} AND cii.reach_time<#{endTime}";
+        String roomCategory=(String) map.get("roomCategory");
+        String basic="select count(*) from check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
         if(guestSource!=null){
             basic+=" and guest_source=#{guestSource}";
+        }
+        if(roomCategory!=null){
+            basic+=" and room_category=#{roomCategory}";
+        }
+        return basic;
+    }
+
+    public String getSumConsume(Map<String,Object> map){
+        String guestSource=(String) map.get("guestSource");
+        String roomCategory=(String) map.get("roomCategory");
+        String basic="select ifnull(sum(consume),0) from check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
+        if(guestSource!=null){
+            basic+=" and guest_source=#{guestSource}";
+        }
+        if(roomCategory!=null){
+            basic+=" and room_category=#{roomCategory}";
         }
         return basic;
     }

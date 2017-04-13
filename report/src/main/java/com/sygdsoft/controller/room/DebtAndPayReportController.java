@@ -63,25 +63,25 @@ public class DebtAndPayReportController {
             Double generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, beginTime, pointOfSale));
             Double paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, beginTime, pointOfSale));
             debtAndPayRow.setUndoneBefore(generate - paid);
-            roomTotal.setUndoneBefore(roomTotal.getUndoneBefore() + debtAndPayRow.getUndoneBefore());
+            roomTotal.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneBefore() + debtAndPayRow.getUndoneBefore()));
             /*计算期间发生*/
-            debtAndPayRow.setDebt(szMath.nullToZero(debtIntegrationService.getSumByPointOfSale(beginTime, endTime, pointOfSale)));
-            roomTotal.setDebt(roomTotal.getDebt() + debtAndPayRow.getDebt());
+            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumByPointOfSale(beginTime, endTime, pointOfSale)));
+            roomTotal.setDebt(szMath.formatTwoDecimalReturnDouble(roomTotal.getDebt() + debtAndPayRow.getDebt()));
             /*计算期末未结*/
             generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, endTime, pointOfSale));
             paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, endTime, pointOfSale));
-            debtAndPayRow.setUndoneLast(generate - paid);
-            roomTotal.setUndoneLast(roomTotal.getUndoneLast() + debtAndPayRow.getUndoneLast());
+            debtAndPayRow.setUndoneLast(szMath.formatTwoDecimalReturnDouble(generate - paid));
+            roomTotal.setUndoneLast(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneLast() + debtAndPayRow.getUndoneLast()));
             debtAndPayRowList.add(debtAndPayRow);
         }
         /*计算期间结算=总结算款-转房客*/
         Double totalPay = szMath.nullToZero(debtPayService.getDebtMoney(null, null, false, beginTime, endTime));
         Double toRoomPay = szMath.nullToZero(debtPayService.getDebtMoney(null, "转房客", false, beginTime, endTime));
-        roomTotal.setDebtPay(totalPay - toRoomPay);
+        roomTotal.setDebtPay(szMath.formatTwoDecimalReturnDouble(totalPay - toRoomPay));
         /*计算转单位*/
-        roomTotal.setToCompany(szMath.nullToZero(debtPayService.getDebtMoney(null, "转单位", false, beginTime, endTime)));
+        roomTotal.setToCompany(szMath.formatTwoDecimalReturnDouble(szMath.nullToZero(debtPayService.getDebtMoney(null, "转单位", false, beginTime, endTime))));
         /*计算转哑房*/
-        roomTotal.setLost(szMath.nullToZero(debtPayService.getDebtMoney(null, "转哑房", false, beginTime, endTime)));
+        roomTotal.setLost(szMath.formatTwoDecimalReturnDouble(szMath.nullToZero(debtPayService.getDebtMoney(null, "转哑房", false, beginTime, endTime))));
         DebtAndPayReturn debtAndPayReturn = new DebtAndPayReturn();
         /*设置会员充值*/
         debtAndPayReturn.setVipPay(szMath.nullToZero(vipIntegrationService.getTotalPay(beginTime, endTime)));

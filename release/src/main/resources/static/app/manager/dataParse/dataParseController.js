@@ -271,12 +271,12 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                 {
                     headerName: '总房数',
                     colId: '总房数',
-                    field: 'checkInNum',
+                    valueGetter: numGetter,
                     volatile: true
                 }
             ]
         },
-        {headerName: '平均消费', field: 'averageConsume'},
+        {headerName: '人平均消费', valueGetter: '(getValue("totalConsume")/getValue("guestNum")).toFixed(2)'},
         {
             headerName: '消费总计',
             marryChildren: true,
@@ -284,13 +284,16 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
             children: [
                 {
                     headerName: '总消费',
-                    colId: '总消费',
-                    field: 'totalConsume',
+                    colId: 'totalConsume',
+                    valueGetter: consumeGetter,
                     volatile: true
                 }
             ]
         }
     ];
+    var guestSourceTitles=[];
+    var numGetter="";
+    var consumeGetter="";
     dataService.refreshRoomCategoryList()
         .then(function (roomCategoryList) {
             for (var i = 0; i < roomCategoryList.length; i++) {
@@ -304,9 +307,17 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
                     headerName: roomCategory.category,
                     field:roomCategory.category+'消费',
                     columnGroupShow: 'open'
-                })
+                });
+                guestSourceTitles.push(roomCategory.category+'房数');
+                guestSourceTitles.push(roomCategory.category+'消费');
+                numGetter += 'getValue("' + roomCategory.category+ '房数")+';
+                consumeGetter += 'getValue("' + roomCategory.category+ '消费")+';
             }
-        })
+            numGetter = numGetter.substring(0, numGetter.length - 1);
+            guestSourceColumns[2].children[0].valueGetter=numGetter;
+            consumeGetter = consumeGetter.substring(0, consumeGetter.length - 1);
+            guestSourceColumns[4].children[0].valueGetter=consumeGetter;
+        });
     $scope.guestSourceGridOptions = {
         columnDefs: guestSourceColumns,
         rowData: null,
@@ -317,20 +328,19 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
         webService.post('guestSourceParseReport', {beginTime: beginTime, endTime: endTime})
             .then(function (r) {
                 $scope.showGuestSourceReport = true;
-                $scope.guestSourceGridOptions.api.setRowData(r.guestParseRowList);
-            })
-    };
-    /*客源房类分析*/
-    $scope.guestSourceRoomCategoryParseFields = [
-        {name: '客源', id: 'guestSource'},
-        {name: '房类', id: 'roomCategory'},
-        {name: '房费总计', id: 'consume'}
-    ];
-    $scope.guestSourceRoomCategoryParseReport = function (beginTime, endTime) {
-        webService.post('guestSourceRoomCategoryParseReport', {beginTime: beginTime, endTime: endTime})
-            .then(function (r) {
-                $scope.guestSourceRoomCategoryParseList = r.guestSourceRoomCategoryRowList;
-                $scope.queryMessage = dateFilter(beginTime, 'yyyy-MM-dd') + ' 至 ' + dateFilter(endTime, 'yyyy-MM-dd');
+                for (var i = 0; i < r.length; i++) {
+                    var row = r[i];
+                    for (var j = 0; j < guestSourceTitles.length; j++) {
+                        var title = guestSourceTitles[j];
+                        var rowIndex = row.titleList.indexOf(title);
+                        if (rowIndex == -1) {
+                            row[title] = 0;
+                        } else {
+                            row[title] = parseFloat(row.titleValueList[rowIndex]);
+                        }
+                    }
+                }
+                $scope.guestSourceGridOptions.api.setRowData(r);
             })
     };
     /*单位预订到达率*/

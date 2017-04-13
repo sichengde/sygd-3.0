@@ -8,6 +8,7 @@ import java.util.Date;
 public class GuestIntegration extends BaseEntity{
     private String cardId;
     private String country;
+    private String guestSource;
     private String selfAccount;
     private Date reachTime;
     private Boolean ifIn;
@@ -53,5 +54,13 @@ public class GuestIntegration extends BaseEntity{
 
     public void setIfIn(Boolean ifIn) {
         this.ifIn = ifIn;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 }

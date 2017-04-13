@@ -2,6 +2,7 @@ package com.sygdsoft.mapper;
 
 import com.sygdsoft.model.CountryGuestRow;
 import com.sygdsoft.model.GuestIntegration;
+import com.sygdsoft.sqlProvider.CheckInIntegrationSql;
 import com.sygdsoft.sqlProvider.GuestIntegrationSql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.*;
@@ -15,25 +16,18 @@ import java.util.List;
  */
 public interface GuestIntegrationMapper extends MyMapper<GuestIntegration>{
     /**
-     * 获得总人数
+     * 获取来店人数
+     * @param beginTime 起始来店时间
+     * @param endTime  终止来店时间
+     * @param guestSource 客源
+     * @param cardIdFirstFour 身份证前四位
+     * @param like 像还是不像
+     * @param foreigner 外宾
+     * @return
      */
-    @Select("SELECT count(*) FROM guest_integration WHERE reach_time>#{beginTime} and reach_time<#{endTime}")
-    @ResultType(String.class)
-    String getTotalSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /**
-     * 获取本地客人总数
-     */
-    @SelectProvider(type =GuestIntegrationSql.class,method ="getLocalGuestSum" )
+    @SelectProvider(type = GuestIntegrationSql.class,method = "getSumNum")
     @ResultType(Integer.class)
-    Integer getLocalGuestSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("firstNum") String firstNum);
-
-    /**
-     * 获得外地客人总数
-     */
-    @SelectProvider(type =GuestIntegrationSql.class,method ="getOtherGuestSum" )
-    @ResultType(Integer.class)
-    Integer getOtherGuestSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("firstNum") String firstNum);
+    Integer getSumNum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") String guestSource,@Param("cardIdFirstFour")String cardIdFirstFour,@Param("like")Boolean like,@Param("foreigner")Boolean foreigner);
 
     /**
      * 根据时间获得列表

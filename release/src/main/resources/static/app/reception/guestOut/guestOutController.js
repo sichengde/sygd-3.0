@@ -16,8 +16,6 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
     $scope.excludeRoom = $scope.room.roomId;
     $scope.enableCancelDebtAdd = dataService.getOtherParamMapValue('允许不加收房租') == 'y';
     $scope.ifDebtAdd = true;
-    //TODO: 增加一条数据校验，针对瑞佳提出的房吧错账，如果对了之后可以删除
-
     guestOutService.initData($scope.room)
         .then(function () {
             $scope.debtList = dataService.getDebtList();
@@ -47,8 +45,10 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             if ($scope.room.checkInGroup) {
                 $scope.checkInGroup = dataService.getCheckInGroupList()[0];
                 $scope.groupAccount = $scope.room.checkInGroup.groupAccount;
+                $scope.remark=$scope.checkInGroup.remark;
             } else {
                 $scope.checkIn = $scope.checkInList[0];
+                $scope.remark=$scope.checkIn.remark;//初始化备注
                 $scope.checkInGuestList = dataService.getCheckInGuestList();
                 $scope.checkInGuestName = util.objectListToString($scope.checkInGuestList, 'name').join();
             }

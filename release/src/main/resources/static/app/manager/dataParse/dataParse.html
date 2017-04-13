@@ -49,7 +49,7 @@
                 </ul>
             </div>
         </sz-pane>
-        <sz-pane title="客源人数分析" init="setShowGuestSourceReportFalse()">
+        <sz-pane title="客源分析" init="setShowGuestSourceReportFalse()">
             <div ng-show="showGuestSourceReport" ag-grid="guestSourceGridOptions" class="ag-fresh" style="height: 500px;"></div>
             <div class="tableDiv" ng-show="!showGuestSourceReport">
                 <li>
@@ -61,30 +61,6 @@
                     <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
                 </li>
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="guestSourceParseReport(beginTime,endTime)" value="预览"><input type="button" value="统计图查看" sz-height></li>
-            </div>
-        </sz-pane>
-        <sz-pane title="客源房类分析">
-            <div class="tableDiv">
-                <li>
-                    时间：
-                    <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
-                    <div class="timeSfm" style="float: right">
-                        <uib-timepicker ng-model="beginTime" show-spinners="false" show-meridian="false"
-                                        show-seconds="true"></uib-timepicker>
-                    </div>
-                </li>
-                <li style="margin-left: 0px;">至</li>
-                <li>
-                    <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
-                    <div class="timeSfm" style="float: right">
-                        <uib-timepicker ng-model="endTime" show-spinners="false" show-meridian="false"
-                                        show-seconds="true"></uib-timepicker>
-                    </div>
-                </li>
-                <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="guestSourceRoomCategoryParseReport(beginTime,endTime)" value="预览"></li>
-            </div>
-            <div style="width: 600px">
-                <sz-table fields="guestSourceRoomCategoryParseFields" items="guestSourceRoomCategoryParseList" button="add delete update" print="客源房类分析" ng-if="guestSourceRoomCategoryParseList" query-message="queryMessage"></sz-table>
             </div>
         </sz-pane>
         <sz-pane title="单位预订到达率">

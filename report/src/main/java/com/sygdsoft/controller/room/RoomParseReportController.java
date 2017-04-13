@@ -35,7 +35,7 @@ public class RoomParseReportController {
     @Autowired
     DebtIntegrationService debtIntegrationService;
     @Autowired
-    CheckInHistoryService checkInHistoryService;
+    GuestIntegrationService guestIntegrationService;
     @Autowired
     CheckInIntegrationService checkInIntegrationService;
     @Autowired
@@ -149,15 +149,15 @@ public class RoomParseReportController {
         List<String> titleValueList=new ArrayList<>();
         /*接待总人数*/
         titleList.add("总人次");
-        titleValueList.add(String.valueOf(szMath.nullToZero(checkInIntegrationService.getSumNumByDate(beginTime, endTime,null))));//接待总人数
+        titleValueList.add(String.valueOf(szMath.nullToZero(guestIntegrationService.getSumNumByDate(beginTime, endTime,null))));//接待总人数
         /*按客源分析*/
         List<GuestSource> guestSourceList=guestSourceService.get(null);
         for (GuestSource guestSource : guestSourceList) {
             titleList.add(guestSource.getGuestSource()+"人数");
-            titleValueList.add(String.valueOf(szMath.nullToZero(checkInIntegrationService.getSumNumByDate(beginTime, endTime,guestSource.getGuestSource()))));//接待总人数
+            titleValueList.add(String.valueOf(szMath.nullToZero(guestIntegrationService.getSumNumByDate(beginTime, endTime,guestSource.getGuestSource()))));//接待总人数
         }
         roomParseReportRow.setGroupNum(szMath.nullToZero(groupIntegrationService.getSumByDate(beginTime, endTime)));//团队接待数量
-        roomParseReportRow.setForeigner(szMath.nullToZero(checkInIntegrationService.getSumForeignerNumByDate(beginTime, endTime)));//外宾接待数量
+        roomParseReportRow.setForeigner(szMath.nullToZero(guestIntegrationService.getSumForeignerNumByDate(beginTime, endTime)));//外宾接待数量
         /*分析客源房费*/
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getSumRoomConsumeByDateGuestSource(beginTime, endTime);
         Integer index = 0;

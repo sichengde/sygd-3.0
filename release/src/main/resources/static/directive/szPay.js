@@ -143,7 +143,7 @@ App.directive('szPay', function () {
                                 haveSame = true;
                             }
                             if (!haveSame) {
-                                $scope.depositMessage += "找回金额：" + debtShow.deposit + "(" + debtShow.currency + ") ";
+                                $scope.depositMessage += "找回金额：" + parseFloat(debtShow.deposit).toFixed(2) + "(" + debtShow.currency + ") ";
                             }
                         }
                     }
@@ -151,10 +151,10 @@ App.directive('szPay', function () {
                 for (i = 0; i < currencyPayTemp.length; i++) {
                     var currencyPayRemain = currencyPayTemp[i];
                     if (currencyPayRemain.money > 0) {
-                        $scope.depositMessage += "找回金额：" + currencyPayRemain.money + "(" + currencyPayRemain.currency + ") ";
+                        $scope.depositMessage += "找回金额：" + parseFloat(currencyPayRemain.money).toFixed(2) + "(" + currencyPayRemain.currency + ") ";
                     }
                     if (currencyPayRemain.money < 0) {
-                        $scope.depositMessage += "补交金额：" + -currencyPayRemain.money + "(" + currencyPayRemain.currency + ")";
+                        $scope.depositMessage += "补交金额：" + -parseFloat(currencyPayRemain.money).toFixed(2) + "(" + currencyPayRemain.currency + ")";
                     }
                 }
             }, true);

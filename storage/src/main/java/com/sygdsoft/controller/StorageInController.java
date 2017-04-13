@@ -1,10 +1,7 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.Query;
-import com.sygdsoft.model.FieldTemplate;
-import com.sygdsoft.model.StorageIn;
-import com.sygdsoft.model.StorageInDetail;
-import com.sygdsoft.model.StorageInJson;
+import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +21,8 @@ import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 public class StorageInController {
     @Autowired
     StorageInService storageInService;
+    @Autowired
+    CargoService cargoService;
 
     @RequestMapping(value = "storageInDelete")
     @Transactional(rollbackFor = Exception.class)
@@ -56,6 +55,13 @@ public class StorageInController {
     public Integer storageInAdd(@RequestBody StorageInJson storageInJson) throws Exception {
         List<StorageInDetail> storageInDetailList=storageInJson.getStorageInDetailList();
         StorageIn storageIn=storageInJson.getStorageIn();
+        /*检查一下货品是否存在*/
+        for (StorageInDetail storageInDetail : storageInDetailList) {
+            Cargo cargo=cargoService.getByName(storageInDetail.getCargo());
+            if(cargo==null){
+                throw new Exception("该货品没有定义");
+            }
+        }
         return storageInService.storageInAdd(storageInDetailList, storageIn);
     }
 }

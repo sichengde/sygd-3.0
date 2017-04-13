@@ -1,35 +1,26 @@
-package com.sygdsoft.jsonModel;
+package com.sygdsoft.model;
 
-import org.apache.ibatis.annotations.Select;
+import com.sygdsoft.jsonModel.GuestParseRow;
 
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/11/26 0026.
  */
-public class GuestParseRow {
-    private String guestSource;//客源
-    private Integer guestNum;//人数
+public class GuestParseReturn {
+    private List<GuestParseRow> guestParseRowList;
     private List<String> titleList;
     private List<String> titleValueList;
 
-    public GuestParseRow() {
+    public GuestParseReturn() {
     }
 
-    public String getGuestSource() {
-        return guestSource;
+    public List<GuestParseRow> getGuestParseRowList() {
+        return guestParseRowList;
     }
 
-    public void setGuestSource(String guestSource) {
-        this.guestSource = guestSource;
-    }
-
-    public Integer getGuestNum() {
-        return guestNum;
-    }
-
-    public void setGuestNum(Integer guestNum) {
-        this.guestNum = guestNum;
+    public void setGuestParseRowList(List<GuestParseRow> guestParseRowList) {
+        this.guestParseRowList = guestParseRowList;
     }
 
     public List<String> getTitleList() {

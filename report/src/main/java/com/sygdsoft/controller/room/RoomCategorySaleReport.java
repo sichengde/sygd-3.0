@@ -38,6 +38,8 @@ public class RoomCategorySaleReport {
     GroupIntegrationService groupIntegrationService;
     @Autowired
     RoomStateReportService roomStateReportService;
+    @Autowired
+    GuestIntegrationService guestIntegrationService;
 
     /**
      * 结束日期时间要设置为24:00:00
@@ -53,9 +55,9 @@ public class RoomCategorySaleReport {
         RoomCategoryParse roomCategoryParse = new RoomCategoryParse();
         roomCategoryParse.setRoomStateReportList(roomCategoryRowList);
         /*设置备注信息*/
-        String remark="接待人数"+checkInIntegrationService.getSumNumByDate(beginTime, endTime,null);
+        String remark="接待人数"+guestIntegrationService.getSumNumByDate(beginTime, endTime,null);
         remark+=",接待团队"+groupIntegrationService.getSumByDate(beginTime, endTime);
-        remark+=",接待外宾"+checkInIntegrationService.getSumForeignerNumByDate(beginTime, endTime);
+        remark+=",接待外宾"+guestIntegrationService.getSumForeignerNumByDate(beginTime, endTime);
         roomCategoryParse.setRemark(remark);
         return roomCategoryParse;
     }

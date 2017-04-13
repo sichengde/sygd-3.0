@@ -51,6 +51,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     $scope.roomPriceEditable = dataService.getOtherParamMapValue('可编辑房价') == 'y';
     var vipNumberList = [];//会员数组
     var p1 = {condition: 'check_in=1'};
+    var time;
     dataService.initData(['refreshCurrencyList', 'refreshTimeNow', 'refreshGuestSourceList', 'refreshCompanyList'], [p1])
         .then(function () {
             /*可选的证件类型*/
@@ -75,7 +76,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             $scope.companyList = dataService.getCompanyList();
             /*初始化当前时间和预计离店时间*/
             $scope.now = util.newDateNow(dataService.getTimeNow());
-            var time = dataService.getOtherParamMapValue('离店时间');
+            time = dataService.getOtherParamMapValue('离店时间');
             var timeNightBegin = dataService.getOtherParamMapValue('夜审时间');
             var timeNightEnd = dataService.getOtherParamMapValue('凌晨房时段');
             if (time != 'n') {
@@ -247,7 +248,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                 popUpService.pop('message');
                 return $q.resolve();
             }
-            totalDeposit+=parseInt(d.deposit);
+            totalDeposit+=parseFloat(d.deposit).toFixed(2);
         }
         if($scope.checkInGuestList.length==0){
             messageService.setMessage({type: 'error', content: '请输入客人信息'});
@@ -321,7 +322,11 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     /*根据来期和预住天数计算出离期*/
     function calculateLeaveTime() {
         if($scope.now) {
-            $scope.leave = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
+            if (time != 'n') {
+                $scope.leave=util.newDateAndTime(new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000), time)
+            }else {
+                $scope.leave = new Date($scope.now.valueOf() + $scope.days * 24 * 60 * 60 * 1000);
+            }
         }
     }
 }]);

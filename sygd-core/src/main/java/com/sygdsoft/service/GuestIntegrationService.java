@@ -34,11 +34,11 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
         } catch (Exception e) {
             throw new Exception("请定义本地身份证前四位");
         }
-        return guestIntegrationMapper.getLocalGuestSum(beginTime,endTime,firstNum);
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,firstNum, true,null);
     }
 
     /**
-     * 获得外地客人总数
+     * 获得外地客人总数(本国)
      */
     public Integer getOtherGuestSum(Date beginTime,Date endTime) throws Exception {
         String firstNum= null;
@@ -48,14 +48,20 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
         } catch (Exception e) {
             throw new Exception("请定义本地身份证前四位");
         }
-        return guestIntegrationMapper.getOtherGuestSum(beginTime,endTime,firstNum);
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,firstNum, false,null);
     }
 
     /**
-     * 获得总人数
+     * 获得一段时间内的总人数(根据客源)
      */
-    public String getTotalSum(Date beginTime,Date endTime){
-        return guestIntegrationMapper.getTotalSum(beginTime,endTime);
+    public Integer getSumNumByDate(Date beginTime,Date endTime,String guestSource){
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,guestSource,null,null,null);
+    }
+    /**
+     * 获得一段时间内的外宾人数
+     */
+    public Integer getSumForeignerNumByDate(Date beginTime,Date endTime){
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,null,null,true);
     }
 
     /**

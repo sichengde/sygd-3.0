@@ -47,10 +47,4 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
         }
         return roomIdList;
     }
-    /**
-     * 获得时间段内客源消费情况
-     */
-    public List<GuestParseRow> guestSourceParse(Date beginTime, Date endTime){
-        return checkInHistoryLogMapper.guestSourceParse(beginTime,endTime);
-    }
 }
