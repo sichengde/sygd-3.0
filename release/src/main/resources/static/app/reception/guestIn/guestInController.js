@@ -248,7 +248,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
                 popUpService.pop('message');
                 return $q.resolve();
             }
-            totalDeposit+=parseFloat(d.deposit).toFixed(2);
+            totalDeposit+=parseFloat(d.deposit).toFixed(2)*1;
         }
         if($scope.checkInGuestList.length==0){
             messageService.setMessage({type: 'error', content: '请输入客人信息'});
