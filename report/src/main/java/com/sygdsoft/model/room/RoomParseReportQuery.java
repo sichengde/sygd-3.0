@@ -8,6 +8,8 @@ import java.util.Date;
 public class RoomParseReportQuery {
     private String range;//范围（月，季，年）
     private Date date;//哪天为标准
+    private Date beginTime;//明确范围
+    private Date endTime;//
 
     public RoomParseReportQuery() {
     }
@@ -26,5 +28,21 @@ public class RoomParseReportQuery {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }

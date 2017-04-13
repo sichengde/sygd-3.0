@@ -1,6 +1,6 @@
 App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'util', 'dateFilter', 'popUpService', 'echartService', 'fieldService', 'agGridService', function ($scope, webService, dataService, util, dateFilter, popUpService, echartService, fieldService, agGridService) {
     $scope.beginTime = util.getTodayMin();
-    $scope.endTime = util.getTodayMax();
+    $scope.endTime = util.getTodayMin();
     /*房类分析*/
     $scope.roomCategorySaleFields = [
         {name: '房类', id: 'category'},
@@ -214,9 +214,15 @@ App.controller('dataParseController', ['$scope', 'webService', 'dataService', 'u
     };
     $scope.range = '年';
     $scope.showRoomParseReport = false;
-    $scope.RoomParseReport = function (beginTime, range) {
+    $scope.RoomParseReport = function (date,beginTime, endTime,range) {
         $scope.showRoomParseReport = true;
-        webService.post('roomParseReport', {date: beginTime, range: range})
+        var post;
+        if(date){
+            post={date: date, range: range};
+        }else {
+            post={beginTime:beginTime, endTime:endTime}
+        }
+        webService.post('roomParseReport', post)
             .then(function (r) {
                 for (var i = 0; i < r.length; i++) {
                     var row = r[i];

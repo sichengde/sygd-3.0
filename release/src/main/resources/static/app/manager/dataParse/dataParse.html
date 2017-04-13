@@ -35,7 +35,7 @@
                 <ul>
                     <li>
                         日期：
-                        <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                        <input type="text" ng-model="date" uib-datepicker-popup class="tableTime">
                     </li>
                     <li>
                         <div class="btn-group">
@@ -44,7 +44,15 @@
                             <label class="btn btn-primary" ng-model="range" uib-btn-radio="'年'" uncheckable>年</label>
                         </div>
                     </li>
-                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(beginTime,range)" value="预览"></li>
+                    <li>
+                        固定范围
+                        <input type="text" ng-model="beginTime" uib-datepicker-popup class="tableTime">
+                    </li>
+                    <li style="margin-left: 0px;">至</li>
+                    <li>
+                        <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
+                    </li>
+                    <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="RoomParseReport(date,beginTime,endTime,range)" value="预览"></li>
                     <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="exportAgGrid(roomParseGridOptions)" value="导出xls"></li>
                 </ul>
             </div>
