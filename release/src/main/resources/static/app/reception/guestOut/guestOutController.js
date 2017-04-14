@@ -304,10 +304,10 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             calculateHourRoom();
         }
         if ($scope.room.checkInGroup) {
-            $scope.currencyPayList[0].money = util.isNullSetZero($scope.checkInGroup.consume) * 1 + util.isNullSetZero($scope.debtConsume);
+            $scope.currencyPayList[0].money = util.isNullSetZero($scope.checkInGroup.consume) * 1 + util.isNullSetZero($scope.debtConsume)*1;
             $scope.totalConsume = $scope.currencyPayList[0].money;
         } else {
-            $scope.currencyPayList[0].money = util.isNullSetZero($scope.checkIn.consume) * 1 + util.isNullSetZero($scope.debtConsume);
+            $scope.currencyPayList[0].money = util.isNullSetZero($scope.checkIn.consume) * 1 + util.isNullSetZero($scope.debtConsume)*1;
             $scope.totalConsume = $scope.currencyPayList[0].money;
         }
     };
@@ -443,7 +443,7 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
                         debtAdd.userId = LoginService.getUser();
                         debtAddList.push(debtAdd);
                         $scope.debtShowList.push(debtAdd);
-                        $scope.debtConsume += debtAdd.consume;
+                        $scope.debtConsume += debtAdd.consume*1;
                         break;
                     }
                 }

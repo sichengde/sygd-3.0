@@ -62,7 +62,7 @@ public class DebtAndPayReportController {
             /*计算期初未结=期初之前的总账务-结算的*/
             Double generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, beginTime, pointOfSale));
             Double paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, beginTime, pointOfSale));
-            debtAndPayRow.setUndoneBefore(generate - paid);
+            debtAndPayRow.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(generate - paid));
             roomTotal.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneBefore() + debtAndPayRow.getUndoneBefore()));
             /*计算期间发生*/
             debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumByPointOfSale(beginTime, endTime, pointOfSale)));

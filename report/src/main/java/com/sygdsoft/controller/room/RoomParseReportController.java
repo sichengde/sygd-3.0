@@ -146,8 +146,9 @@ public class RoomParseReportController {
             return roomParseReportRowList;
         }else {
             Date beginTime=roomParseReportQuery.getBeginTime();
-            Date endTime=roomParseReportQuery.getEndTime();
+            Date endTime=timeService.getMaxTime(roomParseReportQuery.getEndTime());
             List<RoomParseReportRow> roomParseReportRowList = new ArrayList<>();
+            this.clearSubmit();
             this.parseData(beginTime, endTime, roomParseReportRowList, timeService.dateToStringShort(beginTime)+"至"+timeService.dateToStringShort(endTime));
             return roomParseReportRowList;
         }

@@ -209,17 +209,22 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
     };
     /*松开确认*/
     $scope.chooseTarget = function (room) {
+        if(room.roomId==sourceMoveRoom.roomId){
+            sourceMoveRoom=null;
+            return;
+        }
         var postRoom = angular.copy(sourceMoveRoom);
+        sourceMoveRoom=null;
         if (postRoom) {//有之前的选择才可以继续
             if(dataService.getRoomStateAvailableList().indexOf(room.state)>-1){
                 receptionService.setChooseRoom(postRoom);
                 popUpService.pop('changeRoom',null,null,room);
-            }else if(room.state=='团队房'&&postRoom.state == '散客房'){
+            }else if(room.checkIn.groupAccount&&postRoom.state == '散客房'){
                 messageService.setMessage({content: '是否转入现有团队？' + postRoom.roomId + '转入' + room.checkIn.groupAccount});
                 messageService.actionChoose()
                     .then(function () {
                         postRoom.checkIn.groupAccount = room.checkInGroup.groupAccount;
-                        postRoom.state = '团队房';
+                        postRoom.state = room.state;
                         postRoom.checkInGroup = room.checkInGroup;
                         postRoom.checkInGroup.totalRoom++;
                         postRoom.checkInGroup.deposit = postRoom.checkIn.deposit;

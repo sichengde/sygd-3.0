@@ -34,7 +34,7 @@ public class GuestParseController {
     @RequestMapping(value = "guestSourceParseReport")
     public List<GuestParseRow> guestSourceParseReport(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = reportJson.getBeginTime();
-        Date endTime = reportJson.getEndTime();
+        Date endTime = timeService.getMaxTime(reportJson.getEndTime());
         List<GuestSource> guestSourceList = guestSourceService.get(null);
         List<RoomCategory> roomCategoryList = roomCategoryService.get(null);
         List<GuestParseRow> guestParseRowList = new ArrayList<>();

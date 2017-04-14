@@ -82,7 +82,7 @@
                     <span class="red" ng-click="manyCurrency()" style="margin-top: 10px; cursor: pointer">+分单</span>
                 </td>
                 <td ng-show="!debtPayMiddleMode">客人预付：</td>
-                <td ng-show="!debtPayMiddleMode">￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}} ({{room.checkInGroup?'':(checkIn.deposit-totalConsume).toFixed(2)}})</td>
+                <td ng-show="!debtPayMiddleMode">￥{{room.checkInGroup?checkInGroup.deposit:checkIn.deposit}} ({{room.checkInGroup?'':(checkIn.deposit-totalConsume).toFixed(2)*1}})</td>
                 <td>备注：</td>
                 <td style="width: 350px;"><input type="text" style="width: 300px;" ng-model="remark"></td>
             </tr>
