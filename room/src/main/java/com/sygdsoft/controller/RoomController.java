@@ -109,7 +109,7 @@ public class RoomController {
         roomService.updateRoomState(srcRoomId, roomService.leave);
         roomService.updateRoomState(dstRoomId, srcRoom.getState());
         /*更新在店户籍,设置为新的房价房号*/
-        CheckIn checkIn = srcRoom.getCheckIn();
+        CheckIn checkIn = checkInService.getByRoomId(srcRoomId);
         checkIn.setRoomId(dstRoomId);
         checkIn.setFinalRoomPrice(dstRoom.getPrice());
         if (otherParamService.getValueByName("可编辑房价").equals("y")) {//如果是可编辑房价的话，还要考虑房价协议名称的问题
