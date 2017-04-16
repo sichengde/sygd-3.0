@@ -7,7 +7,7 @@ App.factory('fieldService', [function () {
         {name: "单位名称", id: 'company', filter: 'input'},
         {name: "签单人", id: "lord", filter: 'input'},
         {name: "宾客", id: "name", filter: 'input'},
-        {name: "金额", id: "debt"},
+        {name: "金额", id: "debt",sum:'true'},
         {name: "挂账时间", id: "companyDoTime", filter: 'date'},
         {name: "备注", id: "description"},
         {name: "模块", id: "pointOfSale", filter: 'list'},

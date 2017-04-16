@@ -57,6 +57,7 @@ public class StorageInDetailService extends BaseService<StorageInDetail>{
     /**
      * 计算平均价格
      */
+    //TODO:有问题，超出部分时余量还是0
     public Double storageParsePrice(String house,String cargo,Integer num){
         List<StorageInDetail> storageInDetailList=getByCargoExist(house, cargo);
         Double totalMoney=0.0;

@@ -22,6 +22,20 @@ public class StorageOutDetail extends BaseEntity {
     public StorageOutDetail() {
     }
 
+    public StorageOutDetail(StorageOutDetail storageOutDetail) {
+        this.house = storageOutDetail.getHouse();
+        this.cargo = storageOutDetail.getCargo();
+        this.unit = storageOutDetail.getUnit();
+        this.num = storageOutDetail.getNum();
+        this.price = storageOutDetail.getPrice();
+        this.total = storageOutDetail.getTotal();
+        this.myUsage = storageOutDetail.getMyUsage();
+        this.storageOutSerial = storageOutDetail.getStorageOutSerial();
+        this.category = storageOutDetail.getCategory();
+        this.saleTotal = storageOutDetail.getSaleTotal();
+        this.out = storageOutDetail.getOut();
+    }
+
     public Boolean getNotNullOut(){
         if(out==null){
             return false;

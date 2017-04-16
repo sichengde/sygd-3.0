@@ -13,18 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
-import static com.sygdsoft.util.NullJudgement.nullToZero;
-
 /**
  * Created by 舒展 on 2016-11-17.
+ * 出库
  */
 @RestController
 public class StorageOutController {
     @Autowired
     StorageOutService storageOutService;
-    @Autowired
-    SerialService serialService;
     @Autowired
     RoomShopDetailService roomShopDetailService;
     @Autowired
@@ -86,9 +82,10 @@ public class StorageOutController {
     @RequestMapping(value = "storageAutoOut")
     @Transactional(rollbackFor = Exception.class)
     public List<Integer> storageAutoOut() throws Exception {
+        timeService.setNow();
         List<Integer> reportList = new ArrayList<>();//返回的报表数组
-        String storageOutSerial = null;//正常出库序列号
-        String storageOutSerialDirect = null;//直拨出库序列号
+        Boolean storageOutSerial = false;//正常出库序列号
+        Boolean storageOutSerialDirect = false;//直拨出库序列号
         List<StorageOutDetail> storageOutDetailListNormal = new ArrayList<>();//正常出库
         List<StorageOutDetail> storageOutDetailListDirect = new ArrayList<>();//直拨出库
         /*先统计房吧，房吧默认属于接待营业部门所以只有一个仓库，所以不需要联表查询*/
@@ -105,26 +102,27 @@ public class StorageOutController {
                 storageOutDetail.setUnit(cargo.getUnit());
                 storageOutDetail.setMyUsage("自动出库-房吧销售统计");
                 storageOutDetail.setCategory(cargo.getCategory());
-                if (remain > roomShopDetail.getNum()) {//库存充足
-                    if (storageOutSerial == null) {
-                        storageOutSerial = serialService.setStorageOutSerial();
+                if (remain >= roomShopDetail.getNum()) {//库存充足
+                    if (!storageOutSerial) {
+                        storageOutSerial = true;
                     }
-                    storageOutDetail.setStorageOutSerial(storageOutSerial);
                     storageOutDetail.setNum(roomShopDetail.getNum());
                     storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), roomShopDetail.getNum()))));
                     storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getPrice())));
                     storageOutDetail.setSaleTotal(roomShopDetail.getTotalMoney());
                     storageOutDetailListNormal.add(storageOutDetail);
                 } else {//库存不足
-                    if (storageOutSerialDirect == null) {
-                        storageOutSerialDirect = serialService.setStorageOutSerial();
+                    //有库存不足的情况，首先就要增加一个直拨序列号
+                    if (!storageOutSerialDirect) {
+                        storageOutSerialDirect = true;
                     }
                     int num1 = roomShopDetail.getNum();
                     double totalMoneyRemain = roomShopDetail.getTotalMoney();
-                    //有库存不足的情况，首先就要增加一个直拨序列号
                     if (remain > 0) {//剩余的库存正常出库
+                        if(!storageOutSerial){
+                            storageOutSerial = true;
+                        }
                         num1 = num1 - remain;
-                        storageOutDetail.setStorageOutSerial(storageOutSerial);
                         storageOutDetail.setNum(remain);
                         storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
                         storageOutDetail.setTotal(storageOutDetail.getNum() * storageOutDetail.getPrice());
@@ -133,9 +131,9 @@ public class StorageOutController {
                         storageOutDetailListNormal.add(storageOutDetail);
                     }
                     /*超出的数量则直拨*/
-                    storageOutDetail.setStorageOutSerial(storageOutSerialDirect);
+                    storageOutDetail=new StorageOutDetail(storageOutDetail);
                     storageOutDetail.setNum(num1);
-                    storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), num1))));
+                    storageOutDetail.setPrice(0.0);//直拨没有价格
                     storageOutDetail.setTotal(num1 * storageOutDetail.getPrice());
                     storageOutDetail.setSaleTotal(totalMoneyRemain);
                     storageOutDetailListDirect.add(storageOutDetail);
@@ -144,20 +142,19 @@ public class StorageOutController {
         }
         roomShopDetailService.setStorageDoneTrue();
         /*出库总结，如果有剩余数量不足的，则需要两种，即是出库和直拨*/
-        if (storageOutSerial != null) {//有数据才出库，否则不出库
+        if (storageOutSerial) {//有数据才出库，否则不出库
             StorageOut storageOut = new StorageOut();
             storageOut.setOutTime(timeService.getNow());
             storageOut.setApprover(userService.getCurrentUser());
+            storageOut.setSaveMan(userService.getCurrentUser());
             storageOut.setDeptOut("接待");
             storageOut.setRemark("自动出库-房吧");
-            storageOut.setStorageOutSerial(storageOutSerial);
             storageOut.setUserId(userService.getCurrentUser());
             storageOut.setCategory("出库");
             reportList.add(storageOutService.storageOutAdd(storageOutDetailListNormal, storageOut));
-            if (storageOutSerialDirect != null) {//如果存在库存不充足的情况，则要再提交一次
+            if (storageOutSerialDirect ) {//如果存在库存不充足的情况，则要再提交一次
                 storageOut.setId(null);
                 storageOut.setRemark("自动出库-房吧");
-                storageOut.setStorageOutSerial(storageOutSerialDirect);
                 storageOut.setCategory("直拨");
                 reportList.add(storageOutService.storageOutAdd(storageOutDetailListDirect, storageOut));
             }
@@ -165,8 +162,8 @@ public class StorageOutController {
         /*再统计餐饮*/
         storageOutDetailListNormal=new ArrayList<>();
         storageOutDetailListDirect = new ArrayList<>();//直拨出库
-        storageOutSerial = null;
-        storageOutSerialDirect = null;
+        storageOutSerial = false;
+        storageOutSerialDirect = false;
         List<PointOfSale> pointOfSaleList= pointOfSaleService.getCKPointOfSaleList();
         for (PointOfSale ofSale : pointOfSaleList) {
             house=ofSale.getHouse();
@@ -184,25 +181,23 @@ public class StorageOutController {
                 storageOutDetail.setMyUsage("自动出库-房吧销售统计");
                 storageOutDetail.setCategory(cargo.getCategory());
                 if (remain > deskDetailHistory.getNum()) {//库存充足
-                    if (storageOutSerial == null) {
-                        storageOutSerial = serialService.setStorageOutSerial();
+                    if (!storageOutSerial ) {
+                        storageOutSerial = true;
                     }
-                    storageOutDetail.setStorageOutSerial(storageOutSerial);
                     storageOutDetail.setNum(deskDetailHistory.getNum());
                     storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNum()))));
                     storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getPrice())));
                     storageOutDetail.setSaleTotal(deskDetailHistory.getAfterDiscount());
                     storageOutDetailListNormal.add(storageOutDetail);
                 } else {//库存不足
-                    if (storageOutSerialDirect == null) {
-                        storageOutSerialDirect = serialService.setStorageOutSerial();
+                    if (!storageOutSerialDirect ) {
+                        storageOutSerialDirect = true;
                     }
                     int num1 = deskDetailHistory.getNum();
                     double totalMoneyRemain = deskDetailHistory.getAfterDiscount();
                     //有库存不足的情况，首先就要增加一个直拨序列号
                     if (remain > 0) {//剩余的库存正常出库
                         num1 = num1 - remain;
-                        storageOutDetail.setStorageOutSerial(storageOutSerial);
                         storageOutDetail.setNum(remain);
                         storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
                         storageOutDetail.setTotal(storageOutDetail.getNum() * storageOutDetail.getPrice());
@@ -211,28 +206,27 @@ public class StorageOutController {
                         storageOutDetailListNormal.add(storageOutDetail);
                     }
                     /*超出的数量则直拨*/
-                    storageOutDetail.setStorageOutSerial(storageOutSerialDirect);
+                    storageOutDetail=new StorageOutDetail(storageOutDetail);
                     storageOutDetail.setNum(num1);
-                    storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), num1))));
+                    storageOutDetail.setPrice(0.0);//直拨没有价格
                     storageOutDetail.setTotal(num1 * storageOutDetail.getPrice());
                     storageOutDetail.setSaleTotal(totalMoneyRemain);
                     storageOutDetailListDirect.add(storageOutDetail);
                 }
             }
             /*出库总结，如果有剩余数量不足的，则需要两种，即是出库和直拨*/
-            if (storageOutSerial != null) {//有数据才出库，否则不出库
+            if (storageOutSerial) {//有数据才出库，否则不出库
                 StorageOut storageOut = new StorageOut();
                 storageOut.setOutTime(timeService.getNow());
                 storageOut.setApprover(userService.getCurrentUser());
+                storageOut.setSaveMan(userService.getCurrentUser());
                 storageOut.setDeptOut(pointOfSale.getFirstPointOfSale());
                 storageOut.setRemark("自动出库-餐饮");
-                storageOut.setStorageOutSerial(storageOutSerial);
                 storageOut.setUserId(userService.getCurrentUser());
                 storageOut.setCategory("出库");
                 reportList.add(storageOutService.storageOutAdd(storageOutDetailListNormal, storageOut));
-                if (storageOutSerialDirect != null) {//如果存在库存不充足的情况，则要再提交一次
+                if (storageOutSerialDirect ) {//如果存在库存不充足的情况，则要再提交一次
                     storageOut.setRemark("自动出库-餐饮");
-                    storageOut.setStorageOutSerial(storageOutSerialDirect);
                     storageOut.setCategory("直拨");
                     reportList.add(storageOutService.storageOutAdd(storageOutDetailListDirect, storageOut));
                 }
