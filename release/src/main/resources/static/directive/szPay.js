@@ -19,6 +19,8 @@ App.directive('szPay', function () {
                         $scope.currencyList = util.objectListToString(dataService.getCurrencyList(), 'currency');
                     }
                     $scope.currencyPayList[0].currency = $scope.currencyList[0];
+                    /*宴请数组*/
+                    $scope.freemanList = util.objectListToString(dataService.getFreemanList(), 'freeman');
                 });
             /*更改币种后根据币种初始化单位，客房信息*/
             $scope.currencyChange = function (currencyPay) {
@@ -31,8 +33,6 @@ App.directive('szPay', function () {
                             /*初始化可供选择的单位结账数组*/
                             $scope.companyList = dataService.getCompanyList();
                             $scope.companyLordList = dataService.getCompanyLordList();
-                            /*宴请数组*/
-                            $scope.freemanList = util.objectListToString(dataService.getFreemanList(), 'freeman');
                         })
                 }
                 if(currencyPay.currency=='转房客'){
