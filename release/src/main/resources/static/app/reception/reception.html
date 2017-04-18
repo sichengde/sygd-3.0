@@ -53,7 +53,7 @@
     <!--房态预览 begin ，优化步骤，directive添加浮动和图表，去掉filter，去掉浮动（改成单击），去掉进入就显示-->
     <ul class="mainRoomState">
         <li class="roomState" ng-class="r.hover" ng-repeat="r in roomList | room: roomState:roomCategory:null:null:areaChoose:floorChoose"
-            ng-dblclick="clickGuestIn(r)" ng-click="receptionClick(r)" sz-right-click="rightClickRoom" sz-right-click-room-state sz-hover-room ng-mousedown="chooseSource(r)" ng-mouseup="chooseTarget(r)" sz-state-icon>
+            ng-dblclick="clickGuestIn(r)" ng-click="receptionClick(r)" sz-right-click="rightClickRoom" sz-right-click-room-state sz-hover-room ng-mousedown="chooseSource($event,r)" ng-mouseup="chooseTarget($event,r)" sz-state-icon>
         </li>
     </ul>
     <!--房态预览 end-->

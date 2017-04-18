@@ -202,13 +202,18 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
     };
     var sourceMoveRoom;
     /*鼠标按下一个客房准备拖动*/
-    $scope.chooseSource = function (room) {
-        if (room.state == '散客房' || room.state == '团队房') {
-            sourceMoveRoom = room;
+    $scope.chooseSource = function (event,room) {
+        if(event.altKey) {
+            if (room.state == '散客房' || room.state == '团队房') {
+                sourceMoveRoom = room;
+            }
         }
     };
     /*松开确认*/
-    $scope.chooseTarget = function (room) {
+    $scope.chooseTarget = function (event,room) {
+        if(!event.altKey) {
+            return;
+        }
         if(room.roomId==sourceMoveRoom.roomId){
             sourceMoveRoom=null;
             return;
