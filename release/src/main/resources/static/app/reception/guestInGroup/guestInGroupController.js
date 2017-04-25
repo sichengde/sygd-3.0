@@ -18,7 +18,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         {name: '结算价格', id: 'finalRoomPrice', width: '150px'},
         {name: '早餐人数', id: 'breakfast', width: '100px'}];
     $scope.checkInGuestFields = [
-        {name: '房号', id: 'roomId', width: '120px', static: 'true'},
+        {name: '房号', id: 'roomId', width: '120px',selectId:'2',freeSelect: 'true'},
         {name: '姓名', id: 'name', width: '150px', notNull: 'true'},
         {name: '性别', id: 'sex', selectId: '0', width: '70px'},
         {name: '民族', id: 'race', width: '150px'},
@@ -126,6 +126,7 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             }
         }
         $scope.checkInRoomIdList = util.objectListToString($scope.checkInList, 'roomId');
+        $scope.selectGuestList[2] = util.objectListToString($scope.checkInList, 'roomId');
         checkInBackUp=angular.copy($scope.checkInList);
     };
     $scope.checkInBackUp=function () {
@@ -308,6 +309,11 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
             var obj = $scope.checkInGuestList[i];
             if (!obj.roomId) {
                 messageService.setMessage({type: 'error', content: '客人' + obj.name + '信息没有输入房号'});
+                popUpService.pop('message');
+                return;
+            }
+            if($scope.checkInRoomIdList.indexOf(obj.roomId)==-1){
+                messageService.setMessage({type: 'error', content: '客人' + obj.name + '所在房号:'+obj.roomId+'不存在'});
                 popUpService.pop('message');
                 return;
             }

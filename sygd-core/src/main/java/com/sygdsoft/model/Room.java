@@ -60,6 +60,7 @@ public class Room extends BaseEntity{
         this.bookList = room.bookList;
         this.checkInGroup = room.checkInGroup;
         this.longRoom = room.longRoom;
+        this.ifRoom = room.ifRoom;
     }
 
     public Boolean getNotNullDirty() {
