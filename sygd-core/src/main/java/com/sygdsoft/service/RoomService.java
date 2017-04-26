@@ -127,7 +127,7 @@ public class RoomService extends BaseService<Room> {
      * 通过房号字符串获得房间对象数组
      */
     public List<Room> getListByRoomIdString(List<String> roomIdList){
-        return roomMapper.getListByRoomIdString(util.listToString(roomIdList));
+        return roomMapper.getListByRoomIdString(util.wrapWithBrackets(util.listToString(roomIdList)));
     }
 
     /**

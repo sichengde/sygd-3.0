@@ -29,6 +29,7 @@ public class Debt extends BaseEntity {
     private String fromRoom;//从来转入的，针对于转房客，主要用于如果是餐饮的话就是餐饮的结账序列号
     private String guestSource;//客源
     private String company;//单位
+    private Double totalConsume;//录完该笔消费后消费合计
 
     public Debt() {
     }
@@ -238,5 +239,13 @@ public class Debt extends BaseEntity {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public Double getTotalConsume() {
+        return totalConsume;
+    }
+
+    public void setTotalConsume(Double totalConsume) {
+        this.totalConsume = totalConsume;
     }
 }
