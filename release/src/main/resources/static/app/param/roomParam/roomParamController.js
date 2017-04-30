@@ -17,8 +17,8 @@ App.controller('paramList1Controller', ['$scope', 'dataService', 'util', functio
     ];
     $scope.exchangeUserFields = [
         {name: '班次名称', id: 'className', width: '150px'},
-        {name: '开始时间', id: 'beginTime', width: '150px'},
-        {name: '结束时间', id: 'endTime', width: '150px'}
+        {name: '开始时间', id: 'beginT', width: '150px'},
+        {name: '结束时间', id: 'endT', width: '150px'}
     ];
     /*房吧*/
     $scope.roomShopFields = [

@@ -21,6 +21,8 @@ public class ExchangeUserController {
 
     @RequestMapping(value = "exchangeUserAdd")
     public void exchangeUserAdd(@RequestBody ExchangeUser exchangeUser) throws Exception {
+        exchangeUser.setBeginTime(exchangeUser.getRealBeginT());
+        exchangeUser.setEndTime(exchangeUser.getRealEndT());
         exchangeUserService.add(exchangeUser);
     }
 
@@ -33,6 +35,10 @@ public class ExchangeUserController {
     @RequestMapping(value = "exchangeUserUpdate")
     @Transactional(rollbackFor = Exception.class)
     public void protocolUpdate(@RequestBody List<ExchangeUser> exchangeUserList) throws Exception {
+        for (ExchangeUser exchangeUser : exchangeUserList) {
+            exchangeUser.setBeginTime(exchangeUser.getRealBeginT());
+            exchangeUser.setEndTime(exchangeUser.getRealEndT());
+        }
         if (exchangeUserList.size() > 1) {
             if (exchangeUserList.get(0).getId().equals(exchangeUserList.get(exchangeUserList.size() / 2).getId())) {
                 exchangeUserService.update(exchangeUserList.subList(0, exchangeUserList.size() / 2));

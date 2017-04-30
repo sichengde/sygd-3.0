@@ -134,7 +134,7 @@ public class TimeService {
     }
 
     /**
-     * 只获取时间
+     * 只获取时间，当前时间
      */
     public String getNowTimeString() {
         if (now != null) {
@@ -142,6 +142,15 @@ public class TimeService {
         } else {
             return timeFormat.format(new Date());
         }
+    }
+
+    /**
+     * 只获取时间
+     * @param date
+     * @return
+     */
+    public String getTimeString(Date date){
+        return timeFormat.format(date);
     }
 
     public String dateToStringLong(Date date) {
