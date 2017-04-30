@@ -101,6 +101,23 @@ public class BaseService<T> {
         update.invoke(mapper, t);
     }
 
+    public void updateSelective(List<T> tList) throws Exception {
+        if (tList.size() == 0) {
+            return;
+        }
+        mapper = context.getBean(this.getClass().getAnnotation(SzMapper.class).id() + "Mapper");
+        Method update = mapper.getClass().getMethod("updateByPrimaryKeySelective", Object.class);
+        for (T t : tList) {
+            update.invoke(mapper, t);
+        }
+    }
+
+    public void updateSelective(T t) throws Exception {
+        mapper = context.getBean(this.getClass().getAnnotation(SzMapper.class).id() + "Mapper");
+        Method update = mapper.getClass().getMethod("updateByPrimaryKeySelective", Object.class);
+        update.invoke(mapper, t);
+    }
+
     public void add(T t) throws Exception {
         mapper = context.getBean(this.getClass().getAnnotation(SzMapper.class).id() + "Mapper");
         Method insert = mapper.getClass().getMethod("insert", Object.class);
