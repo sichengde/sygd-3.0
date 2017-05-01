@@ -123,7 +123,10 @@ public class RoomController {
                 checkIn.setProtocol(newProtocol);
             }
         }
-        checkInService.update(checkIn);
+//        不更新消费
+        checkIn.setConsume(null);
+        checkIn.setDeposit(null);
+        checkInService.updateSelective(checkIn);
         /*更新宾客信息*/
         List<CheckInGuest> checkInGuestList = srcRoom.getCheckInGuestList();
         for (CheckInGuest checkInGuest : checkInGuestList) {
@@ -145,8 +148,9 @@ public class RoomController {
     @RequestMapping(value = "guestToGroup")
     @Transactional(rollbackFor = Exception.class)
     public void guestToGroup(@RequestBody Room room) throws Exception {
+        CheckIn checkIn=room.getCheckIn();
         /*更新在店户籍*/
-        checkInService.update(room.getCheckIn());
+        checkInService.updateSelective(checkIn);
         /*更新房间状态*/
         roomService.update(room);
         /*更新团队信息，主要是金额*/

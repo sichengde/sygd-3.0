@@ -422,8 +422,10 @@ public class GuestInController {
         /*如果修改了离店时间则需要更新在店户籍*/
         if (leaveTime != null) {
             CheckIn checkIn = checkInService.getByRoomId(roomId);
+            checkIn.setConsume(null);
+            checkIn.setDeposit(null);
             checkIn.setLeaveTime(leaveTime);
-            checkInService.update(checkIn);
+            checkInService.updateSelective(checkIn);
         }
         return reportIndex;
     }

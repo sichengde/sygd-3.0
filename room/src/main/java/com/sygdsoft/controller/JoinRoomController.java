@@ -44,7 +44,9 @@ public class JoinRoomController {
             /*为每一条在店户籍设置公付账号*/
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             checkIn.setGroupAccount(groupAccount);
-            checkInService.update(checkIn);
+            checkIn.setDeposit(null);
+            checkIn.setConsume(null);
+            checkInService.updateSelective(checkIn);
             debtService.setGroupAccountByRoomId(roomId, groupAccount);
             /*合计押金*/
             totalDeposit = totalDeposit + checkIn.getNotNullDeposit();
@@ -82,7 +84,9 @@ public class JoinRoomController {
             /*清除在店户籍里的公付账号*/
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             checkIn.setGroupAccount(null);
-            checkInService.update(checkIn);
+            checkIn.setConsume(null);
+            checkIn.setDeposit(null);
+            checkInService.updateSelective(checkIn);
             /*清除账务明细里的公付账号*/
             List<Debt> debtList = debtService.getListByRoomId(roomId);
             for (Debt debt : debtList) {
