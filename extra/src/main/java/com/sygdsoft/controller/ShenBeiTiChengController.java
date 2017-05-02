@@ -44,6 +44,8 @@ public class ShenBeiTiChengController {
     DebtService debtService;
     @Autowired
     ShenBeiTiChengMapper shenBeiTiChengMapper;
+    @Autowired
+    OtherParamService otherParamService;
 
     /**
      * 报表说明
@@ -284,23 +286,24 @@ public class ShenBeiTiChengController {
         fieldTemplate.setField6("预付房租未离店：");//第一行
         fieldTemplate.setField7("预离时间");//第一行
         fieldTemplateList.add(fieldTemplate);
+        String lastNightActionTime=otherParamService.getValueByName("上次夜审");//获得上次夜审时间
         query = new Query();
-        condition = "leave_time>" + util.wrapWithBrackets(timeService.dateToStringLong(endTime))+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(timeService.getMinTime(beginTime)));
+        condition = "leave_time>" + util.wrapWithBrackets(lastNightActionTime)+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(timeService.getMinTime(beginTime)));
         query.setCondition(condition);
-        List<CheckIn> checkInList = checkInService.get(query);
+        List<CheckInIntegration> checkInIntegrationList1 = checkInIntegrationService.get(query);
         total = 0.0;
-        for (CheckIn checkIn : checkInList) {
+        for (CheckInIntegration checkInIntegration : checkInIntegrationList1) {
             query = new Query();
-            condition = " self_account=" + util.wrapWithBrackets(checkIn.getSelfAccount()) + " and ifNull(deposit,0)>0 and do_time>" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime))+" and do_time<"+util.wrapWithBrackets(timeService.dateToStringLong(endTime));
+            condition = " self_account=" + util.wrapWithBrackets(checkInIntegration.getSelfAccount()) + " and ifNull(deposit,0)>0 and do_time>" + util.wrapWithBrackets(timeService.dateToStringLong(beginTime))+" and do_time<"+util.wrapWithBrackets(timeService.dateToStringLong(endTime));
             query.setCondition(condition);
             List<Debt> debtList=debtService.get(query);
             if (debtList.size()==0) {
                 fieldTemplate = new FieldTemplate();
-                fieldTemplate.setField1(checkIn.getRoomId());
-                fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
-                fieldTemplate.setField3(szMath.formatTwoDecimal(checkIn.getFinalRoomPrice()));
+                fieldTemplate.setField1(checkInIntegration.getRoomId());
+                fieldTemplate.setField2(timeService.dateToStringLong(checkInIntegration.getLeaveTime()));
+                fieldTemplate.setField3(szMath.formatTwoDecimal(checkInIntegration.getFinalRoomPrice()));
                 fieldTemplateList.add(fieldTemplate);
-                total += checkIn.getFinalRoomPrice();
+                total += checkInIntegration.getFinalRoomPrice();
             }
         }
         fieldTemplate = new FieldTemplate();
