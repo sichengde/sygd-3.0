@@ -287,8 +287,10 @@ public class ShenBeiTiChengController {
         fieldTemplate.setField7("预离时间");//第一行
         fieldTemplateList.add(fieldTemplate);
         String lastNightActionTime=otherParamService.getValueByName("上次夜审");//获得上次夜审时间
+        String dateTime=otherParamService.getValueByName("账务日期");//获得上次夜审时间
+        String nightRoomTime=otherParamService.getValueByName("凌晨房时段");//获得上次夜审时间
         query = new Query();
-        condition = "leave_time>" + util.wrapWithBrackets(lastNightActionTime)+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(timeService.getMinTime(beginTime)));
+        condition = "leave_time>" + util.wrapWithBrackets(lastNightActionTime)+" and reach_time<"+util.wrapWithBrackets(timeService.dateToStringLong(timeService.addDay(dateTime+" "+nightRoomTime,-1)));
         query.setCondition(condition);
         List<CheckInIntegration> checkInIntegrationList1 = checkInIntegrationService.get(query);
         total = 0.0;
