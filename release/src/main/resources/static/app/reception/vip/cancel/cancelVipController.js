@@ -11,7 +11,7 @@ App.controller('cancelVipController',['$scope','webService','popUpService','util
             popUpService.pop('message');
             return;
         }
-        webService.post('vipCancel',$scope.vipNumber)
+        return webService.post('vipCancel',$scope.vipNumber)
             .then(function () {
                 popUpService.close('cancel');
             })

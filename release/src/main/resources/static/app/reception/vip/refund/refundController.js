@@ -10,7 +10,7 @@ App.controller('refundController', ['$scope','webService','popUpService','dataSe
         });
     $scope.refund = function () {
         var p=[$scope.vipNumber,$scope.money,$scope.deserve,$scope.currency];
-        webService.post('vipRefund',p)
+        return webService.post('vipRefund',p)
             .then(function (r) {
                 webService.openReport(r);
                 popUpService.close('refund');

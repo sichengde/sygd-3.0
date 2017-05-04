@@ -17,7 +17,7 @@ App.controller('rechargeVipController',['$scope','webService','popUpService','da
         });
     $scope.recharge=function () {
         $scope.vipRecharge.currencyPost=$scope.currencyPayList[0];
-        webService.post('vipRecharge',$scope.vipRecharge)
+        return webService.post('vipRecharge',$scope.vipRecharge)
             .then(function (r) {
                 webService.openReport(r);
                 popUpService.close('recharge');
