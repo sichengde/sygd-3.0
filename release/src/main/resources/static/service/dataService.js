@@ -3,7 +3,8 @@
  * 基本服务，包含程序基础模块的所有数据
  */
 'use strict';
-App.factory('dataService', ['webService', 'util', '$q', function (webService, util, $q) {
+App.factory(
+    'dataService', ['webService', 'util', '$q', function (webService, util, $q) {
     /**
      * 常量
      */

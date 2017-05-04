@@ -40,6 +40,9 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                 $scope.roomMessage.leaveRoom = 0;
                 $scope.roomMessage.bookRoom = 0;
                 $scope.roomMessage.roominUse = 0;
+                var bookShowDay = dataService.getOtherParamMapValue('显示几天内预定');
+                var now =new Date();//当前时间
+                var limitTime=Date.parse(now)+bookShowDay*24*60*60*1000;
                 for (var i = 0; i < $scope.roomList.length; i++) {
                     var room = $scope.roomList[i];
                     if (room.dirty == 1) {
@@ -56,6 +59,19 @@ App.controller('ReceptionController', ['$scope', 'dataService', 'popUpService', 
                     }
                     if (dataService.getRoomStateInList.indexOf(room.state) > -1) {
                         $scope.roomMessage.roominUse++;
+                    }
+                    if (room.bookList) {
+                        room.bookShowList=[];
+                        for (var j = 0; j < room.bookList.length; j++) {
+                            var book = room.bookList[j];
+                            if(book.reachTime<limitTime){
+                                room.bookShowList.push(book);
+                                room.booked=true;
+                            }
+                        }
+                        if(room.bookShowList.length==0){
+                            room.bookShowList=null;
+                        }
                     }
                 }
                 $scope.roomMessage.roomRate = $scope.roomMessage.roominUse / $scope.roomMessage.totalRoom * 100;

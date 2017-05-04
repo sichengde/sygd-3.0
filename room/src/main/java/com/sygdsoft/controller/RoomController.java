@@ -150,6 +150,8 @@ public class RoomController {
     public void guestToGroup(@RequestBody Room room) throws Exception {
         CheckIn checkIn=room.getCheckIn();
         /*更新在店户籍*/
+        checkIn.setDeposit(null);
+        checkIn.setConsume(null);
         checkInService.updateSelective(checkIn);
         /*更新房间状态*/
         roomService.update(room);

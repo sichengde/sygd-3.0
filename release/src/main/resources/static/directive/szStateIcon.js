@@ -1,7 +1,7 @@
 App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', function (roomStateEnFilter, util, dateFilter) {
     function calculateRoomStateIcon(room) {
         var out = '<ul class="rigtb">';
-        if (room.bookList) {
+        if (room.booked) {
             out += '<li class="icon-lock"><span>预定</span></li>'
         }
         if (room.birthday) {
@@ -69,9 +69,9 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
         if (room.checkInGroup) {
             out2 += '<li><b>团名：</b>' + room.checkInGroup.name + '</li>';
         }
-        if (room.bookList) {
-            for (var i = 0; i < room.bookList.length; i++) {
-                var book = room.bookList[i];
+        if (room.bookShowList) {
+            for (var i = 0; i < room.bookShowList.length; i++) {
+                var book = room.bookShowList[i];
                 var reachTime = dateFilter(book.reachTime, 'yyyy-MM-dd HH:mm:ss');
                 out2 += '<li style="width: 520px"><b style="color: #ef9d00">预订号：</b>' + book.bookSerial + ' &nbsp; <b>来期：</b>' + reachTime + ' &nbsp; <b>团名：</b>' + book.name + '</li>';
             }
