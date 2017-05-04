@@ -96,6 +96,15 @@ public class RoomController {
     }
 
     /**
+     * 只获取房间数据，不设置其他内容
+     */
+    @RequestMapping(value = "roomGetPure")
+    public List<Room> roomGetPure(@RequestBody Query query) throws Exception {
+        List<Room> roomList = roomService.get(query);
+        return roomList;
+    }
+
+    /**
      * 宾客换房
      */
     @RequestMapping(value = "changeRoom")
