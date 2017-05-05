@@ -16,7 +16,7 @@ public class CheckInGuest extends BaseEntity{
     private String race;//种族
     private String address;//地址
     private String phone;//联系电话
-    private String bed;//床位号
+    private String bed;//床位号(已废除)
     private String doorId;//绑定的门锁特征码
     private String country;//国籍
 
