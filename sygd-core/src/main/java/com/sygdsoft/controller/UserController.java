@@ -101,6 +101,11 @@ public class UserController {
         //}
     }
 
+    @RequestMapping(value = "ipGet")
+    public String ipGet(){
+        return userService.getCurrentIpAddr();
+    }
+
     /**
      * 操作员退出
      */
