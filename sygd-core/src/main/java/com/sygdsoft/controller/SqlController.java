@@ -20,4 +20,9 @@ public class SqlController {
     public List<String> sql(@RequestBody String sql){
         return sqlMapper.getStringList(sql);
     }
+
+    @RequestMapping(value="sqlUpdate")
+    public void sqlUpdate(@RequestBody String sql){
+        sqlMapper.sqlUpdate(sql);
+    }
 }

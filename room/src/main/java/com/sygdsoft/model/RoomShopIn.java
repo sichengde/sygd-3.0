@@ -10,6 +10,7 @@ public class RoomShopIn {
     private String money;
     private String description;
     private String bed;
+    private String guest;
     private List<RoomShopDetail> roomShopDetailList;
 
     public RoomShopIn() {
@@ -53,5 +54,13 @@ public class RoomShopIn {
 
     public void setRoomShopDetailList(List<RoomShopDetail> roomShopDetailList) {
         this.roomShopDetailList = roomShopDetailList;
+    }
+
+    public String getGuest() {
+        return guest;
+    }
+
+    public void setGuest(String guest) {
+        this.guest = guest;
     }
 }
