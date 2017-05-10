@@ -78,6 +78,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         /*Map<String,String> map=new HashMap<>();
         map.put("hotelId",hotelService.getHotelId());
         hotelService.post(CloudServiceConfig.cloudAddress+"/manualNightCloud",map);*/
+        timeService.setNow();
         userLogService.addUserLogWithoutUserIp("自动夜审",userLogService.reception,userLogService.night);
         this.messagingTemplate.convertAndSend("/beginNight", true);
         nightService.nightActionLogic();
