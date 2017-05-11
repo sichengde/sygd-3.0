@@ -84,9 +84,7 @@ public class JoinRoomController {
             /*清除在店户籍里的公付账号*/
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             checkIn.setGroupAccount(null);
-            checkIn.setConsume(null);
-            checkIn.setDeposit(null);
-            checkInService.updateSelective(checkIn);
+            checkInService.update(checkIn);
             /*清除账务明细里的公付账号*/
             List<Debt> debtList = debtService.getListByRoomId(roomId);
             for (Debt debt : debtList) {
