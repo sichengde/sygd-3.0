@@ -44,9 +44,6 @@ public class JoinRoomController {
             /*为每一条在店户籍设置公付账号*/
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             checkIn.setGroupAccount(groupAccount);
-            checkIn.setDeposit(null);
-            checkIn.setConsume(null);
-            checkInService.updateSelective(checkIn);
             debtService.setGroupAccountByRoomId(roomId, groupAccount);
             /*合计押金*/
             totalDeposit = totalDeposit + checkIn.getNotNullDeposit();
@@ -54,12 +51,16 @@ public class JoinRoomController {
             totalConsume = totalConsume + checkIn.getNotNullConsume();
             /*合计支付（中间）*/
             totalPay = totalPay + checkIn.getNotNullPay();
+            checkIn.setDeposit(null);
+            checkIn.setConsume(null);
+            checkInService.updateSelective(checkIn);
         }
         /*新建一个团队开房信息*/
         CheckInGroup checkInGroup=new CheckInGroup();
         checkInGroup.setGroupAccount(groupAccount);
         checkInGroup.setName("联房" + groupAccount);
         checkInGroup.setLeader("联房");
+        checkInGroup.setLeaderRoom(roomList.get(0));
         checkInGroup.setDeposit(totalDeposit);
         checkInGroup.setConsume(totalConsume);
         checkInGroup.setPay(totalPay);
