@@ -2,7 +2,8 @@
  * Created by Administrator on 2016-04-28.
  */
 App.controller('vipController', ['$scope', 'popUpService', 'util', 'dataService', function ($scope, popUpService, util, dataService) {
-    $scope.vipFields = [{name: '卡类别', id: 'category', width: '8%', selectId: '0',filter:'list'},
+    $scope.vipFields = [
+        {name: '卡类别', id: 'category', width: '8%', selectId: '0',filter:'list'},
         {name: '卡号', id: 'vipNumber', width: '100px', static: 'true'},
         {name: '姓名', id: 'name', width: '100px'},
         {name: '生日', id: 'birthdayTime', width: '150px', date: 'short'},

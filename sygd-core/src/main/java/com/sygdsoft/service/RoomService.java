@@ -85,7 +85,7 @@ public class RoomService extends BaseService<Room> {
                 room.setCheckInGuestList(checkInGuestService.get(query1));
                 room.setCheckInGroup(checkInGroupService.getByGroupAccount(checkIn.getGroupAccount()));
                 /*判断是不是预离*/
-                if(timeService.dateToStringShort(checkIn.getLeaveTime()).equals(timeService.getNowShort())){
+                if(timeService.dateToStringShort(checkIn.getLeaveTime()).equals(timeService.getNowShort()) || checkIn.getLeaveTime().getTime()<timeService.getNow().getTime()){
                     room.setTodayLeave(true);
                 }
                 /*判断是不是生日*/
