@@ -24,11 +24,11 @@ public interface RoomShopDetailMapper extends MyMapper<RoomShopDetail> {
     List<RoomShopDetail> getRoomShopByDoneTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*聚合，不带操作员*/
-    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit FROM (SELECT item ,num,total_money,unit from room_shop_detail rsd LEFT JOIN debt_pay dp ON rsd.self_account=dp.self_account WHERE rsd.pay_serial is NULL and dp.done_time>#{beginTime} and dp.done_time<#{endTime}) a GROUP BY item")
+    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit FROM (SELECT item ,num,total_money,unit from room_shop_detail rsd LEFT JOIN debt_pay dp ON rsd.self_account=dp.self_account WHERE rsd.pay_serial is NULL and dp.done_time>#{beginTime} and dp.done_time<#{endTime}) a GROUP BY item,unit")
     List<RoomShopDetail> getSumRoomShopByDoneTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*聚合，带操作员*/
-    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit FROM (SELECT rsd.id, item ,num,total_money,unit from room_shop_detail rsd LEFT JOIN debt_pay dp ON rsd.self_account=dp.self_account WHERE rsd.pay_serial is NULL and dp.done_time>#{beginTime} and dp.done_time<#{endTime} and dp.user_id=#{userId} GROUP BY rsd.id) a GROUP BY item")
+    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit FROM (SELECT rsd.id, item ,num,total_money,unit from room_shop_detail rsd LEFT JOIN debt_pay dp ON rsd.self_account=dp.self_account WHERE rsd.pay_serial is NULL and dp.done_time>#{beginTime} and dp.done_time<#{endTime} and dp.user_id=#{userId} GROUP BY rsd.id) a GROUP BY item,unit")
     List<RoomShopDetail> getSumRoomShopByDoneTimeUser(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
@@ -43,11 +43,11 @@ public interface RoomShopDetailMapper extends MyMapper<RoomShopDetail> {
     List<RoomShopDetail> getRetailByDoneTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*聚合，不带操作员*/
-    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit from room_shop_detail WHERE do_time>#{beginTime} and do_time<#{endTime} and pay_serial is not null GROUP BY item")
+    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit from room_shop_detail WHERE do_time>#{beginTime} and do_time<#{endTime} and pay_serial is not null GROUP BY item,unit")
     List<RoomShopDetail> getSumRetailByDoneTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*聚合，带操作员*/
-    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit from room_shop_detail WHERE do_time>#{beginTime} and do_time<#{endTime} and pay_serial is not null and user_id=#{userId} GROUP BY item")
+    @Select("SELECT item,sum(num) num,sum(total_money) totalMoney,unit from room_shop_detail WHERE do_time>#{beginTime} and do_time<#{endTime} and pay_serial is not null and user_id=#{userId} GROUP BY item,unit")
     List<RoomShopDetail> getSumRetailByDoneTimeUser(@Param("userId") String userId,@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
