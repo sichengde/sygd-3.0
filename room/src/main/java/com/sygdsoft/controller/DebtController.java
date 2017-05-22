@@ -138,6 +138,39 @@ public class DebtController {
     }
 
     /**
+     * 房吧录入-新版，几笔房吧插入几笔账务，不像以前那样拼接字符串
+     */
+    @RequestMapping(value = "roomShopInNew")
+    @Transactional(rollbackFor = Exception.class)
+    public void roomShopInNew(@RequestBody RoomShopIn roomShopIn) throws Exception {
+        /*解析传进来的参数*/
+        String roomId = roomShopIn.getRoomId();
+        String description = roomShopIn.getDescription();
+        String guest = roomShopIn.getGuest();
+        timeService.setNow();
+        /*创建房吧明细账务*/
+        List<RoomShopDetail> roomShopDetailList = roomShopIn.getRoomShopDetailList();
+        String selfAccount = checkInService.getSelfAccount(roomId);
+        for (RoomShopDetail roomShopDetail : roomShopDetailList) {
+            roomShopDetail.setDoTime(timeService.getNow());
+            roomShopDetail.setUserId(userService.getCurrentUser());
+            roomShopDetail.setSelfAccount(selfAccount);
+            Debt debt = new Debt();
+            debt.setRoomId(roomId);
+            debt.setDescription(description);
+            debt.setDescription(roomShopDetail.getItem() + ':' + roomShopDetail.getNum() + '*' + roomShopDetail.getPrice() + '/');
+            debt.setCurrency("挂账");
+            debt.setPointOfSale(pointOfSaleService.FB);
+            debt.setConsume(roomShopDetail.getTotalMoney());
+            debt.setBed(guest);
+            debt.setCategory(debtService.roomShopIn);
+            debt.setUserId(userService.getCurrentUser());
+            debtService.addDebt(debt);
+        }
+        roomShopDetailService.add(roomShopDetailList);
+    }
+
+    /**
      * 杂单冲账(客房)
      */
     @RequestMapping(value = "otherConsumeRoom")

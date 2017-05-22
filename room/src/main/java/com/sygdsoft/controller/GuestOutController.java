@@ -95,23 +95,25 @@ public class GuestOutController {
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
         //TODO: 离店数据校验,发现bug之后就可以删了
-        Double totalTest=0.0;
+        Double totalTest = 0.0;
+        Double totalCheckInConsume=0.0;
         for (String roomId : guestOut.getRoomIdList()) {
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             Double totalConsume = szMath.nullToZero(debtService.getTotalConsumeByRoomId(roomId));
-            if (!Objects.equals(totalConsume, szMath.nullToZero(checkIn.getConsume()))){
-                throw new Exception(roomId+"消费合计不准确，请联系厂家维护人员");
-            }
-            totalTest+=szMath.nullToZero(totalConsume);
+            totalTest += szMath.nullToZero(totalConsume);
+            totalCheckInConsume+=szMath.nullToZero(checkIn.getConsume());
         }
-        Double totalCurrency=0.0;
+        if(!Objects.equals(totalTest, totalCheckInConsume)){
+            throw new Exception("消费合计不准确，请联系厂家维护人员");
+        }
+        Double totalCurrency = 0.0;
         for (CurrencyPost currencyPost : guestOut.getCurrencyPayList()) {
-            totalCurrency+=currencyPost.getMoney();
+            totalCurrency += currencyPost.getMoney();
         }
         for (Debt debt : guestOut.getDebtAddList()) {
-            totalTest+=debt.getConsume();
+            totalTest += debt.getConsume();
         }
-        if(!Objects.equals(totalCurrency, totalTest)){
+        if (!Objects.equals(totalCurrency, totalTest)) {
             throw new Exception("结账金额有变动，请重新进入结账页面");
         }
         //TODO: 离店数据校验,发现bug之后就可以删了--完毕
@@ -203,8 +205,21 @@ public class GuestOutController {
             debtHistoryService.add(debtHistory);
             remarkAdd += "不指定账务";
         }
-        /*更新在店户籍余额*/
-        debtService.updateGuestInMoney(checkIn.getRoomId(), -payMoney, 0.0);
+        /*更新在店户籍余额，按明细结算的话，就更新对应房间的余额，否则直接更新领队房余额*/
+        if (debtList != null) {
+            for (String s : roomIdList) {
+                CheckIn checkIn1 = checkInService.getByRoomId(s);
+                Double totalConsume = 0.0;
+                for (Debt debt : debtList) {
+                    if (checkIn1.getSelfAccount().equals(debt.getSelfAccount())) {
+                        totalConsume += debt.getConsume();
+                    }
+                }
+                debtService.updateGuestInMoney(checkIn1.getRoomId(), -totalConsume, 0.0);
+            }
+        } else {
+            debtService.updateGuestInMoney(checkIn.getRoomId(), -payMoney, 0.0);
+        }
         /*生成结账信息*/
         String changeDebt = this.debtPayProcess(guestOutMiddle.getCurrencyPayList(), roomIdList, groupAccount, "中间结算" + remarkAdd);
         /*操作员记录*/

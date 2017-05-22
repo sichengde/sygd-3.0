@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.CompanyDebtIntegrationService;
 import com.sygdsoft.service.CompanyDebtService;
@@ -27,6 +28,11 @@ public class CompanyDebtIntegrationController {
     CompanyDebtService companyDebtService;
     @Autowired
     DebtHistoryService debtHistoryService;
+
+    @RequestMapping(value = "companyDebtIntegrationGet")
+    public List<CompanyDebtIntegration> companyDebtIntegrationGet(@RequestBody Query query) throws Exception{
+        return companyDebtIntegrationService.get(query);
+    }
 
     @RequestMapping(value = "companyDebtDetailGet")
     public List<Company> companyDebtDetailGet(@RequestBody ReportJson reportJson) throws Exception {

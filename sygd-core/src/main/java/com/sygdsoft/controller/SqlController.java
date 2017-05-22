@@ -17,7 +17,14 @@ public class SqlController {
     SqlMapper sqlMapper;
 
     @RequestMapping(value = "sql")
-    public List<String> sql(@RequestBody String sql){
+    public List<String> sql(@RequestBody String sql) {
         return sqlMapper.getStringList(sql);
+    }
+
+    @RequestMapping(value = "sqlUpdate")
+    public void sqlUpdate(@RequestBody List<String> sql) {
+        for (String s : sql) {
+        sqlMapper.sqlUpdate(s);
+        }
     }
 }

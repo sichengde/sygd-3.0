@@ -44,6 +44,8 @@ public class RoomController {
     ProtocolService protocolService;
     @Autowired
     CheckInGroupService checkInGroupService;
+    @Autowired
+    PointOfSaleService pointOfSaleService;
 
     @RequestMapping(value = "roomAdd")
     public void roomAdd(@RequestBody Room room) throws Exception {
@@ -132,7 +134,7 @@ public class RoomController {
                 checkIn.setProtocol(newProtocol);
             }
         }
-//        不更新消费
+        //不更新消费
         checkIn.setConsume(null);
         checkIn.setDeposit(null);
         checkInService.updateSelective(checkIn);
@@ -146,6 +148,24 @@ public class RoomController {
         List<Debt> debtList = debtService.get(new Query("room_id=" + util.wrapWithBrackets(srcRoomId)));
         for (Debt debt : debtList) {
             debt.setRoomId(dstRoomId);
+            if(debt.getCategory().equals("凌晨房费")){
+                /*如果是凌晨房，补齐杂单或者冲账*/
+                Double money=checkIn.getFinalRoomPrice()-debt.getConsume();
+                Debt debtAdd = new Debt();
+                debtAdd.setDoTime(timeService.getNow());
+                debtAdd.setPointOfSale(pointOfSaleService.FF);
+                debtAdd.setConsume(money);
+                debtAdd.setCurrency("挂账");
+                debtAdd.setGuestSource(checkIn.getGuestSource());
+                debtAdd.setDescription("换房补齐差价");
+                debtAdd.setSelfAccount(checkIn.getSelfAccount());
+                debtAdd.setRoomId(checkIn.getRoomId());
+                debtAdd.setProtocol(checkIn.getProtocol());
+                debtAdd.setUserId(checkIn.getUserId());
+                debtAdd.setCategory(debtService.deposit);
+                debtAdd.setCompany(checkIn.getCompany());
+                debtService.addDebt(debtAdd);
+            }
         }
         debtService.update(debtList);
         userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom, null);
@@ -157,7 +177,7 @@ public class RoomController {
     @RequestMapping(value = "guestToGroup")
     @Transactional(rollbackFor = Exception.class)
     public void guestToGroup(@RequestBody Room room) throws Exception {
-        CheckIn checkIn=room.getCheckIn();
+        CheckIn checkIn = room.getCheckIn();
         /*更新在店户籍*/
         checkIn.setDeposit(null);
         checkIn.setConsume(null);

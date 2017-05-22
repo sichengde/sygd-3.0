@@ -13,4 +13,8 @@ public class Sql {
     public String selectDistinct(Map<String, Object> parameters){
         return (String) parameters.get("select");
     }
+
+    public String sqlUpdate(Map<String, Object> parameters){
+        return (String) parameters.get("update");
+    }
 }
