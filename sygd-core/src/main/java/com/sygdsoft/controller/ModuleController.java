@@ -20,4 +20,9 @@ public class ModuleController {
     public Module[] getAllModule() {
         return moduleService.getAllModule();
     }
+
+    @RequestMapping(value = "moduleNewGet")
+    public Module[] getAllModuleNew() {
+        return moduleService.moduleUltimateNew;
+    }
 }

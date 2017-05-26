@@ -11,7 +11,7 @@
                     <input type="text" ng-model="endTime" uib-datepicker-popup class="tableTime">
                 </li>
                 <li class="button" style="border: 0px; margin-top: 7px; padding: 0px;"><input type="button" ng-click="roomCategorySaleReport(beginTime,endTime)" value="预览"></li>
-                <li>REVPER=(全日房费+凌晨房费/)(参与统计客房总数)</li>
+                <li>REVPER=(全日房费+凌晨房费)/(参与统计客房总数)</li>
             </div>
             <sz-table fields="roomCategorySaleFields" items="roomCategorySaleList" button="add delete update" print="客房销售统计" ng-if="roomCategorySaleList" query-message="queryMessage" remark="roomCategorySaleRemark" items-per-page="20"></sz-table>
         </sz-pane>

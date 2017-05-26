@@ -19,7 +19,8 @@ App.controller('UserController', ['$scope', 'dataService', 'util', 'popUpService
     $scope.selectCurrencyList=[];
     $scope.selectListPointOfSale=[];
     $scope.selectCurrencyList[0]=dataService.getBooleanListEn;
-    $scope.userFields = [{name: '姓名', id: 'userId', notNull: 'true', width: '100px',static:'true'},
+    $scope.userFields = [
+        {name: '姓名', id: 'userId', notNull: 'true', width: '100px',static:'true'},
         {name: '模块', id: 'moduleArray', width: '300px',static:'true'},
         {name: '权限', id: 'permissionArray', width: '500px',static:'true'},
         {name: '营业部门', id: 'pointOfSaleArray', width: '200px',static:'true'},

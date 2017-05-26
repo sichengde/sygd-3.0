@@ -59,6 +59,48 @@ public class ModuleService {
                     , "账务工具","手动夜审","客房叫回", "餐饮叫回", "权限管理"
             })
     };
+    //新版权限
+    public Module[] moduleUltimateNew = new Module[]{
+            new Module("接待", "reception", new String[]{
+                    "开房", "结账", "团队结算", "联房", "杂单", "冲账", "房吧"
+                    , "前台接待"
+                    , "团队管理"
+                    , "营销预定"
+                    , "会员管理"
+                    , "单位管理"
+                    , "报表系统"
+                    , "日志信息"
+                    , "其他工具"
+            }),
+            new Module("餐饮", "restaurant", new String[]{
+                    "退菜","赠菜", "盘态图", "自助餐", "日志信息", "报表系统", "其他工具", "参数设置", "外卖","厨打划单"
+            }, true),
+            new Module("桑拿", "sauna", new String[]{
+                    "消费录入",
+            }, true),
+            /*new Module("会员", "vip", new String[]{
+            }),
+            new Module("预定", "BOOK", new String[]{
+            }),*/
+            new Module("库存", "storage", new String[]{
+                    "库存参数",
+                    "库存管理",
+                    "库存报表"
+            }),
+            new Module("经理查询", "manager", new String[]{
+                    "实时状态","宾客信息","数据分析","库存记录"
+            }),
+            new Module("系统维护", "hotelParam", new String[]{
+                    "酒店参数"
+                    , "客房参数"
+                    , "餐饮参数"
+                    , "桑拿参数"
+                    , "库存参数"
+                    , "会员参数"
+                    , "账务工具","手动夜审","客房叫回", "餐饮叫回", "权限管理"
+            })
+    };
+
     @Autowired
     RegisterService registerService;
 
