@@ -1,7 +1,7 @@
 /**
  * Created by 舒展 on 2016/6/18 0018.
  */
-App.controller('roomShopInController', ['$scope', 'dataService', 'receptionService', 'util', 'webService', 'popUpService', 'saleService', 'messageService', 'LoginService', function ($scope, dataService, receptionService, util, webService, popUpService, saleService, messageService, LoginService) {
+App.controller('roomShopInController', ['$scope', 'dataService', 'receptionService', 'util', 'webService', 'popUpService', 'saleService', 'messageService', '$q', function ($scope, dataService, receptionService, util, webService, popUpService, saleService, messageService, $q) {
     $scope.room = receptionService.getChooseRoom();
     var guestList = util.objectListToString($scope.room.checkIn.checkInGuest, 'name');
     if (guestList) {
@@ -39,12 +39,14 @@ App.controller('roomShopInController', ['$scope', 'dataService', 'receptionServi
             if ($scope.checkInGuest) {//有床位号
                 roomShopIn.bed = $scope.checkInGuest.bed;
             }
-            webService.post('roomShopIn', roomShopIn)
+            return webService.post('roomShopIn', roomShopIn)
                 .then(function () {
                     /*关闭该页面*/
                     popUpService.close('roomShopIn');
                     messageService.actionSuccess();
                 })
+        }else {
+            return $q.resolve();
         }
     }
 }]);
