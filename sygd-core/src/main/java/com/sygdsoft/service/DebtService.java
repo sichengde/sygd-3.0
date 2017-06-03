@@ -24,15 +24,15 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "debt")
-public class DebtService extends BaseService<Debt>{
-    public String deposit="付押金";
-    public String cancelDeposit="退押金";
-    public String otherConsumeIn="杂单";
-    public String otherConsumeOut="冲账";
-    public String roomShopIn="房吧";
-    public String tel="电话费";
-    public String allDayPrice="全日房费";
-    public String payMiddle="中间结算冲账";
+public class DebtService extends BaseService<Debt> {
+    public String deposit = "付押金";
+    public String cancelDeposit = "退押金";
+    public String otherConsumeIn = "杂单";
+    public String otherConsumeOut = "冲账";
+    public String roomShopIn = "房吧";
+    public String tel = "电话费";
+    public String allDayPrice = "全日房费";
+    public String payMiddle = "中间结算冲账";
     @Autowired
     DebtMapper debtMapper;
     @Autowired
@@ -64,15 +64,16 @@ public class DebtService extends BaseService<Debt>{
         debt.setSelfAccount(checkIn.getSelfAccount());
         debt.setGroupAccount(checkIn.getGroupAccount());
         debt.setCompany(checkIn.getCompany());
-        debt.setTotalConsume(checkIn.getNotNullConsume()+debt.getNotNullConsume());
+        debt.setTotalConsume(checkIn.getNotNullConsume() + debt.getNotNullConsume());
         debtMapper.insert(debt);
-        this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(),debt.getDeposit());
+        this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(), debt.getDeposit());
     }
 
     /**
      * 增加一系列消费
      */
     public void addDebt(List<Debt> debtList) {
+        debtMapper.insertList(debtList);
         for (Debt debt : debtList) {
             CheckIn checkIn = checkInService.getByRoomId(debt.getRoomId());
             debt.setDoTime(timeService.getNow());
@@ -80,21 +81,18 @@ public class DebtService extends BaseService<Debt>{
             debt.setGroupAccount(checkIn.getGroupAccount());
             debt.setGuestSource(checkIn.getGuestSource());
             debt.setCompany(checkIn.getCompany());
-            debt.setTotalConsume(checkIn.getNotNullConsume()+debt.getNotNullConsume());
-            this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(),debt.getDeposit());
+            debt.setTotalConsume(checkIn.getNotNullConsume() + debt.getNotNullConsume());
+            this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(), debt.getDeposit());
         }
-        debtMapper.insertList(debtList);
     }
 
 
     /**
      * 更新checkIn和checkInGroup中的消费（转房客，新增消费）
      */
-    public void updateGuestInMoney(String roomId,Double consume,Double deposit){
-        CheckIn checkIn=checkInService.getByRoomId(roomId);
-        checkIn.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkIn.getNotNullConsume()));
-        checkIn.setDeposit(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(deposit)+checkIn.getNotNullDeposit()));
-        checkInMapper.updateByPrimaryKey(checkIn);
+    public void updateGuestInMoney(String roomId, Double consume, Double deposit) {
+        CheckIn checkIn = checkInService.getByRoomId(roomId);
+        checkInMapper.updateGuestInMoney(roomId);
         if (checkIn.getGroupAccount() != null) {
             CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(checkIn.getGroupAccount());
             checkInGroup.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkInGroup.getNotNullGroupConsume()));
@@ -108,7 +106,7 @@ public class DebtService extends BaseService<Debt>{
      */
     public List<Debt> getListByRoomId(String roomId) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id="+util.wrapWithBrackets(roomId));
+        example.createCriteria().andCondition("room_id=" + util.wrapWithBrackets(roomId));
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");
@@ -118,7 +116,7 @@ public class DebtService extends BaseService<Debt>{
     /*刨除中间结算的冲账*/
     public List<Debt> getListByRoomIdPure(String roomId) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id="+util.wrapWithBrackets(roomId)+" and category!= \'中间结算冲账\'");
+        example.createCriteria().andCondition("room_id=" + util.wrapWithBrackets(roomId) + " and category!= \'中间结算冲账\'");
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");
@@ -127,7 +125,7 @@ public class DebtService extends BaseService<Debt>{
 
     public List<Debt> getListByGroupAccount(String groupAccount) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("group_account="+util.wrapWithBrackets(groupAccount));
+        example.createCriteria().andCondition("group_account=" + util.wrapWithBrackets(groupAccount));
         example.orderBy("deposit").desc();
         example.orderBy("roomId");
         example.orderBy("pointOfSale");
@@ -135,9 +133,9 @@ public class DebtService extends BaseService<Debt>{
         return debtMapper.selectByExample(example);
     }
 
-    public List<Debt> getListByBed(String bed){
-        Example example=new Example(Debt.class);
-        example.createCriteria().andCondition("bed="+util.wrapWithBrackets(bed));
+    public List<Debt> getListByBed(String bed) {
+        Example example = new Example(Debt.class);
+        example.createCriteria().andCondition("bed=" + util.wrapWithBrackets(bed));
         example.orderBy("deposit").desc();
         example.orderBy("pointOfSale");
         example.orderBy("doTime");
@@ -161,15 +159,15 @@ public class DebtService extends BaseService<Debt>{
 
     public List<Debt> getDepositListByGroupAccount(String groupAccount) {
         Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("group_account="+util.wrapWithBrackets(groupAccount));
+        example.createCriteria().andCondition("group_account=" + util.wrapWithBrackets(groupAccount));
         example.createCriteria().andCondition("deposit>0");
         example.createCriteria().andCondition("remark!=\'已退\'");
         return debtMapper.selectByExample(example);
     }
 
-    public List<Debt> getDepositListByBed(String bed){
-        Example example=new Example(Debt.class);
-        example.createCriteria().andCondition("bed="+util.wrapWithBrackets(bed));
+    public List<Debt> getDepositListByBed(String bed) {
+        Example example = new Example(Debt.class);
+        example.createCriteria().andCondition("bed=" + util.wrapWithBrackets(bed));
         example.createCriteria().andCondition("deposit>0");
         example.createCriteria().andCondition("remark!=\'已退\'");
         return debtMapper.selectByExample(example);
@@ -178,21 +176,21 @@ public class DebtService extends BaseService<Debt>{
     /**
      * 获得该床位的总消费
      */
-    public Double getTotalConsumeByBed(String bed){
+    public Double getTotalConsumeByBed(String bed) {
         return debtMapper.getTotalConsumeByBed(bed);
     }
 
     /**
      * 计算该营业部门在该单子下的销售情况
      */
-    public Double getTotalConsumeByPointOfSaleAndSerial(String pointOfSale,String serial){
+    public Double getTotalConsumeByPointOfSaleAndSerial(String pointOfSale, String serial) {
         return debtMapper.getTotalConsumeByPointOfSaleAndSerial(pointOfSale, serial);
     }
 
     /**
      * 根据房号合并房费房吧条目
      */
-    public List<Debt> mergeDebt(List<Debt> debtList){
+    public List<Debt> mergeDebt(List<Debt> debtList) {
         if (otherParamService.getValueByName("房间账单合并").equals("y")) {
             List<Debt> compressDebtList = new ArrayList<>();
             List<String> roomIdListCheck = new ArrayList<>();//用来检测哪些房间加入了
@@ -235,7 +233,7 @@ public class DebtService extends BaseService<Debt>{
                 }
             }
             return compressDebtList;
-        }else {
+        } else {
             return debtList;
         }
     }
@@ -243,8 +241,8 @@ public class DebtService extends BaseService<Debt>{
     /**
      * 通过历史账单恢复账务账单
      */
-    public List<Debt> getByHistory(List<DebtHistory> debtHistoryList){
-        List<Debt> debtList=new ArrayList<>();
+    public List<Debt> getByHistory(List<DebtHistory> debtHistoryList) {
+        List<Debt> debtList = new ArrayList<>();
         for (DebtHistory debtHistory : debtHistoryList) {
             debtList.add(new Debt(debtHistory));
         }
@@ -255,31 +253,32 @@ public class DebtService extends BaseService<Debt>{
      * 根据转入的离店序列号进行删除
      */
     public void deleteByCheckOutSerial(String checkOutSerial) throws Exception {
-        Debt debtQuery=new Debt();
+        Debt debtQuery = new Debt();
         debtQuery.setFromRoom(checkOutSerial);
         this.delete(debtQuery);
     }
+
     /**
      * 获得该房间的总消费(用于叫回账单，重新统计consume生成checkIn)
      */
-    public Double getTotalConsumeByRoomId(String roomId){
+    public Double getTotalConsumeByRoomId(String roomId) {
         return debtMapper.getTotalConsumeByRoomId(roomId);
     }
 
     /**
      * 获得该房间的总消费(用于叫回账单，重新统计consume生成checkIn)
      */
-    public Double getTotalConsumeByGroupAccount(String groupAccount){
+    public Double getTotalConsumeByGroupAccount(String groupAccount) {
         return debtMapper.getTotalConsumeByGroupAccount(groupAccount);
     }
 
     /**
      * 获取给定账务数组的总消费
      */
-    public Double getTotalConsumeByList(List<Debt> debtList){
-        Double consume=0.0;
+    public Double getTotalConsumeByList(List<Debt> debtList) {
+        Double consume = 0.0;
         for (Debt debt : debtList) {
-            consume+=debt.getConsume();
+            consume += debt.getConsume();
         }
         return consume;
     }
@@ -287,7 +286,7 @@ public class DebtService extends BaseService<Debt>{
     /**
      * 为该房间号的账务设置公付账号（用于散客转团队和联房）
      */
-    public void setGroupAccountByRoomId(String roomId,String groupAccount) throws Exception {
+    public void setGroupAccountByRoomId(String roomId, String groupAccount) throws Exception {
         /*为每一条账务设置公付账号*/
         List<Debt> debtList = getListByRoomId(roomId);
         for (Debt debt : debtList) {
