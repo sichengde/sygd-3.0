@@ -227,7 +227,7 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
     $scope.guestInAction = function () {
         var protocol;//如果是自定义房价的话，该值不为空
         /*先进行一波输入校验*/
-        if (!$scope.protocol||$scope.protocol.protocol) {
+        if (!$scope.protocol||!$scope.protocol.protocol||$scope.protocol.protocol===undefined) {
             messageService.setMessage({type: 'error', content: '您还没选择房价协议'});
             popUpService.pop('message');
             return $q.resolve();
