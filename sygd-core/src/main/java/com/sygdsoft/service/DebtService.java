@@ -57,9 +57,9 @@ public class DebtService extends BaseService<Debt> {
     SzMath szMath;
 
     /**
-     * 增加一条消费
+     * 增加一条消费(有可能出现死锁)
      */
-    @Transactional(propagation= Propagation.NOT_SUPPORTED)
+    //TODO:有可能出现死锁，概率很小，而且出现之后后果不严重，再次执行即可，故而不考虑
     public void addDebt(Debt debt) {
         CheckIn checkIn = checkInService.getByRoomId(debt.getRoomId());
         debt.setDoTime(timeService.getNow());
@@ -75,7 +75,6 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 增加一系列消费
      */
-    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public void addDebt(List<Debt> debtList) {
         debtMapper.insertList(debtList);
         for (Debt debt : debtList) {
