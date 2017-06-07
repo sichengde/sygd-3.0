@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
 
 /**
  * Created by 舒展 on 2016-05-10.2
@@ -20,6 +21,9 @@ public class UserService extends BaseService<User>{
             throw new Exception("登录超时，需要重新登录");
         }else {
             return userId;
+        }*/
+        /*if(userId==null){
+            userId=(String) URLDecoder.decode(request.getHeader("userid"));
         }*/
         return userId;
     }

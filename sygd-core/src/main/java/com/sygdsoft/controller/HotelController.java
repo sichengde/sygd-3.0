@@ -38,6 +38,6 @@ public class HotelController {
      */
     @RequestMapping(value = "contactUs")
     public OnlyString  contactUs(){
-        return new OnlyString("联系人:舒展   电话:18624410635");
+        return new OnlyString("服务热线:18624410635,13804046634");
     }
 }
