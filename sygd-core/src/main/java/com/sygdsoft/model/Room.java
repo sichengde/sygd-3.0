@@ -23,6 +23,7 @@ public class Room extends BaseEntity{
     private Date repairTime;//维修时间
     private String todayLock;//当日锁房，不锁的时候是null，锁的时候是原因
     private Boolean ifRoom;//是否属于客房，参与销售统计，夜审加房费
+    private String remark;//备注，会显示在房间类别后边
     @Transient
     private CheckIn checkIn;
     @Transient
@@ -245,5 +246,13 @@ public class Room extends BaseEntity{
 
     public void setIfRoom(Boolean ifRoom) {
         this.ifRoom = ifRoom;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

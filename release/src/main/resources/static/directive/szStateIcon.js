@@ -18,7 +18,7 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
                 out += '<li class="icon-time"><span>小时房</span></li>'
             }
         }
-        if (room.checkInGroup && room.checkInGroup.leaderRoom==room.roomId) {
+        if (room.checkInGroup && room.checkInGroup.leaderRoom == room.roomId) {
             out += '<li class="icon-flag"><span>领队标志</span></li>'
         }
         if (room.todayLeave) {
@@ -62,7 +62,7 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
             out2 += '<li><b>抵店日期：</b>' + reachTime + '</li>';
             var leaveTime = dateFilter(room.checkIn.leaveTime, 'yyyy-MM-dd HH:mm:ss');
             out2 += '<li><b>预离日期：</b>' + leaveTime + '</li>';
-            if(room.checkIn.remark){
+            if (room.checkIn.remark) {
                 out2 += '<li><b>备注：</b>' + room.checkIn.remark + '</li>';
             }
         }
@@ -101,9 +101,13 @@ App.directive('szStateIcon', ['roomStateEnFilter', 'util', 'dateFilter', functio
         link: function (scope, element, attr, ctr) {
             var room = scope.r;
             var roomStateEn = roomStateEnFilter(room.state);
+            var categoryAndRemark = room.category;
+            if (room.remark) {
+                categoryAndRemark += '-' + room.remark;
+            }
             var appendStr = '<ul>' +
                 '<li>' + room.roomId + '</li>' +
-                '<li>' + room.category + '</li>' +
+                '<li>' + categoryAndRemark + '</li>' +
                 '<li></li>' +
                 '<li class="' + roomStateEn + '"></li>';
             /*房态小图标可选项*/
