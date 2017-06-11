@@ -1,20 +1,14 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.Query;
-import com.sygdsoft.model.Cargo;
-import com.sygdsoft.model.PointOfSale;
-import com.sygdsoft.model.RoomShopDetail;
-import com.sygdsoft.model.StorageOutDetail;
+import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
-import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by 舒展 on 2016-11-17.
@@ -29,4 +23,8 @@ public class StorageOutDetailController {
         return storageOutDetailService.get(query);
     }
 
+    @RequestMapping(value = "storageOutDetailRichGet")
+    public List<StorageOutDetail> getStorageOutDetailRich(@RequestBody ReportJson reportJson) {
+        return this.storageOutDetailService.getStorageOutDetailParse(reportJson.getBeginTime(),reportJson.getEndTime(),reportJson.getParam1());
+    }
 }

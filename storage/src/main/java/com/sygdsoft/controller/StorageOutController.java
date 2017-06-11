@@ -107,9 +107,9 @@ public class StorageOutController {
                         storageOutSerial = true;
                     }
                     storageOutDetail.setNum(roomShopDetail.getNum());
-                    storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), roomShopDetail.getNum()))));
-                    storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getPrice())));
-                    storageOutDetail.setSaleTotal(roomShopDetail.getTotalMoney());
+                    storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), roomShopDetail.getNum()))));
+                    storageOutDetail.setOldTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getOldPrice())));
+                    storageOutDetail.setTotal(roomShopDetail.getTotalMoney());
                     storageOutDetailListNormal.add(storageOutDetail);
                 } else {//库存不足
                     //有库存不足的情况，首先就要增加一个直拨序列号
@@ -124,8 +124,8 @@ public class StorageOutController {
                         }
                         num1 = num1 - remain;
                         storageOutDetail.setNum(remain);
-                        storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
-                        storageOutDetail.setTotal(storageOutDetail.getNum() * storageOutDetail.getPrice());
+                        storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
+                        storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
                         storageOutDetail.setSaleTotal(Double.valueOf(szMath.formatTwoDecimal(roomShopDetail.getTotalMoney() * remain, roomShopDetail.getNum())));
                         totalMoneyRemain = totalMoneyRemain - storageOutDetail.getSaleTotal();
                         storageOutDetailListNormal.add(storageOutDetail);
@@ -133,9 +133,9 @@ public class StorageOutController {
                     /*超出的数量则直拨*/
                     storageOutDetail=new StorageOutDetail(storageOutDetail);
                     storageOutDetail.setNum(num1);
-                    storageOutDetail.setPrice(0.0);//直拨没有价格
-                    storageOutDetail.setTotal(num1 * storageOutDetail.getPrice());
-                    storageOutDetail.setSaleTotal(totalMoneyRemain);
+                    storageOutDetail.setOldPrice(0.0);//直拨没有价格
+                    storageOutDetail.setOldTotal(num1 * storageOutDetail.getOldPrice());
+                    storageOutDetail.setTotal(totalMoneyRemain);
                     storageOutDetailListDirect.add(storageOutDetail);
                 }
             }
@@ -185,9 +185,9 @@ public class StorageOutController {
                         storageOutSerial = true;
                     }
                     storageOutDetail.setNum(deskDetailHistory.getNum());
-                    storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNum()))));
-                    storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getPrice())));
-                    storageOutDetail.setSaleTotal(deskDetailHistory.getAfterDiscount());
+                    storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNum()))));
+                    storageOutDetail.setOldTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getOldPrice())));
+                    storageOutDetail.setTotal(deskDetailHistory.getAfterDiscount());
                     storageOutDetailListNormal.add(storageOutDetail);
                 } else {//库存不足
                     if (!storageOutSerialDirect ) {
@@ -199,18 +199,18 @@ public class StorageOutController {
                     if (remain > 0) {//剩余的库存正常出库
                         num1 = num1 - remain;
                         storageOutDetail.setNum(remain);
-                        storageOutDetail.setPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
-                        storageOutDetail.setTotal(storageOutDetail.getNum() * storageOutDetail.getPrice());
-                        storageOutDetail.setSaleTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNum())));
+                        storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
+                        storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
+                        storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNum())));
                         totalMoneyRemain = totalMoneyRemain - storageOutDetail.getSaleTotal();
                         storageOutDetailListNormal.add(storageOutDetail);
                     }
                     /*超出的数量则直拨*/
                     storageOutDetail=new StorageOutDetail(storageOutDetail);
                     storageOutDetail.setNum(num1);
-                    storageOutDetail.setPrice(0.0);//直拨没有价格
-                    storageOutDetail.setTotal(num1 * storageOutDetail.getPrice());
-                    storageOutDetail.setSaleTotal(totalMoneyRemain);
+                    storageOutDetail.setOldPrice(0.0);//直拨没有价格
+                    storageOutDetail.setOldTotal(num1 * storageOutDetail.getOldPrice());
+                    storageOutDetail.setTotal(totalMoneyRemain);
                     storageOutDetailListDirect.add(storageOutDetail);
                 }
             }

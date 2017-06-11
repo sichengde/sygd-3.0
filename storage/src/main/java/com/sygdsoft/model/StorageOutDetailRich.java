@@ -1,51 +1,38 @@
 package com.sygdsoft.model;
 
-import javax.persistence.Transient;
+import java.util.Date;
 
 /**
- * Created by 舒展 on 2016-11-17.
+ * Created by mac on 2017/6/10.
  */
-public class StorageOutDetail extends BaseEntity {
+public class StorageOutDetailRich {
+    private Integer id;
     private String house;//仓库
     private String cargo;//货物
     private String unit;//单位
     private Integer num;//数量
-    private Double price;//单价
     private Double total;//合计金额
     private String myUsage;//用途
     private String storageOutSerial;//序列号
     private String category;//类别
-    private Double saleTotal;//销售合计
     private Double oldPrice;//入库单价
     private Double oldTotal;//入库金额合计
-    @Transient
-    private Boolean out;//指定出库
+    private Date outTime;//出库时间
+    private String approver;//批准人
+    private String deptOut;//领用部门
+    private String saveMan;//领用人
+    private String remark;//备注
+    private String userId;//操作员
 
-    public StorageOutDetail() {
+    public StorageOutDetailRich() {
     }
 
-    public StorageOutDetail(StorageOutDetail storageOutDetail) {
-        this.house = storageOutDetail.getHouse();
-        this.cargo = storageOutDetail.getCargo();
-        this.unit = storageOutDetail.getUnit();
-        this.num = storageOutDetail.getNum();
-        this.price = storageOutDetail.getPrice();
-        this.total = storageOutDetail.getTotal();
-        this.myUsage = storageOutDetail.getMyUsage();
-        this.storageOutSerial = storageOutDetail.getStorageOutSerial();
-        this.category = storageOutDetail.getCategory();
-        this.saleTotal = storageOutDetail.getSaleTotal();
-        this.out = storageOutDetail.getOut();
-        this.oldPrice = storageOutDetail.getOldPrice();
-        this.oldTotal = storageOutDetail.getOldTotal();
+    public Integer getId() {
+        return id;
     }
 
-    public Boolean getNotNullOut(){
-        if(out==null){
-            return false;
-        }else {
-            return out;
-        }
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getHouse() {
@@ -80,14 +67,6 @@ public class StorageOutDetail extends BaseEntity {
         this.num = num;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
     public Double getTotal() {
         return total;
     }
@@ -120,22 +99,6 @@ public class StorageOutDetail extends BaseEntity {
         this.category = category;
     }
 
-    public Boolean getOut() {
-        return out;
-    }
-
-    public void setOut(Boolean out) {
-        this.out = out;
-    }
-
-    public Double getSaleTotal() {
-        return saleTotal;
-    }
-
-    public void setSaleTotal(Double saleTotal) {
-        this.saleTotal = saleTotal;
-    }
-
     public Double getOldPrice() {
         return oldPrice;
     }
@@ -150,5 +113,53 @@ public class StorageOutDetail extends BaseEntity {
 
     public void setOldTotal(Double oldTotal) {
         this.oldTotal = oldTotal;
+    }
+
+    public Date getOutTime() {
+        return outTime;
+    }
+
+    public void setOutTime(Date outTime) {
+        this.outTime = outTime;
+    }
+
+    public String getApprover() {
+        return approver;
+    }
+
+    public void setApprover(String approver) {
+        this.approver = approver;
+    }
+
+    public String getDeptOut() {
+        return deptOut;
+    }
+
+    public void setDeptOut(String deptOut) {
+        this.deptOut = deptOut;
+    }
+
+    public String getSaveMan() {
+        return saveMan;
+    }
+
+    public void setSaveMan(String saveMan) {
+        this.saveMan = saveMan;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

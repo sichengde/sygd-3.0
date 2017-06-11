@@ -59,6 +59,7 @@ public class StorageInDetailService extends BaseService<StorageInDetail>{
      */
     //TODO:有问题，超出部分时余量还是0
     public Double storageParsePrice(String house,String cargo,Integer num){
+        Integer totalNum=num;
         List<StorageInDetail> storageInDetailList=getByCargoExist(house, cargo);
         Double totalMoney=0.0;
         for (StorageInDetail inDetail : storageInDetailList) {
@@ -74,7 +75,7 @@ public class StorageInDetailService extends BaseService<StorageInDetail>{
                 break;
             }
         }
-        return totalMoney/num;
+        return totalMoney/totalNum;
     }
     /**
      * 根据仓库名称删除
