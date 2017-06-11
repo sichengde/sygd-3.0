@@ -45,7 +45,7 @@ public class CookRoomService extends BaseService<CookRoom>{
     public void checkCookRoomIp() throws Exception {
         List<CookRoom> cookRoomList=get(null);
         for (CookRoom cookRoom : cookRoomList) {
-            if(cookRoom.getUsbPort()) {
+            if(cookRoom.getNotNullUPort()) {
                 hotelService.postJSON("http://" + cookRoom.getPrinterIp() + "/checkPrint", "{}");
             }
         }
