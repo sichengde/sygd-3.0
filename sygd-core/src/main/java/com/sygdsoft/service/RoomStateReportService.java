@@ -40,4 +40,11 @@ public class RoomStateReportService extends BaseService<RoomStateReport>{
     public List<RoomStateReport> getSumByDateCategory(Date beginTime,Date endTime) throws ParseException {
         return roomStateReportMapper.getSumByDateCategory(timeService.getMinTime(beginTime),timeService.getMinTime(endTime));
     }
+
+    /**
+     * 根据房类单独获取一下出租率
+     */
+    public Double getRentRateOnly(Date beginTime,Date endTime,String roomCategory) throws ParseException {
+        return roomStateReportMapper.getRentRateOnly(timeService.getMinTime(beginTime), timeService.getMinTime(endTime), roomCategory);
+    }
 }

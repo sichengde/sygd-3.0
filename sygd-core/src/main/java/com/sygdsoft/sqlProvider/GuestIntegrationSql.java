@@ -32,10 +32,20 @@ public class GuestIntegrationSql {
         Date beginTime=(Date) map.get("beginTime");
         Date endTime=(Date) map.get("endTime");
         String guestSource=(String) map.get("guestSource");
+        String roomCategory=(String) map.get("roomCategory");
         String cardIdFirstFour=(String) map.get("cardIdFirstFour");
         Boolean like=(Boolean) map.get("like");
         Boolean foreigner=(Boolean) map.get("foreigner");
-        String basic="SELECT count(*) FROM guest_integration ";
+        Boolean openTime=(Boolean) map.get("openTime");//开房数
+        String basic;
+        if(openTime==null){
+            openTime=false;
+        }
+        if(openTime){
+            basic="SELECT count(count(DISTINCT self_account)) FROM guest_integration ";
+        }else {
+            basic="SELECT count(*) FROM guest_integration ";
+        }
         String add="";
         if(beginTime!=null){
             add += " and reach_time>#{beginTime} ";
@@ -45,6 +55,9 @@ public class GuestIntegrationSql {
         }
         if(guestSource!=null){
             add+=" and guest_source=#{guestSource}";
+        }
+        if(roomCategory!=null){
+            add+=" and room_category=#{roomCategory}";
         }
         if(cardIdFirstFour!=null){
             if(like){

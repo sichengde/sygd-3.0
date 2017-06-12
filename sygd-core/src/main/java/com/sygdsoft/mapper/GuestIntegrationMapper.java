@@ -27,7 +27,7 @@ public interface GuestIntegrationMapper extends MyMapper<GuestIntegration>{
      */
     @SelectProvider(type = GuestIntegrationSql.class,method = "getSumNum")
     @ResultType(Integer.class)
-    Integer getSumNum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") String guestSource,@Param("cardIdFirstFour")String cardIdFirstFour,@Param("like")Boolean like,@Param("foreigner")Boolean foreigner);
+    Integer getSumNum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") String guestSource,@Param("roomCategory") String roomCategory,@Param("cardIdFirstFour")String cardIdFirstFour,@Param("like")Boolean like,@Param("foreigner")Boolean foreigner,@Param("openTime")Boolean openTime);
 
     /**
      * 根据时间获得列表

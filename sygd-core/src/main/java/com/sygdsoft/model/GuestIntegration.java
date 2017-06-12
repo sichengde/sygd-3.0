@@ -9,6 +9,7 @@ public class GuestIntegration extends BaseEntity{
     private String cardId;
     private String country;
     private String guestSource;
+    private String roomCategory;
     private String selfAccount;
     private Date reachTime;
     private Boolean ifIn;
@@ -62,5 +63,13 @@ public class GuestIntegration extends BaseEntity{
 
     public void setGuestSource(String guestSource) {
         this.guestSource = guestSource;
+    }
+
+    public String getRoomCategory() {
+        return roomCategory;
+    }
+
+    public void setRoomCategory(String roomCategory) {
+        this.roomCategory = roomCategory;
     }
 }

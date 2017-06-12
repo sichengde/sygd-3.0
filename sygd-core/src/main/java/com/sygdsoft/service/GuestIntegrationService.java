@@ -34,7 +34,7 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
         } catch (Exception e) {
             throw new Exception("请定义本地身份证前四位");
         }
-        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,firstNum, true,null);
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,null,firstNum, true,null,false);
     }
 
     /**
@@ -48,20 +48,34 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
         } catch (Exception e) {
             throw new Exception("请定义本地身份证前四位");
         }
-        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,firstNum, false,null);
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,null,firstNum, false,null,false);
     }
 
     /**
      * 获得一段时间内的总人数(根据客源)
      */
     public Integer getSumNumByDate(Date beginTime,Date endTime,String guestSource){
-        return guestIntegrationMapper.getSumNum(beginTime,endTime,guestSource,null,null,null);
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,guestSource,null,null,null,null,false);
     }
     /**
      * 获得一段时间内的外宾人数
      */
     public Integer getSumForeignerNumByDate(Date beginTime,Date endTime){
-        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,null,null,true);
+        return guestIntegrationMapper.getSumNum(beginTime,endTime,null,null,null,null,true,false);
+    }
+
+    /**
+     * 根据房类和客源获得总人数
+     */
+    public Integer getSumNum(Date beginTime,Date endTime,String guestSource,String roomCategory){
+        return guestIntegrationMapper.getSumNum(beginTime, endTime, guestSource, roomCategory, null,null,null,false);
+    }
+
+    /**
+     * 获得总开房数
+     */
+    public Integer getSumOpenNum(Date beginTime,Date endTime,String guestSource,String roomCategory){
+        return guestIntegrationMapper.getSumNum(beginTime, endTime, guestSource, roomCategory, null,null,null,true);
     }
 
     /**

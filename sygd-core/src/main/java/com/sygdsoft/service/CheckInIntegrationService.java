@@ -39,5 +39,17 @@ public class CheckInIntegrationService extends BaseService<CheckInIntegration>{
         return checkInIntegrationMapper.getSumConsume(beginTime, endTime, guestSource,roomCategory);
     }
 
+    /**
+     * 根据房类和客源获取入住天数
+     */
+    public Integer getTotalLiveDay(Date beginTime, Date endTime, String guestSource, String roomCategory){
+        return checkInIntegrationMapper.getTotalLiveDay(beginTime, endTime, guestSource, roomCategory);
+    }
 
+    /**
+     * 根据房类和客源获取一段时间内的平均房价
+     */
+    public Double getAvaRoomPrice(Date beginTime, Date endTime, String guestSource, String roomCategory){
+        return checkInIntegrationMapper.getAvaRoomPrice(beginTime, endTime, guestSource, roomCategory);
+    }
 }
