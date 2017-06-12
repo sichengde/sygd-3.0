@@ -30,6 +30,13 @@ public interface GuestIntegrationMapper extends MyMapper<GuestIntegration>{
     Integer getSumNum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") String guestSource,@Param("roomCategory") String roomCategory,@Param("cardIdFirstFour")String cardIdFirstFour,@Param("like")Boolean like,@Param("foreigner")Boolean foreigner,@Param("openTime")Boolean openTime);
 
     /**
+     * 获取平均消费
+     */
+    @Select("")
+    @ResultType(Double.class)
+    Double getAvaConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("guestSource") List<String >guestSourceList,@Param("roomCategory") List<String> roomCategoryList);
+
+    /**
      * 根据时间获得列表
      */
     @SelectProvider(type =GuestIntegrationSql.class,method ="getList" )

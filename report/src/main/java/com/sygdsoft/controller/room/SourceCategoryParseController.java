@@ -71,7 +71,7 @@ public class SourceCategoryParseController {
                                 result.add(row);
                             }
                             break;
-                        case "人均价格":
+                        case "人均消费":
                             break;
                         case "营业收入":
                             break;
@@ -114,7 +114,7 @@ public class SourceCategoryParseController {
                                 }
                                 row.put("日均房价", szMath.formatTwoDecimal(totalDouble,totalNum));
                                 break;
-                            case "人均价格":
+                            case "人均消费":
                                 break;
                             case "入住率":
                                 row.put("入住率", szMath.formatTwoDecimal(roomStateReportService.getRentRateOnly(beginTime, endTime, roomCategory)));
@@ -162,7 +162,7 @@ public class SourceCategoryParseController {
                                 }
                                 row.put("日均房价", szMath.formatTwoDecimal(totalDouble,totalNum));
                                 break;
-                            case "人均价格":
+                            case "人均消费":
                                 break;
                             case "营业收入":
                                 break;
