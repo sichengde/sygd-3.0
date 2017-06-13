@@ -66,6 +66,10 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     @ResultType(Double.class)
     Double getHistoryConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
 
+    @SelectProvider(type = DebtHistorySql.class, method = "getHistoryConsumeRich")
+    @ResultType(Double.class)
+    Double getHistoryConsumeRich(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSaleList") List<String> pointOfSaleList,@Param("guestSourceList")List<String> guestSourceList,@Param("roomCategoryList") List<String> roomCategoryList);
+
     /**
      * 获得当日的折扣，也就是冲账
      */

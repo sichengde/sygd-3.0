@@ -79,13 +79,6 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
     }
 
     /**
-     * 获取平均消费
-     */
-    public Double getAvaConsume(Date beginTime,Date endTime,String guestSource,String roomCategory){
-
-    }
-
-    /**
      * 根据时间获得列表
      */
     public List<CountryGuestRow> getList(Date beginTime, Date endTime){

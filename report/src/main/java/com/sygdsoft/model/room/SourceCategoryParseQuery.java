@@ -13,6 +13,7 @@ public class SourceCategoryParseQuery {
     private List<String> guestSourceList;
     private List<String> roomCategoryList;
     private List<String> saleCountList;
+    private List<String> pointOfSaleList;
 
     public SourceCategoryParseQuery() {
     }
@@ -63,5 +64,13 @@ public class SourceCategoryParseQuery {
 
     public void setSaleCountList(List<String> saleCountList) {
         this.saleCountList = saleCountList;
+    }
+
+    public List<String> getPointOfSaleList() {
+        return pointOfSaleList;
+    }
+
+    public void setPointOfSaleList(List<String> pointOfSaleList) {
+        this.pointOfSaleList = pointOfSaleList;
     }
 }

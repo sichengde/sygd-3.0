@@ -1,10 +1,7 @@
 package com.sygdsoft.controller.room;
 
 import com.sygdsoft.model.room.SourceCategoryParseQuery;
-import com.sygdsoft.service.CheckInIntegrationService;
-import com.sygdsoft.service.CheckInService;
-import com.sygdsoft.service.GuestIntegrationService;
-import com.sygdsoft.service.RoomStateReportService;
+import com.sygdsoft.service.*;
 import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +23,8 @@ public class SourceCategoryParseController {
     @Autowired
     RoomStateReportService roomStateReportService;
     @Autowired
+    DebtHistoryService debtHistoryService;
+    @Autowired
     SzMath szMath;
 
     @RequestMapping(value = "sourceCategoryParseReport")
@@ -36,6 +35,7 @@ public class SourceCategoryParseController {
         List<String> guestSourceList = sourceCategoryParseQuery.getGuestSourceList();
         List<String> roomCategoryList = sourceCategoryParseQuery.getRoomCategoryList();
         List<String> saleCountList = sourceCategoryParseQuery.getSaleCountList();
+        List<String> pointOfSaleList = sourceCategoryParseQuery.getPointOfSaleList();
         List result = new ArrayList();
         switch (mode) {
             case "1":
@@ -72,10 +72,30 @@ public class SourceCategoryParseController {
                             }
                             break;
                         case "人均消费":
+                            for (String guestSource : guestSourceList) {
+                                Map<String, String> row = new HashMap<>();
+                                row.put("guestSource", guestSource);
+                                for (String roomCategory : roomCategoryList) {
+                                    Double totalConsume=checkInIntegrationService.getSumConsume(beginTime, endTime, guestSource, roomCategory);
+                                    Integer totalPeople=guestIntegrationService.getSumNum(beginTime, endTime, guestSource, roomCategory);
+                                    row.put(roomCategory, szMath.formatTwoDecimal(totalConsume,totalPeople));
+                                }
+                                result.add(row);
+                            }
                             break;
                         case "营业收入":
-                            break;
-                        case "杂费":
+                            for (String guestSource : guestSourceList) {
+                                Map<String, String> row = new HashMap<>();
+                                row.put("guestSource", guestSource);
+                                List<String> p1=new ArrayList<>();
+                                p1.add(guestSource);
+                                for (String roomCategory : roomCategoryList) {
+                                    List<String> p2=new ArrayList<>();
+                                    p2.add(roomCategory);
+                                    row.put(roomCategory, szMath.ifNotNullGetString(debtHistoryService.getHistoryConsume(beginTime, endTime, pointOfSaleList,p1,p2)));
+                                }
+                                result.add(row);
+                            }
                             break;
                     }
                 }
@@ -115,13 +135,23 @@ public class SourceCategoryParseController {
                                 row.put("日均房价", szMath.formatTwoDecimal(totalDouble,totalNum));
                                 break;
                             case "人均消费":
+                                totalDouble=0.0;
+                                totalNum=0;
+                                for (String guestSource : guestSourceList) {
+                                    Double aDouble=checkInIntegrationService.getSumConsume(beginTime, endTime, guestSource, roomCategory);
+                                    Integer aInteger=guestIntegrationService.getSumNum(beginTime, endTime, guestSource, roomCategory);
+                                        totalDouble +=aDouble;
+                                        totalNum+=aInteger;
+                                }
+                                row.put("人均消费", szMath.formatTwoDecimal(totalDouble,totalNum));
                                 break;
                             case "入住率":
                                 row.put("入住率", szMath.formatTwoDecimal(roomStateReportService.getRentRateOnly(beginTime, endTime, roomCategory)));
                                 break;
                             case "营业收入":
-                                break;
-                            case "杂费":
+                                List<String> p2=new ArrayList<>();
+                                p2.add(roomCategory);
+                                row.put("营业收入",szMath.ifNotNullGetString(debtHistoryService.getHistoryConsume(beginTime, endTime, pointOfSaleList, guestSourceList, p2)));
                                 break;
                         }
                     }
@@ -163,10 +193,20 @@ public class SourceCategoryParseController {
                                 row.put("日均房价", szMath.formatTwoDecimal(totalDouble,totalNum));
                                 break;
                             case "人均消费":
+                                totalDouble=0.0;
+                                totalNum=0;
+                                for (String roomCategory : roomCategoryList) {
+                                    Double aDouble=checkInIntegrationService.getSumConsume(beginTime, endTime, guestSource, roomCategory);
+                                    Integer aInteger=guestIntegrationService.getSumNum(beginTime, endTime, guestSource, roomCategory);
+                                    totalDouble +=aDouble;
+                                    totalNum+=aInteger;
+                                }
+                                row.put("人均消费", szMath.formatTwoDecimal(totalDouble,totalNum));
                                 break;
                             case "营业收入":
-                                break;
-                            case "杂费":
+                                List<String> p2=new ArrayList<>();
+                                p2.add(guestSource);
+                                row.put("营业收入",szMath.ifNotNullGetString(debtHistoryService.getHistoryConsume(beginTime, endTime, pointOfSaleList, guestSourceList, p2)));
                                 break;
                         }
                     }

@@ -74,6 +74,13 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     }
 
     /**
+     * 计算该类别在该时间段的结算款
+     */
+    public Double getHistoryConsume(Date beginTime, Date endTime, List<String> pointOfSale,List<String> guestSourceList,List<String> roomCategoryList) {
+        return debtHistoryMapper.getHistoryConsumeRich(beginTime, endTime, pointOfSale,guestSourceList, roomCategoryList);
+    }
+
+    /**
      * 获得当日的折扣，也就是冲账
      */
     public Double getTotalDiscount(Date beginTime, Date endTime) {
