@@ -125,6 +125,10 @@ App.controller('IndexController', ['$scope', '$location', 'LoginService', 'webSe
                 popUpService.pop('message');
             })
     };
+    /*关掉联系我们*/
+    $scope.noShowContactUs=function () {
+        popUpService.close('message');
+    };
     /*点击上方按钮*/
     $scope.toPath = function (r) {
         /*刷新，点亮点中的图标*/
