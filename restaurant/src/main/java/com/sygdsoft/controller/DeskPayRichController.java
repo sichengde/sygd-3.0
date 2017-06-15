@@ -20,6 +20,7 @@ public class DeskPayRichController {
 
     @RequestMapping("deskPayRichGet")
     public List<DeskPayRich> deskPayRichGet(@RequestBody Query query) throws Exception {
+        query.setOrderByListDesc(new String[]{"doneTime"});
         return deskPayRichService.get(query);
     }
 }
