@@ -54,11 +54,15 @@ public class CheckInService extends BaseService<CheckIn> {
     /**
      * 获得所有房间的字符串
      */
-    public String getTotalRoomString(List<CheckIn> checkInList){
-        String out="";
+    public String getTotalRoomString(List<CheckIn> checkInList, Boolean withComma) {
+        String out = "";
         for (CheckIn checkIn : checkInList) {
-            out+=checkIn.getRoomId()+",";
+            if (withComma) {
+                out += "\'" + checkIn.getRoomId() + "\',";
+            } else {
+                out += checkIn.getRoomId() + ",";
+            }
         }
-        return out.substring(0,out.length()-1);
+        return out.substring(0, out.length() - 1);
     }
 }
