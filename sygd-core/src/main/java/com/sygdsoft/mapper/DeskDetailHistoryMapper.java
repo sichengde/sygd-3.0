@@ -134,13 +134,13 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
     /**
      * 查询所有没有统计出库的商品
      */
-    @Select("select food_sign foodSign,sum(num) num,sum(after_discount) afterDiscount from desk_detail_history where ifnull(cargo,false) = true and ifnull(storage_done,false) = false and ifnull(disabled,false)=false group by food_sign")
-    List<DeskDetailHistory> getByStorageDone();
+    @Select("select food_sign foodSign,sum(num) num,sum(after_discount) afterDiscount from desk_detail_history where ifnull(cargo,false) = true and ifnull(storage_done,false) = false and ifnull(disabled,false)=false and point_of_sale=#{pointOfSale} group by food_sign")
+    List<DeskDetailHistory> getByStorageDone(@Param("pointOfSale")String pointOfSale);
 
     /**
      * 自动出库后把所有品种设置为已出库
      */
-    @Update("update room_shop_detail set storage_done=true")
+    @Update("update desk_detail_history set storage_done=true")
     void setStorageDoneTrue();
 
     /**

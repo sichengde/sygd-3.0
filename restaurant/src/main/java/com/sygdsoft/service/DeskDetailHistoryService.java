@@ -119,8 +119,15 @@ public class DeskDetailHistoryService extends BaseService<DeskDetailHistory> {
     /**
      * 查询所有没有统计出库的商品
      */
-    public List<DeskDetailHistory> getByStorageDone() {
-        return deskDetailHistoryMapper.getByStorageDone();
+    public List<DeskDetailHistory> getByStorageDone(String pointOfSale) {
+        return deskDetailHistoryMapper.getByStorageDone(pointOfSale);
+    }
+
+    /**
+     * 设置为已出库
+     */
+    public void setStorageDoneTrue() {
+        deskDetailHistoryMapper.setStorageDoneTrue();
     }
 
     /**
