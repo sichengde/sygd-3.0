@@ -126,8 +126,8 @@ public class StorageOutController {
                         storageOutDetail.setNum(remain);
                         storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
                         storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
-                        storageOutDetail.setSaleTotal(Double.valueOf(szMath.formatTwoDecimal(roomShopDetail.getTotalMoney() * remain, roomShopDetail.getNum())));
-                        totalMoneyRemain = totalMoneyRemain - storageOutDetail.getSaleTotal();
+                        storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(roomShopDetail.getTotalMoney() * remain, roomShopDetail.getNum())));
+                        totalMoneyRemain = totalMoneyRemain - storageOutDetail.getTotal();
                         storageOutDetailListNormal.add(storageOutDetail);
                     }
                     /*超出的数量则直拨*/
@@ -170,7 +170,7 @@ public class StorageOutController {
             if(house==null){//该销售点没有定义仓库
                 continue;
             }
-            List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getByStorageDone();
+            List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getByStorageDone(ofSale.getFirstPointOfSale());
             for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {
                 Cargo cargo = cargoService.getByName(deskDetailHistory.getFoodSign());
                 Integer remain = storageInDetailService.getSumNumByNameHouse(house, cargo.getName());//获得当前货物的余量
@@ -180,7 +180,7 @@ public class StorageOutController {
                 storageOutDetail.setUnit(cargo.getUnit());
                 storageOutDetail.setMyUsage("自动出库-房吧销售统计");
                 storageOutDetail.setCategory(cargo.getCategory());
-                if (remain > deskDetailHistory.getNum()) {//库存充足
+                if (remain >= deskDetailHistory.getNum()) {//库存充足
                     if (!storageOutSerial ) {
                         storageOutSerial = true;
                     }
@@ -197,12 +197,15 @@ public class StorageOutController {
                     double totalMoneyRemain = deskDetailHistory.getAfterDiscount();
                     //有库存不足的情况，首先就要增加一个直拨序列号
                     if (remain > 0) {//剩余的库存正常出库
+                        if(!storageOutSerial){
+                            storageOutSerial = true;
+                        }
                         num1 = num1 - remain;
                         storageOutDetail.setNum(remain);
                         storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
                         storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
                         storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNum())));
-                        totalMoneyRemain = totalMoneyRemain - storageOutDetail.getSaleTotal();
+                        totalMoneyRemain = totalMoneyRemain - storageOutDetail.getTotal();
                         storageOutDetailListNormal.add(storageOutDetail);
                     }
                     /*超出的数量则直拨*/
@@ -214,6 +217,7 @@ public class StorageOutController {
                     storageOutDetailListDirect.add(storageOutDetail);
                 }
             }
+            deskDetailHistoryService.setStorageDoneTrue();
             /*出库总结，如果有剩余数量不足的，则需要两种，即是出库和直拨*/
             if (storageOutSerial) {//有数据才出库，否则不出库
                 StorageOut storageOut = new StorageOut();
@@ -226,6 +230,7 @@ public class StorageOutController {
                 storageOut.setCategory("出库");
                 reportList.add(storageOutService.storageOutAdd(storageOutDetailListNormal, storageOut));
                 if (storageOutSerialDirect ) {//如果存在库存不充足的情况，则要再提交一次
+                    storageOut.setId(null);
                     storageOut.setRemark("自动出库-餐饮");
                     storageOut.setCategory("直拨");
                     reportList.add(storageOutService.storageOutAdd(storageOutDetailListDirect, storageOut));
