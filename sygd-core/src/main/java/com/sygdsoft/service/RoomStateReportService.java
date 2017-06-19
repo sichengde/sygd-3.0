@@ -47,4 +47,11 @@ public class RoomStateReportService extends BaseService<RoomStateReport>{
     public Double getRentRateOnly(Date beginTime,Date endTime,String roomCategory) throws ParseException {
         return roomStateReportMapper.getRentRateOnly(timeService.getMinTime(beginTime), timeService.getMinTime(endTime), roomCategory);
     }
+
+    /**
+     * 根据时间获得各个总和
+     */
+    public List<RoomStateReport> RoomStateReportGetChart(Date beginTime,Date endTime){
+        return roomStateReportMapper.RoomStateReportGetChart(beginTime, endTime);
+    }
 }
