@@ -23,6 +23,12 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     List<RoomCategoryLine> parseRoomCategoryDebtLine(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("category") String category);
 
     /**
+     * 获得发生额线性走势
+     */
+    @Select("SELECT calendar.date date, ifnull(money, 0) money FROM calendar LEFT JOIN (SELECT ifnull(sum(consume), 0) money, date_format(do_time, '%Y-%m-%d') date FROM debt_integration WHERE ifnull(category, '未定义') != '转入' AND do_time > #{beginTime} AND do_time < #{endTime} GROUP BY date) a ON calendar.date = a.date  WHERE calendar.date > #{beginTime} AND calendar.date < #{endTime}  ORDER BY calendar.date;")
+    List<HotelParseLineRow> roomConsumeChart(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
      * 根据时间获得发生额
      */
     /*，分，房吧，零售和房费*/

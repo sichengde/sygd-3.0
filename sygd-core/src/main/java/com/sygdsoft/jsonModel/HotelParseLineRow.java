@@ -8,6 +8,7 @@ import java.util.Date;
 public class HotelParseLineRow {
     private Date date;
     private Double money;
+    private Integer num;
 
     public HotelParseLineRow() {
     }
@@ -26,5 +27,13 @@ public class HotelParseLineRow {
 
     public void setMoney(Double money) {
         this.money = money;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 }

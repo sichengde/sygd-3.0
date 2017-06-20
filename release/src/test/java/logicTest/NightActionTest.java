@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class NightActionTest extends ApplicationTest {
 
     @Test
     public void testMapper2() {
-        List<CheckInHistory> users=checkInHistoryService.getListByCheckOutSerial("c17030709022");
+        List<CheckInHistory> users = checkInHistoryService.getListByCheckOutSerial("c17030709022");
     }
 
     @Test
@@ -100,8 +102,14 @@ public class NightActionTest extends ApplicationTest {
 
     @Test
     public void generateCalendar() throws Exception {
-        Calendar calendar = new Calendar();
-        calendar.setDate(new Date("2015-01-01"));
+        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat1.parse("2017-10-11");
+        for (int i = 0; i < 1000; i++) {
+            Calendar calendar = new Calendar();
+            calendar.setDate(date);
+            calendarMapper.insert(calendar);
+            timeService.addDay(date, 1);
+        }
     }
 
 }

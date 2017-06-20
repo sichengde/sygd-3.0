@@ -1,5 +1,6 @@
 package com.sygdsoft.service;
 
+import com.sygdsoft.jsonModel.HotelParseLineRow;
 import com.sygdsoft.mapper.DeskInHistoryMapper;
 import com.sygdsoft.model.DeskInHistory;
 import com.sygdsoft.util.Util;
@@ -51,4 +52,10 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
         update(deskInHistoryList);
     }
 
+    /**
+     * 获取人数线性统计
+     */
+    public List<HotelParseLineRow> deskManDateChart(Date beginTime, Date endTime){
+        return deskInHistoryMapper.deskManDateChart(beginTime, endTime);
+    }
 }

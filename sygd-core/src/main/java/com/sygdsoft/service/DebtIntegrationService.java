@@ -51,6 +51,13 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     }
 
     /**
+     * 获得发生额线性走势
+     */
+    public List<HotelParseLineRow> roomConsumeChart(Date beginTime, Date endTime){
+        return debtIntegrationMapper.roomConsumeChart(beginTime, endTime);
+    }
+
+    /**
      * 获得时间段内客源消费情况（只算房费）
      */
     public List<DebtIntegration> getSumRoomConsumeByDateGuestSource(Date beginTime, Date endTime) {

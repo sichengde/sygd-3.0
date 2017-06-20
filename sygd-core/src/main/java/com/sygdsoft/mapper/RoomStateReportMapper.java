@@ -27,6 +27,6 @@ public interface RoomStateReportMapper extends MyMapper<RoomStateReport>{
     @ResultType(Double.class)
     Double getRentRateOnly(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("roomCategory")String roomCategory);
 
-    @Select("SELECT sum(all_day_room) allDayRoom ,report_time reportTime from room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} GROUP BY report_time")
+    @Select("SELECT sum(all_day_room) allDayRoom ,ifnull(truncate((sum(all_day_room_consume)+sum(night_room_consume))/(sum(all_day_room)+sum(night_room)),2),0) avaPrice, ifnull(truncate(sum(rent)/sum(total_real),2),0) rentRate,report_time reportTime from room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} GROUP BY report_time")
     List<RoomStateReport> RoomStateReportGetChart(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
 }
