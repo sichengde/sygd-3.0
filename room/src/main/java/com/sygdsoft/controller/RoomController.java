@@ -151,8 +151,8 @@ public class RoomController {
             debt.setRoomId(dstRoomId);
             if (debt.getCategory().equals("凌晨房费")) {
                 /*如果是凌晨房，补齐杂单或者冲账*/
-                Double money = checkIn.getFinalRoomPrice() - debt.getConsume();
-                if (money != 0) {
+                Double money = checkIn.getFinalRoomPrice() - srcRoom.getCheckIn().getFinalRoomPrice();
+                if (money != 0.0) {
                     Debt debtAdd = new Debt();
                     debtAdd.setDoTime(timeService.getNow());
                     debtAdd.setPointOfSale(pointOfSaleService.FF);
@@ -171,7 +171,9 @@ public class RoomController {
             }
         }
         debtService.update(debtList);
-        debtService.addDebt(debtAddList);
+        if(debtAddList.size()>0) {
+            debtService.addDebt(debtAddList);
+        }
         userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom, null);
     }
 
