@@ -75,6 +75,11 @@ public class NightService {
             if (checkIn.getRoomPriceCategory().equals(roomPriceService.hour)) {//小时房夜审不加房租
                 continue;
             }
+            /*空房费设置为0*/
+            if(checkIn.getFinalRoomPrice()==null){
+                checkIn.setFinalRoomPrice(0.0);
+                checkInService.update(checkIn);
+            }
             /*如果是当日来的凌晨房，则不加收房费*/
             Debt debt = new Debt();
             debt.setPointOfSale(pointOfSaleService.FF);
