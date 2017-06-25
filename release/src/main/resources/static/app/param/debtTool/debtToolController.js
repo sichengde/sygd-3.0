@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016-09-09.
  */
-App.controller('debtToolController',['$scope','webService','messageService','dataService','popUpService','LoginService','util',function ($scope,webService,messageService,dataService,popUpService,LoginService,util) {
+App.controller('debtToolController',['$scope','webService','messageService','dataService','popUpService','LoginService','$q',function ($scope,webService,messageService,dataService,popUpService,LoginService,$q) {
     $scope.debtPayFields = [
         {name: '结账时间', id: 'doneTime', date: 'true', width: '120px', filter: 'date', desc: '0'},
         {name: '结账金额', id: 'debtMoney', width: '100px' ,sum:'true'},
@@ -17,7 +17,7 @@ App.controller('debtToolController',['$scope','webService','messageService','dat
     /*手动夜审*/
     $scope.manualNightAction=function () {
         if(Math.abs(new Date-new Date(dataService.getOtherParamMapValue("上次夜审")))>24*60*60*1000){
-            webService.post('manualNightAction')
+            return webService.post('manualNightAction')
                 .then(function () {
                     messageService.actionSuccess();
                 })
@@ -25,11 +25,12 @@ App.controller('debtToolController',['$scope','webService','messageService','dat
             messageService.setMessage({content:'系统在24小时内已经进行过一次夜审，是否继续？'});
             messageService.actionChoose()
                 .then(function () {
-                    webService.post('manualNightAction')
+                    return webService.post('manualNightAction')
                         .then(function () {
                             messageService.actionSuccess();
                         })
-                })
+                });
+            return $q.resolve();
         }
     };
     /*冲账*/
