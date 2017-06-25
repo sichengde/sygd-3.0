@@ -321,6 +321,12 @@ App.controller('GuestInGroupController', ['$scope', 'util', 'webService', 'dataS
         /*如果该房间没有录入客人信息，则产生一条无名客人*/
         for (var i = 0; i < $scope.checkInList.length; i++) {
             var checkIn = $scope.checkInList[i];
+            if(checkIn.roomPrice==''){
+                messageService.setMessage({type: 'error', content: '房价不可以为空'});
+                popUpService.pop('message');
+                return $q.resolve();
+            }
+
             if (!util.getValueByField($scope.checkInGuestList, 'roomId', checkIn.roomId)) {
                 $scope.checkInGuestList.push({roomId: checkIn.roomId, name: '临时', cardId: '000'});
                 checkIn.totalBed = 1;

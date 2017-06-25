@@ -29,6 +29,11 @@ App.controller('checkInUpdateController',['$scope','receptionService','dataServi
         });
     /*提交修改*/
     $scope.submitCheckInUpdate=function () {
+        if($scope.checkIn.roomPrice==''){
+            messageService.setMessage({type: 'error', content: '房价不可以为空'});
+            popUpService.pop('message');
+            return $q.resolve();
+        }
         webService.post('checkInUpdate',$scope.checkIn)
             .then(function () {
                 if(backUpLeaveTime!=$scope.checkIn.leaveTime){

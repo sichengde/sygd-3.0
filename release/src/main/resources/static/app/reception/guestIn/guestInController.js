@@ -255,6 +255,11 @@ App.controller('GuestInController', ['$scope', 'util', 'webService', 'dataServic
             popUpService.pop('message');
             return $q.resolve();
         }
+        if($scope.protocol.roomPrice==''){
+            messageService.setMessage({type: 'error', content: '开房房价不可以为空'});
+            popUpService.pop('message');
+            return $q.resolve();
+        }
         checkIn.roomId = $scope.room.roomId;
         checkIn.deposit = totalDeposit;
         checkIn.roomCategory = $scope.room.category;
