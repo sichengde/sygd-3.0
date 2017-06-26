@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "company")
-public class CompanyService extends BaseService<Company>{
+public class CompanyService extends BaseService<Company> {
     @Autowired
     CompanyMapper companyMapper;
     @Autowired
@@ -31,11 +31,12 @@ public class CompanyService extends BaseService<Company>{
     UserService userService;
     @Autowired
     CompanyDebtService companyDebtService;
+
     /**
      * 通过单位名称获取单位对象
      */
-    public Company getByName(String name){
-        Company companyQuery=new Company();
+    public Company getByName(String name) {
+        Company companyQuery = new Company();
         companyQuery.setName(name);
         return companyMapper.selectOne(companyQuery);
     }
@@ -43,23 +44,26 @@ public class CompanyService extends BaseService<Company>{
     /**
      * 更新单位挂账数值
      */
-    public void addDebt(String company,Double debt){
-        companyMapper.addDebt(company,debt );
+    public void addDebt(String company, Double debt) {
+        companyMapper.addDebt(company, debt);
     }
 
     /**
      * 为该单位增加消费数据
      */
-    public void addConsume(String company,Double consume){
-        companyMapper.addConsume(company,consume);
+    public void addConsume(String company, Double consume) {
+        companyMapper.addConsume(company, consume);
     }
 
     /**
      * 结算时币种为单位（离店结算，商品零售）
      */
-    public String companyAddDebt(String company, String lord, Double money, String description, String pointOfSale,String secondPointOfSale,String serial) throws Exception {
-        Company companyObj=getByName(company);
-        companyObj.setDebt(companyObj.getNotNullCompanyDebt()+money);
+    public String companyAddDebt(String company, String lord, Double money, String description, String pointOfSale, String secondPointOfSale, String serial) throws Exception {
+        Company companyObj = getByName(company);
+        if (companyObj.getDeposit() != null && (companyObj.getNotNullCompanyDebt() + money > companyObj.getNotNullDeposit())) {
+            throw new Exception("已超出可挂账限额");
+        }
+        companyObj.setDebt(companyObj.getNotNullCompanyDebt() + money);
         update(companyObj);
         companyLordService.addDebt(lord, money);
         CompanyDebt companyDebt = new CompanyDebt();

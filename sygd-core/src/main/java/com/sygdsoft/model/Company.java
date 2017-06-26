@@ -22,6 +22,7 @@ public class Company extends BaseEntity{
     private Boolean ifDebt;//允许挂账
     private String saleMan;//销售人员
     private String phone;//联系方式
+    //private Double overMoney;//可超出金额
     @Transient
     private List<CompanyDebtIntegration> companyDebtIntegrationList;
     @Transient
@@ -32,7 +33,7 @@ public class Company extends BaseEntity{
     public Double getNotNullCompanyConsume() {
         return NullJudgement.nullToZero(consume);
     }
-    public Double getNotNullCompanyPay(){
+    public Double getNotNullDeposit(){
         return NullJudgement.nullToZero(deposit);
     }
     public Double getNotNullCompanyDebt(){
