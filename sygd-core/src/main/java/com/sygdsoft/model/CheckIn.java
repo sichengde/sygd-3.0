@@ -32,6 +32,7 @@ public class CheckIn extends BaseEntity{
     private String userId;//操作员号
     private String groupName;//团队名称（如果是团队开房的话）
     private Boolean ifRoom;//
+    private String realProtocol;//真实的协议，区别于可编辑房价的临时协议
     @Transient
     private String currency;//押金币种，其实没啥用，只是在开房时用到，因为后期补交押金可能会导致跟之前的币种不一样的情况发生
 
@@ -266,5 +267,13 @@ public class CheckIn extends BaseEntity{
 
     public void setIfRoom(Boolean ifRoom) {
         this.ifRoom = ifRoom;
+    }
+
+    public String getRealProtocol() {
+        return realProtocol;
+    }
+
+    public void setRealProtocol(String realProtocol) {
+        this.realProtocol = realProtocol;
     }
 }
