@@ -320,6 +320,11 @@ App.controller('GuestOutController', ['$scope', 'util', 'dataService', 'receptio
             if (checkIn.roomPriceCategory == '小时房') {
                 /*获取小时房房价定义*/
                 var protocol = protocolService.getProtocolObj(checkIn.protocol, checkIn.roomCategory, checkIn.roomPriceCategory);
+                if(!protocol){
+                    messageService.setMessage({type: 'error', content: '您在其他参数中选择了当日来当日走转小时房，但是没有定义'+checkIn.roomCategory+'与'+checkIn.protocol+'协议的小时房房价'});
+                    popUpService.pop('message');
+                    return
+                }
                 /*先计算有没有超时房价*/
                 var price;
                 var description = '';
