@@ -11,7 +11,7 @@ public class RoomShopDetail {
     private String item;
     private String category;
     private Double price;
-    private Integer num;
+    private Double num;
     private Double totalMoney;
     private String room;
     private String selfAccount;//有自付账号说明是房吧录入的
@@ -52,11 +52,11 @@ public class RoomShopDetail {
         this.price = price;
     }
 
-    public Integer getNum() {
+    public Double getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Double num) {
         this.num = num;
     }
 

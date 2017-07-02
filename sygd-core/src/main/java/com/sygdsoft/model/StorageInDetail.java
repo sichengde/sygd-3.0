@@ -9,14 +9,14 @@ public class StorageInDetail extends BaseEntity{
     private String house;//仓库
     private String cargo;//货物
     private String unit;//单位
-    private Integer num;//数量
+    private Double num;//数量
     private Double price;//单价
     private Double total;//金额合计
     private String supplier;//供应商
     private Date beginTime;//生产日期
     private Date endTime;//库存期限
     private String remark;//备注
-    private Integer remain;//剩余
+    private Double remain;//剩余
     private String storageInSerial;//序列号
     private String category;//类别
 
@@ -47,11 +47,11 @@ public class StorageInDetail extends BaseEntity{
         this.unit = unit;
     }
 
-    public Integer getNum() {
+    public Double getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Double num) {
         this.num = num;
     }
 
@@ -103,11 +103,11 @@ public class StorageInDetail extends BaseEntity{
         this.remark = remark;
     }
 
-    public Integer getRemain() {
+    public Double getRemain() {
         return remain;
     }
 
-    public void setRemain(Integer remain) {
+    public void setRemain(Double remain) {
         this.remain = remain;
     }
 

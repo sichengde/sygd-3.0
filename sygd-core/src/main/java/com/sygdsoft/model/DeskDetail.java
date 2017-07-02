@@ -9,7 +9,7 @@ import java.util.Date;
 public class DeskDetail extends BaseEntity {
     private String foodName;
     private Double price;
-    private Integer num;
+    private Double num;
     private String desk;
     private String userId;
     private String pointOfSale;
@@ -118,11 +118,11 @@ public class DeskDetail extends BaseEntity {
         this.price = price;
     }
 
-    public Integer getNum() {
+    public Double getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Double num) {
         this.num = num;
     }
 

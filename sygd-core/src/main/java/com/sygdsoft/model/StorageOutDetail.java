@@ -9,7 +9,7 @@ public class StorageOutDetail extends BaseEntity {
     private String house;//仓库
     private String cargo;//货物
     private String unit;//单位
-    private Integer num;//数量
+    private Double num;//数量
     private Double price;//单价
     private Double total;//合计金额
     private String myUsage;//用途
@@ -72,11 +72,11 @@ public class StorageOutDetail extends BaseEntity {
         this.unit = unit;
     }
 
-    public Integer getNum() {
+    public Double getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Double num) {
         this.num = num;
     }
 

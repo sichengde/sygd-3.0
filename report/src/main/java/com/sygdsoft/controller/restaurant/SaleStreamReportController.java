@@ -70,7 +70,7 @@ public class SaleStreamReportController {
         List<FieldTemplate> templateList = new ArrayList<>();
         List<SaleStreamRow> saleStreamRowList = new ArrayList<>();
         Double totalConsume = 0.0;
-        Integer totalNum = 0;
+        Double totalNum = 0.0;
         String categoryParse = "";
         Double categoryConsume = 0.0;
         for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {

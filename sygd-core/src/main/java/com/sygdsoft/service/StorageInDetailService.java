@@ -38,10 +38,10 @@ public class StorageInDetailService extends BaseService<StorageInDetail>{
     /**
      * 获得当前仓库某个商品的余量
      */
-    public Integer getSumNumByNameHouse(String house,String cargo){
+    public Double getSumNumByNameHouse(String house,String cargo){
         List<StorageInDetail> storageInDetailList=storageInDetailMapper.getSumNumByNameHouse(house, cargo);
         if(storageInDetailList.size()==0){
-            return 0;
+            return 0.0;
         }else {
             return storageInDetailList.get(0).getRemain();
         }
@@ -58,12 +58,12 @@ public class StorageInDetailService extends BaseService<StorageInDetail>{
      * 计算平均价格
      */
     //TODO:有问题，超出部分时余量还是0
-    public Double storageParsePrice(String house,String cargo,Integer num){
-        Integer totalNum=num;
+    public Double storageParsePrice(String house,String cargo,Double num){
+        Double totalNum=num;
         List<StorageInDetail> storageInDetailList=getByCargoExist(house, cargo);
         Double totalMoney=0.0;
         for (StorageInDetail inDetail : storageInDetailList) {
-            Integer remain=inDetail.getRemain();
+            Double remain=inDetail.getRemain();
             if(num>remain){
                 totalMoney+=remain*inDetail.getPrice();
                 num-=remain;
