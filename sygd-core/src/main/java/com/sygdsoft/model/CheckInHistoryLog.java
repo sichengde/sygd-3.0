@@ -30,6 +30,7 @@ public class CheckInHistoryLog extends BaseEntity {
     private String userId;//操作员号
     private String checkOutSerial;//离店结算序列号
     private Boolean ifRoom;//
+    private String realProtocol;//真实的协议，区别于可编辑房价的临时协议
 
     public CheckInHistoryLog() {
     }
@@ -60,6 +61,7 @@ public class CheckInHistoryLog extends BaseEntity {
         this.roomPriceCategory=checkIn.getRoomPriceCategory();
         this.userId=checkIn.getUserId();
         this.ifRoom=checkIn.getIfRoom();
+        this.realProtocol=checkIn.getRealProtocol();
     }
 
     public String getCardId() {
@@ -244,5 +246,13 @@ public class CheckInHistoryLog extends BaseEntity {
 
     public void setIfRoom(Boolean ifRoom) {
         this.ifRoom = ifRoom;
+    }
+
+    public String getRealProtocol() {
+        return realProtocol;
+    }
+
+    public void setRealProtocol(String realProtocol) {
+        this.realProtocol = realProtocol;
     }
 }
