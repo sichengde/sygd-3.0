@@ -50,4 +50,15 @@ public class CheckInHistoryService extends BaseService<CheckInHistory>{
         }
         return nameList;
     }
+
+    /**
+     * 获得宾客字符串
+     */
+    public String listToStringName(List<CheckInHistory> checkInHistoryList){
+        String out="";
+        for (CheckInHistory checkInHistory : checkInHistoryList) {
+            out+=checkInHistory.getName()+",";
+        }
+        return out.substring(0,out.length()-1);
+    }
 }

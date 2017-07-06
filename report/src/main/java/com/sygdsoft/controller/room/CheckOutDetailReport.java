@@ -1,10 +1,7 @@
 package com.sygdsoft.controller.room;
 
 import com.sygdsoft.jsonModel.Query;
-import com.sygdsoft.model.DebtHistory;
-import com.sygdsoft.model.DebtPay;
-import com.sygdsoft.model.FieldTemplate;
-import com.sygdsoft.model.ReportJson;
+import com.sygdsoft.model.*;
 import com.sygdsoft.model.room.CheckOutDetailReturn;
 import com.sygdsoft.model.room.CheckOutDetailRow;
 import com.sygdsoft.service.*;
@@ -36,6 +33,18 @@ public class CheckOutDetailReport {
     DebtHistoryService debtHistoryService;
     @Autowired
     ReportService reportService;
+    @Autowired
+    CheckInGuestService checkInGuestService;
+    @Autowired
+    CheckInHistoryService checkInHistoryService;
+    @Autowired
+    CheckInService checkInService;
+    @Autowired
+    CheckInHistoryLogService checkInHistoryLogService;
+    @Autowired
+    CheckInGroupService checkInGroupService;
+    @Autowired
+    CheckOutGroupService checkOutGroupService;
     /*
     * parameters
     * 1.结账合计
@@ -82,6 +91,36 @@ public class CheckOutDetailReport {
                     fieldTemplate.setField2(ifNotNullGetString(debtPay.getSelfAccount()));
                 }
                 fieldTemplate.setField6("true");
+                templateList.add(fieldTemplate);
+                fieldTemplate = new FieldTemplate();//第二行是来店时间，预离时间，姓名
+                //先判断是在店的还是离店的
+                if(debtPay.getCheckOutSerial()==null){//没离店
+                    if (debtPay.getGroupAccount() != null) {
+                        CheckInGroup checkInGroup=checkInGroupService.getByGroupAccount(debtPay.getGroupAccount());
+                        fieldTemplate.setField1(timeService.dateToStringShort(checkInGroup.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringShort(checkInGroup.getLeaveTime()));
+                        fieldTemplate.setField3(checkInGroup.getName());
+                    } else {
+                        CheckIn checkIn=checkInService.getByRoomId(debtPay.getRoomId());
+                        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debtPay.getRoomId());
+                        fieldTemplate.setField1(timeService.dateToStringShort(checkIn.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringShort(checkIn.getLeaveTime()));
+                        fieldTemplate.setField3(checkInGuestService.listToStringName(checkInGuestList));
+                    }
+                }else {
+                    if (debtPay.getGroupAccount() != null) {
+                        CheckOutGroup checkOutGroup=checkOutGroupService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+                        fieldTemplate.setField1(timeService.dateToStringShort(checkOutGroup.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringShort(checkOutGroup.getLeaveTime()));
+                        fieldTemplate.setField3(checkOutGroup.getName());
+                    } else {
+                        CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getByRoomIDAndCheckOutSerial(debtPay.getRoomId(),debtPay.getCheckOutSerial());
+                        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
+                        fieldTemplate.setField1(timeService.dateToStringShort(checkInHistoryLog.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringShort(checkInHistoryLog.getLeaveTime()));
+                        fieldTemplate.setField3(checkInHistoryService.listToStringName(checkInHistoryList));
+                    }
+                }
                 templateList.add(fieldTemplate);
                 Query query=new Query();
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));

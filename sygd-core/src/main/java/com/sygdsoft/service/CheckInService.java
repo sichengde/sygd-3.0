@@ -2,6 +2,7 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.CheckIn;
+import com.sygdsoft.model.CheckInHistoryLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,4 +66,5 @@ public class CheckInService extends BaseService<CheckIn> {
         }
         return out.substring(0, out.length() - 1);
     }
+
 }

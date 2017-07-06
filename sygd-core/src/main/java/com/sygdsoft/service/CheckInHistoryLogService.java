@@ -24,7 +24,12 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
         CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
         checkInHistoryLog.setRoomId(roomId);
         checkInHistoryLog.setCheckOutSerial(checkOutSerial);
-        return checkInHistoryLogMapper.selectOne(checkInHistoryLog);
+        List<CheckInHistoryLog> checkInHistoryLogList=checkInHistoryLogMapper.select(checkInHistoryLog);
+        try {
+            return checkInHistoryLogList.get(0);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
