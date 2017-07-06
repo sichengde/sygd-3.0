@@ -95,7 +95,7 @@ public class StorageOutController {
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
             Cargo cargo = cargoService.getByName(roomShopDetail.getItem());
             if (cargo != null) {//说明库存中没有该品种，不管它，必须不为null才可继续进行
-                Integer remain = storageInDetailService.getSumNumByNameHouse(house, cargo.getName());//获得当前货物的余量
+                Double remain = storageInDetailService.getSumNumByNameHouse(house, cargo.getName());//获得当前货物的余量
                 StorageOutDetail storageOutDetail = new StorageOutDetail();
                 storageOutDetail.setCargo(roomShopDetail.getItem());
                 storageOutDetail.setHouse(house);
@@ -116,7 +116,7 @@ public class StorageOutController {
                     if (!storageOutSerialDirect) {
                         storageOutSerialDirect = true;
                     }
-                    int num1 = roomShopDetail.getNum();
+                    double num1 = roomShopDetail.getNum();
                     double totalMoneyRemain = roomShopDetail.getTotalMoney();
                     if (remain > 0) {//剩余的库存正常出库
                         if(!storageOutSerial){
@@ -173,48 +173,50 @@ public class StorageOutController {
             List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getByStorageDone(ofSale.getFirstPointOfSale());
             for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {
                 Cargo cargo = cargoService.getByName(deskDetailHistory.getFoodSign());
-                Integer remain = storageInDetailService.getSumNumByNameHouse(house, cargo.getName());//获得当前货物的余量
-                StorageOutDetail storageOutDetail = new StorageOutDetail();
-                storageOutDetail.setCargo(deskDetailHistory.getFoodSign());
-                storageOutDetail.setHouse(house);
-                storageOutDetail.setUnit(cargo.getUnit());
-                storageOutDetail.setMyUsage("自动出库-房吧销售统计");
-                storageOutDetail.setCategory(cargo.getCategory());
-                if (remain >= deskDetailHistory.getNum()) {//库存充足
-                    if (!storageOutSerial ) {
-                        storageOutSerial = true;
-                    }
-                    storageOutDetail.setNum(deskDetailHistory.getNum());
-                    storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNum()))));
-                    storageOutDetail.setOldTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getOldPrice())));
-                    storageOutDetail.setTotal(deskDetailHistory.getAfterDiscount());
-                    storageOutDetailListNormal.add(storageOutDetail);
-                } else {//库存不足
-                    if (!storageOutSerialDirect ) {
-                        storageOutSerialDirect = true;
-                    }
-                    int num1 = deskDetailHistory.getNum();
-                    double totalMoneyRemain = deskDetailHistory.getAfterDiscount();
-                    //有库存不足的情况，首先就要增加一个直拨序列号
-                    if (remain > 0) {//剩余的库存正常出库
-                        if(!storageOutSerial){
+                if (cargo != null) {
+                    Double remain = storageInDetailService.getSumNumByNameHouse(house, cargo.getName());//获得当前货物的余量
+                    StorageOutDetail storageOutDetail = new StorageOutDetail();
+                    storageOutDetail.setCargo(deskDetailHistory.getFoodSign());
+                    storageOutDetail.setHouse(house);
+                    storageOutDetail.setUnit(cargo.getUnit());
+                    storageOutDetail.setMyUsage("自动出库-房吧销售统计");
+                    storageOutDetail.setCategory(cargo.getCategory());
+                    if (remain >= deskDetailHistory.getNum()) {//库存充足
+                        if (!storageOutSerial) {
                             storageOutSerial = true;
                         }
-                        num1 = num1 - remain;
-                        storageOutDetail.setNum(remain);
-                        storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
-                        storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
-                        storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNum())));
-                        totalMoneyRemain = totalMoneyRemain - storageOutDetail.getTotal();
+                        storageOutDetail.setNum(deskDetailHistory.getNum());
+                        storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNum()))));
+                        storageOutDetail.setOldTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getOldPrice())));
+                        storageOutDetail.setTotal(deskDetailHistory.getAfterDiscount());
                         storageOutDetailListNormal.add(storageOutDetail);
-                    }
+                    } else {//库存不足
+                        if (!storageOutSerialDirect) {
+                            storageOutSerialDirect = true;
+                        }
+                        double num1 = deskDetailHistory.getNum();
+                        double totalMoneyRemain = deskDetailHistory.getAfterDiscount();
+                        //有库存不足的情况，首先就要增加一个直拨序列号
+                        if (remain > 0) {//剩余的库存正常出库
+                            if (!storageOutSerial) {
+                                storageOutSerial = true;
+                            }
+                            num1 = num1 - remain;
+                            storageOutDetail.setNum(remain);
+                            storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
+                            storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
+                            storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNum())));
+                            totalMoneyRemain = totalMoneyRemain - storageOutDetail.getTotal();
+                            storageOutDetailListNormal.add(storageOutDetail);
+                        }
                     /*超出的数量则直拨*/
-                    storageOutDetail=new StorageOutDetail(storageOutDetail);
-                    storageOutDetail.setNum(num1);
-                    storageOutDetail.setOldPrice(0.0);//直拨没有价格
-                    storageOutDetail.setOldTotal(num1 * storageOutDetail.getOldPrice());
-                    storageOutDetail.setTotal(totalMoneyRemain);
-                    storageOutDetailListDirect.add(storageOutDetail);
+                        storageOutDetail = new StorageOutDetail(storageOutDetail);
+                        storageOutDetail.setNum(num1);
+                        storageOutDetail.setOldPrice(0.0);//直拨没有价格
+                        storageOutDetail.setOldTotal(num1 * storageOutDetail.getOldPrice());
+                        storageOutDetail.setTotal(totalMoneyRemain);
+                        storageOutDetailListDirect.add(storageOutDetail);
+                    }
                 }
             }
             deskDetailHistoryService.setStorageDoneTrue();

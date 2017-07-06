@@ -7,7 +7,7 @@ public class StorageRemain {
     private String house;//仓库
     private String cargo;//货品
     private String unit;//单位
-    private Integer remain;//单价
+    private Double remain;//单价
     private Double price;//余量
 
     public StorageRemain() {
@@ -37,11 +37,11 @@ public class StorageRemain {
         this.unit = unit;
     }
 
-    public Integer getRemain() {
+    public Double getRemain() {
         return remain;
     }
 
-    public void setRemain(Integer remain) {
+    public void setRemain(Double remain) {
         this.remain = remain;
     }
 

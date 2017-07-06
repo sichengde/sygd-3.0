@@ -61,6 +61,7 @@ public class CheckIn extends BaseEntity{
         this.roomPriceCategory=checkInHistoryLog.getRoomPriceCategory();
         this.userId=checkInHistoryLog.getUserId();
         this.ifRoom=checkInHistoryLog.getIfRoom();
+        this.realProtocol=checkInHistoryLog.getRealProtocol();
     }
 
     /**

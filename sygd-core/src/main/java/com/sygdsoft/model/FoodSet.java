@@ -6,7 +6,7 @@ package com.sygdsoft.model;
 public class FoodSet extends BaseEntity{
     private String setName;//套餐名称
     private String foodName;//菜品名称
-    private Integer foodNum;//菜品数量
+    private Double foodNum;//菜品数量
     private String pointOfSale;//营业部门
 
     public FoodSet() {
@@ -28,11 +28,11 @@ public class FoodSet extends BaseEntity{
         this.foodName = foodName;
     }
 
-    public Integer getFoodNum() {
+    public Double getFoodNum() {
         return foodNum;
     }
 
-    public void setFoodNum(Integer foodNum) {
+    public void setFoodNum(Double foodNum) {
         this.foodNum = foodNum;
     }
 

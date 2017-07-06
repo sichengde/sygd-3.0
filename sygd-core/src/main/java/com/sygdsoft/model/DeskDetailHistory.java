@@ -9,7 +9,7 @@ public class DeskDetailHistory extends BaseEntity {
     private String ckSerial;
     private String foodName;
     private Double price;
-    private Integer num;
+    private Double num;
     private String desk;
     private String userId;
     private String pointOfSale;
@@ -78,11 +78,11 @@ public class DeskDetailHistory extends BaseEntity {
         this.price = price;
     }
 
-    public Integer getNum() {
+    public Double getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Double num) {
         this.num = num;
     }
 

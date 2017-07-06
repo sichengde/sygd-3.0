@@ -6,6 +6,7 @@ import com.sygdsoft.jsonModel.PrintMessage;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +68,8 @@ public class DeskController {
     DebtService debtService;
     @Autowired
     DeskControllerService deskControllerService;
+    @Autowired
+    SzMath szMath;
 
     @RequestMapping(value = "deskAdd")
     public void deskAdd(@RequestBody Desk desk) throws Exception {
@@ -330,7 +333,7 @@ public class DeskController {
         deskDetailHistory.setCkSerial(serialService.getCkSerial());
         deskDetailHistory.setFoodName(menu.getName());
         deskDetailHistory.setPrice(menu.getPrice());
-        deskDetailHistory.setNum(num);
+        deskDetailHistory.setNum(Double.valueOf(num));
         deskDetailHistory.setDesk("自助餐");
         deskDetailHistory.setUserId(userService.getCurrentUser());
         deskDetailHistory.setPointOfSale(pointOfSale);

@@ -5,7 +5,7 @@ package com.sygdsoft.model;
  */
 public class SaleStreamRow {
     private String foodName;
-    private Integer num;
+    private Double num;
     private Double total;
     public SaleStreamRow() {
     }
@@ -18,11 +18,11 @@ public class SaleStreamRow {
         this.foodName = foodName;
     }
 
-    public Integer getNum() {
+    public Double getNum() {
         return num;
     }
 
-    public void setNum(Integer num) {
+    public void setNum(Double num) {
         this.num = num;
     }
 

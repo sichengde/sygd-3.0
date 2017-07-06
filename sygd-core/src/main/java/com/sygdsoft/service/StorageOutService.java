@@ -54,18 +54,18 @@ public class StorageOutService extends BaseService<StorageOut>{
                 }
                 storageInDetailService.update(storageInDetail);
             } else {//不指定，也就是先进先出，冲减库存中的余额
-                Integer num = storageOutDetail.getNum();
+                Double num = storageOutDetail.getNum();
                 List<StorageInDetail> storageInDetailList = storageInDetailService.getByCargoExist(storageOutDetail.getHouse(),storageOutDetail.getCargo());
                 for (StorageInDetail storageInDetail : storageInDetailList) {
-                    Integer remain = storageInDetail.getRemain();
+                    Double remain = storageInDetail.getRemain();
                     if (num > remain) {
                         num -= remain;
-                        storageInDetail.setRemain(0);
+                        storageInDetail.setRemain(0.0);
                     /*如果余额为0的话就转移到历史表中*/
                         storageInDetailHistoryList.add(new StorageInDetailHistory(storageInDetail));
                         storageInDetailDeleteList.add(storageInDetail);
                     } else if (Objects.equals(num, remain)) {
-                        storageInDetail.setRemain(0);
+                        storageInDetail.setRemain(0.0);
                     /*如果余额为0的话就转移到历史表中*/
                         storageInDetailHistoryList.add(new StorageInDetailHistory(storageInDetail));
                         storageInDetailDeleteList.add(storageInDetail);

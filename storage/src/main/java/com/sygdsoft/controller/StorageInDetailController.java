@@ -44,7 +44,7 @@ public class StorageInDetailController {
     @RequestMapping(value = "storageParsePrice")
     public String storageParsePrice(@RequestBody StorageInDetail storageInDetail){
         String cargo=storageInDetail.getCargo();
-        Integer num=storageInDetail.getNum();
+        Double num=storageInDetail.getNum();
         String house =storageInDetail.getHouse();
         return szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo, num));
     }
