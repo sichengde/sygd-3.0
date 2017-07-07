@@ -83,43 +83,43 @@ public class CheckOutDetailReport {
             if (!debtPay.getPaySerial().equals(lastSerial)) {
                 lastSerial = debtPay.getPaySerial();
                 fieldTemplate = new FieldTemplate();//第一行是主账号(现在改成结账时间了)
+                //先判断是在店的还是离店的
+                if(debtPay.getCheckOutSerial()==null){//没离店
+                    if (debtPay.getGroupAccount() != null) {
+                        CheckInGroup checkInGroup=checkInGroupService.getByGroupAccount(debtPay.getGroupAccount());
+                        fieldTemplate.setField1(timeService.dateToStringLong(checkInGroup.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringLong(checkInGroup.getLeaveTime()));
+                        fieldTemplate.setField3(checkInGroup.getName());
+                    } else {
+                        CheckIn checkIn=checkInService.getByRoomId(debtPay.getRoomId());
+                        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debtPay.getRoomId());
+                        fieldTemplate.setField1(timeService.dateToStringLong(checkIn.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
+                        fieldTemplate.setField3(checkInGuestService.listToStringName(checkInGuestList));
+                    }
+                }else {
+                    if (debtPay.getGroupAccount() != null) {
+                        CheckOutGroup checkOutGroup=checkOutGroupService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+                        fieldTemplate.setField1(timeService.dateToStringLong(checkOutGroup.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringLong(checkOutGroup.getLeaveTime()));
+                        fieldTemplate.setField3(checkOutGroup.getName());
+                    } else {
+                        CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getByRoomIDAndCheckOutSerial(debtPay.getRoomId(),debtPay.getCheckOutSerial());
+                        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
+                        fieldTemplate.setField1(timeService.dateToStringLong(checkInHistoryLog.getReachTime()));
+                        fieldTemplate.setField2(timeService.dateToStringLong(checkInHistoryLog.getLeaveTime()));
+                        fieldTemplate.setField3(checkInHistoryService.listToStringName(checkInHistoryList));
+                    }
+                }
+                fieldTemplate.setField6("true");
+                templateList.add(fieldTemplate);
+                fieldTemplate = new FieldTemplate();//第二行是来店时间，预离时间，姓名
                 fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
                 if (debtPay.getGroupAccount() != null) {
                     fieldTemplate.setField2(ifNotNullGetString(debtPay.getGroupAccount()));
                     fieldTemplate.setField3("公司:" + debtPay.getCompany());
                 } else {
                     fieldTemplate.setField2(ifNotNullGetString(debtPay.getSelfAccount()));
-                }
-                fieldTemplate.setField6("true");
-                templateList.add(fieldTemplate);
-                fieldTemplate = new FieldTemplate();//第二行是来店时间，预离时间，姓名
-                //先判断是在店的还是离店的
-                if(debtPay.getCheckOutSerial()==null){//没离店
-                    if (debtPay.getGroupAccount() != null) {
-                        CheckInGroup checkInGroup=checkInGroupService.getByGroupAccount(debtPay.getGroupAccount());
-                        fieldTemplate.setField1(timeService.dateToStringShort(checkInGroup.getReachTime()));
-                        fieldTemplate.setField2(timeService.dateToStringShort(checkInGroup.getLeaveTime()));
-                        fieldTemplate.setField3(checkInGroup.getName());
-                    } else {
-                        CheckIn checkIn=checkInService.getByRoomId(debtPay.getRoomId());
-                        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debtPay.getRoomId());
-                        fieldTemplate.setField1(timeService.dateToStringShort(checkIn.getReachTime()));
-                        fieldTemplate.setField2(timeService.dateToStringShort(checkIn.getLeaveTime()));
-                        fieldTemplate.setField3(checkInGuestService.listToStringName(checkInGuestList));
-                    }
-                }else {
-                    if (debtPay.getGroupAccount() != null) {
-                        CheckOutGroup checkOutGroup=checkOutGroupService.getByCheckOutSerial(debtPay.getCheckOutSerial());
-                        fieldTemplate.setField1(timeService.dateToStringShort(checkOutGroup.getReachTime()));
-                        fieldTemplate.setField2(timeService.dateToStringShort(checkOutGroup.getLeaveTime()));
-                        fieldTemplate.setField3(checkOutGroup.getName());
-                    } else {
-                        CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getByRoomIDAndCheckOutSerial(debtPay.getRoomId(),debtPay.getCheckOutSerial());
-                        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
-                        fieldTemplate.setField1(timeService.dateToStringShort(checkInHistoryLog.getReachTime()));
-                        fieldTemplate.setField2(timeService.dateToStringShort(checkInHistoryLog.getLeaveTime()));
-                        fieldTemplate.setField3(checkInHistoryService.listToStringName(checkInHistoryList));
-                    }
                 }
                 templateList.add(fieldTemplate);
                 Query query=new Query();
