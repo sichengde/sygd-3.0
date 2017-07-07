@@ -21,8 +21,8 @@ public class RoomShopService extends BaseService<RoomShop>{
     /**
      * 通过房吧分解获得数量
      */
-    public Integer getShopNum(String msg) {
-        return Integer.valueOf(msg.substring(msg.indexOf(":") + 1, msg.indexOf("*")));
+    public Double getShopNum(String msg) {
+        return Double.valueOf(msg.substring(msg.indexOf(":") + 1, msg.indexOf("*")));
     }
 
     /**
@@ -32,10 +32,10 @@ public class RoomShopService extends BaseService<RoomShop>{
      * @param des 目标商品
      * @param num 增加的数量
      */
-    public String setShopNum(String src, String des, Integer num) {
+    public String setShopNum(String src, String des, Double num) {
         Integer var1 = src.indexOf(":", src.indexOf(des));//数量前边冒号出现的位置
         Integer var2 = src.indexOf("*", src.indexOf(des));//数量后边乘号出现的位置
-        Integer newNum = Integer.valueOf(src.substring(var1 + 1, var2)) + num;
+        Double newNum = Double.valueOf(src.substring(var1 + 1, var2)) + num;
         return src.substring(0, var1 + 1) + newNum + src.substring(var2, src.length());
     }
 
