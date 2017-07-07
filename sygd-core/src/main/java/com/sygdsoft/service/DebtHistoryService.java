@@ -108,7 +108,7 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
                         debt1.setConsume(debtAll.getNotNullConsume() + debt1.getNotNullConsume());
                         debt1.setDescription("过夜审加收房费:" + String.valueOf(liveDay) + "天");
                         liveDay++;
-                    } else if (debtAll.getPointOfSale().equals("房吧") && compressDebtList.get(compressDebtList.size() - 1).getPointOfSale().equals("房吧")) {
+                    } else if ("房吧".equals(debtAll.getCategory()) && compressDebtList.get(compressDebtList.size() - 1).getPointOfSale().equals("房吧")) {
                         DebtHistory debtCompressed = compressDebtList.get(compressDebtList.size() - 1);
                         debtCompressed.setConsume(debtAll.getNotNullConsume() + debtCompressed.getNotNullConsume());
                         String[] itemAndMoneyCompressed = debtCompressed.getDescription().split("/");//分析消费品种
