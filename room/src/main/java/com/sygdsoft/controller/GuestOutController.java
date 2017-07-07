@@ -737,7 +737,7 @@ public class GuestOutController {
             var.setField6(String.valueOf(debt.getCurrency()));
             var.setField7(debt.getUserId());
             templateList.add(var);
-            if (debt.getNotNullDeposit() > 0 && !"已退".equals(debt.getRemark())) {//没有退的押金，准备考虑与结账币种的关系
+            if (debt.getNotNullDeposit() != 0 && !"已退".equals(debt.getRemark())) {//没有退的押金，准备考虑与结账币种的关系
                 boolean haveSame = false;
                 for (CurrencyPost currencyPost : currencyPostList) {
                     if (currencyPost.getCurrency().equals(debt.getCurrency())) {//相同的币种结账方式
