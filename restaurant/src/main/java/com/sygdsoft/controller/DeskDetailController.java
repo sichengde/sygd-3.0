@@ -147,7 +147,7 @@ public class DeskDetailController {
                         if (deskDetailMap.containsKey(cookRoom.getPrinter())) {//如果有这个厨房
                             deskDetailMap.get(cookRoom.getPrinter()).add(detail);
                         } else {
-                            deskDetailMap.put(cookRoom.getPrinter(), new ArrayList<>());
+                            deskDetailMap.put(cookRoom.getPrinter(), new ArrayList<DeskDetail>());
                             printNumMap.put(cookRoom.getPrinter(), cookRoom.getNotNullNum());
                             deskDetailMap.get(cookRoom.getPrinter()).add(detail);
                         }
