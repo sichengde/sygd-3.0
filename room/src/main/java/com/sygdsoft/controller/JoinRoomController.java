@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,9 +41,17 @@ public class JoinRoomController {
         Double totalPay=0.0;
         List<String> roomList=joinRoomPost.getRoomAddList();
         String remark=joinRoomPost.getRemark();
+        Date firstTime=null;
         for (String roomId : roomList) {
             /*为每一条在店户籍设置公付账号*/
             CheckIn checkIn = checkInService.getByRoomId(roomId);
+            if(firstTime==null){
+                firstTime=checkIn.getReachTime();
+            }else {
+                if(firstTime.compareTo(checkIn.getReachTime())==1){
+                    firstTime=checkIn.getReachTime();
+                }
+            }
             checkIn.setGroupAccount(groupAccount);
             debtService.setGroupAccountByRoomId(roomId, groupAccount);
             /*合计押金*/
@@ -66,6 +75,7 @@ public class JoinRoomController {
         checkInGroup.setPay(totalPay);
         checkInGroup.setTotalRoom(roomList.size());
         checkInGroup.setRemark(remark);
+        checkInGroup.setReachTime(firstTime);
         checkInGroupService.add(checkInGroup);
         String roomString=ListToSting.valueOf(roomList);
         userLogService.addUserLog("联房:" + roomString, userLogService.reception,userLogService.joinRoom,roomString);
