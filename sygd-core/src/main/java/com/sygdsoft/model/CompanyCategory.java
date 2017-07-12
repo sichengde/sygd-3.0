@@ -3,7 +3,7 @@ package com.sygdsoft.model;
 /**
  * Created by 舒展 on 2016-07-15.
  */
-public class CompanyCategory {
+public class CompanyCategory extends BaseEntity{
     private String category;
 
     public CompanyCategory() {
