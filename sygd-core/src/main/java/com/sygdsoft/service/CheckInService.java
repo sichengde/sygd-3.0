@@ -53,6 +53,15 @@ public class CheckInService extends BaseService<CheckIn> {
     }
 
     /**
+     * 获得房间对象
+     */
+    public CheckIn getBySelfAccount(String selfAccount) {
+        CheckIn checkInQuery = new CheckIn();
+        checkInQuery.setSelfAccount(selfAccount);
+        return checkInMapper.selectOne(checkInQuery);
+    }
+
+    /**
      * 获得所有房间的字符串
      */
     public String getTotalRoomString(List<CheckIn> checkInList, Boolean withComma) {

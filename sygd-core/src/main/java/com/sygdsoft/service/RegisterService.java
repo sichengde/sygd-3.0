@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +22,16 @@ import java.util.Scanner;
 @Service
 public class RegisterService {
     private int pass;//0是正式版,1是试用版，没有试用版，试用版就是没通过
+    private int passCK;//餐饮模块有没
+    private int passSN;//桑拿模块有没
     private List<Integer> module = new ArrayList<>();
     private Integer maxUser;
-    static private byte[] success = {33, 77};//注册成功字符串
-    static private byte[] module2 = {1, 2, 3, 4, 5, 6, 7, 8};//拥有模块字符串
-    @Autowired
-    ApplicationArguments args;
-    @Autowired
-    OtherParamService otherParamService;
+    @Value("${register.number}")
+    private String serial;
+    @Value("${register.numberCK}")
+    private String serialCK;
+    @Value("${register.numberSN}")
+    private String serialSN;
 
    /* public void check() throws UnknownHostException, SocketException {
         if(args.getSourceArgs().length==0){//没有输入注册号只给两个模块
@@ -99,6 +102,8 @@ public class RegisterService {
     @PostConstruct
     public void init() throws IOException {
         this.check();
+        this.checkCK();
+        this.checkSN();
     }
 
     /**
@@ -117,19 +122,55 @@ public class RegisterService {
     }
 
     public void check() throws IOException {
-        if (args.getSourceArgs().length == 0) {
+        if (this.serial==null) {
             this.pass = 1;
         } else {
             String parse = "";
-            String password= args.getSourceArgs()[0];
+            String password= this.serial;
             for (int i = 0; i < password.length(); i++) {
                 Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)),16);
                 parse +=Integer.toHexString(int1^7);
             }
-            if (parse.toUpperCase().equals(getLocalSerial())) {
+            if (parse.equals(getLocalSerial())) {
                 this.pass = 0;
             } else {
                 this.pass = 1;
+            }
+        }
+    }
+
+    public void checkCK() throws IOException {
+        if (this.serialCK==null) {
+            this.passCK = 1;
+        } else {
+            String parse = "";
+            String password= this.serialCK;
+            for (int i = 0; i < password.length(); i++) {
+                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)),16);
+                parse +=Integer.toHexString(int1^8);
+            }
+            if (parse.equals(getLocalSerial())) {
+                this.passCK = 0;
+            } else {
+                this.passCK = 1;
+            }
+        }
+    }
+
+    public void checkSN() throws IOException {
+        if (this.serialSN==null) {
+            this.passSN = 1;
+        } else {
+            String parse = "";
+            String password= this.serialSN;
+            for (int i = 0; i < password.length(); i++) {
+                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)),16);
+                parse +=Integer.toHexString(int1^9);
+            }
+            if (parse.equals(getLocalSerial())) {
+                this.passSN = 0;
+            } else {
+                this.passSN = 1;
             }
         }
     }
@@ -237,5 +278,21 @@ public class RegisterService {
 
     public void setMaxUser(Integer maxUser) {
         this.maxUser = maxUser;
+    }
+
+    public int getPassCK() {
+        return passCK;
+    }
+
+    public void setPassCK(int passCK) {
+        this.passCK = passCK;
+    }
+
+    public int getPassSN() {
+        return passSN;
+    }
+
+    public void setPassSN(int passSN) {
+        this.passSN = passSN;
     }
 }

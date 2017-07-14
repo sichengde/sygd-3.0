@@ -12,6 +12,10 @@ public class Module {
     public Module() {
     }
 
+    public Module(String name) {
+        this.name = name;
+    }
+
     public Module(String name, String link, String[] permission) {
         this.name = name;
         this.link = link;

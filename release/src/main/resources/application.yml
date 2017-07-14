@@ -9,6 +9,10 @@ logging:
 night:
     action: 0 0 0 * * *
     protect: 0 59 23 * * *
+register:
+    number: 7111ef5477
+    numberCK: 8eee10ab881
+    numberSN: 9fff01ba991
 hotel:
     hotelId: hotel
     ip: localhost

@@ -16,10 +16,12 @@ public class RegisterConfig {
     RegisterService registerService;
 
     /**
-     * 初始化注册码
+     * 初始化注册码，没有用了
      */
     @PostConstruct
     public void init() throws IOException {
         registerService.check();
+        registerService.checkCK();
+        registerService.checkSN();
     }
 }

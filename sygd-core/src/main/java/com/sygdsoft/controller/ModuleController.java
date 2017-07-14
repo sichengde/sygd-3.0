@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by 舒展 on 2016-05-18.
  */
@@ -23,6 +25,12 @@ public class ModuleController {
 
     @RequestMapping(value = "moduleNewGet")
     public Module[] getAllModuleNew() {
-        return moduleService.moduleUltimateNew;
+        return moduleService.moduleNewGet();
     }
+    @RequestMapping(value = "moduleCheck")
+    public List<String> moduleCheck() {
+        return moduleService.moduleCheck();
+    }
+
+
 }

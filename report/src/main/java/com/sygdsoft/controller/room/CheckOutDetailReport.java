@@ -91,7 +91,7 @@ public class CheckOutDetailReport {
                         fieldTemplate.setField2(timeService.dateToStringLong(checkInGroup.getLeaveTime()));
                         fieldTemplate.setField3(checkInGroup.getName());
                     } else {
-                        CheckIn checkIn=checkInService.getByRoomId(debtPay.getRoomId());
+                        CheckIn checkIn=checkInService.getBySelfAccount(debtPay.getSelfAccount());
                         List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debtPay.getRoomId());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkIn.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
@@ -104,7 +104,7 @@ public class CheckOutDetailReport {
                         fieldTemplate.setField2(timeService.dateToStringLong(checkOutGroup.getLeaveTime()));
                         fieldTemplate.setField3(checkOutGroup.getName());
                     } else {
-                        CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getByRoomIDAndCheckOutSerial(debtPay.getRoomId(),debtPay.getCheckOutSerial());
+                        CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getBySelfAccountAndCheckOutSerial(debtPay.getSelfAccount(),debtPay.getCheckOutSerial());
                         List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkInHistoryLog.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkInHistoryLog.getLeaveTime()));

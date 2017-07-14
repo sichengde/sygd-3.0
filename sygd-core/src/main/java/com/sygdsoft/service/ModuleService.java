@@ -10,7 +10,9 @@ import java.util.Objects;
 
 /**
  * Created by 舒展 on 2016-05-19.
- * 分为最终版模块和体验版模块，根据注册码
+ * 桑拿和餐饮分别生成序列号
+ * 桑拿对12做异或
+ * 餐饮对19做异或
  */
 @Service
 public class ModuleService {
@@ -78,10 +80,6 @@ public class ModuleService {
             new Module("桑拿", "sauna", new String[]{
                     "消费录入",
             }, true),
-            /*new Module("会员", "vip", new String[]{
-            }),
-            new Module("预定", "BOOK", new String[]{
-            }),*/
             new Module("库存", "storage", new String[]{
                     "库存参数",
                     "库存管理",
@@ -109,10 +107,37 @@ public class ModuleService {
      */
     public Module[] getAllModule() {
         return moduleUltimate;
-/*        if (registerService.getPass() == 0) {//0是通过
-            return moduleUltimate;
-        }else {
-            return null;
-        }*/
+    }
+
+    /**
+     * 获取新版module
+     */
+    public Module[] moduleNewGet(){
+        if(registerService.getPassCK()==1){
+            moduleUltimateNew[1]=new Module("无餐饮权限","",new String[]{});
+        }
+        if(registerService.getPassSN()==1){
+            moduleUltimateNew[2]=new Module("无桑拿权限","",new String[]{});
+        }
+        return moduleUltimateNew;
+    }
+
+    /**
+     * 接待：0
+     * 餐饮：1
+     * 桑拿：2
+     */
+    public List<String> moduleCheck(){
+        List<String> moduleList=new ArrayList<>();
+        if(registerService.getPass()==0){
+            moduleList.add("room");
+        }
+        if(registerService.getPassCK()==0){
+            moduleList.add("eat");
+        }
+        if(registerService.getPassSN()==0){
+            moduleList.add("sauna");
+        }
+        return moduleList;
     }
 }

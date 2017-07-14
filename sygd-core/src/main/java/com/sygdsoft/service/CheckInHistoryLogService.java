@@ -18,11 +18,26 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
     CheckInHistoryLogMapper checkInHistoryLogMapper;
 
     /**
-     * 通过房号和离店结算序列号获得一条记录
+     * 通过房号和离店结算序列号获得一条记录（换房的话容易报错）
      */
     public CheckInHistoryLog getByRoomIDAndCheckOutSerial(String roomId,String checkOutSerial){
         CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
         checkInHistoryLog.setRoomId(roomId);
+        checkInHistoryLog.setCheckOutSerial(checkOutSerial);
+        List<CheckInHistoryLog> checkInHistoryLogList=checkInHistoryLogMapper.select(checkInHistoryLog);
+        try {
+            return checkInHistoryLogList.get(0);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 通过自付账号和离店结算序列号获得一条记录
+     */
+    public CheckInHistoryLog getBySelfAccountAndCheckOutSerial(String selfAccount,String checkOutSerial){
+        CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
+        checkInHistoryLog.setSelfAccount(selfAccount);
         checkInHistoryLog.setCheckOutSerial(checkOutSerial);
         List<CheckInHistoryLog> checkInHistoryLogList=checkInHistoryLogMapper.select(checkInHistoryLog);
         try {
