@@ -36,9 +36,9 @@ public interface RoomMapper extends MyMapper<Room> {
     /**
      * 获得该房类的全部房数
      */
-    @Select("select count(*) from room where category=#{category}")
-    @ResultType(String.class)
-    String getTotalCategoryNum(@Param("category") String category);
+    @Select("select count(*) from room where category=#{category} and if_room is true")
+    @ResultType(Integer.class)
+    Integer getTotalCategoryNum(@Param("category") String category);
 
     /**
      * 通过房号字符串获得房间对象数组

@@ -119,7 +119,7 @@ public class RoomService extends BaseService<Room> {
     /**
      * 获得该房类的全部房数
      */
-    public String getTotalCategoryNum(String category){
+    public Integer getTotalCategoryNum(String category){
         return roomMapper.getTotalCategoryNum(category);
     }
 
