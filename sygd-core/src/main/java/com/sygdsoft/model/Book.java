@@ -25,7 +25,7 @@ public class Book extends BaseEntity {
     private String mark;//备注
     private String phone;//电话
     private Integer totalRoom;//总预定房数
-    private Integer bookedRoom;//已预定房数
+    private Integer bookedRoom;//已开房房数
     private String userId;//操作员号
     private String name;//订单名称
     private Date doTime;//下单时间
@@ -43,7 +43,27 @@ public class Book extends BaseEntity {
 
     public Book() {
     }
-    public Double getNotNullScuscription(){
+
+    public Book(CloudBook cloudBook){
+        this.doTime=cloudBook.getDoTime();
+        this.reachTime=cloudBook.getReachTime();
+        this.leaveTime=cloudBook.getLeaveTime();
+        this.guestSource=cloudBook.getGuestSource();
+        this.protocol=cloudBook.getProtocol();
+        this.currency=cloudBook.getCurrency();
+        this.totalRoom=cloudBook.getTotalRoom();
+        this.phone=cloudBook.getPhone();
+        this.mark=cloudBook.getRemark();
+        this.totalRoom=cloudBook.getTotalRoom();
+        this.remainTime=this.leaveTime;
+        this.bookedRoom=0;
+        this.subscription=cloudBook.getPrice();
+        this.roomPriceCategory="日租房";
+        this.name="网络预定"+cloudBook.getName();
+        this.state="有效";
+    }
+
+    public Double getNotNullScuscription() {
         return NullJudgement.nullToZero(subscription);
     }
 

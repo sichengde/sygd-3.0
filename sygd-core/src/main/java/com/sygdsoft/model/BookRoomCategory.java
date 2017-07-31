@@ -6,7 +6,7 @@ package com.sygdsoft.model;
 public class BookRoomCategory {
     private String bookSerial;//预定号
     private String roomCategory;//房间类别
-    private String num;//房间数量
+    private Integer num;//房间数量
 
     public BookRoomCategory() {
     }
@@ -27,11 +27,11 @@ public class BookRoomCategory {
         this.roomCategory = roomCategory;
     }
 
-    public String getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public void setNum(String num) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 }
