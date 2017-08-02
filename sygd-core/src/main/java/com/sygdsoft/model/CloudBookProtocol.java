@@ -4,18 +4,18 @@ package com.sygdsoft.model;
  * Created by Administrator on 2017/7/31.
  */
 public class CloudBookProtocol extends BaseEntity{
-    private String web;
+    private String guestSource;
     private String protocol;
 
     public CloudBookProtocol() {
     }
 
-    public String getWeb() {
-        return web;
+    public String getGuestSource() {
+        return guestSource;
     }
 
-    public void setWeb(String web) {
-        this.web = web;
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 
     public String getProtocol() {

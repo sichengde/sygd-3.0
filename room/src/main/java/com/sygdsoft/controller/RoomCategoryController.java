@@ -2,6 +2,7 @@ package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.RoomCategory;
+import com.sygdsoft.model.RoomCategory;
 import com.sygdsoft.service.RoomCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,5 +34,17 @@ public class RoomCategoryController {
     @RequestMapping(value = "roomCategoryGet")
     public List<RoomCategory> roomCategoryGetAll(@RequestBody Query query) throws Exception {
         return roomCategoryService.get(query);
+    }
+
+    @RequestMapping(value = "roomCategoryUpdate")
+    @Transactional(rollbackFor = Exception.class)
+    public void roomCategoryUpdate(@RequestBody List<RoomCategory> roomCategoryList) throws Exception {
+        if (roomCategoryList.size() > 1) {
+            if (roomCategoryList.get(0).getId().equals(roomCategoryList.get(roomCategoryList.size() / 2).getId())) {
+                roomCategoryService.update(roomCategoryList.subList(0, roomCategoryList.size() / 2));
+                return;
+            }
+        }
+        roomCategoryService.update(roomCategoryList);
     }
 }

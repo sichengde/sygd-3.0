@@ -6,6 +6,11 @@ package com.sygdsoft.model;
  */
 public class RoomCategory extends BaseEntity {
     private String category;
+    private String cloudPic;
+    private Boolean wifi;
+    private Boolean computer;
+    private Boolean hairDrier;
+    private Boolean clock;
 
     public RoomCategory() {
     }
@@ -20,5 +25,45 @@ public class RoomCategory extends BaseEntity {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getCloudPic() {
+        return cloudPic;
+    }
+
+    public void setCloudPic(String cloudPic) {
+        this.cloudPic = cloudPic;
+    }
+
+    public Boolean getWifi() {
+        return wifi;
+    }
+
+    public void setWifi(Boolean wifi) {
+        this.wifi = wifi;
+    }
+
+    public Boolean getComputer() {
+        return computer;
+    }
+
+    public void setComputer(Boolean computer) {
+        this.computer = computer;
+    }
+
+    public Boolean getHairDrier() {
+        return hairDrier;
+    }
+
+    public void setHairDrier(Boolean hairDrier) {
+        this.hairDrier = hairDrier;
+    }
+
+    public Boolean getClock() {
+        return clock;
+    }
+
+    public void setClock(Boolean clock) {
+        this.clock = clock;
     }
 }
