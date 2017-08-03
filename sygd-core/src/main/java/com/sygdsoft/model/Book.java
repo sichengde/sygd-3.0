@@ -51,10 +51,9 @@ public class Book extends BaseEntity {
         this.guestSource=cloudBook.getGuestSource();
         this.protocol=cloudBook.getProtocol();
         this.currency=cloudBook.getCurrency();
-        this.totalRoom=cloudBook.getTotalRoom();
         this.phone=cloudBook.getPhone();
         this.mark=cloudBook.getRemark();
-        this.totalRoom=cloudBook.getTotalRoom();
+        this.totalRoom=cloudBook.getNum();
         this.remainTime=this.leaveTime;
         this.bookedRoom=0;
         this.subscription=cloudBook.getPrice();

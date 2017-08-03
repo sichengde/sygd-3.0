@@ -11,7 +11,6 @@ public class CloudBook extends BaseEntity{
     private Date leaveTime;
     private Double price;
     private String currency;
-    private Integer totalRoom;
     private String name;
     private String phone;
     private String remark;
@@ -65,14 +64,6 @@ public class CloudBook extends BaseEntity{
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public Integer getTotalRoom() {
-        return totalRoom;
-    }
-
-    public void setTotalRoom(Integer totalRoom) {
-        this.totalRoom = totalRoom;
     }
 
     public String getName() {
