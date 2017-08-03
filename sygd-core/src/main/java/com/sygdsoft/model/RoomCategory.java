@@ -1,5 +1,7 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
+
 /**
  * Created by 舒展 on 2016-03-30.
  * 房间类别实体
@@ -11,6 +13,8 @@ public class RoomCategory extends BaseEntity {
     private Boolean computer;
     private Boolean hairDrier;
     private Boolean clock;
+    @Transient
+    private Integer remain;//剩余数量
 
     public RoomCategory() {
     }
@@ -65,5 +69,13 @@ public class RoomCategory extends BaseEntity {
 
     public void setClock(Boolean clock) {
         this.clock = clock;
+    }
+
+    public Integer getRemain() {
+        return remain;
+    }
+
+    public void setRemain(Integer remain) {
+        this.remain = remain;
     }
 }
