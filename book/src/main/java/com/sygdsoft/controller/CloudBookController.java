@@ -43,7 +43,7 @@ public class CloudBookController {
         /*生成预定信息和预定房间信息*/
         Book book = new Book(cloudBook);
         BookRoomCategory bookRoomCategory=new BookRoomCategory();
-        bookRoomCategory.setBookSerial(book.getBookSerial());
+        bookRoomCategory.setBookSerial(bookSerial);
         bookRoomCategory.setNum(book.getTotalRoom());
         bookRoomCategory.setRoomCategory(cloudBook.getRoomCategory());
         List<BookRoomCategory> bookRoomCategoryList = new ArrayList<>();

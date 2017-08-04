@@ -52,7 +52,7 @@ public class BookParseController {
             if(checkIn.getLeaveTime().compareTo(beginTime)==1){
                 String category=checkIn.getRoomCategory();
                 for (RoomCategory roomCategory : roomCategoryList) {
-                    if(roomCategory.equals(category)){
+                    if(roomCategory.getCategory().equals(category)){
                         roomCategory.setRemain(roomCategory.getRemain()-1);
                     }
                 }
@@ -62,8 +62,8 @@ public class BookParseController {
         List<BookRoomCategory> bookRoomCategoryList=bookRoomCategoryService.getViolenceRoomCategory(beginTime, endTime);
         for (BookRoomCategory bookRoomCategory : bookRoomCategoryList) {
             for (RoomCategory roomCategory : roomCategoryList) {
-                if(roomCategory.equals(bookRoomCategory.getRoomCategory())){
-                    roomCategory.setRemain(roomCategory.getRemain()-1);
+                if(roomCategory.getCategory().equals(bookRoomCategory.getRoomCategory())){
+                    roomCategory.setRemain(roomCategory.getRemain()-bookRoomCategory.getNum());
                 }
             }
         }
