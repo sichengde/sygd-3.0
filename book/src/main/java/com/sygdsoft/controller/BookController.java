@@ -5,7 +5,6 @@ import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ejb.access.EjbAccessException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 
@@ -175,7 +173,7 @@ public class BookController {
         * 16.酒店名称
         * 17.保留时间
         * */
-        return reportService.generateReport(null, new String[]{book.getName(), bookMessage, timeService.dateToStringLong(book.getReachTime()), timeService.dateToStringLong(book.getLeaveTime()), book.getProtocol(), book.getCompany(), book.getPhone(), book.getMark(), ifNotNullGetString(book.getSubscription()), book.getCurrency(), util.number2CNMontrayUnit(BigDecimal.valueOf(book.getNotNullScuscription())), userService.getCurrentUser(), timeService.getNowLong(), book.getCardId(), book.getBookSerial(), otherParamService.getValueByName("酒店名称"), timeService.dateToStringLong(book.getRemainTime())}, "bookInput", "pdf");
+        return reportService.generateReport(null, new String[]{book.getName(), bookMessage, timeService.dateToStringLong(book.getReachTime()), timeService.dateToStringLong(book.getLeaveTime()), book.getProtocol(), book.getCompany(), book.getPhone(), book.getMark(), ifNotNullGetString(book.getSubscription()), book.getCurrency(), util.number2CNMontrayUnit(BigDecimal.valueOf(book.getNotNullSubscription())), userService.getCurrentUser(), timeService.getNowLong(), book.getCardId(), book.getBookSerial(), otherParamService.getValueByName("酒店名称"), timeService.dateToStringLong(book.getRemainTime())}, "bookInput", "pdf");
     }
 
     /**
@@ -193,7 +191,7 @@ public class BookController {
         for (BookRoomCategory bookRoomCategory : bookRoomCategoryList) {
             bookMessage += bookRoomCategory.getRoomCategory() + ":" + bookRoomCategory.getNum() + "/";
         }
-        return reportService.generateReport(null, new String[]{book.getName(), bookMessage, timeService.dateToStringLong(book.getReachTime()), timeService.dateToStringLong(book.getLeaveTime()), book.getProtocol(), book.getCompany(), book.getPhone(), book.getMark(), ifNotNullGetString(book.getSubscription()), book.getCurrency(), util.number2CNMontrayUnit(BigDecimal.valueOf(book.getNotNullScuscription())), book.getUserId(), timeService.getNowLong(), book.getCardId(), book.getBookSerial(), otherParamService.getValueByName("酒店名称"), timeService.dateToStringLong(book.getRemainTime())}, "bookInput", "pdf");
+        return reportService.generateReport(null, new String[]{book.getName(), bookMessage, timeService.dateToStringLong(book.getReachTime()), timeService.dateToStringLong(book.getLeaveTime()), book.getProtocol(), book.getCompany(), book.getPhone(), book.getMark(), ifNotNullGetString(book.getSubscription()), book.getCurrency(), util.number2CNMontrayUnit(BigDecimal.valueOf(book.getNotNullSubscription())), book.getUserId(), timeService.getNowLong(), book.getCardId(), book.getBookSerial(), otherParamService.getValueByName("酒店名称"), timeService.dateToStringLong(book.getRemainTime())}, "bookInput", "pdf");
     }
 
     /**

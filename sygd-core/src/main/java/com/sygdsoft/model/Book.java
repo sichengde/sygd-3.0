@@ -62,7 +62,7 @@ public class Book extends BaseEntity {
         this.state="有效";
     }
 
-    public Double getNotNullScuscription() {
+    public Double getNotNullSubscription() {
         return NullJudgement.nullToZero(subscription);
     }
 
