@@ -80,9 +80,9 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         hotelService.post(CloudServiceConfig.cloudAddress+"/manualNightCloud",map);*/
         timeService.setNow();
         userLogService.addUserLogWithoutUserIp("自动夜审",userLogService.reception,userLogService.night);
-        this.messagingTemplate.convertAndSend("/beginNight", true);
-        nightService.nightActionLogic();
         this.messagingTemplate.convertAndSend("/beginNight", false);
+        nightService.nightActionLogic();
+        this.messagingTemplate.convertAndSend("/beginNight", true);
     }
 
     /**
@@ -107,6 +107,8 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
      * 手动夜审
      */
     public void manualNightAction() throws Exception{
+        this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
+        this.messagingTemplate.convertAndSend("/beginNight", true);
     }
 }
