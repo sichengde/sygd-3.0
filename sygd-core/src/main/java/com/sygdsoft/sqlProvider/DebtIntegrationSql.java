@@ -25,4 +25,13 @@ public class DebtIntegrationSql {
         }
         return basic;
     }
+
+    public String getList(Map<String, Object> parameters){
+        String userId=(String) parameters.get("userId");
+        String basic="SELECT point_of_sale pointOfSale,consume,deposit,currency,room_id roomId,pay_serial paySerial from debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
+        if(userId!=null){
+            basic+=" and if(category='全日房费',#{userId},null)=#{userId} ";
+        }
+        return basic;
+    }
 }

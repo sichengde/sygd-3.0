@@ -51,6 +51,13 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     }
 
     /**
+     * 通过营业部门进行聚合
+     */
+    public List<DebtIntegration> getList(Date beginTime,Date endTime,String userId){
+        return debtIntegrationMapper.getList(beginTime, endTime,userId);
+    }
+
+    /**
      * 获得发生额线性走势
      */
     public List<HotelParseLineRow> roomConsumeChart(Date beginTime, Date endTime){

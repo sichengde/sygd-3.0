@@ -1,7 +1,9 @@
 package com.sygdsoft.controller.common;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.model.*;
+import com.sygdsoft.model.Currency;
 import com.sygdsoft.model.room.ExchangeUserSmallJQReturn;
 import com.sygdsoft.model.room.ExchangeUserSmallJQRow;
 import com.sygdsoft.service.*;
@@ -9,10 +11,7 @@ import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
+import java.util.*;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 import static com.sygdsoft.util.NullJudgement.nullToZero;
@@ -57,6 +56,8 @@ public class ExchangeUserReport {
     SzMath szMath;
     @Autowired
     DebtIntegrationService debtIntegrationService;
+    @Autowired
+    PointOfSaleService pointOfSaleService;
 
     /**
      * 接待交班审核表
@@ -267,9 +268,61 @@ public class ExchangeUserReport {
      * JSONObject字段
      */
     @RequestMapping(value = "viewCashBox")
-    public List<JSONObject> viewCashBox(@RequestBody ReportJson reportJson) throws Exception {
-        List<JSONObject> objects = new ArrayList<>();
-        return objects;
+    public JSONObject viewCashBox(@RequestBody ReportJson reportJson) throws Exception {
+        Date beginTime = reportJson.getBeginTime();
+        Date endTime = reportJson.getEndTime();
+        String userId = reportJson.getUserId();
+        JSONObject object = new JSONObject();//返回值
+        List<DebtIntegration> debtIntegrationList = debtIntegrationService.getList(beginTime, endTime, userId);
+        /*开始分析*/
+        Double totalRetail = 0.0;
+        Double totalDeposit = 0.0;//总计的预付，
+        Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
+        Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务
+        for (DebtIntegration debtIntegration : debtIntegrationList) {
+            /*先处理消费*/
+            if (szMath.nullToZero(debtIntegration.getConsume()) > 0) {
+                if ("零售".equals(debtIntegration.getPointOfSale())) {
+                    totalRetail += debtIntegration.getConsume();
+                    continue;
+                }
+                String roomId = debtIntegration.getRoomId();
+                JSONObject item = roomMap.get(roomId);
+                if (item == null) {//新的房号，新建一行
+                    item = new JSONObject();
+                    roomMap.put(roomId, item);
+                }
+                /*给对应营业部门总和赋值*/
+                item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale()))+szMath.nullToZero(debtIntegration.getConsume()));
+            }
+            /*再处理币种*/
+            if ("押金".equals(debtIntegration.getCurrency()) &&debtIntegration.getPaySerial()==null) {
+                totalDeposit+=szMath.nullToZero(debtIntegration.getDeposit());
+            }
+            if (szMath.nullToZero(debtIntegration.getDeposit()) > 0 && !"押金".equals(debtIntegration.getCurrency())) {
+                currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale()))+szMath.nullToZero(debtIntegration.getDeposit()));
+            }
+        }
+        /*房间消费map转数组*/
+        List<JSONObject> dataList = new ArrayList<>();
+        for (String roomId : roomMap.keySet()) {
+            JSONObject jsonObject=roomMap.get(roomId);
+            jsonObject.put("roomId",roomId);
+            dataList.add(jsonObject);
+        }
+        /*收银币种map转数组*/
+        List<JSONObject> currencyList = new ArrayList<>();
+        for (String s : currencyMap.keySet()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("currency", s);
+            jsonObject.put("deposit", currencyMap.get(s));
+            currencyList.add(jsonObject);
+        }
+        object.put("dataList", dataList);
+        object.put("currencyList", currencyList);
+        object.put("remain", totalDeposit);
+        object.put("retail", totalRetail);
+        return object;
     }
 
     /**
