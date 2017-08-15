@@ -277,11 +277,14 @@ public class ExchangeUserReport {
         /*开始分析*/
         Double totalRetail = 0.0;
         Double totalDeposit = 0.0;//总计的预付，
+        Double totalRoomShop = 0.0;//总计的房吧，
+        Double getMoney = 0.0;//应该提款的金额，
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
         Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务
         for (DebtIntegration debtIntegration : debtIntegrationList) {
             /*先处理消费*/
-            if (szMath.nullToZero(debtIntegration.getConsume()) > 0) {
+            if (szMath.nullToZero(debtIntegration.getConsume()) != 0) {
+                getMoney+=debtIntegration.getConsume();
                 if ("零售".equals(debtIntegration.getPointOfSale())) {
                     totalRetail += debtIntegration.getConsume();
                     continue;
@@ -293,21 +296,31 @@ public class ExchangeUserReport {
                     roomMap.put(roomId, item);
                 }
                 /*给对应营业部门总和赋值*/
-                item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale()))+szMath.nullToZero(debtIntegration.getConsume()));
+                item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
+                /*单独处理杂单冲账*/
+                if("杂单".equals(debtIntegration.getCategory())){
+                    item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
+                }
+                if("冲账".equals(debtIntegration.getCategory())){
+                    item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
+                }
+                if("房吧".equals(debtIntegration.getPointOfSale())){
+                    totalRoomShop+=szMath.nullToZero(debtIntegration.getConsume());
+                }
             }
             /*再处理币种*/
-            if ("押金".equals(debtIntegration.getCurrency()) &&debtIntegration.getPaySerial()==null) {
-                totalDeposit+=szMath.nullToZero(debtIntegration.getDeposit());
+            if ("押金".equals(debtIntegration.getCurrency()) && debtIntegration.getPaySerial() == null) {
+                totalDeposit += szMath.nullToZero(debtIntegration.getDeposit());
             }
             if (szMath.nullToZero(debtIntegration.getDeposit()) > 0 && !"押金".equals(debtIntegration.getCurrency())) {
-                currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale()))+szMath.nullToZero(debtIntegration.getDeposit()));
+                currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getDeposit()));
             }
         }
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
         for (String roomId : roomMap.keySet()) {
-            JSONObject jsonObject=roomMap.get(roomId);
-            jsonObject.put("roomId",roomId);
+            JSONObject jsonObject = roomMap.get(roomId);
+            jsonObject.put("roomId", roomId);
             dataList.add(jsonObject);
         }
         /*收银币种map转数组*/
@@ -320,7 +333,8 @@ public class ExchangeUserReport {
         }
         object.put("dataList", dataList);
         object.put("currencyList", currencyList);
-        object.put("remain", totalDeposit);
+        object.put("remain", totalDeposit-totalRoomShop);
+        object.put("getMoney", getMoney);
         object.put("retail", totalRetail);
         return object;
     }
