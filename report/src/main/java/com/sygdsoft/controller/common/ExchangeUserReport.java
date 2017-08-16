@@ -279,7 +279,7 @@ public class ExchangeUserReport {
         JSONObject object = new JSONObject();//返回值
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getList(beginTime, endTime, userId);
         /*开始分析*/
-        Double totalRetail = 0.0;
+        Double totalOtherConsume= 0.0;
         Double totalDeposit = 0.0;//总计的预付，
         Double totalRoomShop = 0.0;//总计的房吧，
         Double getMoney = 0.0;//应该提款的金额，
@@ -292,7 +292,6 @@ public class ExchangeUserReport {
                 getMoney += debtIntegration.getConsume();
                 getMoneyDetail.put(debtIntegration.getPointOfSale(), szMath.nullToZero(getMoneyDetail.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 if ("零售".equals(debtIntegration.getPointOfSale())) {
-                    totalRetail += debtIntegration.getConsume();
                      /*零售的话已经结账了，查找一下结账币种*/
                     try {
                         List<DebtPay> debtPay = debtPayService.getListBySelfAccount(debtIntegration.getSelfAccount());
@@ -315,10 +314,12 @@ public class ExchangeUserReport {
                 /*单独处理杂单冲账*/
                 if ("杂单".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
+                    totalOtherConsume+=debtIntegration.getConsume();
                     currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if ("冲账".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
+                    totalOtherConsume+=debtIntegration.getConsume();
                     currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if ("房吧".equals(debtIntegration.getPointOfSale())) {
@@ -368,7 +369,7 @@ public class ExchangeUserReport {
             }
         }
         object.put("dataList", dataList);
-        object.put("remainMsg", "钱箱余额:" + (totalDeposit - totalRoomShop));
+        object.put("remainMsg", "钱箱余额:" + (totalDeposit - totalRoomShop-totalOtherConsume));
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         return object;
