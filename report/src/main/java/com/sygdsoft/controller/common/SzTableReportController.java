@@ -70,11 +70,12 @@ public class SzTableReportController {
                 fields[i].setX(left);
             }
         }
-        String[] parameters = new String[23];//szTable固定23个参数
+        String[] parameters = new String[30];//szTable固定23个参数
         System.arraycopy(paramHeaders, 0, parameters, 0, totalColumn);
         int index=20;//从参数20开始
         for (String paramOther : paramOthers) {
-            parameters[index]=paramOther;
+            parameters[index] = paramOther;
+            index++;
         }
         JasperCompileManager.compileReportToFile(design, "C:/report/szTable.jasper");
         return reportService.generateReport(fieldTemplateList, parameters, "szTable", format);
