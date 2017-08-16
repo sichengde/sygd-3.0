@@ -314,16 +314,22 @@ public class ExchangeUserReport {
                 /*单独处理杂单冲账*/
                 if ("杂单".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
-                    totalOtherConsume+=debtIntegration.getConsume();
+                    if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
+                        totalOtherConsume += debtIntegration.getConsume();
+                    }
                     currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if ("冲账".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
-                    totalOtherConsume+=debtIntegration.getConsume();
+                    if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
+                        totalOtherConsume += debtIntegration.getConsume();
+                    }
                     currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if ("房吧".equals(debtIntegration.getPointOfSale())) {
-                    totalRoomShop += szMath.nullToZero(debtIntegration.getConsume());
+                    if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
+                        totalRoomShop += szMath.nullToZero(debtIntegration.getConsume());
+                    }
                     currencyMap.put(debtIntegration.getPointOfSale(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
             }
