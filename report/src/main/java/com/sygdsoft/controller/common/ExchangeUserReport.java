@@ -280,11 +280,13 @@ public class ExchangeUserReport {
         Double totalRoomShop = 0.0;//总计的房吧，
         Double getMoney = 0.0;//应该提款的金额，
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
+        Map<String, Double> getMoneyDetail = new HashMap<>();//提款金额明细
         Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务
         for (DebtIntegration debtIntegration : debtIntegrationList) {
             /*先处理消费*/
             if (szMath.nullToZero(debtIntegration.getConsume()) != 0) {
-                getMoney+=debtIntegration.getConsume();
+                getMoney += debtIntegration.getConsume();
+                getMoneyDetail.put(debtIntegration.getPointOfSale(), szMath.nullToZero(getMoneyDetail.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 if ("零售".equals(debtIntegration.getPointOfSale())) {
                     totalRetail += debtIntegration.getConsume();
                     continue;
@@ -298,14 +300,14 @@ public class ExchangeUserReport {
                 /*给对应营业部门总和赋值*/
                 item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 /*单独处理杂单冲账*/
-                if("杂单".equals(debtIntegration.getCategory())){
+                if ("杂单".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
-                if("冲账".equals(debtIntegration.getCategory())){
+                if ("冲账".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
-                if("房吧".equals(debtIntegration.getPointOfSale())){
-                    totalRoomShop+=szMath.nullToZero(debtIntegration.getConsume());
+                if ("房吧".equals(debtIntegration.getPointOfSale())) {
+                    totalRoomShop += szMath.nullToZero(debtIntegration.getConsume());
                 }
             }
             /*再处理币种*/
@@ -323,19 +325,20 @@ public class ExchangeUserReport {
             jsonObject.put("roomId", roomId);
             dataList.add(jsonObject);
         }
+        /*营业部门消费转字符串*/
+        StringBuilder getMoneyMsg = new StringBuilder("提款金额:" + getMoney + "= ");//提款金额信息，
+        for (String key : getMoneyDetail.keySet()) {
+            getMoneyMsg.append(key).append(":").append(getMoneyDetail.get(key)).append(",");
+        }
         /*收银币种map转数组*/
-        List<JSONObject> currencyList = new ArrayList<>();
+        StringBuilder currencyMsg = new StringBuilder("提款币种:");//提款币种信息，
         for (String s : currencyMap.keySet()) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("currency", s);
-            jsonObject.put("deposit", currencyMap.get(s));
-            currencyList.add(jsonObject);
+            currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
         }
         object.put("dataList", dataList);
-        object.put("currencyList", currencyList);
-        object.put("remain", totalDeposit-totalRoomShop);
-        object.put("getMoney", getMoney);
-        object.put("retail", totalRetail);
+        object.put("remainMsg", "钱箱余额:"+(totalDeposit - totalRoomShop));
+        object.put("currencyMsg", currencyMsg);
+        object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         return object;
     }
 
