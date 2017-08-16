@@ -9,6 +9,7 @@ import com.sygdsoft.model.room.ExchangeUserSmallJQRow;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -58,6 +59,8 @@ public class ExchangeUserReport {
     DebtIntegrationService debtIntegrationService;
     @Autowired
     PointOfSaleService pointOfSaleService;
+    @Autowired
+    CheckInService checkInService;
 
     /**
      * 接待交班审核表
@@ -268,6 +271,7 @@ public class ExchangeUserReport {
      * JSONObject字段
      */
     @RequestMapping(value = "viewCashBox")
+    @Transactional(rollbackFor = Exception.class)
     public JSONObject viewCashBox(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
@@ -317,6 +321,20 @@ public class ExchangeUserReport {
             if (szMath.nullToZero(debtIntegration.getDeposit()) > 0 && !"押金".equals(debtIntegration.getCurrency())) {
                 currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getCurrency())) + szMath.nullToZero(debtIntegration.getDeposit()));
             }
+        }
+        /*房费要加上在店没加房费的（consume小于finalRoomPrice）*/
+        List<CheckIn> checkInList = checkInService.getNotAddRoomPrice();
+        for (CheckIn checkIn : checkInList) {
+            JSONObject item = roomMap.get(checkIn.getRoomId());
+            if (item == null) {//新的房号，新建一行
+                item = new JSONObject();
+                item.put("房费",checkIn.getFinalRoomPrice());
+                roomMap.put(checkIn.getRoomId(), item);
+            } else {
+                item.put("房费", szMath.nullToZero(item.getDouble("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
+            }
+            getMoney+=checkIn.getFinalRoomPrice();
+            getMoneyDetail.put("房费", szMath.nullToZero(getMoneyDetail.get("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
         }
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();

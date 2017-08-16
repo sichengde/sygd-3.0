@@ -76,4 +76,10 @@ public class CheckInService extends BaseService<CheckIn> {
         return out.substring(0, out.length() - 1);
     }
 
+    /**
+     * 获得还没有添加房费的房间
+     */
+    public List<CheckIn> getNotAddRoomPrice(){
+        return checkInMapper.getNotAddRoomPrice();
+    }
 }
