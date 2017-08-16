@@ -333,10 +333,12 @@ public class ExchangeUserReport {
         /*收银币种map转数组*/
         StringBuilder currencyMsg = new StringBuilder("提款币种:");//提款币种信息，
         for (String s : currencyMap.keySet()) {
-            currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
+            if (!"押金".equals(s)) {
+                currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
+            }
         }
         object.put("dataList", dataList);
-        object.put("remainMsg", "钱箱余额:"+(totalDeposit - totalRoomShop));
+        object.put("remainMsg", "钱箱余额:" + (totalDeposit - totalRoomShop));
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         return object;
