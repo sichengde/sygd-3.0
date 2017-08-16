@@ -315,7 +315,7 @@ public class ExchangeUserReport {
                 totalDeposit += szMath.nullToZero(debtIntegration.getDeposit());
             }
             if (szMath.nullToZero(debtIntegration.getDeposit()) > 0 && !"押金".equals(debtIntegration.getCurrency())) {
-                currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getDeposit()));
+                currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getCurrency())) + szMath.nullToZero(debtIntegration.getDeposit()));
             }
         }
         /*房间消费map转数组*/
