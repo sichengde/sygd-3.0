@@ -293,6 +293,15 @@ public class ExchangeUserReport {
                 getMoneyDetail.put(debtIntegration.getPointOfSale(), szMath.nullToZero(getMoneyDetail.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 if ("零售".equals(debtIntegration.getPointOfSale())) {
                     totalRetail += debtIntegration.getConsume();
+                     /*零售的话已经结账了，查找一下结账币种*/
+                    try {
+                        List<DebtPay> debtPay = debtPayService.getListBySelfAccount(debtIntegration.getSelfAccount());
+                        for (DebtPay pay : debtPay) {
+                            currencyMap.put(pay.getCurrency(), szMath.nullToZero(currencyMap.get(pay.getCurrency())) + szMath.nullToZero(pay.getDebtMoney()));
+                        }
+                    } catch (Exception e) {
+                        throw new Exception("零售没有结账记录");
+                    }
                     continue;
                 }
                 String roomId = debtIntegration.getRoomId();
@@ -306,12 +315,15 @@ public class ExchangeUserReport {
                 /*单独处理杂单冲账*/
                 if ("杂单".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
+                    currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if ("冲账".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
+                    currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if ("房吧".equals(debtIntegration.getPointOfSale())) {
                     totalRoomShop += szMath.nullToZero(debtIntegration.getConsume());
+                    currencyMap.put(debtIntegration.getPointOfSale(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
             }
             /*再处理币种*/
@@ -328,12 +340,12 @@ public class ExchangeUserReport {
             JSONObject item = roomMap.get(checkIn.getRoomId());
             if (item == null) {//新的房号，新建一行
                 item = new JSONObject();
-                item.put("房费",checkIn.getFinalRoomPrice());
+                item.put("房费", checkIn.getFinalRoomPrice());
                 roomMap.put(checkIn.getRoomId(), item);
             } else {
                 item.put("房费", szMath.nullToZero(item.getDouble("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
             }
-            getMoney+=checkIn.getFinalRoomPrice();
+            getMoney += checkIn.getFinalRoomPrice();
             getMoneyDetail.put("房费", szMath.nullToZero(getMoneyDetail.get("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
         }
         /*房间消费map转数组*/
