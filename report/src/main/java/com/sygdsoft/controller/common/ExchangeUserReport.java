@@ -309,8 +309,8 @@ public class ExchangeUserReport {
                 if (item == null) {//新的房号，新建一行
                     item = new JSONObject();
                     roomMap.put(selfAccount, item);
+                    item.put("roomId", roomId);
                 }
-                item.put("roomId",roomId);
                 /*给对应营业部门总和赋值*/
                 item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 /*分析币种*/
@@ -320,10 +320,10 @@ public class ExchangeUserReport {
                     currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
-                    item.put("done",false);
+                    item.put("done", false);
                     getMoneyNotPay += szMath.nullToZero(debtIntegration.getConsume());
-                }else {
-                    item.put("done",true);
+                } else {
+                    item.put("done", true);
                 }
                 /*单独处理杂单冲账*/
                 /*if ("杂单".equals(debtIntegration.getCategory())) {
@@ -358,11 +358,12 @@ public class ExchangeUserReport {
         /*房费要加上在店没加房费的（consume小于finalRoomPrice）*/
         List<CheckIn> checkInList = checkInService.getNotAddRoomPrice();
         for (CheckIn checkIn : checkInList) {
-            JSONObject item = roomMap.get(checkIn.getRoomId());
+            JSONObject item = roomMap.get(checkIn.getSelfAccount());
             if (item == null) {//新的房号，新建一行
                 item = new JSONObject();
                 item.put("房费", checkIn.getFinalRoomPrice());
-                roomMap.put(checkIn.getRoomId(), item);
+                item.put("roomId",checkIn.getRoomId());
+                roomMap.put(checkIn.getSelfAccount(), item);
             } else {
                 item.put("房费", szMath.nullToZero(item.getDouble("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
             }
@@ -385,7 +386,7 @@ public class ExchangeUserReport {
             currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
         }
         object.put("dataList", dataList);
-        object.put("remainMsg", "在店押金:"+totalDeposit+"-在店消费:"+getMoneyNotPay+"=钱箱余额:" + (totalDeposit - getMoneyNotPay));
+        object.put("remainMsg", "在店押金:" + totalDeposit + "-在店消费:" + getMoneyNotPay + "=钱箱余额:" + (totalDeposit - getMoneyNotPay));
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         return object;
