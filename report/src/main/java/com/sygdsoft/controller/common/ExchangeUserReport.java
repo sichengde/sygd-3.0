@@ -2,6 +2,7 @@ package com.sygdsoft.controller.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.model.Currency;
 import com.sygdsoft.model.room.ExchangeUserSmallJQReturn;
@@ -279,10 +280,9 @@ public class ExchangeUserReport {
         JSONObject object = new JSONObject();//返回值
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getList(beginTime, endTime, userId);
         /*开始分析*/
-        Double totalOtherConsume= 0.0;
-        Double totalDeposit = 0.0;//总计的预付，
-        Double totalRoomShop = 0.0;//总计的房吧，
+        Double totalDeposit = 0.0;//总计的预付，在店预付（doneTime<endTime）
         Double getMoney = 0.0;//应该提款的金额，
+        Double getMoneyNotPay = 0.0;//应该提款的金额中还没结算的金额
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
         Map<String, Double> getMoneyDetail = new HashMap<>();//提款金额明细
         Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务
@@ -304,15 +304,26 @@ public class ExchangeUserReport {
                     continue;
                 }
                 String roomId = debtIntegration.getRoomId();
-                JSONObject item = roomMap.get(roomId);
+                String selfAccount = debtIntegration.getSelfAccount();
+                JSONObject item = roomMap.get(selfAccount);
                 if (item == null) {//新的房号，新建一行
                     item = new JSONObject();
-                    roomMap.put(roomId, item);
+                    roomMap.put(selfAccount, item);
                 }
+                item.put("roomId",roomId);
                 /*给对应营业部门总和赋值*/
                 item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
+                /*分析币种*/
+                List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(new Query("self_account=\'" + debtIntegration.getSelfAccount() + "\' and deposit is not null"));
+                if (debtIntegrationList1.size() > 0) {
+                    String currency = debtIntegrationList1.get(0).getCurrency();
+                    currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
+                }
+                if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
+                    getMoneyNotPay += szMath.nullToZero(debtIntegration.getConsume());
+                }
                 /*单独处理杂单冲账*/
-                if ("杂单".equals(debtIntegration.getCategory())) {
+                /*if ("杂单".equals(debtIntegration.getCategory())) {
                     item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
                     if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
                         totalOtherConsume += debtIntegration.getConsume();
@@ -331,14 +342,14 @@ public class ExchangeUserReport {
                         totalRoomShop += szMath.nullToZero(debtIntegration.getConsume());
                     }
                     currencyMap.put(debtIntegration.getPointOfSale(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
-                }
+                }*/
             }
             /*再处理币种*/
-            if ("押金".equals(debtIntegration.getCurrency()) && debtIntegration.getPaySerial() == null) {
-                totalDeposit += szMath.nullToZero(debtIntegration.getDeposit());
-            }
-            if (szMath.nullToZero(debtIntegration.getDeposit()) > 0 && !"押金".equals(debtIntegration.getCurrency())) {
-                currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getCurrency())) + szMath.nullToZero(debtIntegration.getDeposit()));
+            if (szMath.nullToZero(debtIntegration.getDeposit()) > 0) {
+                if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
+                    totalDeposit += szMath.nullToZero(debtIntegration.getDeposit());
+                }
+                //currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getCurrency())) + szMath.nullToZero(debtIntegration.getDeposit()));
             }
         }
         /*房费要加上在店没加房费的（consume小于finalRoomPrice）*/
@@ -357,10 +368,8 @@ public class ExchangeUserReport {
         }
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
-        for (String roomId : roomMap.keySet()) {
-            JSONObject jsonObject = roomMap.get(roomId);
-            jsonObject.put("roomId", roomId);
-            dataList.add(jsonObject);
+        for (String selfAccount : roomMap.keySet()) {
+            dataList.add(roomMap.get(selfAccount));
         }
         /*营业部门消费转字符串*/
         StringBuilder getMoneyMsg = new StringBuilder("提款金额:" + getMoney + "= ");//提款金额信息，
@@ -370,12 +379,10 @@ public class ExchangeUserReport {
         /*收银币种map转数组*/
         StringBuilder currencyMsg = new StringBuilder("提款币种:");//提款币种信息，
         for (String s : currencyMap.keySet()) {
-            if (!"押金".equals(s)) {
-                currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
-            }
+            currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
         }
         object.put("dataList", dataList);
-        object.put("remainMsg", "钱箱余额:" + (totalDeposit - totalRoomShop-totalOtherConsume));
+        object.put("remainMsg", "在店押金:"+totalDeposit+"-在店消费:"+getMoneyNotPay+"=钱箱余额:" + (totalDeposit - getMoneyNotPay));
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         return object;
