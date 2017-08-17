@@ -93,4 +93,11 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
      */
     @SelectProvider(type = DebtIntegrationSql.class,method = "getList")
     List<DebtIntegration> getList(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("userId") String userId);
+
+    /**
+     * 获得某个时间点前的在店预付
+     */
+    @SelectProvider(type = DebtIntegrationSql.class,method = "getSumDepositByEndTime")
+    @ResultType(Double.class)
+    Double getSumDepositByEndTime(@Param("endTime") Date endTime,@Param("userId")String userId);
 }

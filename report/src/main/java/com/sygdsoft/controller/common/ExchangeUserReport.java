@@ -348,12 +348,12 @@ public class ExchangeUserReport {
                 }*/
             }
             /*再处理币种*/
-            if (szMath.nullToZero(debtIntegration.getDeposit()) > 0) {
+            /*if (szMath.nullToZero(debtIntegration.getDeposit()) > 0) {
                 if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
                     totalDeposit += szMath.nullToZero(debtIntegration.getDeposit());
                 }
                 //currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getCurrency())) + szMath.nullToZero(debtIntegration.getDeposit()));
-            }
+            }*/
         }
         /*房费要加上在店没加房费的（consume小于finalRoomPrice）*/
         /*List<CheckIn> checkInList = checkInService.getNotAddRoomPrice();
@@ -370,6 +370,8 @@ public class ExchangeUserReport {
             getMoney += checkIn.getFinalRoomPrice();
             getMoneyDetail.put("房费", szMath.nullToZero(getMoneyDetail.get("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
         }*/
+        /*算endTime之前的在店预付*/
+        totalDeposit=szMath.nullToZero(debtIntegrationService.getSumDepositByEndTime(endTime, userId));
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
         for (String selfAccount : roomMap.keySet()) {

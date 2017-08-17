@@ -98,4 +98,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     public List<RoomCategoryLine> parseRoomCategoryDebtLine(Date beginTime, Date endTime, String category) {
         return debtIntegrationMapper.parseRoomCategoryDebtLine(beginTime, endTime, category);
     }
+
+    /**
+     * 获得某个时间点前的在店预付
+     */
+    public Double getSumDepositByEndTime(Date endTime,String userId){
+        return debtIntegrationMapper.getSumDepositByEndTime(endTime, userId);
+    }
 }

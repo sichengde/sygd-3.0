@@ -34,4 +34,13 @@ public class DebtIntegrationSql {
         }
         return basic;
     }
+    public String getSumDepositByEndTime(Map<String, Object> parameters){
+        String userId=(String) parameters.get("userId");
+        String basic="SELECT sum(deposit) FROM debt_integration WHERE (debt_integration.done_time IS NULL OR done_time>#{endTime}) and do_time< #{endTime}";
+        if(userId!=null){
+            basic+=" and user_id=#{userId} ";
+        }
+        return basic;
+    }
+
 }
