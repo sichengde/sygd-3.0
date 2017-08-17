@@ -320,7 +320,10 @@ public class ExchangeUserReport {
                     currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
+                    item.put("done",false);
                     getMoneyNotPay += szMath.nullToZero(debtIntegration.getConsume());
+                }else {
+                    item.put("done",true);
                 }
                 /*单独处理杂单冲账*/
                 /*if ("杂单".equals(debtIntegration.getCategory())) {
