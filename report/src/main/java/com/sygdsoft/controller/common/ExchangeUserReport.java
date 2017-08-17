@@ -356,7 +356,7 @@ public class ExchangeUserReport {
             }
         }
         /*房费要加上在店没加房费的（consume小于finalRoomPrice）*/
-        List<CheckIn> checkInList = checkInService.getNotAddRoomPrice();
+        /*List<CheckIn> checkInList = checkInService.getNotAddRoomPrice();
         for (CheckIn checkIn : checkInList) {
             JSONObject item = roomMap.get(checkIn.getSelfAccount());
             if (item == null) {//新的房号，新建一行
@@ -369,7 +369,7 @@ public class ExchangeUserReport {
             }
             getMoney += checkIn.getFinalRoomPrice();
             getMoneyDetail.put("房费", szMath.nullToZero(getMoneyDetail.get("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
-        }
+        }*/
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
         for (String selfAccount : roomMap.keySet()) {
