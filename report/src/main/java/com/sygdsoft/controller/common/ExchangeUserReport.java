@@ -62,6 +62,8 @@ public class ExchangeUserReport {
     PointOfSaleService pointOfSaleService;
     @Autowired
     CheckInService checkInService;
+    @Autowired
+    CheckOutService checkOutService;
 
     /**
      * 接待交班审核表
@@ -280,9 +282,7 @@ public class ExchangeUserReport {
         JSONObject object = new JSONObject();//返回值
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getList(beginTime, endTime, userId);
         /*开始分析*/
-        Double totalDeposit = 0.0;//总计的预付，在店预付（doneTime<endTime）
         Double getMoney = 0.0;//应该提款的金额，
-        Double getMoneyNotPay = 0.0;//应该提款的金额中还没结算的金额
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
         Map<String, Double> getMoneyDetail = new HashMap<>();//提款金额明细
         Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务
@@ -321,57 +321,15 @@ public class ExchangeUserReport {
                 }
                 if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
                     item.put("done", false);
-                    getMoneyNotPay += szMath.nullToZero(debtIntegration.getConsume());
                 } else {
                     item.put("done", true);
                 }
-                /*单独处理杂单冲账*/
-                /*if ("杂单".equals(debtIntegration.getCategory())) {
-                    item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
-                    if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
-                        totalOtherConsume += debtIntegration.getConsume();
-                    }
-                    currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
-                }
-                if ("冲账".equals(debtIntegration.getCategory())) {
-                    item.put(debtIntegration.getCategory(), szMath.nullToZero(item.getDouble(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
-                    if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
-                        totalOtherConsume += debtIntegration.getConsume();
-                    }
-                    currencyMap.put(debtIntegration.getCategory(), szMath.nullToZero(currencyMap.get(debtIntegration.getCategory())) + szMath.nullToZero(debtIntegration.getConsume()));
-                }
-                if ("房吧".equals(debtIntegration.getPointOfSale())) {
-                    if(debtIntegration.getPaySerial() == null) {//未结账的才参与钱箱统计
-                        totalRoomShop += szMath.nullToZero(debtIntegration.getConsume());
-                    }
-                    currencyMap.put(debtIntegration.getPointOfSale(), szMath.nullToZero(currencyMap.get(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
-                }*/
             }
-            /*再处理币种*/
-            /*if (szMath.nullToZero(debtIntegration.getDeposit()) > 0) {
-                if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
-                    totalDeposit += szMath.nullToZero(debtIntegration.getDeposit());
-                }
-                //currencyMap.put(debtIntegration.getCurrency(), szMath.nullToZero(currencyMap.get(debtIntegration.getCurrency())) + szMath.nullToZero(debtIntegration.getDeposit()));
-            }*/
         }
-        /*房费要加上在店没加房费的（consume小于finalRoomPrice）*/
-        /*List<CheckIn> checkInList = checkInService.getNotAddRoomPrice();
-        for (CheckIn checkIn : checkInList) {
-            JSONObject item = roomMap.get(checkIn.getSelfAccount());
-            if (item == null) {//新的房号，新建一行
-                item = new JSONObject();
-                item.put("房费", checkIn.getFinalRoomPrice());
-                item.put("roomId",checkIn.getRoomId());
-                roomMap.put(checkIn.getSelfAccount(), item);
-            } else {
-                item.put("房费", szMath.nullToZero(item.getDouble("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
-            }
-            getMoney += checkIn.getFinalRoomPrice();
-            getMoneyDetail.put("房费", szMath.nullToZero(getMoneyDetail.get("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
-        }*/
         /*算endTime之前beginTime之后的在店预付*/
-        totalDeposit=szMath.nullToZero(debtIntegrationService.getSumDepositByEndTime(beginTime, endTime, userId));
+        Double totalDeposit = szMath.nullToZero(debtIntegrationService.getSumDepositByEndTime(beginTime, endTime, userId));
+        /*计算这期间退房找回的押金*/
+        Double payBack=szMath.nullToZero(checkOutService.getPayBack(beginTime, endTime));
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
         for (String selfAccount : roomMap.keySet()) {
@@ -388,8 +346,8 @@ public class ExchangeUserReport {
             currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
         }
         object.put("dataList", dataList);
-        Double remain= totalDeposit - getMoneyNotPay+Double.valueOf(reportJson.getParam1());
-        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoneyNotPay +"+上次余额:"+reportJson.getParam1()+ "=钱箱余额:" + remain);
+        Double remain = totalDeposit - getMoney + Double.valueOf(reportJson.getParam1())-payBack;
+        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=钱箱余额:" + remain);
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         object.put("remainNow", remain);//钱箱剩余

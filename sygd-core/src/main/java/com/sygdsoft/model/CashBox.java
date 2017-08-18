@@ -29,11 +29,11 @@ public class CashBox extends BaseEntity {
         this.endTime = endTime;
     }
 
-    public String getUser() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUser(String userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
