@@ -99,5 +99,5 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
      */
     @SelectProvider(type = DebtIntegrationSql.class,method = "getSumDepositByEndTime")
     @ResultType(Double.class)
-    Double getSumDepositByEndTime(@Param("endTime") Date endTime,@Param("userId")String userId);
+    Double getSumDepositByEndTime(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("userId")String userId);
 }

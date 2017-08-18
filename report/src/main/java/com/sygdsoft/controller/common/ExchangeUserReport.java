@@ -370,8 +370,8 @@ public class ExchangeUserReport {
             getMoney += checkIn.getFinalRoomPrice();
             getMoneyDetail.put("房费", szMath.nullToZero(getMoneyDetail.get("房费")) + szMath.nullToZero(checkIn.getFinalRoomPrice()));
         }*/
-        /*算endTime之前的在店预付*/
-        totalDeposit=szMath.nullToZero(debtIntegrationService.getSumDepositByEndTime(endTime, userId));
+        /*算endTime之前beginTime之后的在店预付*/
+        totalDeposit=szMath.nullToZero(debtIntegrationService.getSumDepositByEndTime(beginTime, endTime, userId));
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
         for (String selfAccount : roomMap.keySet()) {
@@ -388,9 +388,12 @@ public class ExchangeUserReport {
             currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
         }
         object.put("dataList", dataList);
-        object.put("remainMsg", "在店押金:" + totalDeposit + "-在店消费:" + getMoneyNotPay + "=钱箱余额:" + (totalDeposit - getMoneyNotPay));
+        Double remain= totalDeposit - getMoneyNotPay+Double.valueOf(reportJson.getParam1());
+        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoneyNotPay +"+上次余额:"+reportJson.getParam1()+ "=钱箱余额:" + remain);
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
+        object.put("remainNow", remain);//钱箱剩余
+        object.put("getMoney", getMoney);//钱箱剩余
         return object;
     }
 

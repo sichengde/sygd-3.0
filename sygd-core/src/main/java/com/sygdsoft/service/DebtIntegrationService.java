@@ -102,7 +102,7 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 获得某个时间点前的在店预付
      */
-    public Double getSumDepositByEndTime(Date endTime,String userId){
-        return debtIntegrationMapper.getSumDepositByEndTime(endTime, userId);
+    public Double getSumDepositByEndTime(Date beginTime,Date endTime,String userId){
+        return debtIntegrationMapper.getSumDepositByEndTime(beginTime, endTime, userId);
     }
 }
