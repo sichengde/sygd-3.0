@@ -347,9 +347,10 @@ public class ExchangeUserReport {
         }
         object.put("dataList", dataList);
         Double remain = totalDeposit - getMoney + Double.valueOf(reportJson.getParam1())-payBack;
-        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=钱箱余额:" + remain);
+        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=提款后余额:" + remain);
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
+        object.put("rightNowMsg", "钱箱现有:"+(remain+getMoney));//钱箱实时数据对比
         object.put("remainNow", remain);//钱箱剩余
         object.put("getMoney", getMoney);//钱箱剩余
         return object;
