@@ -64,6 +64,8 @@ public class ExchangeUserReport {
     CheckInService checkInService;
     @Autowired
     CheckOutService checkOutService;
+    @Autowired
+    CashBoxService cashBoxService;
 
     /**
      * 接待交班审核表
@@ -272,6 +274,8 @@ public class ExchangeUserReport {
 
     /**
      * JSONObject字段
+     * 关于钱箱这种对账方式的押金录入：
+     * 如果分单，那么认为第一条为押金，第二条为房费，统计发生额提款时会把所有房费设置为第二个币种，房吧和其他营业部门设置为第一个币种，如果确实产生了除房费外的消费，结账时必须走押金币种分单
      */
     @RequestMapping(value = "viewCashBox")
     @Transactional(rollbackFor = Exception.class)
@@ -283,9 +287,13 @@ public class ExchangeUserReport {
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getList(beginTime, endTime, userId);
         /*开始分析*/
         Double getMoney = 0.0;//应该提款的金额，
+        Double totalDeposit =0.0;//总预付
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
         Map<String, Double> getMoneyDetail = new HashMap<>();//提款金额明细
-        Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务
+        Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，提款币种map
+        Map<String, Double> depositCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，押金币种map
+        Map<String, Double> lastCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，上次余额币种map
+        Map<String, Double> payBackCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，结账退预付币种map
         for (DebtIntegration debtIntegration : debtIntegrationList) {
             /*先处理消费*/
             if (szMath.nullToZero(debtIntegration.getConsume()) != 0) {
@@ -314,9 +322,19 @@ public class ExchangeUserReport {
                 /*给对应营业部门总和赋值*/
                 item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 /*分析币种*/
-                List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(new Query("self_account=\'" + debtIntegration.getSelfAccount() + "\' and deposit is not null"));
-                if (debtIntegrationList1.size() > 0) {
+                Query query=new Query("self_account=\'" + debtIntegration.getSelfAccount() + "\' and deposit is not null");
+                query.setOrderByList(new String[]{"id"});
+                List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(query);
+                if (szMath.nullToZero(debtIntegrationList1.size()) == 1) {
                     String currency = debtIntegrationList1.get(0).getCurrency();
+                    currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
+                }else if (szMath.nullToZero(debtIntegrationList1.size()) >2) {//两个以上的币种根据消费类型取第一或第二个作为提款币种
+                    String currency;
+                    if("房费".equals(debtIntegration.getPointOfSale())) {
+                        currency = debtIntegrationList1.get(0).getCurrency();
+                    }else {
+                        currency = debtIntegrationList1.get(1).getCurrency();
+                    }
                     currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
                 }
                 if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
@@ -325,11 +343,32 @@ public class ExchangeUserReport {
                     item.put("done", true);
                 }
             }
+            /*处理预付币种*/
+            if (szMath.nullToZero(debtIntegration.getDeposit()) != 0) {
+                String currency = debtIntegration.getCurrency();
+                depositCurrencyMap.put(currency, szMath.nullToZero(depositCurrencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getDeposit()));
+                totalDeposit+=debtIntegration.getDeposit();
+            }
         }
-        /*算endTime之前beginTime之后的在店预付*/
-        Double totalDeposit = szMath.nullToZero(debtIntegrationService.getSumDepositByEndTime(beginTime, endTime, userId));
+        /*计算上次的余额map*/
+        CashBox cashBox=cashBoxService.cashBoxGetLast();
+        for (String s : cashBox.getCurrencyDetail().split(",")) {
+            lastCurrencyMap.put(s.split(":")[0], Double.valueOf(s.split(":")[1]));
+        }
         /*计算这期间退房找回的押金*/
-        Double payBack=szMath.nullToZero(checkOutService.getPayBack(beginTime, endTime));
+        List<CheckOut> checkOutList=checkOutService.getPayBack(beginTime, endTime);
+        Double payBack=0.0;
+        for (CheckOut checkOut : checkOutList) {
+            Query query=new Query("self_account=\'" + checkOut.getSelfAccount() + "\' and deposit is not null");
+            query.setOrderByList(new String[]{"id"});
+            List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(query);
+            Double deposit=szMath.nullToZero(checkOut.getDeposit());//这里的deposit是deposit-consume之后剩下的
+            payBack+=deposit;//总找回金额
+            if (szMath.nullToZero(debtIntegrationList1.size()) >0) {
+                String currency = debtIntegrationList1.get(0).getCurrency();
+                payBackCurrencyMap.put(currency, szMath.nullToZero(payBackCurrencyMap.get(currency)) + deposit);
+            }
+        }
         /*房间消费map转数组*/
         List<JSONObject> dataList = new ArrayList<>();
         for (String selfAccount : roomMap.keySet()) {
@@ -347,13 +386,39 @@ public class ExchangeUserReport {
         }
         object.put("dataList", dataList);
         Double remain = totalDeposit - getMoney + Double.valueOf(reportJson.getParam1())-payBack;
-        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=提款后余额:" + remain);
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
-        object.put("rightNowMsg", "钱箱现有:"+(remain+getMoney));//钱箱实时数据对比
+        StringBuilder rightNowMsgCurrency = new StringBuilder(",币种:");//提款币种信息，
+        this.calculateCurrencyMap(depositCurrencyMap,lastCurrencyMap,1);
+        this.calculateCurrencyMap(depositCurrencyMap,payBackCurrencyMap,-1);
+        this.mapToString(rightNowMsgCurrency, depositCurrencyMap);
+        object.put("rightNowMsg", "钱箱现有:"+(remain+getMoney)+rightNowMsgCurrency);//钱箱实时数据对比
+        StringBuilder remainMsgCurrency = new StringBuilder(",币种:");//提款币种信息，
+        this.calculateCurrencyMap(depositCurrencyMap,currencyMap,-1);
+        this.mapToString(remainMsgCurrency,depositCurrencyMap);
+        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=提款后余额:" + remain+remainMsgCurrency);
         object.put("remainNow", remain);//钱箱剩余
-        object.put("getMoney", getMoney);//钱箱剩余
+        object.put("getMoney", getMoney);//提款金额
         return object;
+    }
+
+    /**
+     * 币种map相加或者相减
+     * @param map1
+     * @param map2
+     * @param k 1或者-1
+     * @return
+     */
+    private void calculateCurrencyMap(Map<String,Double> map1,Map<String,Double> map2,Integer k){
+        for (String m2 : map2.keySet()) {
+            map1.put(m2,szMath.nullToZero(map1.get(m2))+szMath.nullToZero(map2.get(m2))*k);
+        }
+    }
+
+    private void mapToString(StringBuilder msg,Map<String,Double> map){
+        for (String key : map.keySet()) {
+            msg.append(key).append(":").append(map.get(key)).append(",");
+        }
     }
 
     /**
