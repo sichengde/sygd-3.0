@@ -9,6 +9,7 @@ public class CashBox extends BaseEntity {
     private Double beforeMoney;
     private Double getMoney;
     private Double remain;
+    private String currencyDetail;
 
     public CashBox() {
     }
@@ -59,5 +60,13 @@ public class CashBox extends BaseEntity {
 
     public void setRemain(Double remain) {
         this.remain = remain;
+    }
+
+    public String getCurrencyDetail() {
+        return currencyDetail;
+    }
+
+    public void setCurrencyDetail(String currencyDetail) {
+        this.currencyDetail = currencyDetail;
     }
 }
