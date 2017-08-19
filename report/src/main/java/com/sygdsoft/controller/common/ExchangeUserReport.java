@@ -288,9 +288,11 @@ public class ExchangeUserReport {
         /*开始分析*/
         Double getMoney = 0.0;//应该提款的金额，
         Double totalDeposit =0.0;//总预付
+        Double totalRetail=0.0;//总零售
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
         Map<String, Double> getMoneyDetail = new HashMap<>();//提款金额明细
         Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，提款币种map
+        Map<String, Double> retailCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，零售币种map
         Map<String, Double> depositCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，押金币种map
         Map<String, Double> lastCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，上次余额币种map
         Map<String, Double> payBackCurrencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，结账退预付币种map
@@ -302,8 +304,10 @@ public class ExchangeUserReport {
                 if ("零售".equals(debtIntegration.getPointOfSale())) {
                      /*零售的话已经结账了，查找一下结账币种*/
                     try {
-                        List<DebtPay> debtPay = debtPayService.getListBySelfAccount(debtIntegration.getSelfAccount());
+                        List<DebtPay> debtPay = debtPayService.getListByPaySerial(debtIntegration.getPaySerial());
                         for (DebtPay pay : debtPay) {
+                            totalRetail+=pay.getDebtMoney();
+                            retailCurrencyMap.put(pay.getCurrency(), szMath.nullToZero(retailCurrencyMap.get(pay.getCurrency())) + szMath.nullToZero(pay.getDebtMoney()));
                             currencyMap.put(pay.getCurrency(), szMath.nullToZero(currencyMap.get(pay.getCurrency())) + szMath.nullToZero(pay.getDebtMoney()));
                         }
                     } catch (Exception e) {
@@ -407,13 +411,14 @@ public class ExchangeUserReport {
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         StringBuilder rightNowMsgCurrency = new StringBuilder(",币种:");//提款币种信息，
         this.calculateCurrencyMap(depositCurrencyMap,lastCurrencyMap,1);
+        this.calculateCurrencyMap(depositCurrencyMap,retailCurrencyMap,1);
         this.calculateCurrencyMap(depositCurrencyMap,payBackCurrencyMap,-1);
         this.mapToString(rightNowMsgCurrency, depositCurrencyMap);
         object.put("rightNowMsg", "钱箱现有:"+(remain+getMoney)+rightNowMsgCurrency);//钱箱实时数据对比
         StringBuilder remainMsgCurrency = new StringBuilder("");//提款币种信息，
         this.calculateCurrencyMap(depositCurrencyMap,currencyMap,-1);
         this.mapToString(remainMsgCurrency,depositCurrencyMap);
-        object.put("remainMsg", "发生押金:" + totalDeposit + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=提款后余额:" + remain+",币种:"+remainMsgCurrency);
+        object.put("remainMsg", "发生押金:" + totalDeposit + "+零售:" + totalRetail+ "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=提款后余额:" + remain+",币种:"+remainMsgCurrency);
         object.put("remainMsgCurrency", remainMsgCurrency);//钱箱提款后剩余币种
         object.put("remainNow", remain);//钱箱剩余
         object.put("getMoney", getMoney);//提款金额
