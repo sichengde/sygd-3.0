@@ -287,8 +287,8 @@ public class ExchangeUserReport {
         List<DebtIntegration> debtIntegrationList = debtIntegrationService.getList(beginTime, endTime, userId);
         /*开始分析*/
         Double getMoney = 0.0;//应该提款的金额，
-        Double totalDeposit =0.0;//总预付
-        Double totalRetail=0.0;//总零售
+        Double totalDeposit = 0.0;//总预付
+        Double totalRetail = 0.0;//总零售
         Map<String, JSONObject> roomMap = new HashMap<>();//聚合后的每一行数据，索引是房号
         Map<String, Double> getMoneyDetail = new HashMap<>();//提款金额明细
         Map<String, Double> currencyMap = new HashMap<>();//索引是币种，值是金额，没有币种的账务，提款币种map
@@ -306,7 +306,7 @@ public class ExchangeUserReport {
                     try {
                         List<DebtPay> debtPay = debtPayService.getListByPaySerial(debtIntegration.getPaySerial());
                         for (DebtPay pay : debtPay) {
-                            totalRetail+=pay.getDebtMoney();
+                            totalRetail += pay.getDebtMoney();
                             retailCurrencyMap.put(pay.getCurrency(), szMath.nullToZero(retailCurrencyMap.get(pay.getCurrency())) + szMath.nullToZero(pay.getDebtMoney()));
                             currencyMap.put(pay.getCurrency(), szMath.nullToZero(currencyMap.get(pay.getCurrency())) + szMath.nullToZero(pay.getDebtMoney()));
                         }
@@ -326,21 +326,27 @@ public class ExchangeUserReport {
                 /*给对应营业部门总和赋值*/
                 item.put(debtIntegration.getPointOfSale(), szMath.nullToZero(item.getDouble(debtIntegration.getPointOfSale())) + szMath.nullToZero(debtIntegration.getConsume()));
                 /*分析币种*/
-                Query query=new Query("self_account=\'" + debtIntegration.getSelfAccount() + "\' and deposit is not null");
-                query.setOrderByList(new String[]{"id"});
+                Query query;
+                if (debtIntegration.getGroupAccount() == null) {
+                    query = new Query("self_account=\'" + debtIntegration.getSelfAccount() + "\' and deposit is not null");
+                    query.setOrderByList(new String[]{"id"});
+                }else {
+                    query = new Query("group_account=\'" + debtIntegration.getGroupAccount() + "\' and deposit is not null");
+                    query.setOrderByList(new String[]{"id"});
+                }
                 List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(query);
                 if (szMath.nullToZero(debtIntegrationList1.size()) == 1) {
                     String currency = debtIntegrationList1.get(0).getCurrency();
                     currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
-                }else if (szMath.nullToZero(debtIntegrationList1.size()) >1) {//两个以上的币种根据消费类型取第一或第二个作为提款币种
+                } else if (szMath.nullToZero(debtIntegrationList1.size()) > 1) {//两个以上的币种根据消费类型取第一或第二个作为提款币种
                     String currency;
-                    if("房费".equals(debtIntegration.getPointOfSale())) {
+                    if ("房费".equals(debtIntegration.getPointOfSale())) {
                         currency = debtIntegrationList1.get(0).getCurrency();
-                    }else {
+                    } else {
                         currency = debtIntegrationList1.get(1).getCurrency();
                     }
                     currencyMap.put(currency, szMath.nullToZero(currencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getConsume()));
-                }else {
+                } else {
                     throw new Exception("获取不到押金币种");
                 }
                 if (debtIntegration.getDoneTime() == null || endTime.compareTo(debtIntegration.getDoneTime()) < 0) {
@@ -353,22 +359,22 @@ public class ExchangeUserReport {
             if (szMath.nullToZero(debtIntegration.getDeposit()) != 0) {
                 String currency = debtIntegration.getCurrency();
                 depositCurrencyMap.put(currency, szMath.nullToZero(depositCurrencyMap.get(currency)) + szMath.nullToZero(debtIntegration.getDeposit()));
-                totalDeposit+=debtIntegration.getDeposit();
+                totalDeposit += debtIntegration.getDeposit();
             }
         }
         /*计算上次的余额map*/
-        CashBox cashBox=cashBoxService.cashBoxGetLast();
-        if(cashBox!=null) {
+        CashBox cashBox = cashBoxService.cashBoxGetLast();
+        if (cashBox != null) {
             for (String s : cashBox.getCurrencyDetail().split(",")) {
                 lastCurrencyMap.put(s.split(":")[0], Double.valueOf(s.split(":")[1]));
             }
         }
         /*计算这期间退房找回的押金*/
-        List<CheckOut> checkOutList=checkOutService.getPayBack(beginTime, endTime);
-        Double payBack=0.0;
+        List<CheckOut> checkOutList = checkOutService.getPayBack(beginTime, endTime);
+        Double payBack = 0.0;
         for (CheckOut checkOut : checkOutList) {
             /*分团队和散客*/
-            if(checkOut.getGroupAccount()!=null){
+            if (checkOut.getGroupAccount() != null) {
                 Query query = new Query("group_account=\'" + checkOut.getGroupAccount() + "\' and deposit is not null");
                 query.setOrderByList(new String[]{"id"});
                 List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(query);
@@ -378,7 +384,7 @@ public class ExchangeUserReport {
                     String currency = debtIntegrationList1.get(0).getCurrency();
                     payBackCurrencyMap.put(currency, szMath.nullToZero(payBackCurrencyMap.get(currency)) + deposit);
                 }
-            }else {
+            } else {
                 Query query = new Query("self_account=\'" + checkOut.getSelfAccount() + "\' and deposit is not null");
                 query.setOrderByList(new String[]{"id"});
                 List<DebtIntegration> debtIntegrationList1 = debtIntegrationService.get(query);
@@ -406,19 +412,19 @@ public class ExchangeUserReport {
             currencyMsg.append(s).append(":").append(currencyMap.get(s)).append(",");
         }
         object.put("dataList", dataList);
-        Double remain = totalDeposit - getMoney + Double.valueOf(reportJson.getParam1())-payBack;
+        Double remain = totalDeposit - getMoney + Double.valueOf(reportJson.getParam1()) - payBack;
         object.put("currencyMsg", currencyMsg);
         object.put("getMoneyMsg", getMoneyMsg);//提款金额信息
         StringBuilder rightNowMsgCurrency = new StringBuilder(",币种:");//提款币种信息，
-        this.calculateCurrencyMap(depositCurrencyMap,lastCurrencyMap,1);
-        this.calculateCurrencyMap(depositCurrencyMap,retailCurrencyMap,1);
-        this.calculateCurrencyMap(depositCurrencyMap,payBackCurrencyMap,-1);
+        this.calculateCurrencyMap(depositCurrencyMap, lastCurrencyMap, 1);
+        this.calculateCurrencyMap(depositCurrencyMap, retailCurrencyMap, 1);
+        this.calculateCurrencyMap(depositCurrencyMap, payBackCurrencyMap, -1);
         this.mapToString(rightNowMsgCurrency, depositCurrencyMap);
-        object.put("rightNowMsg", "钱箱现有:"+(remain+getMoney)+rightNowMsgCurrency);//钱箱实时数据对比
+        object.put("rightNowMsg", "钱箱现有:" + (remain + getMoney) + rightNowMsgCurrency);//钱箱实时数据对比
         StringBuilder remainMsgCurrency = new StringBuilder("");//提款币种信息，
-        this.calculateCurrencyMap(depositCurrencyMap,currencyMap,-1);
-        this.mapToString(remainMsgCurrency,depositCurrencyMap);
-        object.put("remainMsg", "发生押金:" + totalDeposit + "+零售:" + totalRetail+ "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1()+"-结算退预付"+payBack + "=提款后余额:" + remain+",币种:"+remainMsgCurrency);
+        this.calculateCurrencyMap(depositCurrencyMap, currencyMap, -1);
+        this.mapToString(remainMsgCurrency, depositCurrencyMap);
+        object.put("remainMsg", "发生押金:" + totalDeposit + "+零售:" + totalRetail + "-发生消费:" + getMoney + "+上次余额:" + reportJson.getParam1() + "-结算退预付" + payBack + "=提款后余额:" + remain + ",币种:" + remainMsgCurrency);
         object.put("remainMsgCurrency", remainMsgCurrency);//钱箱提款后剩余币种
         object.put("remainNow", remain);//钱箱剩余
         object.put("getMoney", getMoney);//提款金额
@@ -427,18 +433,19 @@ public class ExchangeUserReport {
 
     /**
      * 币种map相加或者相减
+     *
      * @param map1
      * @param map2
-     * @param k 1或者-1
+     * @param k    1或者-1
      * @return
      */
-    private void calculateCurrencyMap(Map<String,Double> map1,Map<String,Double> map2,Integer k){
+    private void calculateCurrencyMap(Map<String, Double> map1, Map<String, Double> map2, Integer k) {
         for (String m2 : map2.keySet()) {
-            map1.put(m2,szMath.nullToZero(map1.get(m2))+szMath.nullToZero(map2.get(m2))*k);
+            map1.put(m2, szMath.nullToZero(map1.get(m2)) + szMath.nullToZero(map2.get(m2)) * k);
         }
     }
 
-    private void mapToString(StringBuilder msg,Map<String,Double> map){
+    private void mapToString(StringBuilder msg, Map<String, Double> map) {
         for (String key : map.keySet()) {
             msg.append(key).append(":").append(map.get(key)).append(",");
         }
