@@ -12,6 +12,7 @@ public class GuestOut {
     private String groupAccount;
     private List<String> roomIdList;
     private List<CurrencyPost> currencyPayList;
+    private List<CheckOutPayBack> checkOutPayBackList;
     private String remark;
     private List<Debt> debtAddList;//额外的加收房租
     private String again;//补打
@@ -100,5 +101,13 @@ public class GuestOut {
 
     public void setReal(Boolean real) {
         this.real = real;
+    }
+
+    public List<CheckOutPayBack> getCheckOutPayBackList() {
+        return checkOutPayBackList;
+    }
+
+    public void setCheckOutPayBackList(List<CheckOutPayBack> checkOutPayBackList) {
+        this.checkOutPayBackList = checkOutPayBackList;
     }
 }

@@ -13,6 +13,8 @@ public class ExchangeUserRow {
     private String cancelSubscription;
     private String vipRecharge;
     private String companyPay;
+    private String payBack;//结账召回的币种信息
+    private String depositAll;//在店预付币种
 
     public ExchangeUserRow() {
     }
@@ -25,7 +27,9 @@ public class ExchangeUserRow {
         this.subscription=fieldTemplate.getField6();
         this.cancelSubscription=fieldTemplate.getField7();
         this.vipRecharge=fieldTemplate.getField8();
-        this.companyPay=fieldTemplate.getField9();
+        this.companyPay=fieldTemplate.getField9();//暂时作废
+        this.payBack=fieldTemplate.getField10();
+        this.depositAll=fieldTemplate.getField11();
     }
 
     public String getCurrency() {
@@ -98,5 +102,21 @@ public class ExchangeUserRow {
 
     public void setCancelDepositSingle(String cancelDepositSingle) {
         this.cancelDepositSingle = cancelDepositSingle;
+    }
+
+    public String getPayBack() {
+        return payBack;
+    }
+
+    public void setPayBack(String payBack) {
+        this.payBack = payBack;
+    }
+
+    public String getDepositAll() {
+        return depositAll;
+    }
+
+    public void setDepositAll(String depositAll) {
+        this.depositAll = depositAll;
     }
 }

@@ -87,6 +87,8 @@ public class GuestOutController {
     ProtocolService protocolService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    CheckOutPayBackService checkOutPayBackService;
 
     /**
      * 结算分为团队结算和单人结算
@@ -151,6 +153,12 @@ public class GuestOutController {
         this.addUserLog(guestOut, changeDebt);
         /*删除账务，开房信息，团队开房信息，在店宾客（如果删早可能会导致后边的方法获取不到相关信息），房价协议（如果有）*/
         this.delete(guestOut);
+        /*找零信息记表*/
+        for (CheckOutPayBack checkOutPayBack : guestOut.getCheckOutPayBackList()) {
+            checkOutPayBack.setDoneTime(timeService.getNow());
+            checkOutPayBack.setCheckOutSerial(serialService.getCheckOutSerial());
+        }
+        checkOutPayBackService.add(guestOut.getCheckOutPayBackList());
         return reportIndex;
     }
 

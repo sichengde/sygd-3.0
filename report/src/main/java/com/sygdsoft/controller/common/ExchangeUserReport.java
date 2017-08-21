@@ -66,6 +66,8 @@ public class ExchangeUserReport {
     CheckOutService checkOutService;
     @Autowired
     CashBoxService cashBoxService;
+    @Autowired
+    CheckOutPayBackService checkOutPayBackService;
 
     /**
      * 接待交班审核表
@@ -93,6 +95,8 @@ public class ExchangeUserReport {
             fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
             fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值
+            fieldTemplate.setField10(szMath.ifNotNullGetString(checkOutPayBackService.getTotal(userId, currencyString, beginTime, endTime)));//找零信息
+            fieldTemplate.setField11(szMath.ifNotNullGetString(debtService.getDepositMoneyAll(currencyString)));//在店预付信息
             CompanyPay companyPayQuery = companyPayService.getSumPay(null, userId, currency.getCurrency(), beginTime, endTime);
             if (companyPayQuery != null) {
                 fieldTemplate.setField9(ifNotNullGetString(companyPayQuery.getPay()));//单位付款

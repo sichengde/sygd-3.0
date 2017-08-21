@@ -153,10 +153,17 @@ public class DebtService extends BaseService<Debt> {
     }
 
     /**
-     * 通过条件获得押金数组(不排序，没退过的)
+     * 获得在店押金
      */
     public Double getDepositMoneyAll() {
         return debtMapper.getDepositMoneyAll();
+    }
+
+    /**
+     * 获得某个币种的在店押金
+     */
+    public Double getDepositMoneyAll(String currency) {
+        return debtMapper.getDepositMoneyAll(currency);
     }
 
 
@@ -174,13 +181,6 @@ public class DebtService extends BaseService<Debt> {
         example.createCriteria().andCondition("deposit>0");
         example.createCriteria().andCondition("remark!=\'已退\'");
         return debtMapper.selectByExample(example);
-    }
-
-    /**
-     * 获得该床位的总消费
-     */
-    public Double getTotalConsumeByBed(String bed) {
-        return debtMapper.getTotalConsumeByBed(bed);
     }
 
     /**
