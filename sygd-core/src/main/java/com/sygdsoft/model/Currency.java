@@ -12,6 +12,7 @@ public class Currency extends BaseEntity{
     private Boolean checkOut;//结账币种
     private Boolean checkIn;//押金币种
     private Boolean payTotal;//参与结算款统计
+    private Boolean payBackRmb;//退预付转人民币
 
     public Currency() {
     }
@@ -74,5 +75,13 @@ public class Currency extends BaseEntity{
 
     public void setPayTotal(Boolean payTotal) {
         this.payTotal = payTotal;
+    }
+
+    public Boolean getPayBackRmb() {
+        return payBackRmb;
+    }
+
+    public void setPayBackRmb(Boolean payBackRmb) {
+        this.payBackRmb = payBackRmb;
     }
 }

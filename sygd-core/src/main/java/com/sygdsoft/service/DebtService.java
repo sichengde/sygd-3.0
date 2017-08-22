@@ -163,7 +163,7 @@ public class DebtService extends BaseService<Debt> {
      * 获得某个币种的在店押金
      */
     public Double getDepositMoneyAll(String currency) {
-        return debtMapper.getDepositMoneyAll(currency);
+        return debtMapper.getDepositMoneyAllByCurrency(currency);
     }
 
 

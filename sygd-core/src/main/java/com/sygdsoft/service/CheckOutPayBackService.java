@@ -19,7 +19,7 @@ public class CheckOutPayBackService extends BaseService<CheckOutPayBack>{
         if(userId==null) {
             return checkOutPayBackMapper.getTotal(beginTime, endTime, currency);
         }else {
-            return checkOutPayBackMapper.getTotal(beginTime, endTime, currency,userId);
+            return checkOutPayBackMapper.getTotalByUserId(beginTime, endTime, currency,userId);
         }
     }
 }
