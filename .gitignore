@@ -2,3 +2,4 @@ target/
 .idea/
 *.iml
 log/
+extra/src/main/resources/static/extra

@@ -23,7 +23,7 @@ public class Application extends WebMvcConfigurerAdapter {
             System.out.println(args[0]);
         }
         try {
-            new ServerSocket(80);
+            new ServerSocket(8080);
         } catch (IOException e) {
             return;
         }

@@ -3,6 +3,7 @@ package logicTest;
 import application.ApplicationTest;
 import com.google.zxing.WriterException;
 import com.sygdsoft.controller.NightController;
+import com.sygdsoft.controller.StorageOutController;
 import com.sygdsoft.controller.common.SzTableReportController;
 import com.sygdsoft.mapper.*;
 import com.sygdsoft.model.*;
@@ -49,10 +50,12 @@ public class NightActionTest extends ApplicationTest {
     GuestMapCheckInMapper guestMapCheckInMapper;
     @Autowired
     CheckInHistoryMapper checkInHistoryMapper;
+    @Autowired
+    StorageOutController storageOutController;
 
     @Test
-    public void testMapper2() {
-        List<CheckInHistory> users = checkInHistoryService.getListByCheckOutSerial("c17030709022");
+    public void testMapper2() throws Exception {
+        storageOutController.storageAutoOut();
     }
 
     @Test
