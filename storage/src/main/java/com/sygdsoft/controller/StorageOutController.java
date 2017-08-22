@@ -93,6 +93,10 @@ public class StorageOutController {
         String house = pointOfSale.getHouse();
         List<RoomShopDetail> roomShopDetailList = roomShopDetailService.getByStorageDone();
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
+            /*有退货的时候可能总和是0*/
+            if(roomShopDetail.getNum()==0){
+                continue;
+            }
             Cargo cargo = cargoService.getByName(roomShopDetail.getItem());
             if (cargo != null) {//说明库存中没有该品种，不管它，必须不为null才可继续进行
                 Double remain = storageInDetailService.getSumNumByNameHouse(house, cargo.getName());//获得当前货物的余量
