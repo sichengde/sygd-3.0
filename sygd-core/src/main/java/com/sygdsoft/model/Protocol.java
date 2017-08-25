@@ -14,7 +14,7 @@ public class Protocol extends BaseEntity {
     private Double stepPrice;//超时房费
     private Double maxPrice;//最高房费
     private String breakfast;//早餐
-    private String special;//特殊协议，该协议只能通过选择会员或者单位来触发，不选择单位和会员时，只出现特殊协议为n的协议
+    private Boolean special;//特殊协议，该协议只能通过选择会员或者单位来触发，不选择单位和会员时，只出现特殊协议为n的协议
     private Boolean temp;//临时协议，自定义房价时会产生
 
     public Protocol() {
@@ -93,11 +93,11 @@ public class Protocol extends BaseEntity {
         this.breakfast = breakfast;
     }
 
-    public String getSpecial() {
+    public Boolean getSpecial() {
         return special;
     }
 
-    public void setSpecial(String special) {
+    public void setSpecial(Boolean special) {
         this.special = special;
     }
 
