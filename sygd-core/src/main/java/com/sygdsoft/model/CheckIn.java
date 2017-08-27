@@ -62,6 +62,7 @@ public class CheckIn extends BaseEntity{
         this.userId=checkInHistoryLog.getUserId();
         this.ifRoom=checkInHistoryLog.getIfRoom();
         this.realProtocol=checkInHistoryLog.getRealProtocol();
+        this.groupName=checkInHistoryLog.getGroupName();
     }
 
     /**

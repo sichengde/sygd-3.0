@@ -7,7 +7,6 @@ import java.util.Date;
  * 来店记录
  */
 public class CheckInHistoryLog extends BaseEntity {
-    private String cardId;//证件号码
     private String roomId;//房号
     private String roomCategory;//房类
     private String selfAccount;//自付帐号
@@ -28,17 +27,13 @@ public class CheckInHistoryLog extends BaseEntity {
     private Double pay;//已经支付的金额（用于中间结算）
     private String roomPriceCategory;//房租方式 hour---小时房，day---日租房
     private String userId;//操作员号
-    private String checkOutSerial;//离店结算序列号
     private Boolean ifRoom;//
     private String realProtocol;//真实的协议，区别于可编辑房价的临时协议
+    private String groupName;//团队名称
+    private String checkOutSerial;//离店结算序列号
 
     public CheckInHistoryLog() {
     }
-    /*public CheckInHistoryLog(CheckIn checkIn){
-        this.cardId=checkIn.getCardId();
-        this.selfAccount=checkIn.getSelfAccount();
-        this.roomId=checkIn.getRoomId();
-    }*/
     public CheckInHistoryLog(CheckIn checkIn){
         this.roomId=checkIn.getRoomId();
         this.roomCategory=checkIn.getRoomCategory();
@@ -62,14 +57,7 @@ public class CheckInHistoryLog extends BaseEntity {
         this.userId=checkIn.getUserId();
         this.ifRoom=checkIn.getIfRoom();
         this.realProtocol=checkIn.getRealProtocol();
-    }
-
-    public String getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(String cardId) {
-        this.cardId = cardId;
+        this.groupName=checkIn.getGroupName();
     }
 
     public String getRoomId() {
@@ -254,5 +242,13 @@ public class CheckInHistoryLog extends BaseEntity {
 
     public void setRealProtocol(String realProtocol) {
         this.realProtocol = realProtocol;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

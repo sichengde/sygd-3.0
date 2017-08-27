@@ -530,9 +530,9 @@ public class GuestOutController {
             List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(checkIn.getRoomId());
             List<CheckInHistory> checkInHistoryList = new ArrayList<>();
             List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
-            List<CheckInHistoryLog> checkInHistoryLogList = new ArrayList<>();
-            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInHistoryLogList, checkIn.getSelfAccount(), checkInGuestCardIdList);
-            checkInHistoryLogService.add(checkInHistoryLogList);
+            CheckInHistoryLog checkInHistoryLog =new CheckInHistoryLog(checkIn);
+            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList,  checkInGuestCardIdList);
+            checkInHistoryLogService.add(checkInHistoryLog);
             checkInHistoryService.add(checkInHistoryList);
             checkInHistoryService.update(checkInHistoryUpdateList);
             /*离店房明细*/
@@ -556,10 +556,9 @@ public class GuestOutController {
     /**
      * 宾客户籍等转换，返回在店宾客姓名字符串
      */
-    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList, List<CheckInHistoryLog> checkInHistoryLogList, String selfAccount, List<String> checkInGuestCardIdList) throws Exception {
+    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList,   List<String> checkInGuestCardIdList) throws Exception {
         String guestName = "";
         for (CheckInGuest checkInGuest : checkInGuestList) {
-            CheckIn checkIn = checkInService.getByRoomId(checkInGuest.getRoomId());
             guestName += checkInGuest.getName() + ",";
             CheckInHistory checkInHistoryOld = checkInHistoryService.getByCardId(checkInGuest.getCardId());//之前来过的
             if (checkInHistoryOld == null) {//如果该宾客没来过，加一条
@@ -574,11 +573,6 @@ public class GuestOutController {
                 checkInHistoryOld.setNum(checkInHistoryOld.getNum() + 1);
                 checkInHistoryUpdateList.add(checkInHistoryOld);
             }
-            CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);//来过没来过的，都在住房记录里加一条
-            checkInHistoryLog.setCardId(checkInGuest.getCardId());
-            checkInHistoryLog.setLeaveTime(timeService.getNow());
-            checkInHistoryLog.setCheckOutSerial(serialService.getCheckOutSerial());
-            checkInHistoryLogList.add(checkInHistoryLog);
         }
         this.idCardVipProcess(checkInGuestList);
         return guestName;
