@@ -5,6 +5,7 @@ package com.sygdsoft.model;
  */
 public class CleanRoomMan extends BaseEntity{
     private String user;
+    private String password;
 
     public CleanRoomMan() {
     }
@@ -15,5 +16,13 @@ public class CleanRoomMan extends BaseEntity{
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
