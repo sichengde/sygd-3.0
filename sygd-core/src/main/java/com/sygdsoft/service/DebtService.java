@@ -76,7 +76,6 @@ public class DebtService extends BaseService<Debt> {
      * 增加一系列消费
      */
     public void addDebt(List<Debt> debtList) {
-        debtMapper.insertList(debtList);
         for (Debt debt : debtList) {
             CheckIn checkIn = checkInService.getByRoomId(debt.getRoomId());
             debt.setDoTime(timeService.getNow());
@@ -87,6 +86,7 @@ public class DebtService extends BaseService<Debt> {
             debt.setTotalConsume(checkIn.getNotNullConsume() + debt.getNotNullConsume());
             this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(), debt.getDeposit());
         }
+        debtMapper.insertList(debtList);
     }
 
 
