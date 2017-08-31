@@ -32,4 +32,8 @@ public class CleanRoomManService extends BaseService<CleanRoomMan>  implements A
     public void arrangeCleanRoomMan(JSONObject jsonObject){
         this.messagingTemplate.convertAndSend("/"+jsonObject.getString("userId"), jsonObject);
     }
+    public void confirmCheckOutRoom(JSONObject jsonObject){
+        this.messagingTemplate.convertAndSend("/"+jsonObject.getString("socketId"), jsonObject);
+    }
+
 }

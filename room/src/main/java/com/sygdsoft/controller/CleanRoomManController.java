@@ -57,4 +57,9 @@ public class CleanRoomManController {
         cleanRoomManService.arrangeCleanRoomMan(jsonObject);
     }
 
+    @RequestMapping(value = "confirmCheckOutRoom")
+    public void confirmCheckOutRoom(@RequestBody JSONObject jsonObject){
+        cleanRoomManService.confirmCheckOutRoom(jsonObject);
+    }
+
 }
