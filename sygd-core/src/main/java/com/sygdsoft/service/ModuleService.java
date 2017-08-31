@@ -18,7 +18,7 @@ import java.util.Objects;
 public class ModuleService {
     private Module[] moduleUltimate = new Module[]{
             new Module("接待", "reception", new String[]{
-                    "开房", "结账", "团队结算", "联房", "杂单", "冲账", "房吧"
+                    "开房", "结账", "团队结算", "联房", "杂单", "冲账", "房吧","修改房价"
                     , "房态预览"
                     , "营销预定"
                     , "团队开房"
