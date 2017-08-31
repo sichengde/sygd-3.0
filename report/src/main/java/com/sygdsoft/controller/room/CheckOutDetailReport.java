@@ -90,7 +90,7 @@ public class CheckOutDetailReport {
                         fieldTemplate.setField1(timeService.dateToStringLong(checkInGroup.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkInGroup.getLeaveTime()));
                         fieldTemplate.setField3(checkInGroup.getName());
-                    } else {
+                    } else if(debtPay.getSelfAccount()!=null){//如果都是空的话就是零售，不参与客房结账统计表
                         CheckIn checkIn=checkInService.getBySelfAccount(debtPay.getSelfAccount());
                         List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debtPay.getRoomId());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkIn.getReachTime()));
