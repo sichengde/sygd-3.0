@@ -10,6 +10,7 @@ public class Serial extends BaseEntity{
     private String selfAccount;//自付账号
     private String groupAccount;//公付账号
     private String checkOutSerial;//离店结算序列号
+    private String checkOutSerialFp;//离店结算序列号(发票)
     private String ckSerial;//餐饮结算序列号
     private String deskBookSerial;//餐饮预定序列号
     private String storageOutSerial;//库存出库序列号
@@ -115,5 +116,13 @@ public class Serial extends BaseEntity{
 
     public void setCompanyPaySerial(String companyPaySerial) {
         this.companyPaySerial = companyPaySerial;
+    }
+
+    public String getCheckOutSerialFp() {
+        return checkOutSerialFp;
+    }
+
+    public void setCheckOutSerialFp(String checkOutSerialFp) {
+        this.checkOutSerialFp = checkOutSerialFp;
     }
 }

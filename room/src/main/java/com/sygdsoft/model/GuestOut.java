@@ -9,6 +9,7 @@ import java.util.List;
  * 离店结算实体类
  */
 public class GuestOut {
+    private String checkOutSerialCategory;//结账序列号类别
     private String groupAccount;
     private List<String> roomIdList;
     private List<CurrencyPost> currencyPayList;
@@ -109,5 +110,13 @@ public class GuestOut {
 
     public void setCheckOutPayBackList(List<CheckOutPayBack> checkOutPayBackList) {
         this.checkOutPayBackList = checkOutPayBackList;
+    }
+
+    public String getCheckOutSerialCategory() {
+        return checkOutSerialCategory;
+    }
+
+    public void setCheckOutSerialCategory(String checkOutSerialCategory) {
+        this.checkOutSerialCategory = checkOutSerialCategory;
     }
 }

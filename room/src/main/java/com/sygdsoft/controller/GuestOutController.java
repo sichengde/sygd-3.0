@@ -90,6 +90,7 @@ public class GuestOutController {
     @Autowired
     CheckOutPayBackService checkOutPayBackService;
 
+    String checkOutSerial;
     /**
      * 结算分为团队结算和单人结算
      */
@@ -124,8 +125,15 @@ public class GuestOutController {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         /*获取有用信息*/
+        String checkOutSerialCategory=guestOut.getCheckOutSerialCategory();
         timeService.setNow();//当前时间
-        serialService.setCheckOutSerial();//生成离店序列号
+        if(SerialService.FA_PIAO_CO.equals(checkOutSerialCategory)) {
+            serialService.setCheckOutSerialFp();//生成离店序列号发票
+            checkOutSerial=serialService.getCheckOutSerialFp();
+        }else {
+            serialService.setCheckOutSerial();//生成离店序列号
+            checkOutSerial=serialService.getCheckOutSerial();
+        }
         serialService.setPaySerial();//生成结账序列号
         /*转换房态*/
         this.updateRoomStateGuestOut(guestOut.getRoomIdList());
@@ -156,7 +164,7 @@ public class GuestOutController {
         /*找零信息记表*/
         for (CheckOutPayBack checkOutPayBack : guestOut.getCheckOutPayBackList()) {
             checkOutPayBack.setDoneTime(timeService.getNow());
-            checkOutPayBack.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkOutPayBack.setCheckOutSerial(checkOutSerial);
         }
         checkOutPayBackService.add(guestOut.getCheckOutPayBackList());
         return reportIndex;
@@ -306,7 +314,7 @@ public class GuestOutController {
      */
     private Double newCheckOut(GuestOut guestOut) throws Exception {
         CheckOut checkOut = new CheckOut();
-        checkOut.setCheckOutSerial(serialService.getCheckOutSerial());
+        checkOut.setCheckOutSerial(checkOutSerial);
         checkOut.setCheckOutTime(timeService.getNow());
         checkOut.setUserId(userService.getCurrentUser());
         checkOut.setRemark(guestOut.getRemark());
@@ -326,7 +334,7 @@ public class GuestOutController {
             checkOut.setGroupName(checkInGroup.getName());
             /*如果是团队的话备份checkOutGroup*/
             CheckOutGroup checkOutGroup = new CheckOutGroup(checkInGroup);
-            checkOutGroup.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkOutGroup.setCheckOutSerial(checkOutSerial);
             checkOutGroupService.add(checkOutGroup);
         }
         List<String> roomList = guestOut.getRoomIdList();
@@ -408,7 +416,7 @@ public class GuestOutController {
             debtPayList.addAll(debtPayService.getListBySelfAccount(checkIn.getSelfAccount()));
         }
         for (DebtPay debtPay : debtPayList) {
-            debtPay.setCheckOutSerial(serialService.getCheckOutSerial());
+            debtPay.setCheckOutSerial(checkOutSerial);
         }
         debtPayService.update(debtPayList);
     }
@@ -427,7 +435,7 @@ public class GuestOutController {
             debtPay.setPaySerial(serialService.getPaySerial());
             switch (category) {
                 case "离店结算":
-                    debtPay.setCheckOutSerial(serialService.getCheckOutSerial());
+                    debtPay.setCheckOutSerial(checkOutSerial);
                     debtPay.setDebtCategory(debtPayService.ldjs);
                     debtPay.setDescription("离店结算结账记录");
                     break;
@@ -532,14 +540,14 @@ public class GuestOutController {
             List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
             CheckInHistoryLog checkInHistoryLog =new CheckInHistoryLog(checkIn);
             checkInHistoryLog.setLeaveTime(timeService.getNow());
-            checkInHistoryLog.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkInHistoryLog.setCheckOutSerial(checkOutSerial);
             guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList,  checkInGuestCardIdList);
             checkInHistoryLogService.add(checkInHistoryLog);
             checkInHistoryService.add(checkInHistoryList);
             checkInHistoryService.update(checkInHistoryUpdateList);
             /*离店房明细*/
             CheckOutRoom checkOutRoom = new CheckOutRoom();
-            checkOutRoom.setCheckOutSerial(serialService.getCheckOutSerial());
+            checkOutRoom.setCheckOutSerial(checkOutSerial);
             checkOutRoom.setRoomId(checkIn.getRoomId());
             checkOutRoom.setSelfAccount(checkIn.getSelfAccount());
             checkOutRoom.setSource(checkIn.getGuestSource());

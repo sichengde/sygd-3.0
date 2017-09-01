@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SerialService {
+    static public String ZHENG_CHANG_CO="常规流水";
+    static public String FA_PIAO_CO="发票流水";
     @Autowired
     SerialMapper serialMapper;
     @Autowired
@@ -21,6 +23,7 @@ public class SerialService {
     private String selfAccount;//接待自付账号
     private String groupAccount;//接待公付账号
     private String checkOutSerial;//离店结算序列号
+    private String checkOutSerialFp;//离店结算序列号发票
     private String ckSerial;//餐饮结算序列号
     private String deskBookSerial;//餐饮预定序列号
     private String storageOutSerial;//库存出库序列号
@@ -50,6 +53,9 @@ public class SerialService {
 
     public String getCheckOutSerial() {
         return checkOutSerial;
+    }
+    public String getCheckOutSerialFp() {
+        return checkOutSerialFp;
     }
 
     public String getCkSerial() {
@@ -133,9 +139,20 @@ public class SerialService {
         serialMapper.updateByPrimaryKey(serial);
         return checkOutSerial;
     }
+    public String setCheckOutSerialFp() {
+        timeService.setNow();
+        serial = serialMapper.selectAll().get(0);
+        this.checkOutSerialFp = "c" + timeService.getSerialShort() + serial.getCheckOutSerialFp();
+        serial.setCheckOutSerialFp(String.format("%03d", Integer.valueOf(serial.getCheckOutSerialFp()) + 1));
+        serialMapper.updateByPrimaryKey(serial);
+        return checkOutSerialFp;
+    }
 
     public void setCheckOutSerial(String checkOutSerial) {
         this.checkOutSerial = checkOutSerial;
+    }
+    public void setCheckOutSerialFp(String checkOutSerialFp) {
+        this.checkOutSerialFp = checkOutSerialFp;
     }
 
     public void setDeskBookSerial(String deskBookSerial) {
@@ -238,6 +255,7 @@ public class SerialService {
         serial = serialMapper.selectAll().get(0);
         serial.setBookSerial("001");
         serial.setCheckOutSerial("001");
+        serial.setCheckOutSerialFp("0001");
         serial.setGroupAccount("001");
         serial.setSelfAccount("001");
         serial.setPaySerial("001");

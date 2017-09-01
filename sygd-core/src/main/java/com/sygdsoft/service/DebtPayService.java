@@ -110,7 +110,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 debt.setRoomId(currencyAdd);
                 debt.setUserId(userService.getCurrentUser());
                 debt.setDescription(roomService.roomListToString(roomList) + "转入");
-                debt.setFromRoom(serialService.getCheckOutSerial());
+                debt.setFromRoom(serialService.getPaySerial());
                 debt.setCategory("转入");//转入类型不参与发生额统计
                 debtService.addDebt(debt);
                 changeDebt += " 转房客至:" + currencyAdd;
