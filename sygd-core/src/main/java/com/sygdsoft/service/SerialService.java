@@ -143,7 +143,7 @@ public class SerialService {
         timeService.setNow();
         serial = serialMapper.selectAll().get(0);
         this.checkOutSerialFp = "c" + timeService.getSerialShort() + serial.getCheckOutSerialFp();
-        serial.setCheckOutSerialFp(String.format("%03d", Integer.valueOf(serial.getCheckOutSerialFp()) + 1));
+        serial.setCheckOutSerialFp(String.format("%04d", Integer.valueOf(serial.getCheckOutSerialFp()) + 1));
         serialMapper.updateByPrimaryKey(serial);
         return checkOutSerialFp;
     }
