@@ -128,11 +128,9 @@ public class GuestOutController {
         String checkOutSerialCategory=guestOut.getCheckOutSerialCategory();
         timeService.setNow();//当前时间
         if(SerialService.FA_PIAO_CO.equals(checkOutSerialCategory)) {
-            serialService.setCheckOutSerialFp();//生成离店序列号发票
-            checkOutSerial=serialService.getCheckOutSerialFp();
+            checkOutSerial=serialService.setCheckOutSerialFp();//生成离店序列号发票
         }else {
-            serialService.setCheckOutSerial();//生成离店序列号
-            checkOutSerial=serialService.getCheckOutSerial();
+            checkOutSerial=serialService.setCheckOutSerial();//生成离店序列号
         }
         serialService.setPaySerial();//生成结账序列号
         /*转换房态*/
