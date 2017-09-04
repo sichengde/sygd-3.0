@@ -78,7 +78,7 @@ public class ModuleService {
                     "退菜","赠菜", "主界面", "宴会预定","日志信息", "报表系统", "其他工具", "参数设置", "外卖","厨打划单"
             }, true),
             new Module("桑拿", "sauna", new String[]{
-                    "消费录入",
+                    "消费录入","主界面",
             }, true),
             new Module("库存", "storage", new String[]{
                     "库存参数",
