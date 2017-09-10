@@ -61,4 +61,11 @@ public class CheckInHistoryService extends BaseService<CheckInHistory>{
         }
         return out.substring(0,out.length()-1);
     }
+
+    /**
+     * 通过身份证减一次来店数据
+     */
+    public void minusOneNum(String cardId){
+        checkInHistoryMapper.minusOneNum(cardId);
+    }
 }

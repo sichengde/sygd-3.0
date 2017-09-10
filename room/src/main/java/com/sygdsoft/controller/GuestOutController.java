@@ -89,8 +89,11 @@ public class GuestOutController {
     SzMath szMath;
     @Autowired
     CheckOutPayBackService checkOutPayBackService;
+    @Autowired
+    GuestIntegrationService guestIntegrationService;
 
     String checkOutSerial;
+
     /**
      * 结算分为团队结算和单人结算
      */
@@ -99,14 +102,14 @@ public class GuestOutController {
     public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
         //TODO: 离店数据校验,发现bug之后就可以删了
         Double totalTest = 0.0;
-        Double totalCheckInConsume=0.0;
+        Double totalCheckInConsume = 0.0;
         for (String roomId : guestOut.getRoomIdList()) {
             CheckIn checkIn = checkInService.getByRoomId(roomId);
             Double totalConsume = szMath.nullToZero(debtService.getTotalConsumeByRoomId(roomId));
             totalTest += szMath.nullToZero(totalConsume);
-            totalCheckInConsume+=szMath.nullToZero(checkIn.getConsume());
+            totalCheckInConsume += szMath.nullToZero(checkIn.getConsume());
         }
-        if(!Objects.equals(totalTest, totalCheckInConsume)){
+        if (!Objects.equals(totalTest, totalCheckInConsume)) {
             throw new Exception("消费合计不准确，请联系厂家维护人员");
         }
         Double totalCurrency = 0.0;
@@ -125,12 +128,12 @@ public class GuestOutController {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         /*获取有用信息*/
-        String checkOutSerialCategory=guestOut.getCheckOutSerialCategory();
+        String checkOutSerialCategory = guestOut.getCheckOutSerialCategory();
         timeService.setNow();//当前时间
-        if(SerialService.FA_PIAO_CO.equals(checkOutSerialCategory)) {
-            checkOutSerial=serialService.setCheckOutSerialFp();//生成离店序列号发票
-        }else {
-            checkOutSerial=serialService.setCheckOutSerial();//生成离店序列号
+        if (SerialService.FA_PIAO_CO.equals(checkOutSerialCategory)) {
+            checkOutSerial = serialService.setCheckOutSerialFp();//生成离店序列号发票
+        } else {
+            checkOutSerial = serialService.setCheckOutSerial();//生成离店序列号
         }
         serialService.setPaySerial();//生成结账序列号
         /*转换房态*/
@@ -536,10 +539,10 @@ public class GuestOutController {
             List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(checkIn.getRoomId());
             List<CheckInHistory> checkInHistoryList = new ArrayList<>();
             List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
-            CheckInHistoryLog checkInHistoryLog =new CheckInHistoryLog(checkIn);
+            CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);
             checkInHistoryLog.setLeaveTime(timeService.getNow());
             checkInHistoryLog.setCheckOutSerial(checkOutSerial);
-            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList,  checkInGuestCardIdList);
+            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList);
             checkInHistoryLogService.add(checkInHistoryLog);
             checkInHistoryService.add(checkInHistoryList);
             checkInHistoryService.update(checkInHistoryUpdateList);
@@ -564,7 +567,7 @@ public class GuestOutController {
     /**
      * 宾客户籍等转换，返回在店宾客姓名字符串
      */
-    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList,   List<String> checkInGuestCardIdList) throws Exception {
+    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList, List<String> checkInGuestCardIdList) throws Exception {
         String guestName = "";
         for (CheckInGuest checkInGuest : checkInGuestList) {
             guestName += checkInGuest.getName() + ",";
@@ -952,14 +955,15 @@ public class GuestOutController {
             checkInGroup.setConsume(debtService.getTotalConsumeByGroupAccount(groupAccount));
             checkInGroupService.add(checkInGroup);
         }
-        List<CheckInHistory> checkInHistoryList = checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());//恢复checkInGuest
+        List<GuestIntegration> guestIntegrationList = guestIntegrationService.getList(selfAccount);
         List<CheckInGuest> checkInGuestList = new ArrayList<>();
-        for (CheckInHistory checkInHistory : checkInHistoryList) {
+        for (GuestIntegration guestIntegration : guestIntegrationList) {
+            CheckInHistory checkInHistory = checkInHistoryService.getByCardId(guestIntegration.getCardId());
             checkInGuestList.add(new CheckInGuest(checkInHistory));
             checkInHistory.setNum(checkInHistory.getNum() - 1);
+            checkInHistoryService.update(checkInHistory);
         }
         checkInGuestService.add(checkInGuestList);
-        checkInHistoryService.update(checkInHistoryList);
         checkInHistoryLogService.delete(checkInHistoryLogList);
         /*操作员记录*/
         userLogService.addUserLog("叫回账单:" + checkOutSerial, userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
