@@ -5,12 +5,15 @@ import com.google.zxing.WriterException;
 import com.sygdsoft.controller.NightController;
 import com.sygdsoft.controller.StorageOutController;
 import com.sygdsoft.controller.common.SzTableReportController;
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.*;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.QrCodeUtil;
+import org.apache.ibatis.session.RowBounds;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import tk.mybatis.mapper.entity.Example;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -52,10 +55,22 @@ public class NightActionTest extends ApplicationTest {
     CheckInHistoryMapper checkInHistoryMapper;
     @Autowired
     StorageOutController storageOutController;
+    @Autowired
+    UserLogMapper userLogMapper;
+    @Autowired
+    UserLogService userLogService;
 
     @Test
     public void testMapper2() throws Exception {
-        storageOutController.storageAutoOut();
+        UserLog userLog=new UserLog();
+        RowBounds rowBounds = RowBounds.DEFAULT;
+        rowBounds = new RowBounds(0, 1);
+        Query query=new Query();
+        query.setOrderByList(new String[]{"id"});
+        List<UserLog> userLogList1=userLogService.get(query);
+        Example example = new Example(UserLog.class);
+        example.createCriteria().andCondition("id>1");
+        List<UserLog> userLogList=userLogMapper.selectByExampleAndRowBounds(example, rowBounds);
     }
 
     @Test
