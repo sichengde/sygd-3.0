@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by 舒展 on 2017-02-09.
  */
-public class GuestIntegration extends BaseEntity{
+public class GuestIntegration {
     private String cardId;
     private String country;
     private String guestSource;

@@ -84,4 +84,13 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
     public List<CountryGuestRow> getList(Date beginTime, Date endTime){
         return guestIntegrationMapper.getList(beginTime,endTime);
     }
+
+    /**
+     * 根据结账序列号获得记录
+     */
+    public List<GuestIntegration> getList(String paySerial){
+        GuestIntegration guestIntegrationQuery=new GuestIntegration();
+        guestIntegrationQuery.setSelfAccount(paySerial);
+        return guestIntegrationMapper.select(guestIntegrationQuery);
+    }
 }

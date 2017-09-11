@@ -4,10 +4,7 @@ import com.sygdsoft.model.CheckInHistory;
 import com.sygdsoft.model.CheckInHistoryLog;
 import com.sygdsoft.model.User;
 import com.sygdsoft.util.MyMapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 import java.util.List;
@@ -28,4 +25,7 @@ public interface CheckInHistoryMapper extends MyMapper<CheckInHistory> {
             @Result(property = "roomId",column = "room_id")
     })
     List<CheckInHistory> getListByCheckOutSerial(@Param("checkOutSerial") String checkOutSerial);
+
+    @Update("UPDATE check_in_history SET num=num-1 WHERE card_id=#{cardId}")
+    void minusOneNum(@Param("cardId") String cardId);
 }
