@@ -7,6 +7,7 @@
         <groupId>sygdSoft</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+    <packaging>war</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>release</artifactId>
@@ -54,6 +55,7 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>sygd2</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -65,130 +67,6 @@
                         <version>1.2.5.RELEASE</version>
                     </dependency>
                 </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>com.samaxes.maven</groupId>
-                <artifactId>minify-maven-plugin</artifactId>
-                <version>1.7.4</version>
-                <executions>
-                    <execution>
-                        <id>app-main</id>
-                        <configuration>
-                            <webappSourceDir>${project.basedir}/src/main/resources</webappSourceDir>
-                            <webappTargetDir>${project.build.directory}/classes</webappTargetDir>
-                            <closureLanguage>ECMASCRIPT5</closureLanguage>
-                            <jsSourceDir>static</jsSourceDir>
-                            <jsFinalFile>app-main.js</jsFinalFile>
-                            <cssSourceDir>static/css</cssSourceDir>
-                            <cssFinalFile>../app-main.css</cssFinalFile>
-                            <cssSourceFiles>
-                                <cssSourceFile>bootstrap-3.3.6-dist/css/bootstrap.css</cssSourceFile>
-                                <cssSourceFile>font-awesome.css</cssSourceFile>
-                                <cssSourceFile>common.css</cssSourceFile>
-                                <cssSourceFile>index.css</cssSourceFile>
-                                <cssSourceFile>popup.css</cssSourceFile>
-                                <cssSourceFile>tableStyle.css</cssSourceFile>
-                                <cssSourceFile>jquery.datetimepicker.css</cssSourceFile>
-                                <cssSourceFile>guestInGroup/guestInGroup.css</cssSourceFile>
-                                <cssSourceFile>login/login.css</cssSourceFile>
-                                <cssSourceFile>userSetting/userSetting.css</cssSourceFile>
-                                <cssSourceFile>restaurant/restaurant.css</cssSourceFile>
-                                <cssSourceFile>sauna/sauna.css</cssSourceFile>
-                            </cssSourceFiles>
-                            <jsSourceFiles>
-                                <jsSourceFile>otherJS/jquery.min.js</jsSourceFile>
-                                <jsSourceFile>otherJS/sockjs-0.3.4.js</jsSourceFile>
-                                <jsSourceFile>otherJS/stomp.js</jsSourceFile>
-                                <jsSourceFile>otherJS/styleswitch.js</jsSourceFile>
-                                <jsSourceFile>otherJS/Chart.bundle.min.js</jsSourceFile>
-                                <jsSourceFile>otherJS/echarts-source.js</jsSourceFile>
-                                <jsSourceFile>otherJS/ag-grid-dist/ag-grid.js</jsSourceFile>
-                                <jsSourceFile>otherJS/ag-grid-enterprise-dist/ag-grid-enterprise.js</jsSourceFile>
-                                <jsSourceFile>angular.js</jsSourceFile>
-                                <jsSourceFile>angular-route.js</jsSourceFile>
-                                <jsSourceFile>angular-locale_zh-cn.js</jsSourceFile>
-                                <jsSourceFile>angular-ui-1.3.2.js</jsSourceFile>
-                                <jsSourceFile>angular-drag.js</jsSourceFile>
-                                <jsSourceFile>appIp.js</jsSourceFile>
-                                <jsSourceFile>otherJS/44/googleChartLoader.js</jsSourceFile>
-                                <jsSourceFile>app.js</jsSourceFile>
-                            </jsSourceFiles>
-                            <jsSourceIncludes>
-                                <exclude>app/**/*.js</exclude>
-                                <exclude>directive/**/*.js</exclude>
-                                <exclude>filter/**/*.js</exclude>
-                                <exclude>service/**/*.js</exclude>
-                            </jsSourceIncludes>
-                            <jsEngine>CLOSURE</jsEngine>
-                        </configuration>
-                        <goals>
-                            <goal>minify</goal>
-                        </goals>
-                    </execution>
-                    <!--<execution>
-                        <id>app-mobile</id>
-                        <configuration>
-                            <webappSourceDir>${project.basedir}/src/main/resources</webappSourceDir>
-                            <webappTargetDir>${project.build.directory}/classes</webappTargetDir>
-                            <jsSourceDir>static</jsSourceDir>
-                            <jsFinalFile>app-mobile.js</jsFinalFile>
-                            <cssSourceDir>static/mobileState/css</cssSourceDir>
-                            <cssFinalFile>../../app-mobile.css</cssFinalFile>
-                            <cssSourceFiles>
-                                <cssSourceFile>style.css</cssSourceFile>
-                            </cssSourceFiles>
-                            <jsSourceFiles>
-                                <jsSourceFile>otherJS/jquery.min.js</jsSourceFile>
-                                <jsSourceFile>otherJS/echarts-source.js</jsSourceFile>
-                                <jsSourceFile>otherJS/lib/ionic/js/ionic.bundle.min.js</jsSourceFile>
-                                <jsSourceFile>appIp.js</jsSourceFile>
-                                <jsSourceFile>appMobileState.js</jsSourceFile>
-                            </jsSourceFiles>
-                            <jsSourceIncludes>
-                                <exclude>mobileState/**/*.js</exclude>
-                                <exclude>directive/**/*.js</exclude>
-                                <exclude>filter/**/*.js</exclude>
-                                <exclude>service/**/*.js</exclude>
-                            </jsSourceIncludes>
-                            <jsEngine>CLOSURE</jsEngine>
-                        </configuration>
-                        <goals>
-                            <goal>minify</goal>
-                        </goals>
-                    </execution>-->
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <excludes>
-                        <!--js-->
-                        <exclude>**/app/**/*.js</exclude>
-                        <exclude>**/mobileState/**/*.js</exclude>
-                        <exclude>**/directive/**/*.js</exclude>
-                        <exclude>**/filter/**/*.js</exclude>
-                        <exclude>**/service/**/*.js</exclude>
-                        <exclude>**/otherJS/jquery.min.js</exclude>
-                        <exclude>**/otherJS/sockjs-0.3.4.js</exclude>
-                        <exclude>**/otherJS/stomp.js</exclude>
-                        <exclude>**/otherJS/styleswitch.js</exclude>
-                        <exclude>**/otherJS/Chart.bundle.min.js</exclude>
-                        <exclude>**/otherJS/echarts-source.js</exclude>
-                        <exclude>**/angular.js</exclude>
-                        <exclude>**/angular-route.js</exclude>
-                        <exclude>**/angular-locale_zh-cn.js</exclude>
-                        <exclude>**/angular-ui-1.3.2.js</exclude>
-                        <exclude>**/angular-drag.js</exclude>
-                        <exclude>**/otherJS/44/googleChartLoader.js</exclude>
-                        <exclude>**/app.js</exclude>
-                        <exclude>**/appIp.js</exclude>
-                        <exclude>**/appMobileState.js</exclude>
-                        <exclude>**/app-main.js</exclude>
-                        <exclude>**/app-mobile.js</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

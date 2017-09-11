@@ -51,6 +51,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addMapping("/*").allowedOrigins("*");
         registry.addMapping("/*/*").allowedOrigins("*");
         registry.addMapping("/*/*/*").allowedOrigins("*");
+
         registry.addMapping("*://*").allowedOrigins("*");
         registry.addMapping("*://*/*").allowedOrigins("*");
         registry.addMapping("*://*/*/*").allowedOrigins("*");

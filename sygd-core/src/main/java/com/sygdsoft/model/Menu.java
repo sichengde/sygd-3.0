@@ -1,7 +1,5 @@
 package com.sygdsoft.model;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 /**
  * Created by Administrator on 2016/7/18 0018.
  */

@@ -1,9 +1,7 @@
 package com.sygdsoft;
 
-import com.sygdsoft.conf.dataSource.DynamicDataSourceRegister;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -29,5 +27,4 @@ public class Application extends WebMvcConfigurerAdapter {
         }
         SpringApplication.run(Application.class, args);
     }
-
 }

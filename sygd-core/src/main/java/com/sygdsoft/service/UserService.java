@@ -17,15 +17,15 @@ public class UserService extends BaseService<User>{
     HttpServletRequest request;
     public String getCurrentUser() throws Exception {
         String userId= (String) request.getSession().getAttribute("userId");
-        /*if(userId==null){
+        if(userId==null){
+            userId=URLDecoder.decode(request.getHeader("userid"),"UTF-8");
+        }
+        if(userId==null){
             throw new Exception("登录超时，需要重新登录");
         }else {
             return userId;
-        }*/
-        /*if(userId==null){
-            userId=(String) URLDecoder.decode(request.getHeader("userid"));
-        }*/
-        return userId;
+        }
+        //return userId;
     }
     public String getCurrentIpAddr(){
         return request.getRemoteAddr();

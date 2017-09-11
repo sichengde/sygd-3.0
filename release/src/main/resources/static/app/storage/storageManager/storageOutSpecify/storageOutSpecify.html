@@ -1,8 +1,0 @@
-<div ng-controller="storageOutSpecifyController" ng-if="pop" class="tanchuang huang">
-    <dl class="tctit"><h1>入库明细</h1></dl>
-    <div class="tcDiv">
-        <sz-table fields="storageInDetailFields" items="storageInDetailList" button="add delete" item-change="storageInDetailSpecifyChange(item,field)" init-state="update" back-up="backUp()"></sz-table>
-        <div class="button"><button ng-click="commit()">确定</button></div>
-    </div>
-    <div class="closeBox" ng-click="closePop('storageOutSpecify')">+</div>
-</div>

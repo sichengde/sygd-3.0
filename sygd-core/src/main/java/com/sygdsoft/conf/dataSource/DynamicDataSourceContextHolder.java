@@ -1,3 +1,4 @@
+/*
 package com.sygdsoft.conf.dataSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +20,17 @@ public class DynamicDataSourceContextHolder {
         contextHolder.remove();
     }
 
-    /**
+    */
+/**
      * 判断指定DataSrouce当前是否存在
      *
      * @param dataSourceId
      * @return
      * @author SHANHY
      * @create  2016年1月24日
-     */
+     *//*
+
     public static boolean containsDataSource(String dataSourceId){
         return dataSourceIds.contains(dataSourceId);
     }
-}
+}*/

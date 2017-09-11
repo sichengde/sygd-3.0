@@ -1,24 +1,18 @@
 package com.sygdsoft.controller;
 
-import com.sygdsoft.conf.dataSource.DynamicDataSourceContextHolder;
-import com.sygdsoft.conf.dataSource.TargetDataSource;
 import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.User;
-import com.sygdsoft.service.HotelService;
-import com.sygdsoft.service.TimeService;
-import com.sygdsoft.service.UserLogService;
-import com.sygdsoft.service.UserService;
+import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +28,8 @@ public class UserController {
     TimeService timeService;
     @Autowired
     HotelService hotelService;
+    @Autowired
+    RegisterService registerService;
 
     /*增*/
     @RequestMapping(value = "userAdd")
@@ -64,25 +60,28 @@ public class UserController {
     /*查*/
     @RequestMapping(value = "userGet")
     public List<User> userGet(HttpServletRequest request, Device device, @RequestBody Query query) throws Exception {
-        return userService.get(query);
+        if(this.registerService.getPass()==0) {
+            return userService.get(query);
+        }else {
+            return null;
+        }
     }
 
     /*手机用户登录，需要设置数据源为base_hotel*/
-    @RequestMapping(value = "userLoginPhone")
-    public boolean userLoginPhone(HttpSession httpSession, @RequestBody Query query) throws Exception {
+    /*@RequestMapping(value = "userLoginPhone")
+    public boolean userLoginPhone(HttpSession httpSession,@RequestBody Query query) throws Exception {
         if (DynamicDataSourceContextHolder.containsDataSource("base_hotel")) {
             DynamicDataSourceContextHolder.setDataSourceType("base_hotel");
         }
-        List<User> userList = userService.get(query);
-        DynamicDataSourceContextHolder.setDataSourceType("hotel");
-        if (userList.size() > 0) {//云端数据库permission_array就是酒店的唯一标识(为了一致性，要不然还得单独创建)
-            httpSession.setAttribute("hotelId", userList.get(0).getPermissionArray());
-            httpSession.setAttribute("userId", userList.get(0).getUserId());
-            return true;
-        } else {
-            return false;
-        }
-    }
+            List<User> userList = userService.get(query);
+            if (userList.size() > 0) {//云端数据库permission_array就是酒店的唯一标识(为了一致性，要不然还得单独创建)
+                httpSession.setAttribute("hotelId", userList.get(0).getPermissionArray());
+                httpSession.setAttribute("userId", userList.get(0).getUserId());
+                return true;
+            } else {
+                return false;
+            }
+    }*/
 
     /**
      * 登陆成功回记session
