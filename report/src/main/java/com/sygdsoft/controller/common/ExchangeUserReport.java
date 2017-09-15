@@ -467,6 +467,7 @@ public class ExchangeUserReport {
         }
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
+        String pointOfSale=reportJson.getPointOfSale();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
         List<ExchangeUserCk> exchangeUserCkList = new ArrayList<>();
@@ -477,7 +478,7 @@ public class ExchangeUserReport {
             fieldTemplate = new FieldTemplate();
             String currencyString = currency.getCurrency();
             fieldTemplate.setField1(currency.getCurrency());//币种
-            fieldTemplate.setField2(ifNotNullGetString(deskPayService.getPay(userId, currencyString, null, beginTime, endTime)));//结算款
+            fieldTemplate.setField2(ifNotNullGetString(deskPayService.getPay(userId, currencyString, pointOfSale, beginTime, endTime)));//结算款
             fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField6(ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
             fieldTemplate.setField7(ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//会员充值

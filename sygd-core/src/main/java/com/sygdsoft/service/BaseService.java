@@ -45,6 +45,8 @@ public class BaseService<T> {
         }
         if (num != null) {
             rowBounds = new RowBounds(0, num);
+        }else {
+            rowBounds = new RowBounds(0, 10000);
         }
         if (orderByList != null) {
             for (String s : orderByList) {

@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.HotelParseLineRow;
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.DeskInHistoryMapper;
 import com.sygdsoft.model.DeskInHistory;
 import com.sygdsoft.util.Util;
@@ -35,11 +36,10 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
     /**
      * 通过结账时间和营业部门筛选
      */
-    public List<DeskInHistory> getByDatePointOfSale(Date begin,Date endTime,String pointOfSale){
-        Example example=new Example(DeskInHistory.class);
-        example.createCriteria().andCondition("done_time>"+util.wrapWithBrackets(timeService.dateToStringLong(begin))+" and done_time<"+util.wrapWithBrackets(timeService.dateToStringLong(endTime))+" and point_of_sale="+util.wrapWithBrackets(pointOfSale)+"and ifnull(disabled,false)=false");
-        example.orderBy("done_time").desc();
-        return deskInHistoryMapper.selectByExample(example);
+    public List<DeskInHistory> getByDatePointOfSale(Date begin,Date endTime,String pointOfSale) throws Exception {
+        Query query=new Query("done_time>\'"+timeService.dateToStringLong(begin)+"\' and done_time<\'"+timeService.dateToStringLong(endTime)+"\' and point_of_sale=\'"+pointOfSale+"\' and ifnull(disabled,false)=false");
+        query.setOrderByListDesc(new String[]{"done_time"});
+        return get(query);
     }
 
     /**
