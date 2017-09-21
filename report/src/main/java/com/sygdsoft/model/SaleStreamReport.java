@@ -8,6 +8,7 @@ import java.util.List;
 public class SaleStreamReport {
     private List<SaleStreamRow> saleStreamRowList;
     private Double totalMoney;
+    private Double totalNum;
     private Integer reportIndex;
     private SaleStreamQuery saleStreamQuery;
     private String categoryParse;
@@ -53,5 +54,13 @@ public class SaleStreamReport {
 
     public void setCategoryParse(String categoryParse) {
         this.categoryParse = categoryParse;
+    }
+
+    public Double getTotalNum() {
+        return totalNum;
+    }
+
+    public void setTotalNum(Double totalNum) {
+        this.totalNum = totalNum;
     }
 }

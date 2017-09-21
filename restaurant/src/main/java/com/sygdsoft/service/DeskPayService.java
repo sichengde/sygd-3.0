@@ -36,13 +36,6 @@ public class DeskPayService extends BaseService<DeskPay> {
     }
 
     /**
-     * 获得该日期该币种的数组(餐饮,不带销售员，带pos点（一级营业部门）)
-     */
-    public List<DeskPay> getByCurrencyDatePointOfSale(String pointOfSale, String currency, Date beginTime, Date endTime) {
-        return deskPayMapper.getByCurrencyDatePointOfSale(pointOfSale, beginTime, endTime, currency);
-    }
-
-    /**
      * 通过结账序列号获取
      */
     public List<DeskPay> getByCkSerial(String ckSerial) {

@@ -14,6 +14,7 @@ public class DeskOut {
     private Double finalPrice;
     private List<CurrencyPost> currencyPostList;
     private DeskBook deskBook;
+    private Boolean groupDetail;
 
     public DeskOut() {
     }
@@ -64,5 +65,13 @@ public class DeskOut {
 
     public void setDeskBook(DeskBook deskBook) {
         this.deskBook = deskBook;
+    }
+
+    public Boolean getGroupDetail() {
+        return groupDetail;
+    }
+
+    public void setGroupDetail(Boolean groupDetail) {
+        this.groupDetail = groupDetail;
     }
 }

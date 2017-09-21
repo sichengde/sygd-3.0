@@ -24,16 +24,5 @@ public class DeskPayController {
     public List<DeskPay> deskPayGet(@RequestBody Query query) throws Exception {
         return deskPayService.get(query);
     }
-    /**
-     * 根据时间段和币种查询
-     */
-    @RequestMapping(value = "deskPayGetByDateCurrency")
-    public List<DeskPay> deskPayGetByDateCurrency(@RequestBody QuerySubReport querySubReport){
-        String pointOfSale= querySubReport.getPointOfSale();
-        String currency= querySubReport.getCurrency();
-        Date beginTime= querySubReport.getBeginTime();
-        Date endTime= querySubReport.getEndTime();
-        return deskPayService.getByCurrencyDatePointOfSale(pointOfSale, currency, beginTime, endTime);
-    }
 
 }

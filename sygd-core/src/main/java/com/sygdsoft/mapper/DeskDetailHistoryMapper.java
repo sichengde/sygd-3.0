@@ -59,41 +59,6 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
     Integer getNumByDateSaleCount(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("firstPointOfSale") String firstPointOfSale, @Param("saleCount") String saleCount);
 
     /**
-     * 统计销售流水
-     */
-    /*金额，数量,退菜单独拿出来*/
-    @Select("SELECT food_sign foodSign, sum(num) num,sum(total) total,sum(after_discount) afterDiscount FROM desk_detail_history ddh WHERE ddh.point_of_sale=#{pointOfSale} and done_time>#{beginTime} AND done_time<#{endTime} and ifnull(disabled,false)=false group by food_sign")
-    @Results(value = {
-            @Result(property = "foodName", column = "food_name"),
-            @Result(property = "foodSign", column = "food_sign"),
-    })
-    List<DeskDetailHistory> getByTimePointOfSaleMerge(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
-
-    /*金额，数量,类别,退菜单独拿出来*/
-    @Select("SELECT food_sign foodSign, sum(num) num,sum(total) total,sum(after_discount) afterDiscount FROM desk_detail_history ddh WHERE ddh.point_of_sale=#{pointOfSale} and done_time>#{beginTime} AND done_time<#{endTime} and category=#{category} and ifnull(disabled,false)=false group by food_sign")
-    @Results(value = {
-            @Result(property = "foodName", column = "food_name"),
-            @Result(property = "foodSign", column = "food_sign"),
-    })
-    List<DeskDetailHistory> getByTimePointOfSaleCategoryMerge(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("category") String category);
-
-    /*金额，数量,退菜算进去*/
-    @Select("SELECT food_name foodName , sum(num) num,sum(total) total,sum(after_discount) afterDiscount FROM desk_detail_history ddh WHERE ddh.point_of_sale=#{pointOfSale} and done_time>#{beginTime} AND done_time<#{endTime} and ifnull(disabled,false)=false group by food_name")
-    @Results(value = {
-            @Result(property = "foodName", column = "food_name"),
-            @Result(property = "foodSign", column = "food_sign"),
-    })
-    List<DeskDetailHistory> getByTimePointOfSale(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
-
-    /*金额，数量,类别,退菜算进去*/
-    @Select("SELECT food_name foodName , sum(num) num,sum(total) total,sum(after_discount) afterDiscount FROM desk_detail_history ddh WHERE ddh.point_of_sale=#{pointOfSale} and done_time>#{beginTime} AND done_time<#{endTime} and category=#{category} and ifnull(disabled,false)=false group by food_name")
-    @Results(value = {
-            @Result(property = "foodName", column = "food_name"),
-            @Result(property = "foodSign", column = "food_sign"),
-    })
-    List<DeskDetailHistory> getByTimePointOfSaleCategory(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("category") String category);
-
-    /**
      * 类别分析
      */
     /*不限定账单号，分析三级类别*/
@@ -168,4 +133,22 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
             @Result(property = "storageDone", column = "storage_done"),
     })
     List<DeskDetailHistory> getList(@Param("ckSerial") String ckSerial,  @Param("orderByList") String orderByList);
+
+
+    @SelectProvider(type = DeskDetailHistorySql.class,method = "getSumList")
+    @Results(value = {
+            @Result(property = "ckSerial", column = "ck_serial"),
+            @Result(property = "foodName", column = "food_name"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "pointOfSale", column = "point_of_sale"),
+            @Result(property = "doTime", column = "do_time"),
+            @Result(property = "foodSign", column = "food_sign"),
+            @Result(property = "doneTime", column = "done_time"),
+            @Result(property = "ifDiscount", column = "if_discount"),
+            @Result(property = "afterDiscount", column = "after_discount"),
+            @Result(property = "foodSet", column = "food_set"),
+            @Result(property = "cookRoom", column = "cook_room"),
+            @Result(property = "storageDone", column = "storage_done"),
+    })
+    List<DeskDetailHistory> getSumList(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("category") String category, @Param("mergeFood") Boolean mergeFood);
 }

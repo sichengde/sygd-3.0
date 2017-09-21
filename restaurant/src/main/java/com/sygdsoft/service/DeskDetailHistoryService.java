@@ -66,20 +66,8 @@ public class DeskDetailHistoryService extends BaseService<DeskDetailHistory> {
     /**
      * 统计各个菜品的销售数据，金额，数量
      */
-    public List<DeskDetailHistory> getByTimePointOfSale(Date beginTime, Date endTime, String pointOfSale, String category, Boolean mergeFood) {
-        if (mergeFood) {
-            if (category != null) {
-                return deskDetailHistoryMapper.getByTimePointOfSaleCategoryMerge(beginTime, endTime, pointOfSale, category);
-            } else {
-                return deskDetailHistoryMapper.getByTimePointOfSaleMerge(beginTime, endTime, pointOfSale);
-            }
-        } else {
-            if (category != null) {
-                return deskDetailHistoryMapper.getByTimePointOfSaleCategory(beginTime, endTime, pointOfSale, category);
-            } else {
-                return deskDetailHistoryMapper.getByTimePointOfSale(beginTime, endTime, pointOfSale);
-            }
-        }
+    public List<DeskDetailHistory> getSumList(Date beginTime, Date endTime, String pointOfSale, String category, Boolean mergeFood){
+        return deskDetailHistoryMapper.getSumList(beginTime, endTime, pointOfSale, category, mergeFood);
     }
 
     /**

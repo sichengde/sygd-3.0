@@ -147,12 +147,16 @@ public class DeskController {
         deskInHistory.setCkSerial(serialService.getCkSerial());
         deskInService.delete(deskIn);
         deskInHistoryService.add(deskInHistory);
+        /*处理报表*/
+        List<FieldTemplate> templateList = new ArrayList<>();
+        if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
+            deskControllerService.generateDetail(deskDetailService.getListByDeskGroup(desk, pointOfSale),templateList);
+        } else {
+            deskControllerService.generateDetail(deskDetailService.getListByDesk(desk, pointOfSale,null),templateList);
+        }
         /*菜品明细转移到历史*/
         List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale,"category,do_time");
         List<DeskDetailHistory> deskDetailHistoryList = new ArrayList<>();
-        List<FieldTemplate> templateList = new ArrayList<>();
-        /*处理报表*/
-        deskControllerService.generateDetail(deskDetailList, templateList);
         for (DeskDetail deskDetail : deskDetailList) {
             DeskDetailHistory deskDetailHistory = new DeskDetailHistory(deskDetail);
             deskDetailHistory.setCkSerial(serialService.getCkSerial());
@@ -184,13 +188,14 @@ public class DeskController {
         * 4.合计
         * 5.折扣
         * 6.折后
+        * 7.桌台号
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice)};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice),desk};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -205,12 +210,12 @@ public class DeskController {
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         Double discount = deskOut.getDiscount();
         Double finalPrice = deskOut.getFinalPrice();
+        List<DeskDetail> deskDetailList;
         if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
-            deskDetailService.getListByDeskGroup(desk, pointOfSale);
+            deskDetailList=deskDetailService.getListByDeskGroup(desk, pointOfSale);
         } else {
-            deskDetailService.getListByDesk(desk, pointOfSale,null);
+            deskDetailList=deskDetailService.getListByDesk(desk, pointOfSale,null);
         }
-        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale,"category,do_time");
         List<FieldTemplate> templateList = new ArrayList<>();
         deskControllerService.generateDetail(deskDetailList, templateList);
         /*处理报表

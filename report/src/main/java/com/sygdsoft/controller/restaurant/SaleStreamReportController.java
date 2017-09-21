@@ -50,8 +50,8 @@ public class SaleStreamReportController {
         }
         String format = saleStreamQuery.getFormat();
         String categories = saleStreamQuery.getCategory();
-        if("".equals(categories)){
-            categories=null;
+        if ("".equals(categories)) {
+            categories = null;
         }
         Boolean mergeFood = "y".equals(otherParamService.getValueByName("销售流水统计退菜"));
         List<DeskDetailHistory> deskDetailHistoryList = new ArrayList<>();
@@ -62,22 +62,24 @@ public class SaleStreamReportController {
                 deskDetailHistory.setFoodName(category + ":");
                 deskDetailHistory.setFoodSign(category + ":");
                 deskDetailHistoryList.add(deskDetailHistory);
-                deskDetailHistoryList.addAll(deskDetailHistoryService.getByTimePointOfSale(beginTime, endTime, pointOfSale, category, mergeFood));
+                deskDetailHistoryList.addAll(deskDetailHistoryService.getSumList(beginTime, endTime, pointOfSale, category, mergeFood));
             }
         } else {
-            deskDetailHistoryList = deskDetailHistoryService.getByTimePointOfSale(beginTime, endTime, pointOfSale, null, mergeFood);
+            deskDetailHistoryList = deskDetailHistoryService.getSumList(beginTime, endTime, pointOfSale, null, mergeFood);
         }
         List<FieldTemplate> templateList = new ArrayList<>();
         List<SaleStreamRow> saleStreamRowList = new ArrayList<>();
         Double totalConsume = 0.0;
         Double totalNum = 0.0;
-        String categoryParse = "";
+        StringBuilder categoryParse = new StringBuilder();
         Double categoryConsume = 0.0;
+        Double categoryNum = 0.0;
+        String lastFoodName = "";
         for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {
             FieldTemplate fieldTemplate = new FieldTemplate();
             if (mergeFood) {
                 fieldTemplate.setField1(deskDetailHistory.getFoodSign());
-            }else {
+            } else {
                 fieldTemplate.setField1(deskDetailHistory.getFoodName());
             }
             fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getNum()));
@@ -94,14 +96,22 @@ public class SaleStreamReportController {
             templateList.add(fieldTemplate);
             if (deskDetailHistory.getTotal() != null) {//有一行是类别，则总和为空，在此生成该类别的分析
                 categoryConsume += deskDetailHistory.getTotal();
+                categoryNum += deskDetailHistory.getNum();
                 totalConsume += deskDetailHistory.getTotal();
             } else {//为空时，在此生成该类别的分析
-                categoryParse += deskDetailHistory.getFoodName() +  categoryConsume + " , ";
+                if (!"".equals(lastFoodName)) {
+                    categoryParse.append(lastFoodName).append(categoryNum).append("/").append(categoryConsume).append(" , ");
+                }
+                lastFoodName=deskDetailHistory.getFoodName();
                 categoryConsume = 0.0;
+                categoryNum = 0.0;
             }
             if (deskDetailHistory.getNum() != null) {
                 totalNum += deskDetailHistory.getNum();
             }
+        }
+        if (!"".equals(lastFoodName)) {
+            categoryParse.append(lastFoodName).append(categoryNum).append("/").append(categoryConsume).append(" , ");
         }
         timeService.setNow();
         List<String> paramList = new ArrayList<>();
@@ -110,16 +120,17 @@ public class SaleStreamReportController {
         paramList.add(ifNotNullGetString(totalNum));
         paramList.add(ifNotNullGetString(totalConsume));
         if (categories != null) {//有类别的话还要加上类别备注
-            paramList.add(categoryParse);
+            paramList.add(categoryParse.toString());
         }
         String[] param = new String[paramList.size()];
         paramList.toArray(param);
         SaleStreamReport saleStreamReport = new SaleStreamReport();
         saleStreamReport.setTotalMoney(totalConsume);
+        saleStreamReport.setTotalNum(totalNum);
         saleStreamReport.setSaleStreamRowList(saleStreamRowList);
         saleStreamReport.setSaleStreamQuery(saleStreamQuery);
         saleStreamReport.setReportIndex(reportService.generateReport(templateList, param, "SaleStream", format));
-        saleStreamReport.setCategoryParse(categoryParse);
+        saleStreamReport.setCategoryParse(categoryParse.toString());
         return saleStreamReport;
     }
 }
