@@ -20,7 +20,7 @@ public class DeskControllerService {
         FieldTemplate fieldTemplateSum=new FieldTemplate();
         for (DeskDetail deskDetail : deskDetailList) {
             if(lastCategory.equals(deskDetail.getCategory())) {
-            /*打印信息*/
+                /*打印信息*/
                 FieldTemplate fieldTemplate = new FieldTemplate();
                 fieldTemplate.setField1(deskDetail.getFoodName());
                 fieldTemplate.setField2(ifNotNullGetString(deskDetail.getPrice()));
@@ -30,10 +30,10 @@ public class DeskControllerService {
                 categoryTotal+=deskDetail.getNotNullPrice() * deskDetail.getNum();
             }else {
                 if(!lastCategory.equals("")){
-                    fieldTemplateSum.setField1(fieldTemplateSum.getField1()+categoryTotal);
+                    fieldTemplateSum.setField5(fieldTemplateSum.getField5()+categoryTotal);
                 }
                 fieldTemplateSum= new FieldTemplate();
-                fieldTemplateSum.setField1(deskDetail.getCategory()+":");
+                fieldTemplateSum.setField5(deskDetail.getCategory()+":");
                 lastCategory=deskDetail.getCategory();
                 templateList.add(fieldTemplateSum);
                 categoryTotal=0.0;
@@ -46,7 +46,7 @@ public class DeskControllerService {
                 categoryTotal+=deskDetail.getNotNullPrice() * deskDetail.getNum();
             }
         }
-        fieldTemplateSum.setField1(fieldTemplateSum.getField1()+categoryTotal);
+        fieldTemplateSum.setField5(fieldTemplateSum.getField5()+categoryTotal);
     }
 
     public void generateDetailHistory(List<DeskDetailHistory> deskDetailHistoryList, List<FieldTemplate> templateList){
