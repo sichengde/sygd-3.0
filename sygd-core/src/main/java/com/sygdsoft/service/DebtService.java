@@ -1,5 +1,6 @@
 package com.sygdsoft.service;
 
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.CheckInGroupMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.mapper.DebtMapper;
@@ -107,42 +108,33 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 通过**获得账务数组（排序）
      */
-    public List<Debt> getListByRoomId(String roomId) {
-        Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id=" + util.wrapWithBrackets(roomId));
-        example.orderBy("deposit").desc();
-        example.orderBy("pointOfSale");
-        example.orderBy("doTime");
-        return debtMapper.selectByExample(example);
+    public List<Debt> getListByRoomId(String roomId) throws Exception {
+        Query query=new Query("room_id=" + util.wrapWithBrackets(roomId));
+        query.setOrderByList(new String[]{"pointOfSale", "doTime"});
+        query.setOrderByListDesc(new String[]{"deposit"});
+        return get(query);
     }
 
     /*刨除中间结算的冲账*/
-    public List<Debt> getListByRoomIdPure(String roomId) {
-        Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("room_id=" + util.wrapWithBrackets(roomId) + " and category!= \'中间结算冲账\'");
-        example.orderBy("deposit").desc();
-        example.orderBy("pointOfSale");
-        example.orderBy("doTime");
-        return debtMapper.selectByExample(example);
+    public List<Debt> getListByRoomIdPure(String roomId) throws Exception {
+        Query query=new Query("room_id=" + util.wrapWithBrackets(roomId) + " and category!= \'中间结算冲账\'");
+        query.setOrderByList(new String[]{"pointOfSale", "doTime"});
+        query.setOrderByListDesc(new String[]{"deposit"});
+        return get(query);
     }
 
-    public List<Debt> getListByGroupAccount(String groupAccount) {
-        Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("group_account=" + util.wrapWithBrackets(groupAccount));
-        example.orderBy("deposit").desc();
-        example.orderBy("roomId");
-        example.orderBy("pointOfSale");
-        example.orderBy("doTime");
-        return debtMapper.selectByExample(example);
+    public List<Debt> getListByGroupAccount(String groupAccount) throws Exception {
+        Query query=new Query("group_account=" + util.wrapWithBrackets(groupAccount));
+        query.setOrderByList(new String[]{"roomId","pointOfSale", "doTime"});
+        query.setOrderByListDesc(new String[]{"deposit"});
+        return get(query);
     }
 
-    public List<Debt> getListByBed(String bed) {
-        Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("bed=" + util.wrapWithBrackets(bed));
-        example.orderBy("deposit").desc();
-        example.orderBy("pointOfSale");
-        example.orderBy("doTime");
-        return debtMapper.selectByExample(example);
+    public List<Debt> getListByBed(String bed) throws Exception {
+        Query query=new Query("bed=" + util.wrapWithBrackets(bed));
+        query.setOrderByList(new String[]{"pointOfSale", "doTime"});
+        query.setOrderByListDesc(new String[]{"deposit"});
+        return get(query);
     }
 
     /**
@@ -167,20 +159,14 @@ public class DebtService extends BaseService<Debt> {
     }
 
 
-    public List<Debt> getDepositListByGroupAccount(String groupAccount) {
-        Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("group_account=" + util.wrapWithBrackets(groupAccount));
-        example.createCriteria().andCondition("deposit>0");
-        example.createCriteria().andCondition("remark!=\'已退\'");
-        return debtMapper.selectByExample(example);
+    public List<Debt> getDepositListByGroupAccount(String groupAccount) throws Exception {
+        Query query=new Query("group_account=\' " + groupAccount+"\' and deposit>0 and remark!=\'已退\'");
+        return get(query);
     }
 
-    public List<Debt> getDepositListByBed(String bed) {
-        Example example = new Example(Debt.class);
-        example.createCriteria().andCondition("bed=" + util.wrapWithBrackets(bed));
-        example.createCriteria().andCondition("deposit>0");
-        example.createCriteria().andCondition("remark!=\'已退\'");
-        return debtMapper.selectByExample(example);
+    public List<Debt> getDepositListByBed(String bed) throws Exception {
+        Query query=new Query("bed= \'"+bed+"\' and deposit>0 and remark!=\'已退\'");
+        return get(query);
     }
 
     /**
