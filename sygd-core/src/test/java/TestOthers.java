@@ -7,12 +7,12 @@ import com.google.zxing.common.BitMatrix;
 import org.junit.Test;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +45,10 @@ public class TestOthers {
         System.out.println(matcher.replaceAll("").trim());
     }
 
+    /**
+     * 二维码
+     * @throws Exception
+     */
     @Test
     public void freeTest() throws Exception {
         String filePath = "C://report/qrCode";
@@ -66,12 +70,12 @@ public class TestOthers {
         System.out.println("输出成功.");
     }
 
+    /**
+     * 字符串加密
+     */
     @Test
     public void asd() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.DAY_OF_YEAR, calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
-        System.out.println(calendar.getTime());
+        System.out.println(10*277^277);
     }
 
     @Test

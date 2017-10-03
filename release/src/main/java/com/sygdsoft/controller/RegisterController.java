@@ -2,33 +2,45 @@ package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.service.RegisterService;
-import org.apache.tomcat.jni.OS;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStreamReader;
+import java.util.Date;
 
 /**
  * Created by 舒展 on 2016-09-01.
+ * 注册，校验
  */
 @RestController
 public class RegisterController {
     @Autowired
     RegisterService registerService;
 
-    @RequestMapping(value = "getNumber")
-    public OnlyString getNumber() throws Exception {
-        return new OnlyString(registerService.sendMessage());
-    }
-
     @RequestMapping(value = "getRegisterNumber")
     public OnlyString getRegisterNumber()throws Exception{
         String s=registerService.getLocalSerial();
         return new OnlyString(s);
+    }
+
+    /**
+     * 获取时间
+     * @return
+     */
+    @RequestMapping(value = "time")
+    public Date getNowTime() throws Exception {
+        return new Date();
+    }
+
+    /**
+     * 设置秘钥
+     */
+    @RequestMapping(value = "setSecurityStr")
+    public Integer setSecurityStr() throws Exception {
+        Date now=new Date();
+        String s=String.valueOf(now.getTime()).substring(7,13);
+        registerService.securityStr.add(String.valueOf(Integer.valueOf(s)*277^277));
+        return Integer.valueOf(s);
     }
 }

@@ -30,52 +30,6 @@ import java.util.Set;
 public class HotelService {
     @Autowired
     HttpServletRequest request;
-    @Value("${hotel.hotelId}")
-    private String hotelId;
-    @Value("${hotel.ip}")
-    private String ip;
-    @Value("${server.port}")
-    private String port;
-
-    /**
-     * 获得客户端当前登陆的酒店名称
-     */
-    public String getCurrentHotel() {
-        return request.getHeader("database");
-    }
-
-    public String post(String url, Map<String, String> params) {
-        //实例化httpClient
-        String content = null;
-        try {
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost(url);
-            //处理参数
-            List<NameValuePair> nvps = new ArrayList<>();
-            Set<String> keySet = params.keySet();
-            for (String key : keySet) {
-                nvps.add(new BasicNameValuePair(key, params.get(key)));
-            }
-            //结果
-            CloseableHttpResponse response = null;
-            content = "";
-            //提交的参数
-            UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(nvps, "UTF-8");
-            //将参数给post方法
-            httpPost.setEntity(uefEntity);
-            //执行post方法
-            response = httpclient.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                content = EntityUtils.toString(response.getEntity(), "utf-8");
-                System.out.println(content);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return content;
-    }
 
     public String postJSON(String url, String param) throws Exception {
         //实例化httpClient
@@ -94,34 +48,5 @@ public class HotelService {
             System.out.println(content);
         }
         return content;
-    }
-
-    public String getHotelId() {
-        return hotelId;
-    }
-
-    public void setHotelId(String hotelId) {
-        this.hotelId = hotelId;
-    }
-
-    public String getIp() {
-        /*如果不是80端口，则要加上端口号*/
-        if(this.port.equals("80")){
-            return ip;
-        }else {
-            return ip+":"+port;
-        }
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 }

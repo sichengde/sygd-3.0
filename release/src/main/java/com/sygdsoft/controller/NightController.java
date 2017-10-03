@@ -61,15 +61,4 @@ public class NightController {
         night.manualNightAction();
         userLogService.addUserLog("手动夜审", userLogService.reception, userLogService.night,null);
     }
-
-    /**
-     * 阿里云服务器端的功能，进行该用户在云端数据库的夜审
-     */
-    @RequestMapping(value = "manualNightCloud")
-    public void manualNightCloud(String hotelId) throws Exception {
-        if (DynamicDataSourceContextHolder.containsDataSource(hotelId)) {
-            DynamicDataSourceContextHolder.setDataSourceType(hotelId);
-            night.manualNightAction();
-        }
-    }
 }

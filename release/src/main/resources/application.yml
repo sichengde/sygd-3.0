@@ -8,36 +8,10 @@ logging:
     path: C:\report
 night:
     action: 0 0 0 * * *
-    protect: 0 59 23 * * *
-register:
-    number: 7111ef5477
-    numberCK: 8eee10ab88
-    numberSN: 9fff01ba99
-hotel:
-    hotelId: hotel
-    ip: localhost
-custom:
-    datasource:
-        names: yujianyifenghua,base_hotel,hotel
-        yujianyifenghua:
-            url: jdbc:mysql://localhost:3306/yujianyifenghua?characterEncoding=utf8&useSSL=true
-            username: yujianyifenghua
-            password: q123
-            driver-class-name: com.mysql.jdbc.Driver
-        base_hotel:
-            url: jdbc:mysql://localhost:3306/base_hotel?characterEncoding=utf8&useSSL=true
-            username: base_hotel
-            password: q123
-            driver-class-name: com.mysql.jdbc.Driver
-        hotel:
-            url: jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true
-            username: hotel
-            password: q123
-            driver-class-name: com.mysql.jdbc.Driver
 spring:
     datasource:
         name: hotel
-        url: jdbc:mysql://${hotel.ip}:3306/hotel?characterEncoding=utf8&useSSL=true
+        url: jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true
         username: hotel
         password: q123
         # 使用druid数据源

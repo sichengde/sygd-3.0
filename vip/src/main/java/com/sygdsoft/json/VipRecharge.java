@@ -10,6 +10,7 @@ public class VipRecharge {
     private Double money;
     private Double deserve;
     private CurrencyPost currencyPost;
+    private String token;
 
     public VipRecharge() {
     }
@@ -44,5 +45,13 @@ public class VipRecharge {
 
     public void setCurrencyPost(CurrencyPost currencyPost) {
         this.currencyPost = currencyPost;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

@@ -47,6 +47,8 @@ public class VipController {
     VipDetailHistoryService vipDetailHistoryService;
     @Autowired
     DebtPayService debtService;
+    @Autowired
+    RegisterService registerService;
 
     @RequestMapping(value = "vipUpdate")
     @Transactional(rollbackFor = Exception.class)
@@ -127,6 +129,10 @@ public class VipController {
     @RequestMapping(value = "vipRecharge")
     @Transactional(rollbackFor = Exception.class)
     public Integer vipRecharge(@RequestBody VipRecharge vipRecharge) throws Exception {
+        /*安全校验*/
+        if(!this.registerService.securityStr.remove(vipRecharge.getToken())){
+            throw new Exception("充值失败");
+        }
         timeService.setNow();
         String vipNumber = vipRecharge.getVipNumber();
         Double money = vipRecharge.getMoney();

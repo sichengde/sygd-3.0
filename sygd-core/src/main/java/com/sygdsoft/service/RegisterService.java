@@ -1,8 +1,11 @@
 package com.sygdsoft.service;
 
+import com.mysql.jdbc.Connection;
+import com.sygdsoft.model.InCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -11,9 +14,10 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.*;
 
 /**
  * Created by 舒展 on 2016-05-20.
@@ -26,110 +30,60 @@ public class RegisterService {
     private int passSN;//桑拿模块有没
     private List<Integer> module = new ArrayList<>();
     private Integer maxUser;
-    @Value("${register.number}")
     private String serial;
-    @Value("${register.numberCK}")
     private String serialCK;
-    @Value("${register.numberSN}")
     private String serialSN;
 
-   /* public void check() throws UnknownHostException, SocketException {
-        if(args.getSourceArgs().length==0){//没有输入注册号只给两个模块
-            module.add(0);
-            module.add(7);
-            pass=1;
-            return;
-        }
-        String serial=args.getSourceArgs()[0];
-        InetAddress ia = InetAddress.getLocalHost();
-        byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
-        if (mac==null){
-            pass=1;
-            return;
-        }
-        String success1=serial.substring(0,serial.length()-18);
-        maxUser= Integer.valueOf(serial.substring(serial.length()-18,serial.length()-16));
-        String module1=serial.substring(serial.length()-16,serial.length());
-        Integer[] z=new Integer[8];
-        int a=Integer.valueOf(success1,16);
-        String check= "";
-        a^=1234;
-        for(int i=0; i<2; i++) {
-            //字节转换为整数
-            int temp = mac[i]&0xff;
-            int b=success[i]*temp;
-            String str = Integer.toString(b);
-            check+=str;
-        }
-        if (a==Integer.valueOf(check)){
-            pass=0;
-        }else {
-            pass=1;
-        }
-        for (int i=0;i<8;i++){
-            String m1=module1.substring(i*2,i*2+2);
-            Byte b=Byte.valueOf(m1,16);
-            z[i]=b^module2[i];
-        }
-        Byte[] m2=new Byte[8];
-        int j=0;
-        for(int i=2; i<6; i++) {
-            //字节转换为整数
-            int temp = mac[i]&0xff;
-            byte[] b=Integer.toHexString(temp).getBytes();
-            if (b.length==1){
-                m2[j]=0;
-                j++;
-                m2[j]=b[0];
-                j++;
-            }else {
-                m2[j]=b[0];
-                j++;
-                m2[j]=b[1];
-                j++;
-            }
-        }
-        for (int i=0;i<8;i++){
-            if ((m2[i]&0xff)==z[i]){
-                module.add(i);
-            }
-        }
-    }*/
+    public List<String> securityStr=new ArrayList<>();//秘钥数组，一个秘钥只能用一次
+    /**
+     * 定是清空秘钥数组
+     */
+    @Scheduled(fixedRate = 900000)
+    public void clearSecurityStr(){
+        this.securityStr.clear();
+    }
 
     /**
      * 初始化验证注册码,初始化httpClient
      */
     @PostConstruct
-    public void init() throws IOException {
+    public void init() throws Exception {
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://localhost:3306/hotel";
+        String username = "hotel";
+        String password = "q123";
+        try {
+            Connection conn = null;
+            Class.forName(driver); //classLoader,加载对应驱动
+            conn = (Connection) DriverManager.getConnection(url, username, password);
+            PreparedStatement ps = conn.prepareStatement("SELECT * from other_param where other_param='注册码'");
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                String[] serial = resultSet.getString("value").split(",");
+                this.serial = serial[0];
+                this.serialCK = serial[1];
+                this.serialSN = serial[2];
+            }
+            conn.close();
+            ps.close();
+            resultSet.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.check();
         this.checkCK();
         this.checkSN();
     }
 
-    /**
-     * 且把酒店信息发送到云服务器
-     */
-    public String sendMessage() throws Exception {
-        //得到IP，输出PC-201309011313/122.206.73.83
-        InetAddress ia = InetAddress.getLocalHost();
-        //获取网卡，获取地址
-        byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
-        String out = "";
-        for (byte b : mac) {
-            out += String.valueOf(b & 0xff) + ",";
-        }
-        return out.substring(0, out.length() - 1);
-    }
-
     public void check() throws IOException {
-        if (this.serial==null) {
+        if (this.serial == null) {
             this.pass = 1;
         } else {
             String parse = "";
-            String password= this.serial;
+            String password = this.serial;
             for (int i = 0; i < password.length(); i++) {
-                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)),16);
-                parse +=Integer.toHexString(int1^7);
+                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)), 16);
+                parse += Integer.toHexString(int1 ^ 7);
             }
             if (parse.equals(getLocalSerial())) {
                 this.pass = 0;
@@ -140,14 +94,14 @@ public class RegisterService {
     }
 
     public void checkCK() throws IOException {
-        if (this.serialCK==null) {
+        if (this.serialCK == null) {
             this.passCK = 1;
         } else {
             String parse = "";
-            String password= this.serialCK;
+            String password = this.serialCK;
             for (int i = 0; i < password.length(); i++) {
-                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)),16);
-                parse +=Integer.toHexString(int1^8);
+                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)), 16);
+                parse += Integer.toHexString(int1 ^ 8);
             }
             if (parse.equals(getLocalSerial())) {
                 this.passCK = 0;
@@ -158,14 +112,14 @@ public class RegisterService {
     }
 
     public void checkSN() throws IOException {
-        if (this.serialSN==null) {
+        if (this.serialSN == null) {
             this.passSN = 1;
         } else {
             String parse = "";
-            String password= this.serialSN;
+            String password = this.serialSN;
             for (int i = 0; i < password.length(); i++) {
-                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)),16);
-                parse +=Integer.toHexString(int1^9);
+                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)), 16);
+                parse += Integer.toHexString(int1 ^ 9);
             }
             if (parse.equals(getLocalSerial())) {
                 this.passSN = 0;
@@ -238,10 +192,10 @@ public class RegisterService {
             e.printStackTrace();
         }*/
         //System.out.println("motherBoardSerial:" + motherBoardSerial.trim());
-        String s=diskSerial;
+        String s = diskSerial;
             /*单数的话补个0*/
-        if(s.length()%2==1){
-            s+="0";
+        if (s.length() % 2 == 1) {
+            s += "0";
         }
         /*去除乱七八糟的字符，设置为0*/
         StringBuilder sb = new StringBuilder(s);
@@ -250,7 +204,7 @@ public class RegisterService {
             try {
                 int1 = Integer.valueOf(String.valueOf(sb.charAt(i)), 16);
             } catch (NumberFormatException e) {
-                sb.replace(i, i+1, "0");
+                sb.replace(i, i + 1, "0");
             }
         }
         return String.valueOf(sb);

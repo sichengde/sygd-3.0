@@ -8,6 +8,7 @@ import java.util.List;
 public class Query {
     private String condition;//查询条件
     private Integer num;//查询数量
+    private Integer page;//查询页数
     private String[] orderByList;//排序（正序）
     private String[] orderByListDesc;//排序（倒序）
     private String[] otherParam;//其他灵活参数
@@ -57,5 +58,13 @@ public class Query {
 
     public void setOtherParam(String[] otherParam) {
         this.otherParam = otherParam;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
     }
 }

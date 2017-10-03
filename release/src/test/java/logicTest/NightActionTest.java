@@ -101,11 +101,6 @@ public class NightActionTest extends ApplicationTest {
     }
 
     @Test
-    public void testRegisterService() throws Exception {
-        registerService.sendMessage();
-    }
-
-    @Test
     public void testGetListByCheckOutSerial() {
         List<CheckInHistory> checkInHistoryList = checkInHistoryService.getListByCheckOutSerial("160911005");
     }
