@@ -1,6 +1,5 @@
 server:
     port: 8080
-    context-path:
     session:
       timeout: 0
 logging:
@@ -9,18 +8,10 @@ logging:
     path: C:\report
 night:
     action: 0 0 0 * * *
-    protect: 0 59 23 * * *
-register:
-    number: 7111ef5477
-    numberCK: 8eee10ab881
-    numberSN: 9fff01ba991
-hotel:
-    hotelId: shen_yang_su_yuan
-    ip: localhost
 spring:
     datasource:
         name: hotel
-        url: jdbc:mysql://${hotel.ip}:3306/hotel?characterEncoding=utf8&useSSL=true
+        url: jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true
         username: hotel
         password: q123
         # 使用druid数据源

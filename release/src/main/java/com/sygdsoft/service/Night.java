@@ -92,14 +92,6 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     }
 
     /**
-     * 夜审前保护（屏幕变黑禁止进行操作）
-     */
-    @Scheduled(cron = "${night.protect}")
-    public void nightProtect() throws Exception {
-        this.messagingTemplate.convertAndSend("/beginNight", true);
-    }
-
-    /**
      * 重置序列号
      */
     @Scheduled(cron = "0 0 0 * * *")
