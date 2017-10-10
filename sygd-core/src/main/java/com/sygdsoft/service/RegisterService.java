@@ -49,7 +49,7 @@ public class RegisterService {
     @PostConstruct
     public void init() throws Exception {
         String driver = "com.mysql.jdbc.Driver";
-        String url = "jdbc:mysql://localhost:3306/hotel";
+        String url = "jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true";
         String username = "hotel";
         String password = "q123";
         try {
