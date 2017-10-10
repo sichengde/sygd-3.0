@@ -135,40 +135,42 @@ public class GuestOutController {
         } else {
             checkOutSerial = serialService.setCheckOutSerial();//生成离店序列号
         }
-        serialService.setPaySerial();//生成结账序列号
+        synchronized (checkOutSerial) {
+            serialService.setPaySerial();//生成结账序列号
         /*转换房态*/
-        this.updateRoomStateGuestOut(guestOut.getRoomIdList());
+            this.updateRoomStateGuestOut(guestOut.getRoomIdList());
         /*额外的加收房租*/
-        this.debtAddIn(guestOut);
+            this.debtAddIn(guestOut);
         /*离店明细单元*/
-        Double checkOutMoney = this.newCheckOut(guestOut);
+            Double checkOutMoney = this.newCheckOut(guestOut);
         /*检查是否有没退的预付，有的话自动退了*/
-        //this.cancelDeposit(guestOut);//先保留，以后如果没用就删了
+            //this.cancelDeposit(guestOut);//先保留，以后如果没用就删了
         /*账务明细转移到账务历史，并返回需要结算的账务*/
-        List<Debt> debtList = this.debtToHistory(guestOut);
+            List<Debt> debtList = this.debtToHistory(guestOut);
         /*查找中间结算，没有离店序列号的都是中间结算*/
-        this.debtPayMiddle(guestOut);
+            this.debtPayMiddle(guestOut);
         /*结账记录，循环分单，记录操作员挂账信息*/
-        String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
+            String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
         /*判断押金币种，如果是会员则需要把钱还回去*/
-        this.checkVipDeposit(guestOut);
+            this.checkVipDeposit(guestOut);
         /*如果有单位协议，将该协议记录到单位消费之中*/
-        this.checkCompany(guestOut, checkOutMoney);
+            this.checkCompany(guestOut, checkOutMoney);
         /*户籍转换，迁移到历史表*/
-        String guestName = this.checkInProcess(guestOut);
+            String guestName = this.checkInProcess(guestOut);
         /*生成离店报表*/
-        Integer reportIndex = this.reportProcess(guestOut, guestName, changeDebt, debtList);
+            Integer reportIndex = this.reportProcess(guestOut, guestName, changeDebt, debtList);
         /*操作员记录*/
-        this.addUserLog(guestOut, changeDebt);
+            this.addUserLog(guestOut, changeDebt);
         /*删除账务，开房信息，团队开房信息，在店宾客（如果删早可能会导致后边的方法获取不到相关信息），房价协议（如果有）*/
-        this.delete(guestOut);
+            this.delete(guestOut);
         /*找零信息记表*/
-        for (CheckOutPayBack checkOutPayBack : guestOut.getCheckOutPayBackList()) {
-            checkOutPayBack.setDoneTime(timeService.getNow());
-            checkOutPayBack.setCheckOutSerial(checkOutSerial);
+            for (CheckOutPayBack checkOutPayBack : guestOut.getCheckOutPayBackList()) {
+                checkOutPayBack.setDoneTime(timeService.getNow());
+                checkOutPayBack.setCheckOutSerial(checkOutSerial);
+            }
+            checkOutPayBackService.add(guestOut.getCheckOutPayBackList());
+            return reportIndex;
         }
-        checkOutPayBackService.add(guestOut.getCheckOutPayBackList());
-        return reportIndex;
     }
 
     /**
@@ -815,12 +817,19 @@ public class GuestOutController {
         CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
         if (checkInGroup != null) {
             if (guestOut.getRoomIdList().size() != checkInGroup.getTotalRoom()) {//说明是结的部分房间
+                CheckOutGroup checkOutGroup = checkOutGroupService.getByCheckOutSerial(serialService.getCheckOutSerial());
+                checkOutGroup.setConsume(0.0);
+                checkOutGroup.setDeposit(0.0);
                 for (Debt debt : debtList) {
                     checkInGroup.setConsume(checkInGroup.getNotNullGroupConsume() - debt.getNotNullConsume());
                     checkInGroup.setDeposit(checkInGroup.getNotNullGroupDeposit() - debt.getNotNullDeposit());
+                    checkOutGroup.setConsume(debt.getNotNullConsume());
+                    checkOutGroup.setDeposit(debt.getNotNullDeposit());
                 }
                 checkInGroup.setTotalRoom(checkInGroup.getTotalRoom() - guestOut.getRoomIdList().size());
+                checkOutGroup.setTotalRoom(guestOut.getRoomIdList().size());
                 checkInGroupService.update(checkInGroup);
+                checkOutGroupService.update(checkOutGroup);
             } else {
                 checkInGroupService.delete(checkInGroup);
             }
@@ -867,9 +876,17 @@ public class GuestOutController {
     @Transactional(rollbackFor = Exception.class)
     public Integer checkOutReverse(@RequestBody DebtPay debtPay) throws Exception {
         String groupAccount = debtPay.getGroupAccount();
-        String selfAccount = debtPay.getSelfAccount();
         String paySerial = debtPay.getPaySerial();
         String checkOutSerial = debtPay.getCheckOutSerial();
+        List<String> selfAccountList = new ArrayList<>();
+        if (groupAccount != null) {
+            List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.getByCheckOutSerial(checkOutSerial);
+            for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
+                selfAccountList.add(checkInHistoryLog.getSelfAccount());
+            }
+        } else {
+            selfAccountList.add(debtPay.getSelfAccount());
+        }
         timeService.setNow();
         /*如果有会员标志，先获取，方便之后查看余额什么的*/
         Vip vip = null;
@@ -951,19 +968,32 @@ public class GuestOutController {
         }
         checkInService.add(checkInList);//生成在店户籍
         if (debtPay.getGroupAccount() != null) {//如果是团队开房的话，生成团队信息
-            CheckInGroup checkInGroup = new CheckInGroup(checkOutGroupService.getByCheckOutSerial(checkOutSerial));
-            checkInGroup.setConsume(debtService.getTotalConsumeByGroupAccount(groupAccount));
-            checkInGroupService.add(checkInGroup);
+            /*先判断是不是彻底离店了*/
+            CheckInGroup checkInGroupNow = checkInGroupService.getByGroupAccount(groupAccount);
+            if (checkInGroupNow == null) {
+                CheckInGroup checkInGroup = new CheckInGroup(checkOutGroupService.getByCheckOutSerial(checkOutSerial));
+                checkInGroup.setConsume(debtService.getTotalConsumeByGroupAccount(groupAccount));
+                checkInGroupService.add(checkInGroup);
+            } else {
+                CheckOutGroup checkOutGroup = checkOutGroupService.getByCheckOutSerial(checkOutSerial);
+                checkInGroupNow.setConsume(checkInGroupNow.getConsume() + checkOutGroup.getConsume());
+                checkInGroupNow.setDeposit(checkInGroupNow.getDeposit() + checkOutGroup.getDeposit());
+                checkInGroupNow.setTotalRoom(checkInGroupNow.getTotalRoom() + checkOutGroup.getTotalRoom());
+                checkInGroupService.update(checkInGroupNow);
+                checkOutGroupService.delete(checkOutGroup);
+            }
         }
-        List<GuestIntegration> guestIntegrationList = guestIntegrationService.getList(selfAccount);
-        List<CheckInGuest> checkInGuestList = new ArrayList<>();
-        for (GuestIntegration guestIntegration : guestIntegrationList) {
-            CheckInHistory checkInHistory = checkInHistoryService.getByCardId(guestIntegration.getCardId());
-            checkInGuestList.add(new CheckInGuest(checkInHistory));
-            checkInHistory.setNum(checkInHistory.getNum() - 1);
-            checkInHistoryService.update(checkInHistory);
+        for (String selfAccount : selfAccountList) {
+            List<GuestIntegration> guestIntegrationList = guestIntegrationService.getList(selfAccount);
+            List<CheckInGuest> checkInGuestList = new ArrayList<>();
+            for (GuestIntegration guestIntegration : guestIntegrationList) {
+                CheckInHistory checkInHistory = checkInHistoryService.getByCardId(guestIntegration.getCardId());
+                checkInGuestList.add(new CheckInGuest(checkInHistory));
+                checkInHistory.setNum(checkInHistory.getNum() - 1);
+                checkInHistoryService.update(checkInHistory);
+            }
+            checkInGuestService.add(checkInGuestList);
         }
-        checkInGuestService.add(checkInGuestList);
         checkInHistoryLogService.delete(checkInHistoryLogList);
         /*操作员记录*/
         userLogService.addUserLog("叫回账单:" + checkOutSerial, userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
