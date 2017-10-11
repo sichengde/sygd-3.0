@@ -553,6 +553,7 @@ public class GuestOutController {
             checkOutRoom.setCheckOutSerial(checkOutSerial);
             checkOutRoom.setRoomId(checkIn.getRoomId());
             checkOutRoom.setSelfAccount(checkIn.getSelfAccount());
+            checkOutRoom.setGroupAccount(checkIn.getGroupAccount());
             checkOutRoom.setSource(checkIn.getGuestSource());
             checkOutRoom.setRoomPriceCategory(checkIn.getRoomPriceCategory());
             checkOutRoom.setProtocol(checkIn.getProtocol());
@@ -893,10 +894,10 @@ public class GuestOutController {
         if (debtPay.getVipNumber() != null) {
             vip = vipService.get(new Query("vip_number=" + util.wrapWithBrackets(debtPay.getVipNumber()))).get(0);
         }
-        List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(checkOutSerial);
         /*当前房间状态检验，通过的话更新房态，同时生成checkIn*/
-        List<Room> roomList = roomService.getListByRoomIdString(checkOutRoomService.simpleToString(checkOutRoomList));
-        for (Room room : roomList) {
+        List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(checkOutSerial);
+        for (CheckOutRoom checkOutRoom : checkOutRoomList) {
+            Room room = roomService.getByRoomId(checkOutRoom.getRoomId());
             if (room.getState().equals(roomService.group) || room.getState().equals(roomService.guest) || room.getState().equals(roomService.repair)) {
                 return -1;//房间状态不允许
             }
@@ -908,8 +909,8 @@ public class GuestOutController {
             room.setCheckOutTime(null);
             CheckIn checkIn = new CheckIn();
             checkIn.setRoomId(room.getRoomId());
+            roomService.update(room);
         }
-        roomService.update(roomList);
         /*离店信息删除*/
         CheckOut checkOutQuery = new CheckOut();
         checkOutQuery.setCheckOutSerial(checkOutSerial);
