@@ -37,6 +37,15 @@ public class RoomService extends BaseService<Room> {
     RoomCategoryService roomCategoryService;
 
     /**
+     * 通过房号获取
+     */
+    public Room getByRoomId(String roomId){
+        Room roomQuery=new Room();
+        roomQuery.setRoomId(roomId);
+        return roomMapper.selectOne(roomQuery);
+    }
+
+    /**
      * 更新房态
      */
     public void updateRoomState(List<String> roomList, String state) {
