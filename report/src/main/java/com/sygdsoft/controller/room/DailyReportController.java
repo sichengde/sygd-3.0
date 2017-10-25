@@ -52,6 +52,8 @@ public class DailyReportController {
     CompanyPayService companyPayService;
     @Autowired
     DeskInHistoryService deskInHistoryService;
+    @Autowired
+    DeskPayRichService deskPayRichService;
 
     @RequestMapping(value = "dailyReport", method = RequestMethod.POST)
     public DailyReportReturn dailyReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -137,9 +139,13 @@ public class DailyReportController {
                         break;
                     case "餐饮":
                         if (pointOfSale.getNotNullIfVirtual()) {
-                            firstPointOfSale=pointOfSale.getVirtualTarget();
+                            firstPointOfSale = pointOfSale.getVirtualTarget();
+                            for (String category : pointOfSale.getSecondPointOfSale().split(" ")) {
+                                money += deskPayRichService.getPay(currencyString, firstPointOfSale, category, beginTime, endTime);
+                            }
+                        } else {
+                            money = deskPayService.getPay(null, currencyString, firstPointOfSale,  beginTime, endTime);
                         }
-                        money = deskPayService.getPay(null, currencyString, firstPointOfSale, beginTime, endTime);
                         break;
                     case "桑拿":
                         break;
