@@ -2,6 +2,8 @@ package com.sygdsoft.service;
 
 import com.mysql.jdbc.Connection;
 import com.sygdsoft.model.InCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -33,7 +35,7 @@ public class RegisterService {
     private String serial;
     private String serialCK;
     private String serialSN;
-
+    private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
     public List<String> securityStr=new ArrayList<>();//秘钥数组，一个秘钥只能用一次
     /**
      * 定是清空秘钥数组
@@ -61,8 +63,11 @@ public class RegisterService {
             if (resultSet.next()) {
                 String[] serial = resultSet.getString("value").split(",");
                 this.serial = serial[0];
+                logger.debug("roomSerial:"+this.serial);
                 this.serialCK = serial[1];
+                logger.debug("ckSerial:"+this.serialCK);
                 this.serialSN = serial[2];
+                logger.debug("snSerial:"+this.serialSN);
             }
             conn.close();
             ps.close();
