@@ -11,6 +11,7 @@ public class Desk extends BaseEntity{
     private String name;
     private String pointOfSale;
     private String seat;
+    private String category;
     @Transient
     private DeskIn deskIn;
     @Transient
@@ -57,5 +58,13 @@ public class Desk extends BaseEntity{
 
     public void setSeat(String seat) {
         this.seat = seat;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

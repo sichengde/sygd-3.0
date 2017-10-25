@@ -9,10 +9,20 @@ public class PointOfSale extends BaseEntity{
     private String firstPointOfSale;//一级营业部门
     private String secondPointOfSale;//二级营业部门
     private String house;//仓库
+    private String virtualTarget;//虚拟营业部门目标
+    private Boolean ifVirtual;//是否虚拟
 
     public PointOfSale() {
     }
 
+
+    public Boolean getNotNullIfVirtual() {
+        if(ifVirtual==null){
+            return false;
+        }else {
+            return ifVirtual;
+        }
+    }
     public String getModule() {
         return module;
     }
@@ -43,5 +53,21 @@ public class PointOfSale extends BaseEntity{
 
     public void setHouse(String house) {
         this.house = house;
+    }
+
+    public String getVirtualTarget() {
+        return virtualTarget;
+    }
+
+    public void setVirtualTarget(String virtualTarget) {
+        this.virtualTarget = virtualTarget;
+    }
+
+    public Boolean getIfVirtual() {
+        return ifVirtual;
+    }
+
+    public void setIfVirtual(Boolean ifVirtual) {
+        this.ifVirtual = ifVirtual;
     }
 }

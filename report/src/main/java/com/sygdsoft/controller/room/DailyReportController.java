@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
-import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 /**
  * Created by 舒展 on 2016-07-11.
@@ -51,13 +50,15 @@ public class DailyReportController {
     VipIntegrationService vipIntegrationService;
     @Autowired
     CompanyPayService companyPayService;
+    @Autowired
+    DeskInHistoryService deskInHistoryService;
 
-    @RequestMapping(value = "dailyReport",method = RequestMethod.POST)
+    @RequestMapping(value = "dailyReport", method = RequestMethod.POST)
     public DailyReportReturn dailyReport(@RequestBody ReportJson reportJson) throws Exception {
         /*获取传递进来的查询参数*/
-        Date beginTime=reportJson.getBeginTime();
-        Date endTime=reportJson.getEndTime();
-        String format=reportJson.getFormat();
+        Date beginTime = reportJson.getBeginTime();
+        Date endTime = reportJson.getEndTime();
+        String format = reportJson.getFormat();
         List<PointOfSale> pointOfSaleList = pointOfSaleService.get(null);//获取所有一级部门
         List<FieldTemplate> templateList = new ArrayList<>();//最终返回给jasperReport的报表数组
         List<FieldTemplate> templateCurrencyList = new ArrayList<>();//币种信息，需要拼接到上边的数组后边
@@ -66,11 +67,11 @@ public class DailyReportController {
         Double[] totalCurrencyMoneyPerModule = new Double[pointOfSaleList.size()];
         Double[] totalCurrencyMoneyPerModuleRealMoney = new Double[pointOfSaleList.size()];//参与统计结算款
         Double[] totalDiscountPerModule = new Double[pointOfSaleList.size()];
-        List<String> paramList=new ArrayList<>();
-        Integer totalField=pointOfSaleList.size()+2;//用于生成日报表实体类对象，第一列名称，最后一列合计，所以要加两列
+        List<String> paramList = new ArrayList<>();
+        Integer totalField = pointOfSaleList.size() + 2;//用于生成日报表实体类对象，第一列名称，最后一列合计，所以要加两列
         for (PointOfSale pointOfSale : pointOfSaleList) {
             String module = pointOfSale.getModule();
-            String firstPointOfSale=pointOfSale.getFirstPointOfSale();
+            String firstPointOfSale = pointOfSale.getFirstPointOfSale();
             paramList.add(firstPointOfSale);
             totalConsumeMoneyPerModule[field - 1] = 0.0;
             totalCurrencyMoneyPerModule[field - 1] = 0.0;
@@ -92,7 +93,17 @@ public class DailyReportController {
                         money = debtHistoryService.getHistoryConsume(beginTime, endTime, item);
                         break;
                     case "餐饮"://餐饮需要考虑多个一级销售部门的情况
-                        money=deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale,item);
+                        if (pointOfSale.getNotNullIfVirtual()) {
+                            String target;
+                            try {
+                                target = pointOfSale.getVirtualTarget();
+                            } catch (Exception e) {
+                                throw new Exception(firstPointOfSale + "--设置为了虚拟营业点但是没有设置虚拟目标");
+                            }
+                            money = deskInHistoryService.getCategorySum(beginTime, endTime, target, item);
+                        } else {
+                            money = deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale, item);
+                        }
                         break;
                     case "桑拿":
                         break;
@@ -111,7 +122,7 @@ public class DailyReportController {
             /*计算币种信息，但是先不添加，最后一起添加到templateList中*/
             List<Currency> currencyList = currencyService.get(null);
             for (Currency currency : currencyList) {
-                String currencyString=currency.getCurrency();
+                String currencyString = currency.getCurrency();
                 FieldTemplate old = null;
                 for (FieldTemplate fieldTemplate : templateCurrencyList) {//如果二级统计部门跟其他pos点的统计部门重复，则不需要新增
                     if (fieldTemplate.getField1().equals(currency.getCurrency())) {
@@ -122,10 +133,13 @@ public class DailyReportController {
                 Double money = 0.0;
                 switch (module) {
                     case "接待":
-                        money = debtPayService.getDebtMoney(null,currencyString,false, beginTime, endTime);
+                        money = debtPayService.getDebtMoney(null, currencyString, false, beginTime, endTime);
                         break;
                     case "餐饮":
-                        money=deskPayService.getPay(null,currencyString,firstPointOfSale, beginTime, endTime);
+                        if (pointOfSale.getNotNullIfVirtual()) {
+                            firstPointOfSale=pointOfSale.getVirtualTarget();
+                        }
+                        money = deskPayService.getPay(null, currencyString, firstPointOfSale, beginTime, endTime);
                         break;
                     case "桑拿":
                         break;
@@ -140,7 +154,7 @@ public class DailyReportController {
                     old.setFieldN(field + 1, String.valueOf(money));
                 }
                 totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
-                if(currency.getNotNullPayTotal()) {
+                if (currency.getNotNullPayTotal()) {
                     totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
                 }
             }
@@ -212,15 +226,15 @@ public class DailyReportController {
         /*计算会员结算金额*/
         Double VipPay = NullJudgement.nullToZero(vipIntegrationService.getTotalPay(beginTime, endTime));
         /*计算单位结算金额*/
-        CompanyPay companyPayQuery=companyPayService.getSumPay(null,null,null,beginTime, endTime);
+        CompanyPay companyPayQuery = companyPayService.getSumPay(null, null, null, beginTime, endTime);
         Double companyPay;
         Double companyDebt;
-        if(companyPayQuery==null){
-            companyPay=0.0;
-            companyDebt=0.0;
-        }else {
-            companyPay=companyPayQuery.getPay();
-            companyDebt=companyPayQuery.getDebt();
+        if (companyPayQuery == null) {
+            companyPay = 0.0;
+            companyDebt = 0.0;
+        } else {
+            companyPay = companyPayQuery.getPay();
+            companyDebt = companyPayQuery.getDebt();
         }
         /*计算当日收取的预订订金*/
         Double subscription = NullJudgement.nullToZero(bookService.getTotalSubscription(beginTime, endTime));
@@ -228,19 +242,19 @@ public class DailyReportController {
         paramList.add(ifNotNullGetString(VipPay));
         paramList.add(ifNotNullGetString(companyPay));
         paramList.add(ifNotNullGetString(subscription));
-        paramList.add(ifNotNullGetString(VipPay+companyPay+subscription));
+        paramList.add(ifNotNullGetString(VipPay + companyPay + subscription));
         /*返回可视化数组*/
-        List<DailyReport> dailyReportList=new ArrayList<>();
+        List<DailyReport> dailyReportList = new ArrayList<>();
         for (FieldTemplate fieldTemplate : templateList) {
             dailyReportList.add(new DailyReport(fieldTemplate, totalField));
         }
-        String[] param=new String[paramList.size()];
+        String[] param = new String[paramList.size()];
         paramList.toArray(param);
-        reportJson.setReportIndex(reportService.generateReport(templateList,param,"dailyReport",format));
+        reportJson.setReportIndex(reportService.generateReport(templateList, param, "dailyReport", format));
         dailyReportList.get(0).setReportJson(reportJson);
         dailyReportList.get(0).setParamList(pointOfSaleService.listToStringList(pointOfSaleList));
         /*设计返回值*/
-        DailyReportReturn dailyReportReturn=new DailyReportReturn();
+        DailyReportReturn dailyReportReturn = new DailyReportReturn();
         dailyReportReturn.setBookMoney(subscription);
         dailyReportReturn.setCompanyDebt(companyDebt);
         dailyReportReturn.setCompanyPay(companyPay);

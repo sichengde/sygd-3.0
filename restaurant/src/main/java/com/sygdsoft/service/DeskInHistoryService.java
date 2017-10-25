@@ -58,4 +58,12 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
     public List<HotelParseLineRow> deskManDateChart(Date beginTime, Date endTime){
         return deskInHistoryMapper.deskManDateChart(beginTime, endTime);
     }
+
+    /**
+     * 获取桌台类别消费
+     */
+    public Double getCategorySum(Date beginTime, Date endTime, String firstPointOfSale, String item) {
+        return deskInHistoryMapper.getCategorySum(beginTime, endTime, firstPointOfSale, item);
+    }
+
 }
