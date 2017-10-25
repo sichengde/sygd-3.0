@@ -71,6 +71,7 @@ public class DailyReportController {
         Double[] totalDiscountPerModule = new Double[pointOfSaleList.size()];
         List<String> paramList = new ArrayList<>();
         Integer totalField = pointOfSaleList.size() + 2;//用于生成日报表实体类对象，第一列名称，最后一列合计，所以要加两列
+        List<Integer> virtualLine=new ArrayList<>();//虚拟营业点列，不参与右侧合计
         for (PointOfSale pointOfSale : pointOfSaleList) {
             String module = pointOfSale.getModule();
             String firstPointOfSale = pointOfSale.getFirstPointOfSale();
@@ -79,6 +80,9 @@ public class DailyReportController {
             totalCurrencyMoneyPerModule[field - 1] = 0.0;
             totalCurrencyMoneyPerModuleRealMoney[field - 1] = 0.0;
             totalDiscountPerModule[field - 1] = 0.0;
+            if(pointOfSale.getNotNullIfVirtual()) {
+                virtualLine.add(field+1);
+            }
             /*每个销售点自定义的二级销售部门*/
             for (String item : pointOfSale.getSecondPointOfSale().split(" ")) {
                 Double money = 0.0;
@@ -119,9 +123,7 @@ public class DailyReportController {
                 } else {
                     old.setFieldN(field + 1, String.valueOf(money));
                 }
-                if(!pointOfSale.getNotNullIfVirtual()) {
-                    totalConsumeMoneyPerModule[field - 1] = totalConsumeMoneyPerModule[field - 1] + money;
-                }
+                totalConsumeMoneyPerModule[field - 1] = totalConsumeMoneyPerModule[field - 1] + money;
             }
             /*计算币种信息，但是先不添加，最后一起添加到templateList中*/
             List<Currency> currencyList = currencyService.get(null);
@@ -161,11 +163,9 @@ public class DailyReportController {
                 } else {
                     old.setFieldN(field + 1, String.valueOf(money));
                 }
-                if(!pointOfSale.getNotNullIfVirtual()) {
-                    totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
-                    if (currency.getNotNullPayTotal()) {
-                        totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
-                    }
+                totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
+                if (currency.getNotNullPayTotal()) {
+                    totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
                 }
             }
             /*每个销售点的折扣*/
@@ -229,7 +229,9 @@ public class DailyReportController {
         for (FieldTemplate fieldTemplate : templateList) {
             Double total = 0.0;
             for (int i = field; i > 1; i--) {
-                total = total + Double.valueOf(NullJudgement.nullToZero(fieldTemplate.getFieldN(i)));
+                if(virtualLine.indexOf(i)==-1) {
+                    total = total + Double.valueOf(NullJudgement.nullToZero(fieldTemplate.getFieldN(i)));
+                }
             }
             fieldTemplate.setFieldN(field + 1, String.valueOf(total));
         }
