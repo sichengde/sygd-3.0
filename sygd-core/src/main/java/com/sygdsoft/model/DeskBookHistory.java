@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by 舒展 on 2016-09-13.
  */
-public class DeskBookHistory {
+public class DeskBookHistory extends BaseEntity{
     private String desk;
     private Date reachTime;
     private Date remainTime;

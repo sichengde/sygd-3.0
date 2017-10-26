@@ -59,6 +59,13 @@ public class NightActionTest extends ApplicationTest {
     UserLogMapper userLogMapper;
     @Autowired
     UserLogService userLogService;
+    @Autowired
+    DeskCategoryService deskCategoryService;
+
+    @Test
+    public void testdc() throws Exception {
+        deskCategoryService.get(null);
+    }
 
     @Test
     public void testMapper2() throws Exception {
