@@ -25,18 +25,22 @@ public class DebtHistorySql {
     }
 
     /**
-     * 不包括冲账
+     * 包括冲账
      *
      * @param parameters
      * @return
      */
     public String getHistoryConsume(Map<String, Object> parameters) {
         String pointOfSale = (String) parameters.get("pointOfSale");
-        if (pointOfSale == null) {
-            return "select ifnull(sum(consume),0) consume from debt_history where consume>0 and done_time>#{beginTime} and done_time<#{endTime}";
-        } else {
-            return "select ifnull(sum(consume),0) consume from debt_history where consume>0 and done_time>#{beginTime} and done_time<#{endTime} and point_of_sale=#{pointOfSale}";
+        boolean positive = (boolean) parameters.get("positive");
+        String basic="select ifnull(sum(consume),0) consume from debt_history where done_time>#{beginTime} and done_time<#{endTime}";
+        if(pointOfSale!=null){
+            basic+=" and point_of_sale=#{pointOfSale}";
         }
+        if(positive){
+            basic+=" and consume>0";
+        }
+        return basic;
     }
 
     /**

@@ -69,8 +69,8 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 计算该类别在该时间段的结算款
      */
-    public Double getHistoryConsume(Date beginTime, Date endTime, String pointOfSale) {
-        return debtHistoryMapper.getHistoryConsume(beginTime, endTime, pointOfSale);
+    public Double getHistoryConsume(Date beginTime, Date endTime, String pointOfSale,boolean positive) {
+        return debtHistoryMapper.getHistoryConsume(beginTime, endTime, pointOfSale,positive);
     }
 
     /**

@@ -104,7 +104,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                     throw new Exception("房间号不存在或者没有开房");
                 }
                 Debt debt = new Debt();
-                debt.setPointOfSale(pointOfSaleService.FF);
+                debt.setPointOfSale("转入");
                 debt.setConsume(money);
                 debt.setCurrency("挂账");
                 debt.setRoomId(currencyAdd);

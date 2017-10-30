@@ -60,24 +60,24 @@ public class DebtAndPayReportController {
             DebtAndPayRow debtAndPayRow = new DebtAndPayRow();
             debtAndPayRow.setPointOfSale(pointOfSale);
             /*计算期初未结=期初之前的总账务-结算的*/
-            Double generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, beginTime, pointOfSale));
-            Double paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, beginTime, pointOfSale));
+            Double generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, beginTime, pointOfSale,false));
+            Double paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, beginTime, pointOfSale,false));
             debtAndPayRow.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(generate - paid));
             roomTotal.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneBefore() + debtAndPayRow.getUndoneBefore()));
             /*计算期间发生*/
-            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumByPointOfSale(beginTime, endTime, pointOfSale)));
+            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,false)));//不包括转入
             roomTotal.setDebt(szMath.formatTwoDecimalReturnDouble(roomTotal.getDebt() + debtAndPayRow.getDebt()));
             /*计算期末未结*/
-            generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, endTime, pointOfSale));
-            paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, endTime, pointOfSale));
+            generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, endTime, pointOfSale,false));
+            paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, endTime, pointOfSale,false));
             debtAndPayRow.setUndoneLast(szMath.formatTwoDecimalReturnDouble(generate - paid));
             roomTotal.setUndoneLast(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneLast() + debtAndPayRow.getUndoneLast()));
             debtAndPayRowList.add(debtAndPayRow);
         }
         /*计算期间结算=总结算款-转房客*/
         Double totalPay = szMath.nullToZero(debtPayService.getDebtMoney(null, null, false, beginTime, endTime));
-        Double toRoomPay = szMath.nullToZero(debtPayService.getDebtMoney(null, "转房客", false, beginTime, endTime));
-        roomTotal.setDebtPay(szMath.formatTwoDecimalReturnDouble(totalPay - toRoomPay));
+        //Double toRoomPay = szMath.nullToZero(debtPayService.getDebtMoney(null, "转房客", false, beginTime, endTime));
+        roomTotal.setDebtPay(szMath.formatTwoDecimalReturnDouble(totalPay ));
         /*计算转单位*/
         roomTotal.setToCompany(szMath.formatTwoDecimalReturnDouble(szMath.nullToZero(debtPayService.getDebtMoney(null, "转单位", false, beginTime, endTime))));
         /*计算转哑房*/

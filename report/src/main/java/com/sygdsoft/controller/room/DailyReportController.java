@@ -96,7 +96,7 @@ public class DailyReportController {
                 switch (module) {
                     case "接待":
                         /*计算消费额*/
-                        money = debtHistoryService.getHistoryConsume(beginTime, endTime, item);
+                        money = debtHistoryService.getHistoryConsume(beginTime, endTime, item,true);
                         break;
                     case "餐饮"://餐饮需要考虑多个一级销售部门的情况
                         if (pointOfSale.getNotNullIfVirtual()) {

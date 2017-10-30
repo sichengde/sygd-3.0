@@ -29,19 +29,6 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     List<HotelParseLineRow> roomConsumeChart(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
-     * 根据时间获得发生额
-     */
-    /*，分，房吧，零售和房费*/
-    @Select("SELECT ifnull(sum(consume),0) consume FROM debt_integration WHERE ifnull(category,'未定义') !=\'转入\' and do_time>#{beginTime} and do_time<#{endTime} and point_of_sale=#{pointOfSale}")
-    @ResultType(Double.class)
-    Double getSumByPointOfSale(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
-
-    /*啥也不分，分，房吧，零售和房费*/
-    @Select("SELECT ifnull(sum(consume),0) consume FROM debt_integration WHERE ifnull(category,'未定义') !=\'转入\' and do_time>#{beginTime} and do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getSumConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /**
      * 根据时间获得发生额（线性数据，包含了宴请）
      */
     /*，分，房吧，零售和房费*/
@@ -82,7 +69,7 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
      */
     @SelectProvider(type = DebtIntegrationSql.class,method = "getSumConsumeByDoTime")
     @ResultType(Double.class)
-    Double getSumConsumeByDoTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
+    Double getSumConsumeByDoTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("excludeChange") boolean excludeChange);
 
     /**
      * 通过营业部门进行聚合

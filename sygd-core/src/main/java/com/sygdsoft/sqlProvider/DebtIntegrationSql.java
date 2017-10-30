@@ -19,9 +19,13 @@ public class DebtIntegrationSql {
 
     public String getSumConsumeByDoTime(Map<String, Object> parameters){
         String pointOfSale= (String) parameters.get("pointOfSale");
-        String basic="SELECT abs(sum(consume)) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
+        boolean excludeChange= (boolean) parameters.get("excludeChange");
+        String basic="SELECT sum(consume) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
         if(pointOfSale!=null){
             basic+=" and point_of_sale = #{pointOfSale}";
+        }
+        if(excludeChange){
+            basic+=" and ifnull(category,'未定义') !=\'转入\' ";
         }
         return basic;
     }
