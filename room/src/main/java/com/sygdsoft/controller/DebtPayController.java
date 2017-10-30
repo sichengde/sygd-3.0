@@ -12,6 +12,7 @@ import com.sygdsoft.service.SerialService;
 import com.sygdsoft.service.UserLogService;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,12 +68,16 @@ public class DebtPayController {
     }
 
     @RequestMapping(value = "lostRoomCheckOut")
+    @Transactional(rollbackFor = Exception.class)
     public void lostRoomCheckOut(@RequestBody LostRoom lostRoom) throws Exception {
         serialService.setPaySerial();
         List<CurrencyPost> currencyPostList = lostRoom.getCurrencyPostList();
         DebtPay debtPay = lostRoom.getDebtPay();
         /*先把原先的删了*/
-        debtPayService.delete(debtPay);
+        //debtPayService.delete(debtPay);//先不删
+        /*改成标志位*/
+        debtPay.setLostDone(true);
+        debtPayService.update(debtPay);
         List<String> roomIdList = checkInHistoryLogService.getRoomIdListByCheckInHistoryLogList(checkInHistoryLogService.getByCheckOutSerial(debtPay.getCheckOutSerial()));
         for (CurrencyPost currencyPost : currencyPostList) {
             String currency = currencyPost.getCurrency();
