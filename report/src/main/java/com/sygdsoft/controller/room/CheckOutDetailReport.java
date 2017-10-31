@@ -96,6 +96,10 @@ public class CheckOutDetailReport {
                         fieldTemplate.setField1(timeService.dateToStringLong(checkIn.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
                         fieldTemplate.setField3(checkInGuestService.listToStringName(checkInGuestList));
+                    }else if(debtPayService.yfjs.equals(debtPay.getDebtCategory())){
+                        fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
+                        fieldTemplate.setField2(timeService.dateToStringLong(debtPay.getDoneTime()));
+                        fieldTemplate.setField3("哑房结算");
                     }else {
                         continue;
                     }
