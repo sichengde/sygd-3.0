@@ -26,7 +26,7 @@ public class Debt extends BaseEntity {
     private String bed;//床位号，针对查询客人消费
     private String vipNumber;//会员编号，针对于用会员余额作为押金的顾客
     private String category;//账务类别，便于在账务明细中筛选
-    private String fromRoom;//从来转入的，针对于转房客，主要用于如果是餐饮的话就是餐饮的结账序列号
+    private String fromRoom;//从哪转入的，针对于转房客，主要用于如果是餐饮的话就是餐饮的结账序列号
     private String guestSource;//客源
     private String company;//单位
     private Double totalConsume;//录完该笔消费后消费合计

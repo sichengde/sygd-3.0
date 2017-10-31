@@ -65,7 +65,7 @@ public class DebtAndPayReportController {
             debtAndPayRow.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(generate - paid));
             roomTotal.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneBefore() + debtAndPayRow.getUndoneBefore()));
             /*计算期间发生*/
-            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,false)));//不包括转入
+            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,false)));
             roomTotal.setDebt(szMath.formatTwoDecimalReturnDouble(roomTotal.getDebt() + debtAndPayRow.getDebt()));
             /*计算期末未结*/
             generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, endTime, pointOfSale,false));

@@ -239,11 +239,11 @@ public class DebtService extends BaseService<Debt> {
     }
 
     /**
-     * 根据转入的离店序列号进行删除
+     * 根据挂账的序列号进行删除
      */
-    public void deleteByCheckOutSerial(String checkOutSerial) throws Exception {
+    public void deleteByCheckOutSerial(String serial) throws Exception {
         Debt debtQuery = new Debt();
-        debtQuery.setFromRoom(checkOutSerial);
+        debtQuery.setFromRoom(serial);
         this.delete(debtQuery);
     }
 
