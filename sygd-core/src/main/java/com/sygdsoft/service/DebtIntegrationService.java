@@ -24,19 +24,8 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 根据发生时间获得消费总额
      */
-    public Double getSumConsumeByDoTime(Date beginTime, Date endTime, String pointOfSale){
-        return debtIntegrationMapper.getSumConsumeByDoTime(beginTime, endTime, pointOfSale);
-    }
-
-    /**
-     * 根据发生时间和营业部门获得发生额
-     */
-    public Double getSumByPointOfSale(Date beginTime, Date endTime, String pointOfSale) {
-        if (pointOfSale == null) {
-            return debtIntegrationMapper.getSumConsume(beginTime, endTime);
-        } else {
-            return debtIntegrationMapper.getSumByPointOfSale(beginTime, endTime, pointOfSale);
-        }
+    public Double getSumConsumeByDoTime(Date beginTime, Date endTime, String pointOfSale,boolean excludeChange){
+        return debtIntegrationMapper.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,excludeChange);
     }
 
     /**

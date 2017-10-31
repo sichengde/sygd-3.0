@@ -56,6 +56,8 @@ public class DebtPayService extends BaseService<DebtPay> {
     OtherParamService otherParamService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    TimeService timeService;
 
     /**
      * 查找结账记录
@@ -75,14 +77,14 @@ public class DebtPayService extends BaseService<DebtPay> {
     }
 
     /*时间和币种*/
-    public List<DebtPay> getList(String userId, String currency, Date beginTime, Date endTime,String orderByList) {
-        return debtPayMapper.getList(userId,currency, beginTime, endTime,  orderByList);
+    public List<DebtPay> getList(String userId, String currency, Date beginTime, Date endTime, String orderByList) {
+        return debtPayMapper.getList(userId, currency, beginTime, endTime, orderByList);
     }
 
     /**
      * 获得该日期该币种的消费额
      */
-    public Double getDebtMoney(String userId, String currency,Boolean payTotal, Date beginTime, Date endTime) {
+    public Double getDebtMoney(String userId, String currency, Boolean payTotal, Date beginTime, Date endTime) {
         return debtPayMapper.getDebtMoney(userId, currency, payTotal, beginTime, endTime);
     }
 
@@ -104,18 +106,33 @@ public class DebtPayService extends BaseService<DebtPay> {
                     throw new Exception("房间号不存在或者没有开房");
                 }
                 Debt debt = new Debt();
-                debt.setPointOfSale(pointOfSaleService.FF);
+                debt.setPointOfSale("挂账");
                 debt.setConsume(money);
                 debt.setCurrency("挂账");
                 debt.setRoomId(currencyAdd);
                 debt.setUserId(userService.getCurrentUser());
-                debt.setDescription(roomService.roomListToString(roomList) + "转入");
-                debt.setFromRoom(serialService.getPaySerial());
-                debt.setCategory("转入");//转入类型不参与发生额统计
+                debt.setDescription(roomService.roomListToString(roomList) + "挂账");
+                debt.setFromRoom(paySerial);
+                if (paySerial.contains("ck")) {
+                    debt.setCategory("餐饮挂账");
+                } else if (paySerial.contains("p")) {
+                    debt.setCategory("客房挂账");
+                }
                 debtService.addDebt(debt);
                 changeDebt += " 转房客至:" + currencyAdd;
                 break;//不转移账务明细
             case "转哑房"://转哑房
+                Debt debt2 = new Debt();
+                debt2.setPointOfSale("挂账");
+                debt2.setConsume(money);
+                debt2.setCurrency("挂账");
+                debt2.setRoomId("哑房");
+                debt2.setUserId(userService.getCurrentUser());
+                debt2.setDescription(roomService.roomListToString(roomList) + "哑房挂账");
+                debt2.setFromRoom(paySerial);
+                debt2.setCategory("哑房挂账");
+                debt2.setDoTime(new Date());
+                debtService.add(debt2);
                 changeDebt += " 转为哑房";
                 break;
             case "会员"://会员
@@ -171,7 +188,7 @@ public class DebtPayService extends BaseService<DebtPay> {
     public void cancelPay(String currency, String currencyAdd, Double money, String serial, String pointOfSale) throws Exception {
         switch (currency) {
             case "转房客"://把转的金额取消
-                debtService.deleteByCheckOutSerial(serial);
+                debtService.deleteByCheckOutSerial(serial);//删除房账
                 break;//不转移账务明细
             case "转哑房"://转哑房
                 break;

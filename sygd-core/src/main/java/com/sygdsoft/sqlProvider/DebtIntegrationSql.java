@@ -19,16 +19,20 @@ public class DebtIntegrationSql {
 
     public String getSumConsumeByDoTime(Map<String, Object> parameters){
         String pointOfSale= (String) parameters.get("pointOfSale");
-        String basic="SELECT abs(sum(consume)) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
+        boolean excludeChange= (boolean) parameters.get("excludeChange");
+        String basic="SELECT sum(consume) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
         if(pointOfSale!=null){
             basic+=" and point_of_sale = #{pointOfSale}";
+        }
+        if(excludeChange){
+            basic+=" and ifnull(point_of_sale,'未定义') !=\'挂账\' ";
         }
         return basic;
     }
 
     public String getList(Map<String, Object> parameters){
         String userId=(String) parameters.get("userId");
-        String basic="SELECT point_of_sale pointOfSale,consume,deposit,currency,room_id roomId,pay_serial paySerial,self_account selfAccount,group_account groupAccount ,done_time doneTime,category from debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and ifnull(category, '未定义') != '转入'";
+        String basic="SELECT point_of_sale pointOfSale,consume,deposit,currency,room_id roomId,pay_serial paySerial,self_account selfAccount,group_account groupAccount ,done_time doneTime,category from debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and ifnull(point_of_sale, '未定义') != '挂账'";
         if(userId!=null){
             basic+=" and if(category='全日房费',#{userId},null)=#{userId} ";
         }

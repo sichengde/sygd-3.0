@@ -66,4 +66,10 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
         return deskInHistoryMapper.getCategorySum(beginTime, endTime, firstPointOfSale, item);
     }
 
+    /**
+     * 获取某个营业点的所有折扣
+     */
+    public Double getTotalDiscount(Date beginTime, Date endTime, String pointOfSale,String caetgory){
+        return deskInHistoryMapper.getTotalDiscount(beginTime,endTime,pointOfSale,caetgory);
+    }
 }

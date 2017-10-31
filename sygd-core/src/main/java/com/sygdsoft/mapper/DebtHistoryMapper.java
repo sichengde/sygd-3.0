@@ -64,7 +64,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     @SelectProvider(type = DebtHistorySql.class, method = "getHistoryConsume")
     @ResultType(Double.class)
-    Double getHistoryConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale);
+    Double getHistoryConsume(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale,@Param("positive") boolean positive);
 
     @SelectProvider(type = DebtHistorySql.class, method = "getHistoryConsumeRich")
     @ResultType(Double.class)

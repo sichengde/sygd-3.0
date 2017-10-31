@@ -1,6 +1,6 @@
 package com.sygdsoft.model;
 
-public class DeskCategory {
+public class DeskCategory extends BaseEntity{
     private String category;
 
     public DeskCategory() {

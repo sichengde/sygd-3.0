@@ -71,7 +71,7 @@ public class DailyReportController {
         Double[] totalDiscountPerModule = new Double[pointOfSaleList.size()];
         List<String> paramList = new ArrayList<>();
         Integer totalField = pointOfSaleList.size() + 2;//用于生成日报表实体类对象，第一列名称，最后一列合计，所以要加两列
-        List<Integer> virtualLine=new ArrayList<>();//虚拟营业点列，不参与右侧合计
+        List<Integer> virtualLine = new ArrayList<>();//虚拟营业点列，不参与右侧合计
         for (PointOfSale pointOfSale : pointOfSaleList) {
             String module = pointOfSale.getModule();
             String firstPointOfSale = pointOfSale.getFirstPointOfSale();
@@ -80,8 +80,8 @@ public class DailyReportController {
             totalCurrencyMoneyPerModule[field - 1] = 0.0;
             totalCurrencyMoneyPerModuleRealMoney[field - 1] = 0.0;
             totalDiscountPerModule[field - 1] = 0.0;
-            if(pointOfSale.getNotNullIfVirtual()) {
-                virtualLine.add(field+1);
+            if (pointOfSale.getNotNullIfVirtual()) {
+                virtualLine.add(field + 1);
             }
             /*每个销售点自定义的二级销售部门*/
             for (String item : pointOfSale.getSecondPointOfSale().split(" ")) {
@@ -96,7 +96,7 @@ public class DailyReportController {
                 switch (module) {
                     case "接待":
                         /*计算消费额*/
-                        money = debtHistoryService.getHistoryConsume(beginTime, endTime, item);
+                        money = debtHistoryService.getHistoryConsume(beginTime, endTime, item,true);
                         break;
                     case "餐饮"://餐饮需要考虑多个一级销售部门的情况
                         if (pointOfSale.getNotNullIfVirtual()) {
@@ -148,7 +148,7 @@ public class DailyReportController {
                                 money += deskPayRichService.getPay(currencyString, firstPointOfSale, category, beginTime, endTime);
                             }
                         } else {
-                            money = deskPayService.getPay(null, currencyString, firstPointOfSale,  beginTime, endTime);
+                            money = deskPayService.getPay(null, currencyString, firstPointOfSale, beginTime, endTime);
                         }
                         break;
                     case "桑拿":
@@ -174,6 +174,16 @@ public class DailyReportController {
                     totalDiscountPerModule[field - 1] = debtHistoryService.getTotalDiscount(beginTime, endTime);//接待的就是冲账+宴请
                     break;
                 case "餐饮":
+                    if (pointOfSale.getNotNullIfVirtual()) {
+                        firstPointOfSale = pointOfSale.getVirtualTarget();
+                        Double t=0.0;
+                        for (String category : pointOfSale.getSecondPointOfSale().split(" ")) {
+                            t += deskInHistoryService.getTotalDiscount(beginTime, endTime, firstPointOfSale, category);//餐饮的就是折扣
+                        }
+                        totalDiscountPerModule[field - 1]=t;
+                    } else {
+                        totalDiscountPerModule[field - 1] = deskInHistoryService.getTotalDiscount(beginTime, endTime, firstPointOfSale, null);//餐饮的就是折扣
+                    }
                     break;
                 case "桑拿":
                     break;
@@ -229,7 +239,7 @@ public class DailyReportController {
         for (FieldTemplate fieldTemplate : templateList) {
             Double total = 0.0;
             for (int i = field; i > 1; i--) {
-                if(virtualLine.indexOf(i)==-1) {
+                if (virtualLine.indexOf(i) == -1) {
                     total = total + Double.valueOf(NullJudgement.nullToZero(fieldTemplate.getFieldN(i)));
                 }
             }

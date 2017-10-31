@@ -195,12 +195,12 @@ public class HotelParseController {
         }
         hotelParseRow.setModule("接待");
         Date todayHistory = timeService.addYear(date, -1);
-        hotelParseRow.setDayTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinTime(date), timeService.getMaxTime(date), pointOfSale));
-        hotelParseRow.setMonthTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinMonth(date), timeService.getMaxMonth(date), pointOfSale));
-        hotelParseRow.setYearTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinYear(date), timeService.getMaxYear(date), pointOfSale));
-        hotelParseRow.setDayHistoryTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinTime(todayHistory), timeService.getMaxTime(todayHistory), pointOfSale));
-        hotelParseRow.setMonthHistoryTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinMonth(todayHistory), timeService.getMaxMonth(todayHistory), pointOfSale));
-        hotelParseRow.setYearHistoryTotal(debtIntegrationService.getSumByPointOfSale(timeService.getMinYear(todayHistory), timeService.getMaxYear(todayHistory), pointOfSale));
+        hotelParseRow.setDayTotal(debtIntegrationService.getSumConsumeByDoTime(timeService.getMinTime(date), timeService.getMaxTime(date), pointOfSale,true));
+        hotelParseRow.setMonthTotal(debtIntegrationService.getSumConsumeByDoTime(timeService.getMinMonth(date), timeService.getMaxMonth(date), pointOfSale,true));
+        hotelParseRow.setYearTotal(debtIntegrationService.getSumConsumeByDoTime(timeService.getMinYear(date), timeService.getMaxYear(date), pointOfSale,true));
+        hotelParseRow.setDayHistoryTotal(debtIntegrationService.getSumConsumeByDoTime(timeService.getMinTime(todayHistory), timeService.getMaxTime(todayHistory), pointOfSale,true));
+        hotelParseRow.setMonthHistoryTotal(debtIntegrationService.getSumConsumeByDoTime(timeService.getMinMonth(todayHistory), timeService.getMaxMonth(todayHistory), pointOfSale,true));
+        hotelParseRow.setYearHistoryTotal(debtIntegrationService.getSumConsumeByDoTime(timeService.getMinYear(todayHistory), timeService.getMaxYear(todayHistory), pointOfSale,true));
         return hotelParseRow;
     }
 
