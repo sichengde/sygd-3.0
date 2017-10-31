@@ -2,6 +2,7 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.mapper.CheckInHistoryMapper;
 import com.sygdsoft.model.CheckInHistory;
+import com.sygdsoft.model.CheckInHistoryLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ import java.util.List;
 public class CheckInHistoryService extends BaseService<CheckInHistory>{
     @Autowired
     CheckInHistoryMapper checkInHistoryMapper;
+    @Autowired
+    CheckInHistoryLogService checkInHistoryLogService;
 
     /**
      * 通过身份证获取
@@ -34,10 +37,21 @@ public class CheckInHistoryService extends BaseService<CheckInHistory>{
     }
 
     /**
-     * 通过离店结算序列号获取当时在店的所有客人
+     * 通过自付账号号获取当时在店的所有客人
+     */
+    public List<CheckInHistory> getListBySelfAccount(String selfAccount) {
+        return checkInHistoryMapper.getListBySelfAccount(selfAccount);
+    }
+    /**
+     * 通过离店序列号获取当时在店的所有客人
      */
     public List<CheckInHistory> getListByCheckOutSerial(String checkOutSerial){
-        return checkInHistoryMapper.getListByCheckOutSerial(checkOutSerial);
+        List<CheckInHistoryLog> checkInHistoryLogList=checkInHistoryLogService.getByCheckOutSerial(checkOutSerial);
+        List<CheckInHistory> checkInHistories=new ArrayList<>();
+        for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
+            checkInHistories.addAll(this.getListBySelfAccount(checkInHistoryLog.getSelfAccount()));
+        }
+        return checkInHistories;
     }
 
     /**

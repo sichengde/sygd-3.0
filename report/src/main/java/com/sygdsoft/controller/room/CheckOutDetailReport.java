@@ -61,7 +61,7 @@ public class CheckOutDetailReport {
     * 6.逻辑字段，用来判断什么时候显示主账号上边的横线
     * 7.操作员
     * */
-
+    /*TODO:哑房结算不参与*/
     @RequestMapping(value = "checkOutDetailReport")
     public Integer checkOutDetailReport(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = reportJson.getBeginTime();
@@ -96,6 +96,8 @@ public class CheckOutDetailReport {
                         fieldTemplate.setField1(timeService.dateToStringLong(checkIn.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
                         fieldTemplate.setField3(checkInGuestService.listToStringName(checkInGuestList));
+                    }else {
+                        continue;
                     }
                 }else {
                     if (debtPay.getGroupAccount() != null) {
@@ -105,7 +107,7 @@ public class CheckOutDetailReport {
                         fieldTemplate.setField3(checkOutGroup.getName());
                     } else {
                         CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getBySelfAccountAndCheckOutSerial(debtPay.getSelfAccount(),debtPay.getCheckOutSerial());
-                        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
+                        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListBySelfAccount(checkInHistoryLog.getSelfAccount());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkInHistoryLog.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkInHistoryLog.getLeaveTime()));
                         fieldTemplate.setField3(checkInHistoryService.listToStringName(checkInHistoryList));
