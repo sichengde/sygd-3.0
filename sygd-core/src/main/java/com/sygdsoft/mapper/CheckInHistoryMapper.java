@@ -14,9 +14,9 @@ import java.util.List;
  */
 public interface CheckInHistoryMapper extends MyMapper<CheckInHistory> {
     /**
-     * 通过离店结算序列号获取当时在店的所有客人
+     * 通过自付账号获取当时在店的所有客人
      */
-    @Select("SELECT * FROM check_in_history RIGHT JOIN (SELECT * FROM check_in_history_log WHERE check_out_serial=#{checkOutSerial}) a ON a.card_id=check_in_history.card_id")
+    @Select("SELECT * FROM guest_map_check_in gmci,check_in_history cih WHERE gmci.card_id=cih.card_id and self_account=#{selfAccount}")
     @Results(value = {
             @Result(property = "cardId",column = "card_id"),
             @Result(property = "cardType",column = "card_type"),
@@ -24,7 +24,7 @@ public interface CheckInHistoryMapper extends MyMapper<CheckInHistory> {
             @Result(property = "lastTime",column = "last_time"),
             @Result(property = "roomId",column = "room_id")
     })
-    List<CheckInHistory> getListByCheckOutSerial(@Param("checkOutSerial") String checkOutSerial);
+    List<CheckInHistory> getListBySelfAccount(@Param("selfAccount") String selfAccount);
 
     @Update("UPDATE check_in_history SET num=num-1 WHERE card_id=#{cardId}")
     void minusOneNum(@Param("cardId") String cardId);

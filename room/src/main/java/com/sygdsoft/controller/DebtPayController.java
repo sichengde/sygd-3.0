@@ -103,7 +103,10 @@ public class DebtPayController {
             debtPayInsert.setDoneTime(timeService.getNow());
             debtPayInsert.setPaySerial(serialService.getPaySerial());
             debtPayInsert.setCheckOutSerial(null);
+            debtPayInsert.setSelfAccount(null);
+            debtPayInsert.setGroupAccount(null);
             debtPayInsert.setUserId(userService.getCurrentUser());
+            debtPayInsert.setDebtCategory("哑房结算");
             debtPayService.add(debtPayInsert);
             debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, debtPay.getGroupAccount(), "哑房结算", serialService.getPaySerial(), "接待", null);
         }
