@@ -27,9 +27,9 @@ import java.util.*;
  */
 @Service
 public class RegisterService {
-    private int pass;//0是正式版,1是试用版，没有试用版，试用版就是没通过
-    private int passCK;//餐饮模块有没
-    private int passSN;//桑拿模块有没
+    private int pass=0;//0是正式版,1是试用版，没有试用版，试用版就是没通过
+    private int passCK=0;//餐饮模块有没
+    private int passSN=0;//桑拿模块有没
     private List<Integer> module = new ArrayList<>();
     private Integer maxUser;
     private String serial;
@@ -75,9 +75,9 @@ public class RegisterService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.check();
-        this.checkCK();
-        this.checkSN();
+        //this.check();
+        //this.checkCK();
+        //this.checkSN();
     }
 
     public void check() throws IOException {
