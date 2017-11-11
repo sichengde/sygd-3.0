@@ -4,6 +4,7 @@ import java.util.Date;
 
 /**
  * Created by 舒展 on 2016-05-09.
+ * 没注销的卡记录
  */
 public class VipDetail extends BaseEntity {
     private String vipNumber;//会员卡号

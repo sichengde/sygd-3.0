@@ -135,7 +135,7 @@ public class DeskController {
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
             changeDebt += " 币种:" + currency + "/" + money;
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "餐饮结账", serialService.getCkSerial(), "餐饮",null);
+            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "餐饮结账", serialService.getCkSerial(), "餐饮",pointOfSale);
         }
         deskPayService.add(deskPayList);
         /*餐桌信息转移到历史*/
@@ -290,7 +290,7 @@ public class DeskController {
         deskDetailHistoryService.delete(deskDetailHistoryList);
         List<DeskPay> deskPayList = deskPayService.getByCkSerial(deskInHistory.getCkSerial());
         for (DeskPay deskPay : deskPayList) {
-            debtPayService.cancelPay(deskPay.getCurrency(), deskPay.getCurrencyAdd(), deskPay.getPayMoney(), deskPay.getCkSerial(),"餐饮");
+            debtPayService.cancelPay(deskPay.getCurrency(), deskPay.getCurrencyAdd(), deskPay.getPayMoney(), deskPay.getCkSerial(),"餐饮",pointOfSale);
         }
         /*删除结账信息*/
         deskPayService.deleteByCkSerial(ckSerial);
@@ -319,7 +319,7 @@ public class DeskController {
         String currencyAdd = currencyPost.getCurrencyAdd();
         Double money = menu.getPrice() * num;
         currencyPost.setMoney(money);
-        String changeDebt = debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "自助餐", serialService.getCkSerial(), "餐饮",null);
+        String changeDebt = debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "自助餐", serialService.getCkSerial(), "餐饮","自助餐");
         this.generateDeskPay(pointOfSale, currencyPost, deskPayList);
         deskPayService.add(deskPayList);
         /*餐桌信息转移到历史*/
@@ -408,7 +408,7 @@ public class DeskController {
                 String currency = deskPay.getCurrency();
                 String currencyAdd = deskPay.getCurrencyAdd();
                 Double money = deskPay.getPayMoney();
-                debtPayService.cancelPay(currency, currencyAdd, money, deskPay.getCkSerial(),"餐饮");
+                debtPayService.cancelPay(currency, currencyAdd, money, deskPay.getCkSerial(),"餐饮","自助餐");
             }
             /*处理报表数据*/
             FieldTemplate fieldTemplate = new FieldTemplate();

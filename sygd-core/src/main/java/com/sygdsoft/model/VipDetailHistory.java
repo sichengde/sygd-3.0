@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Created by Administrator on 2016/11/27 0027.
- * 因为注销的卡可能有多张是一个卡号，所以需要用fatherId来索引
+ * 因为注销的卡可能有多张是一个卡号，所以需要用fatherId来索引，注销后卡的记录
  */
 public class VipDetailHistory extends BaseEntity{
     private Integer fatherId;//父索引

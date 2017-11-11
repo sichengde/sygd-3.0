@@ -108,7 +108,7 @@ public class DebtPayController {
             debtPayInsert.setUserId(userService.getCurrentUser());
             debtPayInsert.setDebtCategory("哑房结算");
             debtPayService.add(debtPayInsert);
-            debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, debtPay.getGroupAccount(), "哑房结算", serialService.getPaySerial(), "接待", null);
+            debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, debtPay.getGroupAccount(), "哑房结算", serialService.getPaySerial(), "接待", "接待");
         }
         String roomString = util.listToString(roomIdList);
         userLogService.addUserLog("哑房结算:" + roomString, userLogService.reception, userLogService.lostRoomCheckOut, roomString);

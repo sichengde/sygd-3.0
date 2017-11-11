@@ -66,8 +66,6 @@ public class GuestOutController {
     @Autowired
     UserService userService;
     @Autowired
-    VipDetailService vipDetailService;
-    @Autowired
     CompanyDebtService companyDebtService;
     @Autowired
     DebtHistoryService debtHistoryService;
@@ -471,7 +469,7 @@ public class GuestOutController {
             debtPayService.add(debtPay);
             changeDebt += " 币种:" + currency + "/" + money;
             /*通过币种判断结账类型*/
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "离店");
+            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "接待");
             this.checkVip(groupAccount, roomIdList, currency, money);
         }
         return changeDebt;
@@ -948,7 +946,7 @@ public class GuestOutController {
             String currency = pay.getCurrency();
             String currencyAdd = pay.getCurrencyAdd();
             Double money = pay.getDebtMoney();
-            debtPayService.cancelPay(currency, currencyAdd, money, pay.getPaySerial(), "接待");
+            debtPayService.cancelPay(currency, currencyAdd, money, pay.getPaySerial(), "接待", "接待");
             if (debtPay.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
                 vipService.updateVipScore(debtPay.getVipNumber(), money);
             }

@@ -111,7 +111,7 @@ public class SaunaPayController {
             saunaPayService.add(saunaPay);
             changeDebt += " 币种:" + currency + "/" + money;
             /*通过币种判断结账类型*/
-            changeDebt+=debtPayService.parseCurrency(currency, currencyAdd, money, null,null,"退房",serialService.getSaunaOutSerial(),"桑拿",null);
+            changeDebt+=debtPayService.parseCurrency(currency, currencyAdd, money, null,null,"退房",serialService.getSaunaOutSerial(),"桑拿","桑拿");
         }
         saunaInService.delete(saunaInList);
         saunaInHistoryService.add(saunaInHistoryList);

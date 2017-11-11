@@ -84,7 +84,7 @@ public class DebtAndPayReportController {
         roomTotal.setLost(szMath.formatTwoDecimalReturnDouble(szMath.nullToZero(debtPayService.getDebtMoney(null, "转哑房", false, beginTime, endTime))));
         DebtAndPayReturn debtAndPayReturn = new DebtAndPayReturn();
         /*设置会员充值*/
-        debtAndPayReturn.setVipPay(szMath.nullToZero(vipIntegrationService.getTotalPay(beginTime, endTime)));
+        debtAndPayReturn.setVipPay(szMath.nullToZero(vipIntegrationService.getPay(beginTime, endTime,null,null,null)));
         /*设置单位回款和抵用*/
         CompanyPay companyPayQuery = companyPayService.getSumPay(null, null, null, beginTime, endTime);
         if (companyPayQuery == null) {

@@ -18,11 +18,6 @@ public class ModuleController {
     /**
      * 获取全部可用模块
      */
-    @RequestMapping(value = "moduleGet")
-    public Module[] getAllModule() {
-        return moduleService.getAllModule();
-    }
-
     @RequestMapping(value = "moduleNewGet")
     public Module[] getAllModuleNew() {
         return moduleService.moduleNewGet();

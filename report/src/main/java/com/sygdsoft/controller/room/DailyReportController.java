@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
+import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 /**
  * Created by 舒展 on 2016-07-11.
@@ -246,7 +247,7 @@ public class DailyReportController {
             fieldTemplate.setFieldN(field + 1, String.valueOf(total));
         }
         /*计算会员结算金额*/
-        Double VipPay = NullJudgement.nullToZero(vipIntegrationService.getTotalPay(beginTime, endTime));
+        Double VipPay = NullJudgement.nullToZero(vipIntegrationService.getPay(beginTime, endTime,null,null,null));
         /*计算单位结算金额*/
         CompanyPay companyPayQuery = companyPayService.getSumPay(null, null, null, beginTime, endTime);
         Double companyPay;

@@ -40,8 +40,6 @@ public class DebtPayService extends BaseService<DebtPay> {
     @Autowired
     DebtService debtService;
     @Autowired
-    VipDetailService vipDetailService;
-    @Autowired
     VipService vipService;
     @Autowired
     CompanyDebtService companyDebtService;
@@ -98,7 +96,7 @@ public class DebtPayService extends BaseService<DebtPay> {
      * @param roomList     离店结算时的房号
      * @param groupAccount 离店结算时的公付账号
      */
-    public String parseCurrency(String currency, String currencyAdd, Double money, List<String> roomList, String groupAccount, String description, String paySerial, String pointOfSale, String secondPointOfSale) throws Exception {
+    public String parseCurrency(String currency, String currencyAdd, Double money, List<String> roomList, String groupAccount, String description, String paySerial, String module, String pointOfSale) throws Exception {
         String changeDebt = "";
         switch (currency) {
             case "转房客"://转房客，新建一条账务
@@ -166,7 +164,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 } catch (Exception e) {
                     throw new Exception("请输入签单单位和签单人");
                 }
-                changeDebt += companyService.companyAddDebt(company, lord, money, description, pointOfSale, secondPointOfSale, paySerial);
+                changeDebt += companyService.companyAddDebt(company, lord, money, description, module, pointOfSale, paySerial);
                 break;
             case "宴请"://转宴请
                 String name;
@@ -186,7 +184,7 @@ public class DebtPayService extends BaseService<DebtPay> {
     /**
      * 账单取消后退回币种
      */
-    public void cancelPay(String currency, String currencyAdd, Double money, String serial, String pointOfSale) throws Exception {
+    public void cancelPay(String currency, String currencyAdd, Double money, String serial, String pointOfSale,String secondPointOfSale) throws Exception {
         switch (currency) {
             case "转房客"://把转的金额取消
                 debtService.deleteByCheckOutSerial(serial);//删除房账
@@ -196,7 +194,7 @@ public class DebtPayService extends BaseService<DebtPay> {
             case "会员"://会员
                 String vipNumber = currencyAdd.split(" ")[0];
                 String payCategory = currencyAdd.split(" ")[1];
-                vipService.vipPay(vipNumber, payCategory, -money, "叫回", null, null, serial, pointOfSale);
+                vipService.vipPay(vipNumber, payCategory, -money, "叫回", null, null, serial, secondPointOfSale);
                 break;
             case "转单位"://转单位
                 String company = currencyAdd.split(" ")[0];

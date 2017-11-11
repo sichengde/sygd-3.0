@@ -29,12 +29,15 @@ public class Vip extends BaseEntity {
     private String userId;//操作员号
     private String workCompany;//工作单位
     private String remark;//备注
+    private String brothers;//兄弟卡，刷这张卡之后，如果该卡没有该营业点的消费权限的话，则依次查找该字段中的卡号
     @Transient
     private String protocol;//关联的房价协议
     @Transient
     private CurrencyPost currencyPost;//会员发卡的时候充值的币种，为了记表vipDetail方便，vip中就不记了
     @Transient
     private Double deserve;//抵用金额，用于记录在vipDetail表中，vip表里只记录余额
+    @Transient
+    private String pointOfSale;//用于记录在哪个销售点进行的充值
 
     public Vip() {
     }
@@ -228,5 +231,21 @@ public class Vip extends BaseEntity {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getBrothers() {
+        return brothers;
+    }
+
+    public void setBrothers(String brothers) {
+        this.brothers = brothers;
+    }
+
+    public String getPointOfSale() {
+        return pointOfSale;
+    }
+
+    public void setPointOfSale(String pointOfSale) {
+        this.pointOfSale = pointOfSale;
     }
 }

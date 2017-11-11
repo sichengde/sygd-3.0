@@ -6,6 +6,7 @@ package com.sygdsoft.model;
 public class VipCategory extends BaseEntity{
     private String category;//会员类别
     private String protocol;//房价协议
+    private String availablePos;//可用的营业部门
 
     public VipCategory() {
     }
@@ -24,5 +25,13 @@ public class VipCategory extends BaseEntity{
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getAvailablePos() {
+        return availablePos;
+    }
+
+    public void setAvailablePos(String availablePos) {
+        this.availablePos = availablePos;
     }
 }

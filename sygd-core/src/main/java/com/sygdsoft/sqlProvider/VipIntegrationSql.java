@@ -12,12 +12,34 @@ public class VipIntegrationSql {
     public String getPay(Map<String, Object> parameters){
         String userId = (String) parameters.get("userId");
         String currency = (String) parameters.get("currency");
-        if (userId != null && currency != null) {
-            return "select sum(pay) pay from vip_integration where user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}";
-        } else if (userId == null && currency != null) {
-            return "select sum(pay) pay from vip_integration where currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}";
-        } else {
-            return "select sum(pay) pay from vip_integration where do_time>#{beginTime} and do_time<#{endTime}";
+        String pointOfSale=(String) parameters.get("pointOfSale");
+        String basic="select ifnull(sum(pay),0) pay from vip_integration where do_time>#{beginTime} and do_time<#{endTime}";
+        if(userId!=null){
+            basic+=" user_id=#{userId} ";
         }
+        if(currency!=null){
+            basic+=" and currency=#{currency} ";
+        }
+        if(pointOfSale!=null){
+            basic+=" and point_of_sale=#{pointOfSale}";
+        }
+        return basic;
+    }
+
+    public String getDeserve(Map<String, Object> parameters) {
+        String userId = (String) parameters.get("userId");
+        String currency = (String) parameters.get("currency");
+        String pointOfSale = (String) parameters.get("pointOfSale");
+        String basic = "select ifnull(sum(deserve),0) deserve from vip_integration where do_time>#{beginTime} and do_time<#{endTime}";
+        if (userId != null) {
+            basic += " user_id=#{userId} ";
+        }
+        if (currency != null) {
+            basic += " and currency=#{currency} ";
+        }
+        if (pointOfSale != null) {
+            basic += " and point_of_sale=#{pointOfSale}";
+        }
+        return basic;
     }
 }

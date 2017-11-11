@@ -25,7 +25,7 @@ public class VipDetailService extends BaseService<VipDetail>{
     /**
      * 增加一条充值记录
      */
-    public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency) throws Exception {
+    public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
         Vip vip=vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
         vipDetail.setVipNumber(vipNumber);
@@ -36,13 +36,14 @@ public class VipDetailService extends BaseService<VipDetail>{
         vipDetail.setUserId(userService.getCurrentUser());
         vipDetail.setDoTime(timeService.getNow());
         vipDetail.setRemain(vip.getRemain());
+        vipDetail.setPointOfSale(pointOfSale);
         this.add(vipDetail);
     }
 
     /**
      * 增加一条退款记录
      */
-    public void addRefundDetail(String vipNumber,Double money,Double deserve,String currency) throws Exception {
+    public void addRefundDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
         Vip vip=vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
         vipDetail.setVipNumber(vipNumber);
@@ -53,6 +54,7 @@ public class VipDetailService extends BaseService<VipDetail>{
         vipDetail.setUserId(userService.getCurrentUser());
         vipDetail.setDoTime(timeService.getNow());
         vipDetail.setRemain(vip.getRemain());
+        vipDetail.setPointOfSale(pointOfSale);
         this.add(vipDetail);
     }
 
