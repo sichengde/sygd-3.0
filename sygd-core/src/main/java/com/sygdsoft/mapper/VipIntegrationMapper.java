@@ -15,30 +15,18 @@ import java.util.Date;
  */
 public interface VipIntegrationMapper extends MyMapper<VipIntegration> {
     /**
-     * 获取当日会员存钱金额
-     */
-    @Select("select sum(pay) pay from vip_integration where do_time>#{beginTime} and do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getTotalPay(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /**
      * 获取会员存钱金额
      */
     /*操作员，时间段，币种*/
     @SelectProvider(type = VipIntegrationSql.class, method = "getPay")
     @ResultType(Double.class)
-    Double getPay(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    Double getPay(@Param("userId") String userId, @Param("currency") String currency, @Param("pointOfSale") String pointOfSale, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
      * 获取会员抵用金额
      */
+    @SelectProvider(type = VipIntegrationSql.class,method = "getDeserve")
     /*操作员，时间段，币种*/
-    @Select("select sum(deserve) deserve from vip_integration where user_id=#{userId} and currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
-    Double getDeserveByUser(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
-
-    /*时间段，币种*/
-    @Select("select sum(deserve) deserve from vip_integration where currency=#{currency} and do_time>#{beginTime} and do_time<#{endTime}")
-    @ResultType(Double.class)
-    Double getDeserve(@Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    Double getDeserve(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("userId") String userId, @Param("pointOfSale") String pointOfSale, @Param("currency") String currency);
 }

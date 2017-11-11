@@ -49,7 +49,7 @@ public class ExchangeUserSaunaReport {
             JSONObject jsonObject=new JSONObject();
             jsonObject.put("currency",currency.getCurrency());//币种
             jsonObject.put("payMoney",szMath.ifNotNullGetString(saunaPayService.getDebtMoney(userId, currencyString, beginTime, endTime)));//币种
-            jsonObject.put("vipMoney",szMath.ifNotNullGetString(vipIntegrationService.getTotalPayTimeZone(userId, currencyString, beginTime, endTime)));//币种
+            jsonObject.put("vipMoney",szMath.ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime,userId, currencyString,"桑拿")));//币种
             exchangeUserSaunaList.add(jsonObject);
         }
         return exchangeUserSaunaList;

@@ -11,6 +11,7 @@ public class VipRecharge {
     private Double deserve;
     private CurrencyPost currencyPost;
     private String token;
+    private String pointOfSale;
 
     public VipRecharge() {
     }
@@ -53,5 +54,13 @@ public class VipRecharge {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getPointOfSale() {
+        return pointOfSale;
+    }
+
+    public void setPointOfSale(String pointOfSale) {
+        this.pointOfSale = pointOfSale;
     }
 }

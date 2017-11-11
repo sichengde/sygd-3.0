@@ -15,32 +15,18 @@ import java.util.Date;
 public class VipIntegrationService extends BaseService<VipIntegration> {
     @Autowired
     VipIntegrationMapper vipIntegrationMapper;
-    /**
-     * 获取该日期总充值钱数
-     */
-    public Double getTotalPay(Date beginTime, Date endTime) {
-        return vipIntegrationMapper.getTotalPay(beginTime, endTime);
-    }
 
     /**
      * 获取该时间段内总充值钱数
      */
-    public Double getTotalPayTimeZone(String userId, String currency, Date beginTime, Date endTime) {
-        if (userId == null) {
-            return vipIntegrationMapper.getPay(null,currency, beginTime, endTime);
-        } else {
-            return vipIntegrationMapper.getPay(userId, currency, beginTime, endTime);
-        }
+    public Double getPay(Date beginTime, Date endTime, String userId, String currency, String pointOfSale) {
+        return vipIntegrationMapper.getPay(userId, currency, pointOfSale, beginTime, endTime);
     }
 
     /**
-     * 获取该时间段会员退款钱数
+     * 获取会员抵用金额
      */
-    public Double getTotalDeserveTimeZone(String userId,String currency, Date beginTime, Date endTime) {
-        if (userId == null) {
-            return vipIntegrationMapper.getDeserve(currency,beginTime, endTime);
-        } else {
-            return vipIntegrationMapper.getDeserveByUser(userId,currency, beginTime, endTime);
-        }
+    public Double getDeserve(Date beginTime, Date endTime, String userId, String currency, String pointOfSale) {
+        return vipIntegrationMapper.getDeserve(beginTime, endTime, userId, pointOfSale, currency);
     }
 }
