@@ -15,7 +15,7 @@ public class VipIntegrationSql {
         String pointOfSale=(String) parameters.get("pointOfSale");
         String basic="select ifnull(sum(pay),0) pay from vip_integration where do_time>#{beginTime} and do_time<#{endTime}";
         if(userId!=null){
-            basic+=" user_id=#{userId} ";
+            basic+=" and user_id=#{userId} ";
         }
         if(currency!=null){
             basic+=" and currency=#{currency} ";
