@@ -85,9 +85,9 @@ public class DebtService extends BaseService<Debt> {
             debt.setGuestSource(checkIn.getGuestSource());
             debt.setCompany(checkIn.getCompany());
             debt.setTotalConsume(checkIn.getNotNullConsume() + debt.getNotNullConsume());
+            debtMapper.insert(debt);
             this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(), debt.getDeposit());
         }
-        debtMapper.insertList(debtList);
     }
 
 

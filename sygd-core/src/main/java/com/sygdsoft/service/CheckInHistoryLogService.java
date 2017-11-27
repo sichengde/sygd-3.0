@@ -46,6 +46,14 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
             return null;
         }
     }
+    /**
+     * 通过公付账号获得队列
+     */
+    public List<CheckInHistoryLog> getByGroupAccount(String groupAccount){
+        CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
+        checkInHistoryLog.setGroupAccount(groupAccount);
+        return checkInHistoryLogMapper.select(checkInHistoryLog);
+    }
 
     /**
      * 通过离店序列号获取全部房号

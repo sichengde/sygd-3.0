@@ -661,7 +661,7 @@ public class GuestOutController {
         String groupName = null;
         String roomID = null;
         String roomIdAll = null;
-        String guestInVip = null;//开房时的会员
+        String guestInVip = "";//开房时的会员
         List<String> roomList = guestOut.getRoomIdList();
         String account;
         String finalRoomPrice = null;
@@ -693,13 +693,15 @@ public class GuestOutController {
                 for (String s : roomList) {
                     CheckIn checkIn = checkInService.getByRoomId(s);
                     totalConsume += checkIn.getNotNullConsume();
+                    if(checkIn.getVipNumber()!=null) {
+                        guestInVip += checkIn.getVipNumber()+",";
+                    }
                 }
                 consume = totalConsume;
                 deposit = checkInGroup.getDeposit();
                 account = checkInGroup.getGroupAccount();
                 groupName = checkInGroup.getName();
                 roomIdAll = roomService.roomListToString(roomList);
-                guestInVip = checkInGroup.getVipNumber();
                 totalRoomConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房费", checkInGroup.getGroupAccount());
                 totalRoomShopConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkInGroup.getGroupAccount());
             }
@@ -725,7 +727,12 @@ public class GuestOutController {
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getSelfAccount());
             } else {
                 CheckOutGroup checkOutGroup = checkOutGroupService.getByCheckOutSerial(checkOut.getCheckOutSerial());
-                guestInVip = checkOutGroup.getVipNumber();
+                List<CheckInHistoryLog> checkInHistoryLogList= checkInHistoryLogService.getByCheckOutSerial(checkOutGroup.getCheckOutSerial());
+                for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
+                    if(checkInHistoryLog.getVipNumber()!=null) {
+                        guestInVip += checkInHistoryLog.getVipNumber()+",";
+                    }
+                }
                 account = checkOut.getGroupAccount();
                 groupName = checkOut.getGroupName();
                 roomIdAll = roomService.roomListToString(roomList);
