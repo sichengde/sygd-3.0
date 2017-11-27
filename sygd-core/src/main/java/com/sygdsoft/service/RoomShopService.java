@@ -1,8 +1,10 @@
 package com.sygdsoft.service;
 
+import com.sygdsoft.mapper.RoomShopMapper;
 import com.sygdsoft.model.Debt;
 import com.sygdsoft.model.DebtHistory;
 import com.sygdsoft.model.RoomShop;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 @SzMapper(id = "roomShop")
 public class RoomShopService extends BaseService<RoomShop>{
+    @Autowired
+    RoomShopMapper roomShopMapper;
     /**
      * 通过房吧分解字符串获得品种
      */
@@ -39,4 +43,12 @@ public class RoomShopService extends BaseService<RoomShop>{
         return src.substring(0, var1 + 1) + newNum + src.substring(var2, src.length());
     }
 
+    /**
+     * 通过房吧品种获得房吧信息
+     */
+    public RoomShop getByName(String name){
+        RoomShop roomShopQuery=new RoomShop();
+        roomShopQuery.setItem(name);
+        return roomShopMapper.selectOne(roomShopQuery);
+    }
 }

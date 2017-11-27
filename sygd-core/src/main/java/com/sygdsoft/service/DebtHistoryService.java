@@ -26,9 +26,9 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
      * 查询该时间段该操作员的预付
      */
     public Double getTotalDepositByUserCurrencyDate(String userId, String currency, Date beginTime, Date endTime) {
-        if(userId==null){
+        if (userId == null) {
             return debtHistoryMapper.getDepositByCurrencyDate(currency, beginTime, endTime);
-        }else {
+        } else {
             return debtHistoryMapper.getDepositByUserCurrencyDate(userId, currency, beginTime, endTime);
         }
     }
@@ -48,9 +48,9 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
      * 查询该时间段该操作员的冲账
      */
     public Double getTotalDiscountByUserTimeZone(String userId, Date beginTime, Date endTime) {
-        if(userId==null){
+        if (userId == null) {
             return debtHistoryMapper.getTotalDiscountByTimeZone(beginTime, endTime);
-        }else {
+        } else {
             return debtHistoryMapper.getTotalDiscountByUserTimeZone(userId, beginTime, endTime);
         }
     }
@@ -59,9 +59,9 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
      * 查询该时间段该操作员的杂单
      */
     public Double getTotalAddByUserTimeZone(String userId, Date beginTime, Date endTime) {
-        if(userId==null){
+        if (userId == null) {
             return debtHistoryMapper.getTotalAddByTimeZone(beginTime, endTime);
-        }else {
+        } else {
             return debtHistoryMapper.getTotalAddByUserTimeZone(userId, beginTime, endTime);
         }
     }
@@ -69,15 +69,15 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 计算该类别在该时间段的结算款
      */
-    public Double getHistoryConsume(Date beginTime, Date endTime, String pointOfSale,boolean positive) {
-        return debtHistoryMapper.getHistoryConsume(beginTime, endTime, pointOfSale,positive);
+    public Double getHistoryConsume(Date beginTime, Date endTime, String pointOfSale, boolean positive) {
+        return debtHistoryMapper.getHistoryConsume(beginTime, endTime, pointOfSale, positive);
     }
 
     /**
      * 计算该类别在该时间段的结算款
      */
-    public Double getHistoryConsume(Date beginTime, Date endTime, List<String> pointOfSale,List<String> guestSourceList,List<String> roomCategoryList) {
-        return debtHistoryMapper.getHistoryConsumeRich(beginTime, endTime, pointOfSale,guestSourceList, roomCategoryList);
+    public Double getHistoryConsume(Date beginTime, Date endTime, List<String> pointOfSale, List<String> guestSourceList, List<String> roomCategoryList) {
+        return debtHistoryMapper.getHistoryConsumeRich(beginTime, endTime, pointOfSale, guestSourceList, roomCategoryList);
     }
 
     /**
@@ -86,6 +86,7 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public Double getTotalDiscount(Date beginTime, Date endTime) {
         return debtHistoryMapper.getTotalDiscount(beginTime, endTime);
     }
+
     /**
      * 计算该营业部门在该单子下的销售情况debtService里也有，这个主要用于补打账单
      */
@@ -101,17 +102,17 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
             List<DebtHistory> compressDebtList = new ArrayList<>();
             List<String> roomIdListCheck = new ArrayList<>();//用来检测哪些房间加入了
             Integer liveDay = 2;//统计房费天数
-            for (DebtHistory debtAll : debtList) {
-                if (roomIdListCheck.indexOf(debtAll.getRoomId()) > -1) {//大于-1说明房号一样
-                    if (debtAll.getDescription().equals("过夜审加收房费") && compressDebtList.get(compressDebtList.size() - 1).getDescription().contains("过夜审加收房费")) {//如果当前的账务是房费，并且上一条也是房费（查询的时候按照房费排列）
-                        DebtHistory debt1 = compressDebtList.get(compressDebtList.size() - 1);
-                        debt1.setConsume(debtAll.getNotNullConsume() + debt1.getNotNullConsume());
-                        debt1.setDescription("过夜审加收房费:" + String.valueOf(liveDay) + "天");
+            for (DebtHistory debtHistoryNow : debtList) {
+                if (roomIdListCheck.indexOf(debtHistoryNow.getRoomId()) > -1) {//大于-1说明房号一样
+                    DebtHistory debtHistoryLast = compressDebtList.get(compressDebtList.size() - 1);
+                    if (debtHistoryNow.getDescription().equals("过夜审加收房费") && debtHistoryLast.getDescription().contains("过夜审加收房费")) {//如果当前的账务是房费，并且上一条也是房费（查询的时候按照房费排列）
+                        debtHistoryLast.setConsume(debtHistoryNow.getNotNullConsume() + debtHistoryLast.getNotNullConsume());
+                        debtHistoryLast.setDescription("过夜审加收房费:" + String.valueOf(liveDay) + "天");
                         liveDay++;
-                    } else if ("房吧".equals(debtAll.getCategory()) && compressDebtList.get(compressDebtList.size() - 1).getPointOfSale().equals("房吧")) {
-                        DebtHistory debtCompressed = compressDebtList.get(compressDebtList.size() - 1);
-                        debtCompressed.setConsume(debtAll.getNotNullConsume() + debtCompressed.getNotNullConsume());
-                        String[] itemAndMoneyCompressed = debtCompressed.getDescription().split("/");//分析消费品种
+                    } else if ("房吧".equals(debtHistoryNow.getCategory()) && debtHistoryLast.getPointOfSale().equals("房吧") && roomShopService.getShopItem(debtHistoryLast.getDescription()).equals(roomShopService.getShopItem(debtHistoryNow.getDescription()))) {
+                        debtHistoryLast.setConsume(debtHistoryNow.getNotNullConsume() + debtHistoryLast.getNotNullConsume());
+                        debtHistoryLast.setDescription(roomShopService.setShopNum(debtHistoryLast.getDescription(), roomShopService.getShopItem(debtHistoryNow.getDescription()), roomShopService.getShopNum(debtHistoryNow.getDescription())));
+                        /*String[] itemAndMoneyCompressed = debtCompressed.getDescription().split("/");//分析消费品种
                         String[] itemAndMoneyNew = debtAll.getDescription().split("/");//分析消费品种
                         for (int i = 0; i < itemAndMoneyNew.length; i++) {//遍历新添加进来的品种
                             int j;
@@ -126,15 +127,15 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
                             if (j == itemAndMoneyCompressed.length) {//说明没有重复的的品种
                                 debtCompressed.setDescription(debtCompressed.getDescription() + s);
                             }
-                        }
+                        }*/
                         liveDay = 2;
                     } else {//既不能合并房费又不能合并房吧，直接加上去
-                        compressDebtList.add(debtAll);
+                        compressDebtList.add(debtHistoryNow);
                         liveDay = 2;
                     }
                 } else {//没有这个房间，新建一个
-                    compressDebtList.add(debtAll);
-                    roomIdListCheck.add(debtAll.getRoomId());
+                    compressDebtList.add(debtHistoryNow);
+                    roomIdListCheck.add(debtHistoryNow.getRoomId());
                     liveDay = 2;
                 }
             }
@@ -152,10 +153,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
         debtHistoryQuery.setPaySerial(paySerial);
         return debtHistoryMapper.select(debtHistoryQuery);
     }
+
     /**
      * 通过离店序号获取历史账务
      */
-    public List<DebtHistory> debtHistoryGetByCheckOutSerial(String checkOutSerial){
+    public List<DebtHistory> debtHistoryGetByCheckOutSerial(String checkOutSerial) {
         return debtHistoryMapper.debtHistoryGetByCheckOutSerial(checkOutSerial);
     }
 
@@ -177,14 +179,14 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 根据id号设置单位结账标志为已结
      */
-    public void setPaidById(Integer id){
+    public void setPaidById(Integer id) {
         debtHistoryMapper.setPaidById(id);
     }
 
     /**
      * 删除中间结算在debt_history表中产生的临时平账数据
      */
-    public void deleteMiddlePay(){
+    public void deleteMiddlePay() {
         debtHistoryMapper.deleteMiddlePay();
     }
 }
