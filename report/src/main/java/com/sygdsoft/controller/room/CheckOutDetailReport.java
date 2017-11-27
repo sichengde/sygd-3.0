@@ -45,6 +45,10 @@ public class CheckOutDetailReport {
     CheckInGroupService checkInGroupService;
     @Autowired
     CheckOutGroupService checkOutGroupService;
+    @Autowired
+    PointOfSaleService pointOfSaleService;
+    @Autowired
+    RoomShopService roomShopService;
     /*
     * parameters
     * 1.结账合计
@@ -52,6 +56,7 @@ public class CheckOutDetailReport {
     * 3.起始时间
     * 4.终止时间
     * 5.币种分析
+    * 6.消费分析
     * fields
     * 1.时间（主账号）
     * 2.币种
@@ -72,6 +77,9 @@ public class CheckOutDetailReport {
             userId = null;
         }
         String format = reportJson.getFormat();
+        /*获取所有销售部门*/
+        List<String> pointOfSaleList=pointOfSaleService.getRoomPointOfSaleList();
+        Map<String,Double> pointOfSaleConsumeMap=new HashMap<>();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
         List<DebtPay> debtPayList = debtPayService.getList(userId, currencyQuery,beginTime, endTime, "done_time");
@@ -140,6 +148,18 @@ public class CheckOutDetailReport {
                     fieldTemplate.setField3(debtHistory.getDescription());
                     fieldTemplate.setField5(debtHistory.getRoomId());
                     templateList.add(fieldTemplate);
+                    /*如果是房吧则需要展开*/
+                    String pointOfSale=debtHistory.getPointOfSale();
+                    if(pointOfSaleService.FB.equals(pointOfSale)){
+                        String item=roomShopService.getShopItem(debtHistory.getDescription());
+                        RoomShop roomShop=roomShopService.getByName(item);
+                        if(roomShop==null){
+                            pointOfSale="未定义房吧品种";
+                        }else {
+                            pointOfSale = roomShop.getCategory();
+                        }
+                    }
+                    pointOfSaleConsumeMap.put(pointOfSale,pointOfSaleConsumeMap.getOrDefault(pointOfSale,0.0)+debtHistory.getNotNullConsume());
                 }
             }
             fieldTemplate = new FieldTemplate();//最后一行是结账信息，俗称小计
@@ -170,6 +190,12 @@ public class CheckOutDetailReport {
         /*币种分析*/
         for (String s : currencyMap.keySet()) {
             out += s + "/" + currencyMap.get(s) + " ";
+        }
+        paramList.add(out);
+        out="";
+        /*部门分析*/
+        for (String s : pointOfSaleConsumeMap.keySet()) {
+            out += s + "/" + pointOfSaleConsumeMap.get(s) + " ";
         }
         paramList.add(out);
         String[] param = new String[paramList.size()];
