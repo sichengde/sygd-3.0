@@ -629,7 +629,7 @@ public class GuestOutController {
         * 3.房号                              roomID
         * 4.结账序列号(流水号)                serialService.getCheckOutSerial()
         * 5.到达日期                          reachTime
-        * 6.离店日期                          timeService.getNowLong()
+        * 6.离店日期                          timeService.getNowLong()/
         * 7.公司                              company
         * 8.团队名称                          groupName
         * 9.收款员                            userService.getCurrentUser()
@@ -655,6 +655,7 @@ public class GuestOutController {
         * 7.操作员
         * */
         String reachTime;
+        String leaveTime=timeService.getNowLong();
         String company;
         Double consume;
         Double deposit;
@@ -715,6 +716,7 @@ public class GuestOutController {
             debtList = debtService.getByHistory(debtHistoryService.getListByPaySerial(guestOut.getPaySerial()));
             CheckOut checkOut = checkOutService.get(new Query("check_out_serial=" + util.wrapWithBrackets(guestOut.getCheckOutSerial()))).get(0);
             reachTime = timeService.dateToStringLong(checkOut.getReachTime());
+            leaveTime=timeService.dateToStringLong(checkOut.getCheckOutTime());
             company = checkOut.getCompany();
             consume = checkOut.getConsume();
             deposit = checkOut.getDeposit();
@@ -750,7 +752,7 @@ public class GuestOutController {
         }
         for (Debt debt : debtList) {//同时更新汇总信息
             FieldTemplate var = new FieldTemplate();
-            var.setField1(timeService.getNowLong());
+            var.setField1(timeService.dateToStringLong(debt.getDoTime()));
             var.setField2(debt.getRoomId());
             var.setField3(debt.getDescription());
             var.setField4(String.valueOf(debt.getNotNullConsume()));
@@ -779,7 +781,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, timeService.getNowLong(), company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip};
+        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip};
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
