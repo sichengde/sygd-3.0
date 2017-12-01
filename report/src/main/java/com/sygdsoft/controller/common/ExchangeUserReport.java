@@ -171,7 +171,7 @@ public class ExchangeUserReport {
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
             exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
             exchangeUserSmallJQRow.setField2(roomShopDetail.getItem());
-            exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNum() + " " + roomShopDetail.getUnit()));
+            exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNumString() + " " + roomShopDetail.getUnit()));
             exchangeUserSmallJQRow.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
             exchangeUserSmallJQRow.setShop(true);
             tempTotalConsume += roomShopDetail.getTotalMoney();
@@ -188,7 +188,7 @@ public class ExchangeUserReport {
             tempTotalConsume += roomShopDetail.getTotalMoney();
             exchangeUserSmallJQRow = new ExchangeUserSmallJQRow();
             exchangeUserSmallJQRow.setField2(roomShopDetail.getItem());
-            exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNum() + " " + roomShopDetail.getUnit()));
+            exchangeUserSmallJQRow.setField3(String.valueOf(roomShopDetail.getNumString() + " " + roomShopDetail.getUnit()));
             exchangeUserSmallJQRow.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
             exchangeUserSmallJQRow.setShop(true);
             exchangeUserSmallJQRowList.add(exchangeUserSmallJQRow);
@@ -240,7 +240,7 @@ public class ExchangeUserReport {
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
             fieldTemplate = new FieldTemplate();
             fieldTemplate.setField2(roomShopDetail.getItem());
-            fieldTemplate.setField3(String.valueOf(roomShopDetail.getNum() + " " + roomShopDetail.getUnit()));
+            fieldTemplate.setField3(String.valueOf(roomShopDetail.getNumString() + " " + roomShopDetail.getUnit()));
             fieldTemplate.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
             tempTotalConsume += roomShopDetail.getTotalMoney();
             templateList.add(fieldTemplate);
@@ -256,7 +256,7 @@ public class ExchangeUserReport {
             tempTotalConsume += roomShopDetail.getTotalMoney();
             fieldTemplate = new FieldTemplate();
             fieldTemplate.setField2(roomShopDetail.getItem());
-            fieldTemplate.setField3(String.valueOf(roomShopDetail.getNum() + " " + roomShopDetail.getUnit()));
+            fieldTemplate.setField3(String.valueOf(roomShopDetail.getNumString() + " " + roomShopDetail.getUnit()));
             fieldTemplate.setField4(String.valueOf(roomShopDetail.getTotalMoney()));
             templateList.add(fieldTemplate);
         }

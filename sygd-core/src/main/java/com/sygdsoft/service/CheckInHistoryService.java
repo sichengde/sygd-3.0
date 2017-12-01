@@ -69,11 +69,17 @@ public class CheckInHistoryService extends BaseService<CheckInHistory>{
      * 获得宾客字符串
      */
     public String listToStringName(List<CheckInHistory> checkInHistoryList){
-        String out="";
-        for (CheckInHistory checkInHistory : checkInHistoryList) {
-            out+=checkInHistory.getName()+",";
+        int iMax = checkInHistoryList.size() - 1;
+        if (iMax == -1)
+            return "";
+
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; ; i++) {
+            b.append(checkInHistoryList.get(i).getName());
+            if (i == iMax)
+                return b.toString();
+            b.append(", ");
         }
-        return out.substring(0,out.length()-1);
     }
 
     /**
