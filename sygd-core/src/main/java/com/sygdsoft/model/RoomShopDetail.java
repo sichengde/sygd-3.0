@@ -28,6 +28,14 @@ public class RoomShopDetail {
     public RoomShopDetail() {
     }
 
+    public String getNumString(){
+        if(num==num.intValue()){
+            return String.valueOf(num.intValue());
+        }else {
+            return String.valueOf(num);
+        }
+    }
+
     public String getItem() {
         return item;
     }

@@ -145,7 +145,6 @@ public class DebtController {
     public void roomShopInNew(@RequestBody RoomShopIn roomShopIn) throws Exception {
         /*解析传进来的参数*/
         String roomId = roomShopIn.getRoomId();
-        String description = roomShopIn.getDescription();
         String guest = roomShopIn.getGuest();
         timeService.setNow();
         /*创建房吧明细账务*/
@@ -157,8 +156,7 @@ public class DebtController {
             roomShopDetail.setSelfAccount(selfAccount);
             Debt debt = new Debt();
             debt.setRoomId(roomId);
-            debt.setDescription(description);
-            debt.setDescription(roomShopDetail.getItem() + ':' + roomShopDetail.getNum() + '*' + roomShopDetail.getPrice() + '/');
+            debt.setDescription(roomShopDetail.getItem() + ':' + roomShopDetail.getNumString() + '*' + roomShopDetail.getPrice() + '/');
             debt.setCurrency("挂账");
             debt.setPointOfSale(pointOfSaleService.FB);
             debt.setConsume(roomShopDetail.getTotalMoney());
