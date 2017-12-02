@@ -7,6 +7,8 @@ import com.sygdsoft.model.RoomShop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by 舒展 on 2016-06-17.
  */
@@ -44,11 +46,9 @@ public class RoomShopService extends BaseService<RoomShop>{
     }
 
     /**
-     * 通过房吧品种获得房吧信息
+     * 通过房吧品种获得房吧类型
      */
-    public RoomShop getByName(String name){
-        RoomShop roomShopQuery=new RoomShop();
-        roomShopQuery.setItem(name);
-        return roomShopMapper.selectOne(roomShopQuery);
+    public String getCategoryByName(String name){
+        return roomShopMapper.getCategoryByName(name);
     }
 }
