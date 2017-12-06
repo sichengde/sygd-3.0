@@ -152,12 +152,7 @@ public class CheckOutDetailReport {
                     String pointOfSale=debtHistory.getPointOfSale();
                     if(pointOfSaleService.FB.equals(pointOfSale)){
                         String item=roomShopService.getShopItem(debtHistory.getDescription());
-                        RoomShop roomShop=roomShopService.getByName(item);
-                        if(roomShop==null){
-                            pointOfSale="未定义房吧品种";
-                        }else {
-                            pointOfSale = roomShop.getCategory();
-                        }
+                        pointOfSale=roomShopService.getCategoryByName(item);
                     }
                     pointOfSaleConsumeMap.put(pointOfSale,pointOfSaleConsumeMap.getOrDefault(pointOfSale,0.0)+debtHistory.getNotNullConsume());
                 }

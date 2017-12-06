@@ -23,10 +23,10 @@ public interface RoomStateReportMapper extends MyMapper<RoomStateReport>{
     @Select("SELECT category, sum(total) total, sum(empty) empty, sum(repair) repair, sum(self) self, sum(back_up) backUp, sum(rent) rent, sum(total_real) totalReal, sum(all_day_room) allDayRoom, sum(hour_room) hourRoom, sum(add_room) addRoom, sum(all_day_room_consume) allDayRoomConsume, sum(hour_room_consume) hourRoomConsume, sum(add_room_consume) addRoomConsume, sum(night_room) nightRoom, sum(night_room_consume) nightRoomConsume FROM room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} group by category")
     List<RoomStateReport> getSumByDateCategory(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
-    @Select("SELECT ifnull(truncate(sum(rent)/sum(total_real),2),0) FROM room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} and category=#{roomCategory}")
+    @Select("SELECT ifnull(round(sum(rent)/sum(total_real),2),0) FROM room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} and category=#{roomCategory}")
     @ResultType(Double.class)
     Double getRentRateOnly(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("roomCategory")String roomCategory);
 
-    @Select("SELECT sum(all_day_room) allDayRoom ,ifnull(truncate((sum(all_day_room_consume)+sum(night_room_consume))/(sum(all_day_room)+sum(night_room)),2),0) avaPrice, ifnull(truncate(sum(rent)/sum(total_real),2),0) rentRate,report_time reportTime from room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} GROUP BY report_time")
+    @Select("SELECT sum(all_day_room) allDayRoom ,ifnull(round((sum(all_day_room_consume)+sum(night_room_consume))/(sum(all_day_room)+sum(night_room)),2),0) avaPrice, ifnull(round(sum(rent)/sum(total_real),2),0) rentRate,report_time reportTime from room_state_report where report_time>=#{beginTime} AND report_time<=#{endTime} GROUP BY report_time")
     List<RoomStateReport> RoomStateReportGetChart(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
 }
