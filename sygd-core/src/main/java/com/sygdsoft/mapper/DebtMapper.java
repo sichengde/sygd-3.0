@@ -58,7 +58,7 @@ public interface DebtMapper extends MyMapper<Debt> {
     /**
      * 获得该房间的总消费
      */
-    @Select("select truncate(sum(consume),2) from debt where room_id=#{roomId}")
+    @Select("select round(sum(consume),2) from debt where room_id=#{roomId}")
     @ResultType(Double.class)
     Double getTotalConsumeByRoomId(@Param("roomId") String roomId);
 

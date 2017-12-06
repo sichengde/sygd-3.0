@@ -51,7 +51,7 @@ public class CheckInIntegrationSql {
     public String getAvaRoomPrice(Map<String, Object> map) {
         String guestSource = (String) map.get("guestSource");
         String roomCategory = (String) map.get("roomCategory");
-        String basic = "SELECT truncate(sum(final_room_price)/count(*),2) FROM check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
+        String basic = "SELECT round(sum(final_room_price)/count(*),2) FROM check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
         if (guestSource != null) {
             basic += " and guest_source=#{guestSource}";
         }
