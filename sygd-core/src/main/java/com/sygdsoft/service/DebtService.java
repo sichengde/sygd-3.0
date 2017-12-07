@@ -69,6 +69,7 @@ public class DebtService extends BaseService<Debt> {
         debt.setGroupAccount(checkIn.getGroupAccount());
         debt.setCompany(checkIn.getCompany());
         debt.setTotalConsume(checkIn.getNotNullConsume() + debt.getNotNullConsume());
+        debt.setSourceRoom(checkIn.getRoomId());
         debtMapper.insert(debt);
         this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(), debt.getDeposit());
     }
@@ -85,6 +86,7 @@ public class DebtService extends BaseService<Debt> {
             debt.setGuestSource(checkIn.getGuestSource());
             debt.setCompany(checkIn.getCompany());
             debt.setTotalConsume(checkIn.getNotNullConsume() + debt.getNotNullConsume());
+            debt.setSourceRoom(checkIn.getRoomId());
             debtMapper.insert(debt);
             this.updateGuestInMoney(checkIn.getRoomId(), debt.getConsume(), debt.getDeposit());
         }

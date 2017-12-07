@@ -31,6 +31,7 @@ public class Debt extends BaseEntity {
     private String company;//单位
     private Double totalConsume;//录完该笔消费后消费合计
     private String guestName;//客人姓名
+    private String sourceRoom;//原房号
 
     public Debt() {
     }
@@ -56,6 +57,7 @@ public class Debt extends BaseEntity {
         this.guestSource=debt.getGuestSource();
         this.company=debt.getCompany();
         this.guestName=debt.getGuestName();
+        this.sourceRoom=debt.getSourceRoom();
     }
 
     public Debt(DebtHistory debtHistory){
@@ -79,6 +81,7 @@ public class Debt extends BaseEntity {
         this.guestSource=debtHistory.getGuestSource();
         this.company=debtHistory.getCompany();
         this.guestName=debtHistory.getGuestName();
+        this.sourceRoom=debtHistory.getSourceRoom();
     }
 
     public Double getNotNullDeposit(){
@@ -258,5 +261,13 @@ public class Debt extends BaseEntity {
 
     public void setGuestName(String guestName) {
         this.guestName = guestName;
+    }
+
+    public String getSourceRoom() {
+        return sourceRoom;
+    }
+
+    public void setSourceRoom(String sourceRoom) {
+        this.sourceRoom = sourceRoom;
     }
 }
