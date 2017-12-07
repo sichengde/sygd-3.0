@@ -39,9 +39,9 @@ public class DebtPaySql {
         Boolean payTotal= (Boolean) parameters.get("payTotal");
         String basic;
         if(payTotal){
-            basic="select ifnull(sum(debt_money),0) debtMoney from debt_pay LEFT JOIN currency ON debt_pay.currency=currency.currency where done_time > #{beginTime} and done_time< #{endTime}  and pay_total=true";
+            basic="select round(ifnull(sum(debt_money),0),2) debtMoney from debt_pay LEFT JOIN currency ON debt_pay.currency=currency.currency where done_time > #{beginTime} and done_time< #{endTime}  and pay_total=true";
         }else {
-            basic = "select ifnull(sum(debt_money),0) debtMoney from debt_pay where done_time > #{beginTime} and done_time< #{endTime}";
+            basic = "select round(ifnull(sum(debt_money),0),2) debtMoney from debt_pay where done_time > #{beginTime} and done_time< #{endTime}";
         }
         if(userId!=null){
             basic+=" and user_id = #{userId}";
