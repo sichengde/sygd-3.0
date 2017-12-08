@@ -148,7 +148,11 @@ public class DebtPayService extends BaseService<DebtPay> {
                         changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, null, paySerial, pointOfSale);
                     } else {
                         CheckIn checkIn = checkInService.getByRoomId(roomList.get(0));//在店户籍
-                        changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, checkIn.getSelfAccount(), checkIn.getGroupAccount(), paySerial, pointOfSale);
+                        if(checkIn==null){//哑房结算
+                            changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, null, paySerial, pointOfSale);
+                        }else {
+                            changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, checkIn.getSelfAccount(), checkIn.getGroupAccount(), paySerial, pointOfSale);
+                        }
                     }
                 } else {
                     CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
