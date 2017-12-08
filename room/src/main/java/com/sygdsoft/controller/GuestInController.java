@@ -188,6 +188,7 @@ public class GuestInController {
                 debt.setUserId(checkIn.getUserId());
                 debt.setCategory(debtService.deposit);
                 debt.setCompany(checkIn.getCompany());
+                debt.setSourceRoom(checkIn.getRoomId());
                 debtService.add(debt);
             }
             if (nowTime.compareTo(limit) < 0 && nowTime.compareTo(nightTime) > 0) {//需要直接产生一笔房费，凌晨房
@@ -404,6 +405,7 @@ public class GuestInController {
         timeService.setNow();
         Debt debt = new Debt();
         debt.setRoomId(roomId);
+        debt.setSourceRoom(roomId);
         debt.setCurrency(currency);
         debt.setPointOfSale(pointOfSaleService.FF);
         debt.setDescription("押金单独补录");
