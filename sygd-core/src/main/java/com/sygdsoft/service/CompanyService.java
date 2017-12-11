@@ -7,6 +7,7 @@ import com.sygdsoft.model.Company;
 import com.sygdsoft.model.CompanyDebt;
 import com.sygdsoft.model.CompanyLord;
 import com.sygdsoft.model.Debt;
+import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,8 @@ public class CompanyService extends BaseService<Company> {
     UserService userService;
     @Autowired
     CompanyDebtService companyDebtService;
+    @Autowired
+    SzMath szMath;
 
     /**
      * 通过单位名称获取单位对象
@@ -63,7 +66,7 @@ public class CompanyService extends BaseService<Company> {
         if (companyObj.getDeposit() != null && (companyObj.getNotNullCompanyDebt() + money > companyObj.getNotNullDeposit())) {
             throw new Exception("已超出可挂账限额");
         }
-        companyObj.setDebt(companyObj.getNotNullCompanyDebt() + money);
+        companyObj.setDebt(szMath.formatTwoDecimalReturnDouble(companyObj.getNotNullCompanyDebt() + money));
         update(companyObj);
         companyLordService.addDebt(lord, money);
         CompanyDebt companyDebt = new CompanyDebt();
