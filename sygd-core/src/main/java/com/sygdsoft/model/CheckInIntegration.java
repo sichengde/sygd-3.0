@@ -8,6 +8,7 @@ import java.util.Date;
 public class CheckInIntegration {
     private String roomId;
     private String roomCategory;
+    private String roomPriceCategory;
     private String selfAccount;
     private String guestSource;
     private Double finalRoomPrice;
@@ -117,5 +118,13 @@ public class CheckInIntegration {
 
     public void setIfIn(Boolean ifIn) {
         this.ifIn = ifIn;
+    }
+
+    public String getRoomPriceCategory() {
+        return roomPriceCategory;
+    }
+
+    public void setRoomPriceCategory(String roomPriceCategory) {
+        this.roomPriceCategory = roomPriceCategory;
     }
 }
