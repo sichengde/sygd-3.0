@@ -12,6 +12,6 @@ public interface CompanyLordMapper extends MyMapper<CompanyLord> {
     /**
      * 为单位签单人增加挂账
      */
-    @Update("UPDATE company_lord set debt=ifnull(debt,0)+#{debt} where name=#{lord}")
+    @Update("UPDATE company_lord set debt=round(ifnull(debt,0)+#{debt},2) where name=#{lord}")
     void addDebt(@Param("lord") String lord, @Param("debt") Double debt);
 }
