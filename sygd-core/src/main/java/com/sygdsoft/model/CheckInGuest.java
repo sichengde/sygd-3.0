@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -19,6 +20,8 @@ public class CheckInGuest extends BaseEntity{
     private String bed;//床位号(已废除)
     private String doorId;//绑定的门锁特征码
     private String country;//国籍
+    @Transient
+    private String selfAccount;//维护guestMapCheckIn时需要的变量
 
     public CheckInGuest() {
     }
@@ -131,5 +134,13 @@ public class CheckInGuest extends BaseEntity{
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getSelfAccount() {
+        return selfAccount;
+    }
+
+    public void setSelfAccount(String selfAccount) {
+        this.selfAccount = selfAccount;
     }
 }
