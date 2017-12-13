@@ -39,4 +39,12 @@ public class GuestMapCheckInService extends BaseService<GuestMapCheckIn>{
     public List<String> getHistoryRoomPriceByCardId(String cardId , String roomCategory){
         return guestMapCheckInMapper.getHistoryRoomPriceByCardId(cardId, roomCategory);
     }
+
+    /**
+     * 通过证件号删除
+     * @param cardId
+     */
+    public void deleteByCardId(String cardId){
+        guestMapCheckInMapper.deleteByCardId(cardId);
+    }
 }
