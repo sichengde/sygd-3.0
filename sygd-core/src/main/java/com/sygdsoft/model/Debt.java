@@ -3,6 +3,7 @@ package com.sygdsoft.model;
 import com.sygdsoft.util.NullJudgement;
 import org.bouncycastle.jce.provider.JCEECDHKeyAgreement;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -32,6 +33,9 @@ public class Debt extends BaseEntity {
     private Double totalConsume;//录完该笔消费后消费合计
     private String guestName;//客人姓名
     private String sourceRoom;//原房号
+
+    @Transient
+    private String area;
 
     public Debt() {
     }
@@ -269,5 +273,13 @@ public class Debt extends BaseEntity {
 
     public void setSourceRoom(String sourceRoom) {
         this.sourceRoom = sourceRoom;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }
