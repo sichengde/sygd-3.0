@@ -19,6 +19,15 @@ public class CheckOutService extends BaseService<CheckOut> {
     CheckOutMapper checkOutMapper;
 
     /**
+     * 通过流水号获得
+     */
+    public CheckOut getByCheckOutSerial(String checkOutSerial){
+        CheckOut checkOut=new CheckOut();
+        checkOut.setCheckOutSerial(checkOutSerial);
+        return checkOutMapper.selectOne(checkOut);
+    }
+
+    /**
      * 判断来期在起始日期之前，结账日期在范围内的找回金额(deposit-consume)
      */
     public List<CheckOut> getPayBack(Date beginTime, Date endTime) {

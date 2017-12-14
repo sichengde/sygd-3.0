@@ -319,6 +319,7 @@ public class GuestOutController {
         checkOut.setCheckOutTime(timeService.getNow());
         checkOut.setUserId(userService.getCurrentUser());
         checkOut.setRemark(guestOut.getRemark());
+        checkOut.setFpMoney(guestOut.getFpMoney());
         checkOut.setRoomId(roomService.roomListToString(guestOut.getRoomIdList()));
         if (guestOut.getGroupAccount() == null) {
             CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
@@ -645,6 +646,7 @@ public class GuestOutController {
         * 19.总房吧消费                       ifNotNullGetString(totalRoomShopConsume)
         * 20.其他消费                         ifNotNullGetString(otherConsume)
         * 21.开房会员                         guestInVip
+        * 22.开房会员                         fpMoney
         * field
         * 1.日期
         * 2.房号
@@ -669,6 +671,7 @@ public class GuestOutController {
         Double totalRoomConsume;//总房费
         Double totalRoomShopConsume;//总房吧费
         Double otherConsume;
+        Double fpMoney=guestOut.getFpMoney();//发票金额
         String title = otherParamService.getValueByName("酒店名称");
         if (guestOut.getAgain() == null) {
             if (guestOut.getGroupAccount() == null) {
@@ -782,7 +785,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip};
+        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip,ifNotNullGetString(fpMoney)};
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
@@ -863,6 +866,11 @@ public class GuestOutController {
         guestOut.setRoomIdList(checkOutRoomService.simpleToString(checkOutRoomList));//房间字符串数组
         guestOut.setGroupAccount(debtPay.getGroupAccount());//公付账号，如果没有则是空
         guestOut.setAgain("补打");//注明是补打
+        /*获取发票金额*/
+        if("y".equals(this.otherParamService.getValueByName("手写发票金额"))&&debtPay.getCheckOutSerial()!=null){
+            CheckOut checkOut=checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+            guestOut.setFpMoney(checkOut.getFpMoney());
+        }
         /*生成结账数组*/
         List<DebtPay> debtPayList = debtPayService.getListByPaySerial(debtPay.getPaySerial());
         List<CurrencyPost> currencyPostList = new ArrayList<>();

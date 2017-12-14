@@ -20,6 +20,7 @@ public class GuestOut {
     private String paySerial;//结账序列号，补打时有用
     private String checkOutSerial;//离店序列号，补打时有用
     private Boolean real;//真实结算，针对于辽阳宾馆这种喜欢结账之后再确认的
+    private Double fpMoney;//手写发票金额，仅用于打印结账单和补打
 
     public GuestOut() {
     }
@@ -118,5 +119,13 @@ public class GuestOut {
 
     public void setCheckOutSerialCategory(String checkOutSerialCategory) {
         this.checkOutSerialCategory = checkOutSerialCategory;
+    }
+
+    public Double getFpMoney() {
+        return fpMoney;
+    }
+
+    public void setFpMoney(Double fpMoney) {
+        this.fpMoney = fpMoney;
     }
 }

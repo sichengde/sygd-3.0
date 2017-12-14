@@ -19,7 +19,7 @@ public class CheckOut extends BaseEntity{
     private String remark;//备注
     private String company;//单位
     private String groupName;//单位
-
+    private Double fpMoney;//手写发票金额，仅用于打印结账单和补打
     public CheckOut() {
     }
 
@@ -117,5 +117,13 @@ public class CheckOut extends BaseEntity{
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public Double getFpMoney() {
+        return fpMoney;
+    }
+
+    public void setFpMoney(Double fpMoney) {
+        this.fpMoney = fpMoney;
     }
 }
