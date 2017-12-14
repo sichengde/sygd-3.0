@@ -646,7 +646,7 @@ public class GuestOutController {
         * 19.总房吧消费                       ifNotNullGetString(totalRoomShopConsume)
         * 20.其他消费                         ifNotNullGetString(otherConsume)
         * 21.开房会员                         guestInVip
-        * 22.开房会员                         fpMoney
+        * 22.发票金额                         fpMoney
         * field
         * 1.日期
         * 2.房号

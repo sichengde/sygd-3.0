@@ -20,6 +20,8 @@ import java.util.List;
  */
 @RestController
 public class DebtController {
+    //TODO: 发现bug之后就可以删了
+    private static final Logger logger = LoggerFactory.getLogger(DebtController.class);
     @Autowired
     DebtService debtService;
     @Autowired
@@ -55,20 +57,37 @@ public class DebtController {
     @Autowired
     CheckInService checkInService;
 
-    //TODO: 发现bug之后就可以删了
-    private static final Logger logger = LoggerFactory.getLogger(DebtController.class);
-
     @RequestMapping(value = "debtGet")
     public List<Debt> debtGet(@RequestBody Query query) throws Exception {
         return debtService.get(query);
     }
 
     /**
+     * 获取押金并且连表查询出房号
+     *
+     * @param query
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "debtGetWithArea")
+    public List<Debt> debtGetWithArea(@RequestBody Query query) throws Exception {
+        List<Debt> debtList = debtService.get(query);
+        for (Debt debt : debtList) {
+            Room room = roomService.getByRoomId(debt.getRoomId());
+            if (room != null) {
+                debt.setArea(room.getArea());
+            }
+        }
+        return debtList;
+    }
+
+
+    /**
      * 单退预付
      */
     @RequestMapping(value = "cancelDepositSingle")
     @Transactional(rollbackFor = Exception.class)
-    public void cancelDepositSingle(@RequestBody Debt debt) throws Exception{
+    public void cancelDepositSingle(@RequestBody Debt debt) throws Exception {
         timeService.setNow();
         debt.setDoTime(timeService.getNow());
         debt.setUserId(userService.getCurrentUser());
@@ -233,7 +252,7 @@ public class DebtController {
         timeService.setNow();
         userLogService.addUserLog("杂单冲账单位:" + company + " 金额:" + money, userLogService.reception, userLogService.ZC, serialService.getPaySerial());
         /*判断币种*/
-        debtPayService.parseCurrency("转单位", company + " " + companyLord, money, null, null, debtHistory.getCategory(), serialService.getPaySerial(), "接待","接待");
+        debtPayService.parseCurrency("转单位", company + " " + companyLord, money, null, null, debtHistory.getCategory(), serialService.getPaySerial(), "接待", "接待");
         /*创建杂单报表
         * 1.操作员
         * 2.金额
@@ -261,7 +280,7 @@ public class DebtController {
         String currencyAdd = debtHistory.getCurrencyAdd();
         Double money = debtHistory.getConsume();
         /*判断是不是转单位*/
-        if("转单位".equals(currency)){
+        if ("转单位".equals(currency)) {
             debtHistory.setCompany(currencyAdd.split(" ")[0]);
         }
         /*生成一条结账记录*/
@@ -279,7 +298,7 @@ public class DebtController {
         debtPayService.add(debtPay);
         debtHistoryService.add(debtHistory);
         /*判断币种*/
-        debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "商品零售", serialService.getPaySerial(), "接待","接待");
+        debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "商品零售", serialService.getPaySerial(), "接待", "接待");
         /*创建房吧明细账务*/
         List<RoomShopDetail> roomShopDetailList = retailIn.getRoomShopDetailList();
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
