@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 public class CheckOutPayBack extends BaseEntity{
@@ -8,6 +9,8 @@ public class CheckOutPayBack extends BaseEntity{
     private Double money;
     private String checkOutSerial;
     private String userId;
+    @Transient
+    private String roomId;
 
     public CheckOutPayBack() {
     }
@@ -50,5 +53,13 @@ public class CheckOutPayBack extends BaseEntity{
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 }
