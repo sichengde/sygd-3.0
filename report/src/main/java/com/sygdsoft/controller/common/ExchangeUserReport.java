@@ -83,13 +83,16 @@ public class ExchangeUserReport {
         List<FieldTemplate> templateList = new ArrayList<>();
         List<Currency> currencyList = currencyService.get(null);
         FieldTemplate fieldTemplate;
+        Double cancelDepositAll = 0.0;//退押金合计
         for (Currency currency : currencyList) {
             fieldTemplate = new FieldTemplate();
             String currencyString = currency.getCurrency();
             fieldTemplate.setField1(currency.getCurrency());//币种
             fieldTemplate.setField2(szMath.ifNotNullGetString(debtPayService.getDebtMoney(userId, currencyString, false, beginTime, endTime)));//结算款
             fieldTemplate.setField3(szMath.ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//预付
-            fieldTemplate.setField4(szMath.ifNotNullGetString(debtHistoryService.getTotalCancelDeposit(userId, currencyString, beginTime, endTime)));//退预付
+            Double cancelDeposit=szMath.formatTwoDecimalReturnDouble(debtHistoryService.getTotalCancelDeposit(userId, currencyString, beginTime, endTime));
+            cancelDepositAll+=cancelDeposit;
+            fieldTemplate.setField4(szMath.ifNotNullGetString(cancelDeposit));//退预付
             fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//单退预付
             fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
@@ -120,11 +123,13 @@ public class ExchangeUserReport {
         paramList.add(ifNotNullGetString(moneyIn));
         paramList.add(ifNotNullGetString(moneyOut));
         paramList.add(ifNotNullGetString(depositAll));//param7
-        paramList.add(ifNotNullGetString(payTotal));//param7
+        paramList.add(ifNotNullGetString(payTotal));//param8
+        paramList.add(ifNotNullGetString(cancelDepositAll));//param9
         String[] param = new String[paramList.size()];
         paramList.toArray(param);
         reportJson.setReportIndex(reportService.generateReport(templateList, param, "exchangeUser", "pdf"));
         exchangeUserJQ.setDepositAll(depositAll);
+        exchangeUserJQ.setDepositAll(cancelDepositAll);
         exchangeUserJQ.setExchangeUserRowList(exchangeUserRowList);
         exchangeUserJQ.setMoneyIn(moneyIn);
         exchangeUserJQ.setMoneyOut(moneyOut);

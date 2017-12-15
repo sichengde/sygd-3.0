@@ -14,6 +14,7 @@ public class ExchangeUserJQ {
     private Double moneyIn;//杂单
     private Double moneyOut;//冲账
     private Double depositAll;//在店押金
+    private Double cancelDepositAll;//所有退预付
 
     public ExchangeUserJQ() {
     }
@@ -64,5 +65,13 @@ public class ExchangeUserJQ {
 
     public void setDepositAll(Double depositAll) {
         this.depositAll = depositAll;
+    }
+
+    public Double getCancelDepositAll() {
+        return cancelDepositAll;
+    }
+
+    public void setCancelDepositAll(Double cancelDepositAll) {
+        this.cancelDepositAll = cancelDepositAll;
     }
 }
