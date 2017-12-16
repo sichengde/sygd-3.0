@@ -4,10 +4,7 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.CheckInGroupMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.mapper.DebtMapper;
-import com.sygdsoft.model.CheckIn;
-import com.sygdsoft.model.CheckInGroup;
-import com.sygdsoft.model.Debt;
-import com.sygdsoft.model.DebtHistory;
+import com.sygdsoft.model.*;
 import com.sygdsoft.util.NullJudgement;
 import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
@@ -36,6 +33,7 @@ public class DebtService extends BaseService<Debt> {
     public String tel = "电话费";
     public String allDayPrice = "全日房费";
     public String payMiddle = "中间结算冲账";
+    static Object groupLock=new Object();
     @Autowired
     DebtMapper debtMapper;
     @Autowired
@@ -100,10 +98,12 @@ public class DebtService extends BaseService<Debt> {
         CheckIn checkIn = checkInService.getByRoomId(roomId);
         checkInMapper.updateGuestInMoney(roomId);
         if (checkIn.getGroupAccount() != null) {
-            CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(checkIn.getGroupAccount());
-            checkInGroup.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkInGroup.getNotNullGroupConsume()));
-            checkInGroup.setDeposit(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(deposit) + checkInGroup.getNotNullGroupDeposit()));
-            checkInGroupMapper.updateByPrimaryKey(checkInGroup);
+            synchronized (groupLock) {
+                CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(checkIn.getGroupAccount());
+                checkInGroup.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkInGroup.getNotNullGroupConsume()));
+                checkInGroup.setDeposit(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(deposit) + checkInGroup.getNotNullGroupDeposit()));
+                checkInGroupMapper.updateByPrimaryKey(checkInGroup);
+            }
         }
     }
 
