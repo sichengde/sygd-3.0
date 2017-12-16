@@ -30,6 +30,18 @@ public class CompanyCategoryController {
         companyCategoryService.delete(companyCategoryList);
     }
 
+    @RequestMapping(value = "companyCategoryUpdate")
+    @Transactional(rollbackFor = Exception.class)
+    public void companyCategoryUpdate(@RequestBody List<CompanyCategory> companyCategoryList) throws Exception {
+        if (companyCategoryList.size() > 1) {
+            if (companyCategoryList.get(0).getId().equals(companyCategoryList.get(companyCategoryList.size() / 2).getId())) {
+                companyCategoryService.update(companyCategoryList.subList(0, companyCategoryList.size() / 2));
+                return;
+            }
+        }
+        companyCategoryService.update(companyCategoryList);
+    }
+
     @RequestMapping(value = "companyCategoryGet")
     public List<CompanyCategory> companyCategoryGet(@RequestBody Query query) throws Exception {
         return companyCategoryService.get(query);
