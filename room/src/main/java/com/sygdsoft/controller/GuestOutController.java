@@ -647,6 +647,7 @@ public class GuestOutController {
         * 20.其他消费                         ifNotNullGetString(otherConsume)
         * 21.开房会员                         guestInVip
         * 22.发票金额                         fpMoney
+        * 23.备注                             guestOut.getRemark()
         * field
         * 1.日期
         * 2.房号
@@ -785,7 +786,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip,ifNotNullGetString(fpMoney)};
+        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip,ifNotNullGetString(fpMoney),guestOut.getRemark()};
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
@@ -867,10 +868,11 @@ public class GuestOutController {
         guestOut.setGroupAccount(debtPay.getGroupAccount());//公付账号，如果没有则是空
         guestOut.setAgain("补打");//注明是补打
         /*获取发票金额*/
+        CheckOut checkOut=checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
         if("y".equals(this.otherParamService.getValueByName("手写发票金额"))&&debtPay.getCheckOutSerial()!=null){
-            CheckOut checkOut=checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
             guestOut.setFpMoney(checkOut.getFpMoney());
         }
+        guestOut.setRemark(checkOut.getRemark());
         /*生成结账数组*/
         List<DebtPay> debtPayList = debtPayService.getListByPaySerial(debtPay.getPaySerial());
         List<CurrencyPost> currencyPostList = new ArrayList<>();
