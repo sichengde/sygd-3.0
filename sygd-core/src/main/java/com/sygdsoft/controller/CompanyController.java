@@ -50,7 +50,13 @@ public class CompanyController {
 
     @RequestMapping(value = "companyGet")
     public List<Company> companyGet(@RequestBody Query query) throws Exception {
-        return companyService.get(query);
+        List<Company> companyList=companyService.get(query);
+        /*设置一下接待和餐厅的挂账款*/
+        for (Company company : companyList) {
+            company.setRoomDebt(companyService.getModuleDebt("接待",company.getName()));
+            company.setEatDebt(companyService.getModuleDebt("餐饮",company.getName()));
+        }
+        return companyList;
     }
 
     @RequestMapping(value = "companyDelete")
