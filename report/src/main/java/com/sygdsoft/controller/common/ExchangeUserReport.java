@@ -129,7 +129,7 @@ public class ExchangeUserReport {
         paramList.toArray(param);
         reportJson.setReportIndex(reportService.generateReport(templateList, param, "exchangeUser", "pdf"));
         exchangeUserJQ.setDepositAll(depositAll);
-        exchangeUserJQ.setDepositAll(cancelDepositAll);
+        exchangeUserJQ.setCancelDepositAll(cancelDepositAll);
         exchangeUserJQ.setExchangeUserRowList(exchangeUserRowList);
         exchangeUserJQ.setMoneyIn(moneyIn);
         exchangeUserJQ.setMoneyOut(moneyOut);
