@@ -19,7 +19,7 @@ public class ModuleService {
     //新版权限
     public Module[] moduleUltimateNew = new Module[]{
             new Module("接待", "reception", new String[]{
-                    "开房", "结账",  "联房", "杂单", "冲账", "房吧","提前制卡","修改户籍","钱箱提款","修改房价"
+                    "开房", "结账",  "联房", "杂单", "冲账", "房吧","提前制卡","修改户籍","钱箱提款","修改房价","手录身份"
                     , "前台接待"
                     , "团队管理"
                     , "营销预定"
