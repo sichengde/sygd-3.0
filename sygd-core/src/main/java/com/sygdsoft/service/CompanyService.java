@@ -83,4 +83,13 @@ public class CompanyService extends BaseService<Company> {
         companyDebtService.add(companyDebt);
         return " 转单位至:" + company + " 签单人:" + lord;
     }
+
+    /**
+     * 获取该模块的单位挂账款
+     * @param module
+     * @return
+     */
+    public Double getModuleDebt(String module,String company) {
+        return companyMapper.getModuleDebt(module,company);
+    }
 }

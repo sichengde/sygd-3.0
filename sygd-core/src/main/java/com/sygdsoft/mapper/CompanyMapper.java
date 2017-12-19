@@ -36,4 +36,11 @@ public interface CompanyMapper extends MyMapper<Company> {
      */
     @Update("UPDATE company set debt=ifnull(debt,0)-#{total} where name=#{company}")
     void pay(@Param("company") String company, @Param("total") Double total);
+
+    /**
+     * 获取该模块的单位挂账款
+     */
+    @Select("SELECT sum(debt) FROM company_debt WHERE point_of_sale=#{module} AND company=#{company}")
+    @ResultType(Double.class)
+    Double getModuleDebt(@Param("module") String module,@Param("company") String company);
 }

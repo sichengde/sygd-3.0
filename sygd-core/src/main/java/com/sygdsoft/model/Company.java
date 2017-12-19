@@ -27,6 +27,10 @@ public class Company extends BaseEntity{
     private List<CompanyDebtIntegration> companyDebtIntegrationList;
     @Transient
     private List<CompanyDebt> companyDebtList;
+    @Transient
+    private Double roomDebt;
+    @Transient
+    private Double eatDebt;
 
     public Company() {
     }
@@ -147,5 +151,21 @@ public class Company extends BaseEntity{
 
     public void setCompanyDebtList(List<CompanyDebt> companyDebtList) {
         this.companyDebtList = companyDebtList;
+    }
+
+    public Double getRoomDebt() {
+        return roomDebt;
+    }
+
+    public void setRoomDebt(Double roomDebt) {
+        this.roomDebt = roomDebt;
+    }
+
+    public Double getEatDebt() {
+        return eatDebt;
+    }
+
+    public void setEatDebt(Double eatDebt) {
+        this.eatDebt = eatDebt;
     }
 }
