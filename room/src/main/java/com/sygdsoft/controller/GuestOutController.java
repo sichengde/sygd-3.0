@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 import static com.sygdsoft.util.NullJudgement.nullToZero;
@@ -658,7 +657,7 @@ public class GuestOutController {
         * 7.操作员
         * */
         String reachTime;
-        String leaveTime=timeService.getNowLong();
+        String leaveTime = timeService.getNowLong();
         String company;
         Double consume;
         Double deposit;
@@ -672,7 +671,7 @@ public class GuestOutController {
         Double totalRoomConsume;//总房费
         Double totalRoomShopConsume;//总房吧费
         Double otherConsume;
-        Double fpMoney=guestOut.getFpMoney();//发票金额
+        Double fpMoney = guestOut.getFpMoney();//发票金额
         String title = otherParamService.getValueByName("酒店名称");
         if (guestOut.getAgain() == null) {
             if (guestOut.getGroupAccount() == null) {
@@ -698,8 +697,8 @@ public class GuestOutController {
                 for (String s : roomList) {
                     CheckIn checkIn = checkInService.getByRoomId(s);
                     totalConsume += checkIn.getNotNullConsume();
-                    if(checkIn.getVipNumber()!=null) {
-                        guestInVip += checkIn.getVipNumber()+",";
+                    if (checkIn.getVipNumber() != null) {
+                        guestInVip += checkIn.getVipNumber() + ",";
                     }
                 }
                 consume = totalConsume;
@@ -720,10 +719,11 @@ public class GuestOutController {
             debtList = debtService.getByHistory(debtHistoryService.getListByPaySerial(guestOut.getPaySerial()));
             CheckOut checkOut = checkOutService.get(new Query("check_out_serial=" + util.wrapWithBrackets(guestOut.getCheckOutSerial()))).get(0);
             reachTime = timeService.dateToStringLong(checkOut.getReachTime());
-            leaveTime=timeService.dateToStringLong(checkOut.getCheckOutTime());
+            leaveTime = timeService.dateToStringLong(checkOut.getCheckOutTime());
             company = checkOut.getCompany();
             consume = checkOut.getConsume();
             deposit = checkOut.getDeposit();
+            roomID = checkOut.getRoomId();
             if (guestOut.getGroupAccount() == null) {
                 CheckInHistoryLog checkInHistoryLog = checkInHistoryLogService.getByCheckOutSerial(checkOut.getCheckOutSerial()).get(0);
                 account = checkOut.getSelfAccount();
@@ -733,10 +733,10 @@ public class GuestOutController {
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getSelfAccount());
             } else {
                 CheckOutGroup checkOutGroup = checkOutGroupService.getByCheckOutSerial(checkOut.getCheckOutSerial());
-                List<CheckInHistoryLog> checkInHistoryLogList= checkInHistoryLogService.getByCheckOutSerial(checkOutGroup.getCheckOutSerial());
+                List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.getByCheckOutSerial(checkOutGroup.getCheckOutSerial());
                 for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
-                    if(checkInHistoryLog.getVipNumber()!=null) {
-                        guestInVip += checkInHistoryLog.getVipNumber()+",";
+                    if (checkInHistoryLog.getVipNumber() != null) {
+                        guestInVip += checkInHistoryLog.getVipNumber() + ",";
                     }
                 }
                 account = checkOut.getGroupAccount();
@@ -786,7 +786,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip,ifNotNullGetString(fpMoney),guestOut.getRemark()};
+        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark()};
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
@@ -868,8 +868,8 @@ public class GuestOutController {
         guestOut.setGroupAccount(debtPay.getGroupAccount());//公付账号，如果没有则是空
         guestOut.setAgain("补打");//注明是补打
         /*获取发票金额*/
-        CheckOut checkOut=checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
-        if("y".equals(this.otherParamService.getValueByName("手写发票金额"))&&debtPay.getCheckOutSerial()!=null){
+        CheckOut checkOut = checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+        if ("y".equals(this.otherParamService.getValueByName("手写发票金额")) && debtPay.getCheckOutSerial() != null) {
             guestOut.setFpMoney(checkOut.getFpMoney());
         }
         guestOut.setRemark(checkOut.getRemark());
