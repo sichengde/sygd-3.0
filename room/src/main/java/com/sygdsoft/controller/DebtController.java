@@ -59,6 +59,8 @@ public class DebtController {
     @Autowired
     CheckInService checkInService;
     @Autowired
+    CheckInGuestService checkInGuestService;
+    @Autowired
     Util util;
 
     @RequestMapping(value = "debtGet")
@@ -96,6 +98,9 @@ public class DebtController {
         debt.setDoTime(timeService.getNow());
         debt.setUserId(userService.getCurrentUser());
         debtService.addDebt(debt);
+        /*获得在店客人姓名*/
+        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debt.getRoomId());
+        String guestName=checkInGuestService.listToStringName(checkInGuestList);
         /*单退预付报表
         * parameter
         * 1.操作员
@@ -106,6 +111,8 @@ public class DebtController {
         * 6.币种
         * 7.酒店名称
         * 8.大写
+        * 9.客人姓名
+        * 10.自付账号
         * field
         * 1.项目明细
         * */
@@ -117,7 +124,7 @@ public class DebtController {
             var.setField1(s);
             templateList.add(var);
         }*/
-        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getDeposit()), timeService.getNowLong(), debt.getDescription(), debt.getRoomId(), debt.getCurrency(), otherParamService.getValueByName("酒店名称"),util.number2CNMontrayUnit(BigDecimal.valueOf(debt.getDeposit()))}, "depositCancel", "pdf");
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getDeposit()), timeService.getNowLong(), debt.getDescription(), debt.getRoomId(), debt.getCurrency(), otherParamService.getValueByName("酒店名称"),util.number2CNMontrayUnit(BigDecimal.valueOf(debt.getDeposit())),guestName,debt.getSelfAccount()}, "depositCancel", "pdf");
     }
 
     /**
@@ -153,6 +160,8 @@ public class DebtController {
         * 6.币种
         * 7.酒店名称
         * 8.大写
+        * 9.客人姓名
+        * 10.自付账号
         * field
         * 1.项目明细
         * */
@@ -165,7 +174,10 @@ public class DebtController {
             templateList.add(var);
         }*/
         Debt debt=debtList.get(0);
-        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getDeposit()), timeService.getNowLong(), debt.getDescription(), debt.getRoomId(), debt.getCurrency(), otherParamService.getValueByName("酒店名称"),util.number2CNMontrayUnit(BigDecimal.valueOf(debt.getDeposit()))}, "depositCancel", "pdf");
+        /*获得在店客人姓名*/
+        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debt.getRoomId());
+        String guestName=checkInGuestService.listToStringName(checkInGuestList);
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getDeposit()), timeService.getNowLong(), debt.getDescription(), debt.getRoomId(), debt.getCurrency(), otherParamService.getValueByName("酒店名称"),util.number2CNMontrayUnit(BigDecimal.valueOf(debt.getDeposit())),guestName,debt.getSelfAccount()}, "depositCancel", "pdf");
     }
 
     /**
