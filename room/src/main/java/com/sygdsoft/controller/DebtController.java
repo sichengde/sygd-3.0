@@ -3,6 +3,7 @@ package com.sygdsoft.controller;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +58,8 @@ public class DebtController {
     RoomShopDetailService roomShopDetailService;
     @Autowired
     CheckInService checkInService;
+    @Autowired
+    Util util;
 
     @RequestMapping(value = "debtGet")
     public List<Debt> debtGet(@RequestBody Query query) throws Exception {
@@ -87,11 +91,33 @@ public class DebtController {
      */
     @RequestMapping(value = "cancelDepositSingle")
     @Transactional(rollbackFor = Exception.class)
-    public void cancelDepositSingle(@RequestBody Debt debt) throws Exception {
+    public Integer cancelDepositSingle(@RequestBody Debt debt) throws Exception {
         timeService.setNow();
         debt.setDoTime(timeService.getNow());
         debt.setUserId(userService.getCurrentUser());
         debtService.addDebt(debt);
+        /*单退预付报表
+        * parameter
+        * 1.操作员
+        * 2.金额
+        * 3.时间
+        * 4.消费项目
+        * 5.房号
+        * 6.币种
+        * 7.酒店名称
+        * 8.大写
+        * field
+        * 1.项目明细
+        * */
+        /*分析消费项目*/
+        /*List<FieldTemplate> templateList = new ArrayList<>();
+        String[] itemArray = debtHistory.getDescription().split("/");
+        for (String s : itemArray) {
+            FieldTemplate var = new FieldTemplate();
+            var.setField1(s);
+            templateList.add(var);
+        }*/
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getDeposit()), timeService.getNowLong(), debt.getDescription(), debt.getRoomId(), debt.getCurrency(), otherParamService.getValueByName("酒店名称"),util.number2CNMontrayUnit(BigDecimal.valueOf(debt.getDeposit()))}, "depositCancel", "pdf");
     }
 
     /**
@@ -99,7 +125,7 @@ public class DebtController {
      */
     @RequestMapping(value = "cancelDeposit")
     @Transactional(rollbackFor = Exception.class)
-    public void cancelDeposit(@RequestBody List<Debt> debtList) throws Exception {
+    public Integer cancelDeposit(@RequestBody List<Debt> debtList) throws Exception {
         Date now = timeService.setNow();
         for (Debt debt : debtList) {
             debt.setRemark("已退");
@@ -117,6 +143,29 @@ public class DebtController {
             }
         }
         debtService.add(debtList);
+        /*自定义退预付报表
+        * parameter
+        * 1.操作员
+        * 2.金额
+        * 3.时间
+        * 4.消费项目
+        * 5.房号
+        * 6.币种
+        * 7.酒店名称
+        * 8.大写
+        * field
+        * 1.项目明细
+        * */
+        /*分析消费项目*/
+        /*List<FieldTemplate> templateList = new ArrayList<>();
+        String[] itemArray = debtHistory.getDescription().split("/");
+        for (String s : itemArray) {
+            FieldTemplate var = new FieldTemplate();
+            var.setField1(s);
+            templateList.add(var);
+        }*/
+        Debt debt=debtList.get(0);
+        return reportService.generateReport(null, new String[]{userService.getCurrentUser(), String.valueOf(debt.getDeposit()), timeService.getNowLong(), debt.getDescription(), debt.getRoomId(), debt.getCurrency(), otherParamService.getValueByName("酒店名称"),util.number2CNMontrayUnit(BigDecimal.valueOf(debt.getDeposit()))}, "depositCancel", "pdf");
     }
 
     /**

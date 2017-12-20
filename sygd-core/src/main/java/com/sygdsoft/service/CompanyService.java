@@ -89,7 +89,7 @@ public class CompanyService extends BaseService<Company> {
      * @param module
      * @return
      */
-    public Double getModuleDebt(String module,String company) {
-        return companyMapper.getModuleDebt(module,company);
+    public Double getModuleDebt(String module,String company,String lord) {
+        return companyMapper.getModuleDebt(module,company,lord);
     }
 }

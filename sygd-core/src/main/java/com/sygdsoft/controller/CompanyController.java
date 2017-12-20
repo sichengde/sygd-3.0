@@ -53,8 +53,8 @@ public class CompanyController {
         List<Company> companyList=companyService.get(query);
         /*设置一下接待和餐厅的挂账款*/
         for (Company company : companyList) {
-            company.setRoomDebt(companyService.getModuleDebt("接待",company.getName()));
-            company.setEatDebt(companyService.getModuleDebt("餐饮",company.getName()));
+            company.setRoomDebt(companyService.getModuleDebt("接待",company.getName(),null));
+            company.setEatDebt(companyService.getModuleDebt("餐饮",company.getName(),null));
         }
         return companyList;
     }
