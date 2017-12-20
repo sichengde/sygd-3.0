@@ -1,11 +1,9 @@
 package com.sygdsoft.mapper;
 
 import com.sygdsoft.model.Company;
+import com.sygdsoft.sqlProvider.CompanyDebtSql;
 import com.sygdsoft.util.MyMapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 
@@ -40,7 +38,7 @@ public interface CompanyMapper extends MyMapper<Company> {
     /**
      * 获取该模块的单位挂账款
      */
-    @Select("SELECT sum(debt) FROM company_debt WHERE point_of_sale=#{module} AND company=#{company}")
+    @SelectProvider(type = CompanyDebtSql.class,method = "getModuleDebt")
     @ResultType(Double.class)
-    Double getModuleDebt(@Param("module") String module,@Param("company") String company);
+    Double getModuleDebt(@Param("module") String module,@Param("company") String company,@Param("lord") String lord);
 }

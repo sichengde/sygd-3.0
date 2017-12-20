@@ -3,6 +3,7 @@ package com.sygdsoft.controller;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.CompanyLord;
 import com.sygdsoft.service.CompanyLordService;
+import com.sygdsoft.service.CompanyService;
 import com.sygdsoft.service.TimeService;
 import com.sygdsoft.service.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class CompanyLordController {
     UserLogService userLogService;
     @Autowired
     TimeService timeService;
+    @Autowired
+    CompanyService companyService;
 
     @RequestMapping(value = "companyLordAdd")
     @Transactional
@@ -61,6 +64,11 @@ public class CompanyLordController {
 
     @RequestMapping(value = "companyLordGet")
     public List<CompanyLord> companyLordGet(@RequestBody Query query) throws Exception {
-        return companyLordService.get(query);
+        List<CompanyLord> companyLordList=companyLordService.get(query);
+        for (CompanyLord companyLord : companyLordList) {
+            companyLord.setRoomDebt(companyService.getModuleDebt("接待",companyLord.getCompany(),null));
+            companyLord.setEatDebt(companyService.getModuleDebt("餐饮",companyLord.getCompany(),null));
+        }
+        return companyLordList;
     }
 }
