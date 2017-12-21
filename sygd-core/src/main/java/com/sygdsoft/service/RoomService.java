@@ -97,6 +97,10 @@ public class RoomService extends BaseService<Room> {
                 if(timeService.dateToStringShort(checkIn.getLeaveTime()).equals(timeService.getNowShort()) || checkIn.getLeaveTime().getTime()<timeService.getNow().getTime()){
                     room.setTodayLeave(true);
                 }
+                /*判断是不是今日来*/
+                if(timeService.dateToStringShort(checkIn.getReachTime()).equals(timeService.getNowShort())){
+                    room.setTodayReach(true);
+                }
                 /*判断是不是生日*/
                 List<CheckInGuest> checkInGuestList=room.getCheckInGuestList();
                 for (CheckInGuest checkInGuest : checkInGuestList) {
