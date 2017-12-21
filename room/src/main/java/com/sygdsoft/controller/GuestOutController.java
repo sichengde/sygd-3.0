@@ -917,7 +917,7 @@ public class GuestOutController {
         for (CheckOutRoom checkOutRoom : checkOutRoomList) {
             Room room = roomService.getByRoomId(checkOutRoom.getRoomId());
             if (room.getState().equals(roomService.group) || room.getState().equals(roomService.guest) || room.getState().equals(roomService.repair)) {
-                return -1;//房间状态不允许
+                throw new Exception("该房间在住，无法结账");
             }
             if (groupAccount == null) {
                 room.setState(roomService.guest);
@@ -1007,7 +1007,10 @@ public class GuestOutController {
             List<CheckInGuest> checkInGuestList = new ArrayList<>();
             for (GuestIntegration guestIntegration : guestIntegrationList) {
                 CheckInHistory checkInHistory = checkInHistoryService.getByCardId(guestIntegration.getCardId());
-                checkInGuestList.add(new CheckInGuest(checkInHistory));
+                CheckInGuest checkInGuest=new CheckInGuest(checkInHistory);
+                CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getBySelfAccountAndCheckOutSerial(selfAccount,checkOutSerial);
+                checkInGuest.setRoomId(checkInHistoryLog.getRoomId());
+                checkInGuestList.add(checkInGuest);
                 checkInHistory.setNum(checkInHistory.getNum() - 1);
                 checkInHistoryService.update(checkInHistory);
             }

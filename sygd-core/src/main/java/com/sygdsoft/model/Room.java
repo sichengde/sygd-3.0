@@ -38,6 +38,8 @@ public class Room extends BaseEntity{
     private Boolean birthday;//是否是生日
     @Transient
     private Boolean todayLeave;//今日预离
+    @Transient
+    private Boolean todayReach;//今日抵达
 
     public Room() {
     }
@@ -254,5 +256,13 @@ public class Room extends BaseEntity{
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Boolean getTodayReach() {
+        return todayReach;
+    }
+
+    public void setTodayReach(Boolean todayReach) {
+        this.todayReach = todayReach;
     }
 }
