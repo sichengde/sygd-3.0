@@ -153,9 +153,9 @@ public class GuestOutController {
         /*如果有单位协议，将该协议记录到单位消费之中*/
             this.checkCompany(guestOut, checkOutMoney);
         /*户籍转换，迁移到历史表*/
-            String guestName = this.checkInProcess(guestOut);
+            GuestInfo guestInfo = this.checkInProcess(guestOut);
         /*生成离店报表*/
-            Integer reportIndex = this.reportProcess(guestOut, guestName, changeDebt, debtList);
+            Integer reportIndex = this.reportProcess(guestOut, guestInfo, changeDebt, debtList);
         /*操作员记录*/
             this.addUserLog(guestOut, changeDebt);
         /*删除账务，开房信息，团队开房信息，在店宾客（如果删早可能会导致后边的方法获取不到相关信息），房价协议（如果有）*/
@@ -529,9 +529,9 @@ public class GuestOutController {
     /**
      * 户籍转换，返回宾客姓名字符串
      */
-    private String checkInProcess(GuestOut guestOut) throws Exception {
+    private GuestInfo checkInProcess(GuestOut guestOut) throws Exception {
         List<String> roomList = guestOut.getRoomIdList();
-        String guestName = "";
+        GuestInfo guestInfo=new GuestInfo();
         List<CheckOutRoom> checkOutRoomList = new ArrayList<>();
         for (String s : roomList) {
             CheckIn checkIn = checkInService.getByRoomId(s);//在店户籍
@@ -542,7 +542,7 @@ public class GuestOutController {
             CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);
             checkInHistoryLog.setLeaveTime(timeService.getNow());
             checkInHistoryLog.setCheckOutSerial(checkOutSerial);
-            guestName += this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList);
+            guestInfo.addGuestName(this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList));
             checkInHistoryLogService.add(checkInHistoryLog);
             checkInHistoryService.add(checkInHistoryList);
             checkInHistoryService.update(checkInHistoryUpdateList);
@@ -557,12 +557,12 @@ public class GuestOutController {
             checkOutRoom.setProtocol(checkIn.getProtocol());
             checkOutRoom.setReachTime(checkIn.getReachTime());
             checkOutRoom.setLeaveTime(timeService.getNow());
-            checkOutRoom.setName(guestName);
+            checkOutRoom.setName(guestInfo.guestName);
             checkOutRoom.setCompany(checkIn.getCompany());
             checkOutRoomList.add(checkOutRoom);
         }
         checkOutRoomService.add(checkOutRoomList);
-        return guestName;
+        return guestInfo;
     }
 
     /**
@@ -621,11 +621,11 @@ public class GuestOutController {
     /**
      * 生成离店报表
      */
-    private Integer reportProcess(GuestOut guestOut, String guestName, String changeDebt, List<Debt> debtList) throws Exception {
+    private Integer reportProcess(GuestOut guestOut, GuestInfo guestInfo, String changeDebt, List<Debt> debtList) throws Exception {
         /*创建报表，并返回单据号
         * param:
         * 1.酒店名称                          otherParamService.getValueByName("酒店名称")
-        * 2.姓名                              guestName
+        * 2.姓名                              guestInfo.getGuestName()
         * 3.房号                              roomID
         * 4.结账序列号(流水号)                serialService.getCheckOutSerial()
         * 5.到达日期                          reachTime
@@ -647,6 +647,8 @@ public class GuestOutController {
         * 21.开房会员                         guestInVip
         * 22.发票金额                         fpMoney
         * 23.备注                             guestOut.getRemark()
+        * 24.电话                             guestInfo.getPhone()
+        * 25.性别                             guestInfo.getSex()
         * field
         * 1.日期
         * 2.房号
@@ -786,7 +788,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark()};
+        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(),guestInfo.phone, guestInfo.sex};
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
@@ -1033,5 +1035,48 @@ public class GuestOutController {
             debtList.addAll(debtService.getListByRoomId(s));
         }
         return this.reportProcess(guestOut, checkInGuestService.listToStringName(checkInGuestService.getListByRoomIdList(guestOut.getRoomIdList())), null, debtList);
+    }
+
+    /**
+     * 传给账单打印函数用的实体类
+     */
+    private class GuestInfo{
+        private String guestName="";
+        private String sex="";
+        private String phone="";
+
+        public void addAll(GuestInfo guestInfo){
+            if(guestName==null){
+                guestName="";
+            }
+            this.guestName+=guestInfo.guestName+",";
+            if(sex==null){
+                sex="";
+            }
+            this.sex+=guestInfo.sex+",";
+            if(phone==null){
+                phone="";
+            }
+            this.phone+=guestInfo.phone+",";
+        }
+
+        public void addGuestName(String guestName){
+            if(guestName==null){
+                guestName="";
+            }
+            this.guestName+=guestName+",";
+        }
+        public void addSex(String sex){
+            if(sex==null){
+                sex="";
+            }
+            this.sex+=sex+",";
+        }
+        public void addPhone(String phone){
+            if(phone==null){
+                phone="";
+            }
+            this.phone+=phone+",";
+        }
     }
 }
