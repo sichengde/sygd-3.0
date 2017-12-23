@@ -542,7 +542,7 @@ public class GuestOutController {
             CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);
             checkInHistoryLog.setLeaveTime(timeService.getNow());
             checkInHistoryLog.setCheckOutSerial(checkOutSerial);
-            guestInfo.addGuestName(this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList));
+            guestInfo.addAll(this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList));
             checkInHistoryLogService.add(checkInHistoryLog);
             checkInHistoryService.add(checkInHistoryList);
             checkInHistoryService.update(checkInHistoryUpdateList);
@@ -568,10 +568,12 @@ public class GuestOutController {
     /**
      * 宾客户籍等转换，返回在店宾客姓名字符串
      */
-    private String guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList, List<String> checkInGuestCardIdList) throws Exception {
-        String guestName = "";
+    private GuestInfo guestToHistory(List<CheckInGuest> checkInGuestList, List<CheckInHistory> checkInHistoryList, List<CheckInHistory> checkInHistoryUpdateList, List<String> checkInGuestCardIdList) throws Exception {
+        GuestInfo guestInfo = new GuestInfo();
         for (CheckInGuest checkInGuest : checkInGuestList) {
-            guestName += checkInGuest.getName() + ",";
+            guestInfo.addGuestName(checkInGuest.getName());
+            guestInfo.addPhone(checkInGuest.getPhone());
+            guestInfo.addSex(checkInGuest.getSex());
             CheckInHistory checkInHistoryOld = checkInHistoryService.getByCardId(checkInGuest.getCardId());//之前来过的
             if (checkInHistoryOld == null) {//如果该宾客没来过，加一条
                 if (checkInGuestCardIdList.indexOf(checkInGuest.getCardId()) == -1) {//信息去重，这里只考虑录入时录入错了的情况
@@ -587,7 +589,7 @@ public class GuestOutController {
             }
         }
         this.idCardVipProcess(checkInGuestList);
-        return guestName;
+        return guestInfo;
     }
 
     /**
@@ -886,8 +888,14 @@ public class GuestOutController {
         guestOut.setCurrencyPayList(currencyPostList);
         guestOut.setPaySerial(debtPay.getPaySerial());
         guestOut.setCheckOutSerial(debtPay.getCheckOutSerial());
-        String guestName = util.listToString(checkInHistoryService.getNameList(checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial())));
-        return reportProcess(guestOut, guestName, changeDebt, null);
+        List<CheckInHistory> checkInHistories=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
+        GuestInfo guestInfo=new GuestInfo();
+        for (CheckInHistory checkInHistory : checkInHistories) {
+            guestInfo.addGuestName(checkInHistory.getName());
+            guestInfo.addPhone(checkInHistory.getPhone());
+            guestInfo.addSex(checkInHistory.getSex());
+        }
+        return reportProcess(guestOut, guestInfo, changeDebt, null);
     }
 
     /**
@@ -1034,7 +1042,15 @@ public class GuestOutController {
         for (String s : guestOut.getRoomIdList()) {
             debtList.addAll(debtService.getListByRoomId(s));
         }
-        return this.reportProcess(guestOut, checkInGuestService.listToStringName(checkInGuestService.getListByRoomIdList(guestOut.getRoomIdList())), null, debtList);
+
+        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomIdList(guestOut.getRoomIdList());
+        GuestInfo guestInfo=new GuestInfo();
+        for (CheckInGuest checkInGuest : checkInGuestList) {
+            guestInfo.addGuestName(checkInGuest.getName());
+            guestInfo.addPhone(checkInGuest.getPhone());
+            guestInfo.addSex(checkInGuest.getSex());
+        }
+        return this.reportProcess(guestOut, guestInfo, null, debtList);
     }
 
     /**
@@ -1049,15 +1065,15 @@ public class GuestOutController {
             if(guestName==null){
                 guestName="";
             }
-            this.guestName+=guestInfo.guestName+",";
+            this.guestName+=guestInfo.guestName;
             if(sex==null){
                 sex="";
             }
-            this.sex+=guestInfo.sex+",";
+            this.sex+=guestInfo.sex;
             if(phone==null){
                 phone="";
             }
-            this.phone+=guestInfo.phone+",";
+            this.phone+=guestInfo.phone;
         }
 
         public void addGuestName(String guestName){
