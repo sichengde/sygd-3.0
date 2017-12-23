@@ -2,6 +2,7 @@ package com.sygdsoft.model;
 
 import com.sygdsoft.jsonModel.CurrencyPost;
 
+import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -15,6 +16,8 @@ public class DeskOut {
     private List<CurrencyPost> currencyPostList;
     private DeskBook deskBook;
     private Boolean groupDetail;
+    @Transient
+    private List<DeskDetail> deskDetailList;
 
     public DeskOut() {
     }
@@ -73,5 +76,13 @@ public class DeskOut {
 
     public void setGroupDetail(Boolean groupDetail) {
         this.groupDetail = groupDetail;
+    }
+
+    public List<DeskDetail> getDeskDetailList() {
+        return deskDetailList;
+    }
+
+    public void setDeskDetailList(List<DeskDetail> deskDetailList) {
+        this.deskDetailList = deskDetailList;
     }
 }
