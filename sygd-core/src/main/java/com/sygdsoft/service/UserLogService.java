@@ -19,6 +19,7 @@ import java.util.List;
 public class UserLogService extends BaseService<UserLog> {
     /*-----------------------------接待-----------------------------*/
     public String guestIn = "散客开房";
+    public String deleteGuest = "删除在店户籍";
     public String guestInGroup = "团队开房";
     public String guestOut = "散客结账";
     public String guestOutMiddle = "中间结算";

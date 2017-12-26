@@ -1,10 +1,12 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.CheckInGuest;
 import com.sygdsoft.model.GuestMapCheckIn;
 import com.sygdsoft.service.CheckInGuestService;
 import com.sygdsoft.service.GuestMapCheckInService;
+import com.sygdsoft.service.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,8 @@ public class CheckInGuestController {
     CheckInGuestService checkInGuestService;
     @Autowired
     GuestMapCheckInService guestMapCheckInService;
+    @Autowired
+    UserLogService userLogService;
 
     @RequestMapping(value = "checkInGuestAdd")
     @Transactional(rollbackFor = Exception.class)
@@ -44,6 +48,8 @@ public class CheckInGuestController {
         for (CheckInGuest checkInGuest : checkInGuestList) {
             guestMapCheckInService.deleteByCardId(checkInGuest.getCardId());
         }
+        /*记录日志*/
+        userLogService.addUserLog("删除在店户籍:"+ JSON.toJSONString(checkInGuestList),userLogService.reception,userLogService.deleteGuest,null);
     }
 
     @RequestMapping(value = "checkInGuestUpdate")
