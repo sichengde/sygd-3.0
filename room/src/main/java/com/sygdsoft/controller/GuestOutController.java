@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -677,10 +678,14 @@ public class GuestOutController {
         Double otherConsume;
         Double fpMoney = guestOut.getFpMoney();//发票金额
         String title = otherParamService.getValueByName("酒店名称");
-        if (guestOut.getAgain() == null) {
+        if (guestOut.getAgain() == null || "中间未结补打".equals(guestOut.getAgain())) {
             if (guestOut.getGroupAccount() == null) {
                 if (debtList == null) {
-                    debtList = debtService.getListByRoomId(guestOut.getRoomIdList().get(0));
+                    if("中间未结补打".equals(guestOut.getAgain())){
+                        debtList = debtService.getByHistory(debtHistoryService.getListByPaySerial(guestOut.getPaySerial()));
+                    }else {
+                        debtList = debtService.getListByRoomId(guestOut.getRoomIdList().get(0));
+                    }
                 }
                 CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
                 reachTime = timeService.dateToStringLong(checkIn.getReachTime());
@@ -867,16 +872,34 @@ public class GuestOutController {
         serialService.setCheckOutSerial(debtPay.getCheckOutSerial());
         /*构造一个GuestOut*/
         GuestOut guestOut = new GuestOut();
-        List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(debtPay.getCheckOutSerial());
-        guestOut.setRoomIdList(checkOutRoomService.simpleToString(checkOutRoomList));//房间字符串数组
         guestOut.setGroupAccount(debtPay.getGroupAccount());//公付账号，如果没有则是空
-        guestOut.setAgain("补打");//注明是补打
+        GuestInfo guestInfo=new GuestInfo();
         /*获取发票金额*/
-        CheckOut checkOut = checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
-        if ("y".equals(this.otherParamService.getValueByName("手写发票金额")) && debtPay.getCheckOutSerial() != null) {
-            guestOut.setFpMoney(checkOut.getFpMoney());
+        if(debtPay.getCheckOutSerial()!=null) {//中间结算的话为null不考虑
+            guestOut.setAgain("补打");//注明是补打
+            List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+            guestOut.setRoomIdList(checkOutRoomService.simpleToString(checkOutRoomList));//房间字符串数组
+            CheckOut checkOut = checkOutService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+            if ("y".equals(this.otherParamService.getValueByName("手写发票金额")) && debtPay.getCheckOutSerial() != null) {
+                guestOut.setFpMoney(checkOut.getFpMoney());
+            }
+            guestOut.setRemark(checkOut.getRemark());
+            List<CheckInHistory> checkInHistories=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
+            for (CheckInHistory checkInHistory : checkInHistories) {
+                guestInfo.addGuestName(checkInHistory.getName());
+                guestInfo.addPhone(checkInHistory.getPhone());
+                guestInfo.addSex(checkInHistory.getSex());
+            }
+        }else {
+            guestOut.setAgain("中间未结补打");//注明是补打
+            guestOut.setRoomIdList(Arrays.asList(debtPay.getRoomId().split(",")));
+            List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomIdList(guestOut.getRoomIdList());
+            for (CheckInGuest checkInGuest : checkInGuestList) {
+                guestInfo.addGuestName(checkInGuest.getName());
+                guestInfo.addPhone(checkInGuest.getPhone());
+                guestInfo.addSex(checkInGuest.getSex());
+            }
         }
-        guestOut.setRemark(checkOut.getRemark());
         /*生成结账数组*/
         List<DebtPay> debtPayList = debtPayService.getListByPaySerial(debtPay.getPaySerial());
         List<CurrencyPost> currencyPostList = new ArrayList<>();
@@ -888,13 +911,6 @@ public class GuestOutController {
         guestOut.setCurrencyPayList(currencyPostList);
         guestOut.setPaySerial(debtPay.getPaySerial());
         guestOut.setCheckOutSerial(debtPay.getCheckOutSerial());
-        List<CheckInHistory> checkInHistories=checkInHistoryService.getListByCheckOutSerial(debtPay.getCheckOutSerial());
-        GuestInfo guestInfo=new GuestInfo();
-        for (CheckInHistory checkInHistory : checkInHistories) {
-            guestInfo.addGuestName(checkInHistory.getName());
-            guestInfo.addPhone(checkInHistory.getPhone());
-            guestInfo.addSex(checkInHistory.getSex());
-        }
         return reportProcess(guestOut, guestInfo, changeDebt, null);
     }
 
