@@ -21,8 +21,21 @@ public interface BookMapper extends MyMapper<Book> {
     /**
      * 过期订单状态设置为失效
      */
-    @Update("UPDATE book set state='失效' WHERE ifnull(remain_time,reach_time+INTERVAL 2 DAY) <now() or total_room=booked_room")
-    void updateExpired();
+    @Select("select * from book WHERE ifnull(remain_time,reach_time+INTERVAL 2 DAY) <now() or total_room=booked_room")
+    @Results(value = {
+            @Result(property = "bookSerial", column = "book_serial"),
+            @Result(property = "reachTime", column = "reach_time"),
+            @Result(property = "leaveTime", column = "leave_time"),
+            @Result(property = "guestSource", column = "guest_source"),
+            @Result(property = "roomPriceCategory", column = "room_price_category"),
+            @Result(property = "totalRoom", column = "total_room"),
+            @Result(property = "bookedRoom", column = "booked_room"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "doTime", column = "do_time"),
+            @Result(property = "bookRoom.roomId", column = "room_id"),
+            @Result(property = "bookRoom.roomPrice", column = "room_price"),
+    })
+    List<Book> getExpired();
 
     /**
      * 补交订金
