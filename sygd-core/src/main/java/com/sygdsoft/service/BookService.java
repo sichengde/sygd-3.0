@@ -2,9 +2,8 @@ package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.BookMapper;
-import com.sygdsoft.mapper.BookRoomCategoryMapper;
-import com.sygdsoft.mapper.BookRoomMapper;
 import com.sygdsoft.model.Book;
+import com.sygdsoft.model.BookHistory;
 import com.sygdsoft.model.BookRoom;
 import com.sygdsoft.model.BookRoomCategory;
 import com.sygdsoft.util.Util;
@@ -33,6 +32,8 @@ public class BookService extends BaseService<Book>{
     Util util;
     @Autowired
     UserLogService userLogService;
+    @Autowired
+    BookHistoryService bookHistoryService;
 
     /**
      * 获得日期内订金总和
@@ -44,8 +45,8 @@ public class BookService extends BaseService<Book>{
     /**
      * 更新过期订单（设置为失效）
      */
-    public void updateExpired(){
-        bookMapper.updateExpired();
+    public List<Book> getExpired(){
+        return bookMapper.getExpired();
     }
 
     /**
@@ -65,6 +66,13 @@ public class BookService extends BaseService<Book>{
      * 删除订单（带预定房号，预定房类表一起删除）
      */
     public String bookDelete(List<Book> bookList) throws Exception {
+        /*失效订单保留一天，第二天转移到历史订单中*/
+        List<BookHistory> bookHistoryList = new ArrayList<>();
+        for (Book book : bookList) {
+            bookHistoryList.add(new BookHistory(book));
+        }
+        /*过期订单,已开房数=总预定房数的订单失效，当天夜审设置为失效的订单可以保存到第二天*/
+        bookHistoryService.add(bookHistoryList);
         String bookLogString = "";
         if(bookList.size()>0) {
         /*删除子表*/

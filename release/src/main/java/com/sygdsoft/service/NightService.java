@@ -101,16 +101,9 @@ public class NightService {
             }
         }
         checkInGroupService.delete(deleteList);
-        /*失效订单保留一天，第二天转移到历史订单中*/
-        List<Book> bookList = bookService.get(new Query("state=\'失效\'"));
-        List<BookHistory> bookHistoryList = new ArrayList<>();
-        for (Book book : bookList) {
-            bookHistoryList.add(new BookHistory(book));
-        }
+        /*获取过期订单，并删除*/
+        List<Book> bookList = bookService.getExpired();
         bookService.bookDelete(bookList);
-        /*过期订单,已开房数=总预定房数的订单失效，当天夜审设置为失效的订单可以保存到第二天*/
-        bookService.updateExpired();
-        bookHistoryService.add(bookHistoryList);
         /*餐饮订单过期的直接迁移至历史，没有有效无效之说，但必须是没有订金的*/
         List<DeskBook> deskBookList = deskBookService.get(new Query("remain_time<" + util.wrapWithBrackets(timeService.dateToStringLong(timeService.getNow()))+" and ifnull(subscription,0)>0"));
         List<DeskBookHistory> deskBookHistoryList = new ArrayList<>();
