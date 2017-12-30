@@ -102,7 +102,7 @@ public class DeskDetailController {
             } else if (deskDetail.isNeedUpdate()) {
                 deskDetail.setDoTime(timeService.getNow());
                 deskDetailUpdate.add(deskDetail);
-                if (!deskDetail.getNotNullCallUp()) {//叫起的菜
+                if (deskDetail.getNotNullCallUp()) {//叫起的菜
                     deskDetailPrint.add(deskDetail);
                 }
             }

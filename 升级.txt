@@ -1,10 +1,1 @@
-1、room表新加一列ifRoom表示是否参与统计，一般情况自用房备用房设为0，其余设为1
-2、杂散参数增加一个会计月度，默认填1，属于公共
-3、杂散参数增加一个本地身份证，沈阳市2101，属于公共
-4、客源增加一个二级分析
-5、即便没有锁号，也要对应上在interfaceDoor表里，锁号门号相同即可
-6、checkInHistory新增一列num表示该客人来过多少次，升级之后全部设置为1
-7、companyDebt增加一列currencyAdd，之前的currency如果是“转单位/贵德科技”，则要把贵德科技放在currencyAdd里，currency只有转单位
-8，debt和debtHistory里均增加了guestSource统计客源，升级后可以都默认设置为散客
-9、杂散参数新增客史提示，开房时提示上次开房房价
-10、serial表新加一列companyPaySerial，本地修改
+"[{"id":42,"page":1,"rows":0,"foodName":"三叶香拌豆皮","price":18,"num":1,"desk":"红宝石","userId":null,"pointOfSale":"中餐厅","doTime":1514639472000,"foodSign":"三叶香拌豆皮","category":"凉菜","waitCall":true,"callUp":null,"remark":null,"unit":null,"cookRoom":"凉菜","ifDiscount":null,"foodSet":null,"cargo":null,"storageDone":null,"cooked":null,"needUpdate":false,"needInsert":false,"people":null,"notNullWaitCall":true,"notNullCallUp":false,"notNullFoodSet":false,"notNullPrice":18,"$$hashKey":"object:734"},{"id":43,"page":1,"rows":0,"foodName":"原汁猪手","price":58,"num":1,"desk":"红宝石","userId":null,"pointOfSale":"中餐厅","doTime":1514639472000,"foodSign":"原汁猪手","category":"凉菜","waitCall":true,"callUp":true,"remark":null,"unit":null,"cookRoom":"凉菜","ifDiscount":null,"foodSet":null,"cargo":null,"storageDone":null,"cooked":null,"needUpdate":true,"needInsert":false,"people":null,"notNullWaitCall":true,"notNullCallUp":false,"notNullFoodSet":false,"notNullPrice":58,"$$hashKey":"object:735"}]"
