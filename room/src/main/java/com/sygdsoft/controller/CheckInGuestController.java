@@ -38,6 +38,7 @@ public class CheckInGuestController {
         guestMapCheckIn.setCardId(checkInGuest.getCardId());
         guestMapCheckIn.setSelfAccount(checkInGuest.getSelfAccount());
         guestMapCheckInService.add(guestMapCheckIn);
+        userLogService.addUserLog("新增在店户籍"+JSON.toJSONString(checkInGuest),userLogService.reception,userLogService.addGuest,null);
     }
 
     @RequestMapping(value = "checkInGuestDelete")
@@ -62,10 +63,7 @@ public class CheckInGuestController {
             }
         }
         checkInGuestService.update(checkInGuestList);
-        /*需要同时维护guestMapCheckIn表*/
-        for (CheckInGuest checkInGuest : checkInGuestList) {
-
-        }
+        userLogService.addUserLog("修改在店户籍，修改后:"+JSON.toJSONString(checkInGuestList),userLogService.reception,userLogService.updateGuest,null);
     }
 
     @RequestMapping(value = "checkInGuestGet")

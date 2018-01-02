@@ -20,7 +20,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     /*操作员，时间段，币种*/
     @Select("select round(sum(a.deposit),2) deposit from " +
             "(select sum(deposit) deposit from debt_history where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0 " +
-            "union " +
+            "union all " +
             "select sum(deposit) deposit from debt where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0) a ")
     @ResultType(Double.class)
     Double getDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
@@ -28,7 +28,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     /*币种，时间段*/
     @Select("select round(sum(a.deposit),2) deposit from " +
             "(select sum(deposit) deposit from debt_history where do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0 " +
-            "union " +
+            "union all " +
             "select sum(deposit) deposit from debt where do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0) a ")
     @ResultType(Double.class)
     Double getDepositByCurrencyDate(@Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
