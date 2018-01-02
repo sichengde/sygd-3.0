@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by 舒展 on 2016-05-25.
@@ -30,7 +31,7 @@ public class ReportService {
     private String name;//报表名字(.jasper文件)
     private String format;//报表格式pdf/xls
     private Integer reportSerial = 0;
-    private Map<Integer, ReportService> map = new HashMap<>();
+    private Map<Integer, ReportService> map = new ConcurrentHashMap<>();
     @Autowired
     HotelService hotelService;
 
