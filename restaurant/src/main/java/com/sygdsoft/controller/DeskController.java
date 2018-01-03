@@ -123,6 +123,9 @@ public class DeskController {
         String desk = deskOut.getDesk();
         String pointOfSale = deskOut.getPointOfSale();
         Double discount = deskOut.getDiscount();
+        if(discount==null){
+            discount=1.0;
+        }
         Double finalPrice = deskOut.getFinalPrice();
         List<CurrencyPost> currencyPostList = deskOut.getCurrencyPostList();
         DeskBook deskBook = deskOut.getDeskBook();

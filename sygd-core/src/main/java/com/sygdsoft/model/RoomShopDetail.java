@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by 舒展 on 2016-09-21.
  * 房吧和商品零售的明细
  */
-public class RoomShopDetail {
+public class RoomShopDetail extends BaseEntity{
     private String item;
     private String category;
     private Double price;
