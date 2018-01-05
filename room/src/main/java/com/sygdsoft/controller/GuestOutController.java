@@ -509,6 +509,10 @@ public class GuestOutController {
      * 如果有会员号，并且结算的时候没有用会员余额或者积分计算的话，累计积分
      */
     private void checkVip(String groupAccount, List<String> roomIdList, String currency, Double money) throws Exception {
+        /*转哑房不判断*/
+        if("转哑房".equals(currency)){
+            return;
+        }
         if (groupAccount == null) {
             CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));//在店户籍
             if (checkIn.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
