@@ -69,4 +69,12 @@ public class BookParseController {
         }
         return roomCategoryList;
     }
+
+    @RequestMapping(value = "futureRoomState")
+    public List<JSONObject> futureRoomState(@RequestBody ReportJson reportJson) throws Exception {
+        Date beginTime=reportJson.getBeginTime();
+        Date endTime=reportJson.getEndTime();
+        List<Room> roomList=roomService.get(null);
+        return null;
+    }
 }
