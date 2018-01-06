@@ -298,6 +298,18 @@ public class CompanyController {
             }
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
+        /*如果是用余额结算的，还要在余额表里记录一下*/
+        if (companyPost.getNotNullRemainPay()) {
+            CompanyMoney companyMoney = new CompanyMoney();
+            companyMoney.setDoTime(timeService.getNow());
+            companyMoney.setCategory("支付");
+            companyMoney.setCompany(companyName);
+            companyMoney.setCompanyPaySerial(serialService.getCompanyPaySerial());
+            companyMoney.setCurrency(currency);
+            companyMoney.setMoney(-pay);
+            companyMoney.setUserId(userService.getCurrentUser());
+            companyMoneyService.add(companyMoney);
+        }
         /*判断一下是不是转单位*/
         debtPayService.parseCurrency(currency, currencyAdd, pay, null, null, companyName + "单位结算转入", serialService.getCompanyPaySerial(), null, null);
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
