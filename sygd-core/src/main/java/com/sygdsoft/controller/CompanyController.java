@@ -47,14 +47,17 @@ public class CompanyController {
     DebtPayService debtPayService;
     @Autowired
     DebtHistoryService debtHistoryService;
+    @Autowired
+    CompanyMoneyService companyMoneyService;
 
     @RequestMapping(value = "companyGet")
     public List<Company> companyGet(@RequestBody Query query) throws Exception {
-        List<Company> companyList=companyService.get(query);
+        List<Company> companyList = companyService.get(query);
         /*设置一下接待和餐厅的挂账款*/
         for (Company company : companyList) {
-            company.setRoomDebt(companyService.getModuleDebt("接待",company.getName(),null));
-            company.setEatDebt(companyService.getModuleDebt("餐饮",company.getName(),null));
+            company.setRoomDebt(companyService.getModuleDebt("接待", company.getName(), null));
+            company.setEatDebt(companyService.getModuleDebt("餐饮", company.getName(), null));
+            company.setCompanyMoneyList(companyMoneyService.getSumList(company.getName()));
         }
         return companyList;
     }
@@ -168,6 +171,18 @@ public class CompanyController {
         companyDebtHistoryService.add(companyDebtHistoryList);
         /*判断一下是不是转单位*/
         debtPayService.parseCurrency(currency, currencyAdd, pay, null, null, companyName + "单位结算转入", serialService.getCompanyPaySerial(), null, null);
+        /*如果是用余额结算的，还要在余额表里记录一下*/
+        if (companyPost.getNotNullRemainPay()) {
+            CompanyMoney companyMoney = new CompanyMoney();
+            companyMoney.setDoTime(timeService.getNow());
+            companyMoney.setCategory("支付");
+            companyMoney.setCompany(companyName);
+            companyMoney.setCompanyPaySerial(serialService.getCompanyPaySerial());
+            companyMoney.setCurrency(currency);
+            companyMoney.setMoney(-pay);
+            companyMoney.setUserId(userService.getCurrentUser());
+            companyMoneyService.add(companyMoney);
+        }
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
         /*生成结算报表
         * 1.单位名称

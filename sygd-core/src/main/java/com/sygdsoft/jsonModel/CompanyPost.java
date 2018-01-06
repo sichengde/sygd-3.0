@@ -18,6 +18,7 @@ public class CompanyPost {
     private List<DebtHistory> debtHistoryList;//精确结算列表
     private Map<String,Double> paySerialMap;//精确结算列表,结账序列号，消费map
     private CurrencyPost currencyPost ;//币种信息
+    private Boolean remainPay;//是否使用余额结算，是的话需要
 
     public CompanyPost() {
     }
@@ -84,5 +85,21 @@ public class CompanyPost {
 
     public void setPaySerialMap(Map<String, Double> paySerialMap) {
         this.paySerialMap = paySerialMap;
+    }
+
+    public Boolean getRemainPay() {
+        return remainPay;
+    }
+
+    public Boolean getNotNullRemainPay() {
+        if(remainPay==null){
+            return false;
+        }else {
+            return remainPay;
+        }
+    }
+
+    public void setRemainPay(Boolean remainPay) {
+        this.remainPay = remainPay;
     }
 }

@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.util.NullJudgement;
 
 import javax.persistence.Transient;
@@ -31,6 +32,8 @@ public class Company extends BaseEntity{
     private Double roomDebt;
     @Transient
     private Double eatDebt;
+    @Transient
+    private List<CompanyMoney> companyMoneyList;//每个币种的余额
 
     public Company() {
     }
@@ -167,5 +170,13 @@ public class Company extends BaseEntity{
 
     public void setEatDebt(Double eatDebt) {
         this.eatDebt = eatDebt;
+    }
+
+    public List<CompanyMoney> getCompanyMoneyList() {
+        return companyMoneyList;
+    }
+
+    public void setCompanyMoneyList(List<CompanyMoney> companyMoneyList) {
+        this.companyMoneyList = companyMoneyList;
     }
 }
