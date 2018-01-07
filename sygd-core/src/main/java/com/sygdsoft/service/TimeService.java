@@ -19,6 +19,7 @@ public class TimeService {
     public SimpleDateFormat shortFormat = new SimpleDateFormat("yyyy-MM-dd");
     public SimpleDateFormat numberLongFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     public SimpleDateFormat numberShortFormat = new SimpleDateFormat("yyMMdd");
+    public SimpleDateFormat reportFormat = new SimpleDateFormat("MM.dd");
     public SimpleDateFormat serialFormat = new SimpleDateFormat("yyMMddHH");
     public SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
     private Integer adjustDay=0;
@@ -309,5 +310,8 @@ public class TimeService {
             date=this.addDay(this.addMonth(date,-1),adjustDay);
         }
         return date;
+    }
+    public String getReportFormat(Date date){
+        return reportFormat.format(date);
     }
 }

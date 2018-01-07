@@ -48,12 +48,6 @@ public class RoomService extends BaseService<Room> {
     /**
      * 更新房态
      */
-    public void updateRoomState(List<String> roomList, String state) {
-        for (String s : roomList) {
-            roomMapper.updateRoomState(s, state);
-        }
-    }
-
     public void updateRoomState(String roomId, String state) {
         roomMapper.updateRoomState(roomId, state);
     }
@@ -122,9 +116,9 @@ public class RoomService extends BaseService<Room> {
         if(roomList==null){
             return "";
         }
-        String out="";
+        StringBuilder out= new StringBuilder();
         for (String s : roomList) {
-            out+=s+",";
+            out.append(s).append(",");
         }
         return out.substring(0,out.length()-1);
     }
@@ -136,19 +130,4 @@ public class RoomService extends BaseService<Room> {
         return roomMapper.getTotalCategoryNum(category);
     }
 
-    /**
-     * 通过房号字符串获得房间对象数组
-     */
-    public List<Room> getListByRoomIdString(List<String> roomIdList){
-        return roomMapper.getListByRoomIdString(util.wrapWithBrackets(util.listToString(roomIdList)));
-    }
-
-    /**
-     * 联表查询参与统计的房间
-     */
-    public List<Room> getByIfRoom(){
-        Room roomQuery=new Room();
-        roomQuery.setIfRoom(true);
-        return roomMapper.select(roomQuery);
-    }
 }
