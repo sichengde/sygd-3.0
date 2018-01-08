@@ -1,6 +1,7 @@
 package com.sygdsoft.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,24 +51,50 @@ public class BookParseController {
         /*先分析有没有这个时间段在店的*/
         List<CheckIn> checkInList = checkInService.get(null);
         for (CheckIn checkIn : checkInList) {
-            if(checkIn.getLeaveTime().compareTo(beginTime)==1){
-                String category=checkIn.getRoomCategory();
+            if (checkIn.getLeaveTime().compareTo(beginTime) == 1) {
+                String category = checkIn.getRoomCategory();
                 for (RoomCategory roomCategory : roomCategoryList) {
-                    if(roomCategory.getCategory().equals(category)){
-                        roomCategory.setRemain(roomCategory.getRemain()-1);
+                    if (roomCategory.getCategory().equals(category)) {
+                        roomCategory.setRemain(roomCategory.getRemain() - 1);
                     }
                 }
             }
         }
         /*再分析其他订单*/
-        List<BookRoomCategory> bookRoomCategoryList=bookRoomCategoryService.getViolenceRoomCategory(beginTime, endTime);
+        List<BookRoomCategory> bookRoomCategoryList = bookRoomCategoryService.getViolenceRoomCategory(beginTime, endTime);
         for (BookRoomCategory bookRoomCategory : bookRoomCategoryList) {
             for (RoomCategory roomCategory : roomCategoryList) {
-                if(roomCategory.getCategory().equals(bookRoomCategory.getRoomCategory())){
-                    roomCategory.setRemain(roomCategory.getRemain()-bookRoomCategory.getNum());
+                if (roomCategory.getCategory().equals(bookRoomCategory.getRoomCategory())) {
+                    roomCategory.setRemain(roomCategory.getRemain() - bookRoomCategory.getNum());
                 }
             }
         }
         return roomCategoryList;
+    }
+
+    @RequestMapping(value = "futureRoomState")
+    public List<JSONObject> futureRoomState(@RequestBody Query query) throws Exception {
+        List<Room> roomList = roomService.get(query);
+        List<JSONObject> jsonObjectList = new ArrayList<>();
+        for (Room room : roomList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("roomId", room.getRoomId());
+            jsonObject.put("roomCategory", room.getCategory());
+            List<Book> bookList = bookService.getBookByRoomId(room.getRoomId());
+            for (Book book : bookList) {
+                Date beginTime = book.getReachTime();
+                jsonObject.put(timeService.getReportFormat(beginTime), true);
+                String endTime = timeService.dateToStringShort(book.getLeaveTime());
+                while (true) {
+                    beginTime = timeService.addDay(beginTime, 1);
+                    if (endTime.equals(timeService.dateToStringShort(beginTime))) {
+                        break;
+                    }
+                    jsonObject.put(timeService.getReportFormat(beginTime), true);
+                }
+            }
+            jsonObjectList.add(jsonObject);
+        }
+        return jsonObjectList;
     }
 }

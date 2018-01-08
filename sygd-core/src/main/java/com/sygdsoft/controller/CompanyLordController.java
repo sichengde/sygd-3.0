@@ -27,7 +27,7 @@ public class CompanyLordController {
     CompanyService companyService;
 
     @RequestMapping(value = "companyLordAdd")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void companyLordAdd(@RequestBody CompanyLord companyLord) throws Exception {
         timeService.setNow();
         userLogService.addUserLog("单位-签单人:" + companyLord.getCompany() + '-' + companyLord.getName(), userLogService.company, userLogService.add,companyLord.getCompany() + ',' + companyLord.getName());
