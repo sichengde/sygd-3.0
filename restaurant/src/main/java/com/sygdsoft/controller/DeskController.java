@@ -155,7 +155,7 @@ public class DeskController {
         if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
             deskControllerService.generateDetail(deskDetailService.getListByDeskGroup(desk, pointOfSale), templateList);
         } else {
-            deskControllerService.generateDetail(deskDetailService.getListByDesk(desk, pointOfSale, null), templateList);
+            deskControllerService.generateDetail(deskDetailService.getListByDesk(desk, pointOfSale, "category"), templateList);
         }
         /*菜品明细转移到历史*/
         List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
@@ -221,7 +221,7 @@ public class DeskController {
             if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
                 deskDetailList = deskDetailService.getListByDeskGroup(desk, pointOfSale);
             } else {
-                deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, null);
+                deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category");
             }
         }
         List<FieldTemplate> templateList = new ArrayList<>();
