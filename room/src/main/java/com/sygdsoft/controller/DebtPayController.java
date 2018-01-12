@@ -102,7 +102,7 @@ public class DebtPayController {
             debtPayInsert.setDebtMoney(money);
             debtPayInsert.setDoneTime(timeService.getNow());
             debtPayInsert.setPaySerial(serialService.getPaySerial());
-            debtPayInsert.setCheckOutSerial(null);
+            debtPayInsert.setCheckOutSerial(debtPay.getCheckOutSerial());
             debtPayInsert.setSelfAccount(null);
             debtPayInsert.setGroupAccount(null);
             debtPayInsert.setUserId(userService.getCurrentUser());
