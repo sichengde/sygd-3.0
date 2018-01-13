@@ -42,8 +42,8 @@ public class DeskDetailService extends BaseService<DeskDetail> {
             finalString = new String[]{"foodName"};
         } else {
             finalString = new String[orderBy.length + 1];
-            System.arraycopy(orderBy, 0, finalString, 1, orderBy.length);
-            finalString[0] = "foodName";
+            System.arraycopy(orderBy, 0, finalString, 0, orderBy.length);
+            finalString[finalString.length-1] = "foodName";
         }
         query.setOrderByList(finalString);
             /*菜品聚合的话还要加一个条件，套餐的菜要放在最后边，通过price is null判断*/
@@ -76,6 +76,7 @@ public class DeskDetailService extends BaseService<DeskDetail> {
      */
     public List<DeskDetail> getListByDeskGroup(String deskName, String pointOfSale) throws Exception {
         Query query = new Query("desk=" + util.wrapWithBrackets(deskName) + " and point_of_sale=" + util.wrapWithBrackets(pointOfSale));
+        query.setOrderByList(new String[]{"category"});
         return getGroupByQuery(query);
     }
 
