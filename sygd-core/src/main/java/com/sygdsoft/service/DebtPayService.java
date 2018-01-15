@@ -19,6 +19,7 @@ import java.util.List;
 public class DebtPayService extends BaseService<DebtPay> {
     public String ldjs = "离店结算";
     public String yfjs = "哑房结算";
+    public String spls = "商品零售";
     public String zjjszdzw = "中间结算指定账务";
     public String zjjsbzdzw = "中间结算不指定账务";
     @Autowired
