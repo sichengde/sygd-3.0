@@ -872,6 +872,37 @@ public class GuestOutController {
     @RequestMapping(value = "guestOutPrintAgain")
     public Integer guestOutPrintAgain(@RequestBody DebtPay debtPay) throws Exception {
         timeService.setNow();
+        /*----------------------------先看是不是商品零售的补打----------------------------*/
+        if (debtPayService.spls.equals(debtPay.getDebtCategory())) {
+            /*商品零售报表
+        * parameter
+        * 1.操作员
+        * 2.金额
+        * 3.时间
+        * 4.消费项目
+        * 5.结账流水号
+        * 6.币种
+        * 7.酒店名称
+        * field
+        * 1.项目明细
+        * */
+        /*分析消费项目*/
+            List<FieldTemplate> templateList = new ArrayList<>();
+            DebtHistory debtHistory = null;
+            try {
+                debtHistory = debtHistoryService.getListByPaySerial(debtPay.getPaySerial()).get(0);
+            } catch (Exception e) {
+                throw new Exception("结账信息丢失");
+            }
+            String[] itemArray = debtHistory.getDescription().split("/");
+            for (String s : itemArray) {
+                FieldTemplate var = new FieldTemplate();
+                var.setField1(s);
+                templateList.add(var);
+            }
+            return reportService.generateReport(templateList, new String[]{debtPay.getUserId(), String.valueOf(debtHistory.getConsume()), timeService.dateToStringLong(debtHistory.getDoneTime()), debtHistory.getDescription(), debtHistory.getPaySerial(), debtHistory.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
+        }
+        /*----------------------------商品零售逻辑完成----------------------------*/
         serialService.setPaySerial(debtPay.getPaySerial());
         serialService.setCheckOutSerial(debtPay.getCheckOutSerial());
         /*构造一个GuestOut*/
@@ -879,7 +910,7 @@ public class GuestOutController {
         guestOut.setGroupAccount(debtPay.getGroupAccount());//公付账号，如果没有则是空
         GuestInfo guestInfo = new GuestInfo();
         /*获取发票金额*/
-        if (debtPay.getCheckOutSerial() != null ||debtPayService.yfjs.equals(debtPay.getDebtCategory())) {//中间结算的话为null不考虑
+        if (debtPay.getCheckOutSerial() != null || debtPayService.yfjs.equals(debtPay.getDebtCategory())) {//中间结算的话为null不考虑
             guestOut.setAgain("补打");//注明是补打
             List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(debtPay.getCheckOutSerial());
             guestOut.setRoomIdList(checkOutRoomService.simpleToString(checkOutRoomList));//房间字符串数组
