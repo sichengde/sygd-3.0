@@ -44,7 +44,7 @@ public class TelController {
             timeService.setNow();
             Debt debt = new Debt();
             debt.setRoomId(roomId);
-            debt.setDescription("电话费" + duration);
+            debt.setDescription("电话费:" + targetNumber);
             debt.setCurrency("挂账");
             debt.setPointOfSale(pointOfSaleService.DH);
             debt.setConsume(szMath.formatTwoDecimalReturnDouble(Double.valueOf(consume)));

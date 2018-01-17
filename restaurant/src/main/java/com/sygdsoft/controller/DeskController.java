@@ -180,7 +180,12 @@ public class DeskController {
                 }
             }
         }
-
+        /*获取点菜操作员列表*/
+        List<String> userList=deskDetailService.getDistinctUserId(desk, pointOfSale);
+        StringBuilder users= new StringBuilder();
+        for (String s : userList) {
+            users.append(s);
+        }
         /*生成操作员日志*/
         userLogService.addUserLog(desk + "台结算", userLogService.desk, userLogService.deskOut, desk);
         /*处理报表
@@ -193,13 +198,14 @@ public class DeskController {
         * 6.折后
         * 7.桌台号
         * 8.操作员
+        * 9.点菜员
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser()};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString()};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -226,6 +232,12 @@ public class DeskController {
         }
         List<FieldTemplate> templateList = new ArrayList<>();
         deskControllerService.generateDetail(deskDetailList, templateList);
+        /*获取点菜操作员列表*/
+        List<String> userList=deskDetailService.getDistinctUserId(desk, pointOfSale);
+        StringBuilder users= new StringBuilder();
+        for (String s : userList) {
+            users.append(s);
+        }
         /*处理报表
         * param
         * 1.酒店名称
@@ -236,13 +248,14 @@ public class DeskController {
         * 6.折后
         * 7.桌台号
         * 8.操作员
+        * 9.点菜员
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser()};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString()};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
