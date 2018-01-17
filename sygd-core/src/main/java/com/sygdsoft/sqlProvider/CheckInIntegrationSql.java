@@ -38,7 +38,7 @@ public class CheckInIntegrationSql {
     public String getTotalLiveDay(Map<String, Object> map) {
         String guestSource = (String) map.get("guestSource");
         String roomCategory = (String) map.get("roomCategory");
-        String basic = "SELECT sum(TO_DAYS(leave_time)-TO_DAYS(reach_time)) FROM check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
+        String basic = "SELECT sum(TO_DAYS(if(leave_time>#{endTime},#{endTime},leave_time))-TO_DAYS(reach_time)) FROM check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
         if (guestSource != null) {
             basic += " and guest_source=#{guestSource}";
         }
