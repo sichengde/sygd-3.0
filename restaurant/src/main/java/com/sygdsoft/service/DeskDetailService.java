@@ -99,4 +99,10 @@ public class DeskDetailService extends BaseService<DeskDetail> {
         }
         return deskDetailListGroup;
     }
+    /**
+     * 通过桌号获得当前桌参与点菜的操作员
+     */
+    public List<String> getDistinctUserId(String deskName, String pointOfSale){
+        return deskDetailMapper.getDistinctUserId(deskName,pointOfSale);
+    }
 }

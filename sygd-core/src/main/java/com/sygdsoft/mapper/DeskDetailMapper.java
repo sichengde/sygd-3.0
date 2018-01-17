@@ -3,10 +3,7 @@ package com.sygdsoft.mapper;
 import com.sygdsoft.model.DeskDetail;
 import com.sygdsoft.sqlProvider.DeskDetailSql;
 import com.sygdsoft.util.MyMapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,4 +26,7 @@ public interface DeskDetailMapper extends MyMapper<DeskDetail>{
             @Result(property = "storageDone", column = "storage_done"),
     })
     List<DeskDetail> getList(@Param("desk") String desk, @Param("pointOfSale") String pointOfSale, @Param("orderByList") String orderByList);
+
+    @Select("SELECT DISTINCT user_id FROM desk_detail WHERE desk=#{deskName} AND point_of_sale=#{pointOfSale}")
+    List<String> getDistinctUserId(@Param("deskName") String deskName, @Param("pointOfSale") String pointOfSale);
 }
