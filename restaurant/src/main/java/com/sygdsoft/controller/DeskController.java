@@ -236,7 +236,9 @@ public class DeskController {
         List<String> userList=deskDetailService.getDistinctUserId(desk, pointOfSale);
         StringBuilder users= new StringBuilder();
         for (String s : userList) {
-            users.append(s);
+            if(s!=null) {
+                users.append(s);
+            }
         }
         /*处理报表
         * param
