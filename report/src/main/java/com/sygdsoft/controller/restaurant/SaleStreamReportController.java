@@ -44,6 +44,10 @@ public class SaleStreamReportController {
     public SaleStreamReport SaleStreamReport(@RequestBody SaleStreamQuery saleStreamQuery) {
         Date beginTime = saleStreamQuery.getBeginTime();
         Date endTime = saleStreamQuery.getEndTime();
+        Boolean mergeFood=saleStreamQuery.getShowBack();
+        if (mergeFood==null){
+            mergeFood=false;
+        }
         String pointOfSale = saleStreamQuery.getPointOfSale();
         if ("".equals(pointOfSale)) {
             pointOfSale = null;
@@ -53,7 +57,6 @@ public class SaleStreamReportController {
         if ("".equals(categories)) {
             categories = null;
         }
-        Boolean mergeFood = "y".equals(otherParamService.getValueByName("销售流水统计退菜"));
         List<DeskDetailHistory> deskDetailHistoryList = new ArrayList<>();
         if (categories != null) {
             String[] categoryList = categories.split(",");
