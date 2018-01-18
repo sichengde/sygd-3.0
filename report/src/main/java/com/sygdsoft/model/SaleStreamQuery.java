@@ -11,6 +11,7 @@ public class SaleStreamQuery {
     private String pointOfSale ;//营业部门
     private String category ;//品种类别
     private String format ;//品种类别
+    private Boolean showBack ;//品种类别
 
     public SaleStreamQuery() {
     }
@@ -53,5 +54,13 @@ public class SaleStreamQuery {
 
     public void setFormat(String format) {
         this.format = format;
+    }
+
+    public Boolean getShowBack() {
+        return showBack;
+    }
+
+    public void setShowBack(Boolean showBack) {
+        this.showBack = showBack;
     }
 }
