@@ -49,6 +49,7 @@ public class CheckOutDetailReport {
     PointOfSaleService pointOfSaleService;
     @Autowired
     RoomShopService roomShopService;
+
     /*
     * parameters
     * 1.结账合计
@@ -72,17 +73,17 @@ public class CheckOutDetailReport {
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
-        String currencyQuery=reportJson.getCurrency();
+        String currencyQuery = reportJson.getCurrency();
         if ("".equals(userId)) {
             userId = null;
         }
         String format = reportJson.getFormat();
         /*获取所有销售部门*/
-        List<String> pointOfSaleList=pointOfSaleService.getRoomPointOfSaleList();
-        Map<String,Double> pointOfSaleConsumeMap=new HashMap<>();
+        List<String> pointOfSaleList = pointOfSaleService.getRoomPointOfSaleList();
+        Map<String, Double> pointOfSaleConsumeMap = new HashMap<>();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
-        List<DebtPay> debtPayList = debtPayService.getList(userId, currencyQuery,beginTime, endTime, "done_time");
+        List<DebtPay> debtPayList = debtPayService.getList(userId, currencyQuery, beginTime, endTime, "done_time");
         FieldTemplate fieldTemplate;
         Double total = 0.0;//总的结账金额
         Map<String, Double> currencyMap = new HashMap<>();
@@ -92,34 +93,36 @@ public class CheckOutDetailReport {
                 lastSerial = debtPay.getPaySerial();
                 fieldTemplate = new FieldTemplate();//第一行是主账号(现在改成结账时间了)
                 //先判断是在店的还是离店的
-                if(debtPay.getCheckOutSerial()==null){//没离店
+                if (debtPay.getCheckOutSerial() == null) {//没离店
                     if (debtPay.getGroupAccount() != null) {
-                        CheckInGroup checkInGroup=checkInGroupService.getByGroupAccount(debtPay.getGroupAccount());
+                        CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(debtPay.getGroupAccount());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkInGroup.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkInGroup.getLeaveTime()));
                         fieldTemplate.setField3(checkInGroup.getName());
-                    } else if(debtPay.getSelfAccount()!=null){//如果都是空的话就是零售，不参与客房结账统计表
-                        CheckIn checkIn=checkInService.getBySelfAccount(debtPay.getSelfAccount());
-                        List<CheckInGuest> checkInGuestList=checkInGuestService.getListByRoomId(debtPay.getRoomId());
+                    } else if (debtPay.getSelfAccount() != null) {//如果都是空的话就是零售，不参与客房结账统计表
+                        CheckIn checkIn = checkInService.getBySelfAccount(debtPay.getSelfAccount());
+                        List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(debtPay.getRoomId());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkIn.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkIn.getLeaveTime()));
                         fieldTemplate.setField3(checkInGuestService.listToStringName(checkInGuestList));
-                    }else if(debtPayService.yfjs.equals(debtPay.getDebtCategory())){
+                    } else if (debtPayService.yfjs.equals(debtPay.getDebtCategory())) {
                         fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(debtPay.getDoneTime()));
                         fieldTemplate.setField3("哑房结算");
-                    }else {
-                        continue;
+                    } else if (debtPayService.spls.equals(debtPay.getDebtCategory())) {
+                        fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
+                        fieldTemplate.setField2(timeService.dateToStringLong(debtPay.getDoneTime()));
+                        fieldTemplate.setField3(debtPayService.spls);
                     }
-                }else {
+                } else {
                     if (debtPay.getGroupAccount() != null) {
-                        CheckOutGroup checkOutGroup=checkOutGroupService.getByCheckOutSerial(debtPay.getCheckOutSerial());
+                        CheckOutGroup checkOutGroup = checkOutGroupService.getByCheckOutSerial(debtPay.getCheckOutSerial());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkOutGroup.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkOutGroup.getLeaveTime()));
                         fieldTemplate.setField3(checkOutGroup.getName());
                     } else {
-                        CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getBySelfAccountAndCheckOutSerial(debtPay.getSelfAccount(),debtPay.getCheckOutSerial());
-                        List<CheckInHistory> checkInHistoryList=checkInHistoryService.getListBySelfAccount(checkInHistoryLog.getSelfAccount());
+                        CheckInHistoryLog checkInHistoryLog = checkInHistoryLogService.getBySelfAccountAndCheckOutSerial(debtPay.getSelfAccount(), debtPay.getCheckOutSerial());
+                        List<CheckInHistory> checkInHistoryList = checkInHistoryService.getListBySelfAccount(checkInHistoryLog.getSelfAccount());
                         fieldTemplate.setField1(timeService.dateToStringLong(checkInHistoryLog.getReachTime()));
                         fieldTemplate.setField2(timeService.dateToStringLong(checkInHistoryLog.getLeaveTime()));
                         fieldTemplate.setField3(checkInHistoryService.listToStringName(checkInHistoryList));
@@ -128,15 +131,17 @@ public class CheckOutDetailReport {
                 fieldTemplate.setField6("true");
                 templateList.add(fieldTemplate);
                 fieldTemplate = new FieldTemplate();//第二行是来店时间，预离时间，姓名
-                fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
-                if (debtPay.getGroupAccount() != null) {
-                    fieldTemplate.setField2(ifNotNullGetString(debtPay.getGroupAccount()));
-                    fieldTemplate.setField3("公司:" + debtPay.getCompany());
-                } else {
-                    fieldTemplate.setField2(ifNotNullGetString(debtPay.getSelfAccount()));
+                if (!debtPayService.spls.equals(debtPay.getDebtCategory())) {
+                    fieldTemplate.setField1(timeService.dateToStringLong(debtPay.getDoneTime()));
+                    if (debtPay.getGroupAccount() != null) {
+                        fieldTemplate.setField2(ifNotNullGetString(debtPay.getGroupAccount()));
+                        fieldTemplate.setField3("公司:" + debtPay.getCompany());
+                    } else {
+                        fieldTemplate.setField2(ifNotNullGetString(debtPay.getSelfAccount()));
+                    }
+                    templateList.add(fieldTemplate);
                 }
-                templateList.add(fieldTemplate);
-                Query query=new Query();
+                Query query = new Query();
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
                 query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
@@ -149,12 +154,12 @@ public class CheckOutDetailReport {
                     fieldTemplate.setField5(debtHistory.getRoomId());
                     templateList.add(fieldTemplate);
                     /*如果是房吧则需要展开*/
-                    String pointOfSale=debtHistory.getPointOfSale();
-                    if(pointOfSaleService.FB.equals(pointOfSale)){
-                        String item=roomShopService.getShopItem(debtHistory.getDescription());
-                        pointOfSale=roomShopService.getCategoryByName(item);
+                    String pointOfSale = debtHistory.getPointOfSale();
+                    if (pointOfSaleService.FB.equals(pointOfSale)) {
+                        String item = roomShopService.getShopItem(debtHistory.getDescription());
+                        pointOfSale = roomShopService.getCategoryByName(item);
                     }
-                    pointOfSaleConsumeMap.put(pointOfSale,pointOfSaleConsumeMap.getOrDefault(pointOfSale,0.0)+debtHistory.getNotNullConsume());
+                    pointOfSaleConsumeMap.put(pointOfSale, pointOfSaleConsumeMap.getOrDefault(pointOfSale, 0.0) + debtHistory.getNotNullConsume());
                 }
             }
             fieldTemplate = new FieldTemplate();//最后一行是结账信息，俗称小计
@@ -187,7 +192,7 @@ public class CheckOutDetailReport {
             out += s + "/" + currencyMap.get(s) + " ";
         }
         paramList.add(out);
-        out="";
+        out = "";
         /*部门分析*/
         for (String s : pointOfSaleConsumeMap.keySet()) {
             out += s + "/" + pointOfSaleConsumeMap.get(s) + " ";
