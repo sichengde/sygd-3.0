@@ -16,7 +16,8 @@ public class DeskPayRich extends BaseEntity {
     private Double finalPrice;
     private Double discount;
     private String desk;
-    private String userId;
+    private String userIdOut;
+    private String userIdIn;//开台操作员
     private String pointOfSale;
     private Integer num;
     private Boolean disabled;
@@ -104,14 +105,6 @@ public class DeskPayRich extends BaseEntity {
         this.desk = desk;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public String getPointOfSale() {
         return pointOfSale;
     }
@@ -134,5 +127,21 @@ public class DeskPayRich extends BaseEntity {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public String getUserIdIn() {
+        return userIdIn;
+    }
+
+    public void setUserIdIn(String userIdIn) {
+        this.userIdIn = userIdIn;
+    }
+
+    public String getUserIdOut() {
+        return userIdOut;
+    }
+
+    public void setUserIdOut(String userIdOut) {
+        this.userIdOut = userIdOut;
     }
 }
