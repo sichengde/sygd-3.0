@@ -91,6 +91,7 @@ public class GuestOutController {
     GuestIntegrationService guestIntegrationService;
 
     String checkOutSerial;
+    private static final Object lock=new Object();
 
     /**
      * 结算分为团队结算和单人结算
@@ -133,7 +134,7 @@ public class GuestOutController {
         } else {
             checkOutSerial = serialService.setCheckOutSerial();//生成离店序列号
         }
-        synchronized (checkOutSerial) {
+        synchronized (lock) {
             serialService.setPaySerial();//生成结账序列号
             /*转换房态*/
             this.updateRoomStateGuestOut(guestOut.getRoomIdList());
@@ -656,6 +657,8 @@ public class GuestOutController {
          * 23.备注                             guestOut.getRemark()
          * 24.电话                             guestInfo.getPhone()
          * 25.性别                             guestInfo.getSex()
+         * 26.单位分隔1                        debtPayService.companySplit1
+         * 27.单位分隔2                        debtPayService.companySplit2
          * field
          * 1.日期
          * 2.房号
@@ -799,7 +802,9 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex};
+        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex,debtPayService.companySplit1,debtPayService.companySplit2};
+        debtPayService.companySplit1=null;
+        debtPayService.companySplit2=null;
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
