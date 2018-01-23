@@ -59,6 +59,9 @@ public class DebtPayService extends BaseService<DebtPay> {
     @Autowired
     TimeService timeService;
 
+    public String companySplit1=null;//如果单位可以用斜杠分隔，则这里输出分割后的两部分
+    public String companySplit2=null;
+
     /**
      * 查找结账记录
      */
@@ -168,6 +171,12 @@ public class DebtPayService extends BaseService<DebtPay> {
                     lord = currencyAdd.split(" ")[1];
                 } catch (Exception e) {
                     throw new Exception("请输入签单单位和签单人");
+                }
+                /*尝试分隔单位符号*/
+                String[] afterSplit=company.split("/");
+                if(afterSplit.length>1){
+                    companySplit1=afterSplit[0];
+                    companySplit2=afterSplit[1];
                 }
                 changeDebt += companyService.companyAddDebt(company, lord, money, description, module, pointOfSale, paySerial);
                 break;
