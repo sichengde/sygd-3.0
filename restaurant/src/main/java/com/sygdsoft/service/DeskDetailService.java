@@ -89,7 +89,7 @@ public class DeskDetailService extends BaseService<DeskDetail> {
         String lastName = null;
         DeskDetail lastDeskDetail = null;
         for (DeskDetail deskDetail : deskDetailList) {
-            if (deskDetail.getFoodName().equals(lastName)&&deskDetail.getNum()!=null&&lastDeskDetail.getNum()!=null) {//重名，并且两者数量都不是null（说明不是套餐里的菜），就聚合
+            if (deskDetail.getFoodName().equals(lastName)&&deskDetail.getNum()!=null&&lastDeskDetail.getNum()!=null&&deskDetail.getNotNullPrice().equals(lastDeskDetail.getNotNullPrice())) {//重名，并且两者数量都不是null（说明不是套餐里的菜），并且单价也不能一样，就聚合
                 lastDeskDetail.setNum(lastDeskDetail.getNum() + deskDetail.getNum());
             } else {
                 deskDetailListGroup.add(deskDetail);
