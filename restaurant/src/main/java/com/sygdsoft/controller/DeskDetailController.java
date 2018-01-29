@@ -79,7 +79,7 @@ public class DeskDetailController {
      */
     @RequestMapping(value = "deskDetailAction")
     @Transactional(rollbackFor = Exception.class)
-    public void deskAction(@RequestBody List<DeskDetail> deskDetailList) throws Exception {
+    public synchronized void deskAction(@RequestBody List<DeskDetail> deskDetailList) throws Exception {
         timeService.setNow();
         List<DeskDetail> deskDetailUpdate = new ArrayList<>();//需要更新的
         List<DeskDetail> deskDetailInsert = new ArrayList<>();//需要查入的
