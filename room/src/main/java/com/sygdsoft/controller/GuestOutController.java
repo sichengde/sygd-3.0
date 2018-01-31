@@ -952,9 +952,11 @@ public class GuestOutController {
                 String lord;
                 try {
                     company = pay.getCurrencyAdd().split(" ")[0];
+                    lord = pay.getCurrencyAdd().split(" ")[1];
                 } catch (Exception e) {
                     throw new Exception("该笔转单位没有输入单位");
                 }
+                changeDebt+="转单位至："+company+" 签单人："+lord;
                 /*尝试分隔单位符号*/
                 String[] afterSplit=company.split("/");
                 if(afterSplit.length>1){
