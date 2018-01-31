@@ -947,6 +947,22 @@ public class GuestOutController {
         for (DebtPay pay : debtPayList) {
             currencyPostList.add(new CurrencyPost(pay));
             changeDebt += "币种:" + pay.getCurrency() + "/" + pay.getDebtMoney();
+            if("转单位".equals(pay.getCurrency())){
+                String company;
+                String lord;
+                try {
+                    company = pay.getCurrencyAdd().split(" ")[0];
+                } catch (Exception e) {
+                    throw new Exception("该笔转单位没有输入单位");
+                }
+                /*尝试分隔单位符号*/
+                String[] afterSplit=company.split("/");
+                if(afterSplit.length>1){
+                    debtPayService.companySplit1=afterSplit[0];
+                    debtPayService.companySplit2=afterSplit[1];
+                }
+                break;
+            }
         }
         guestOut.setCurrencyPayList(currencyPostList);
         guestOut.setPaySerial(debtPay.getPaySerial());
