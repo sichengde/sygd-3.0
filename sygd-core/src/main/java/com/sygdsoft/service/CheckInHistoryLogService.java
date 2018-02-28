@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,18 +14,18 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "checkInHistoryLog")
-public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
+public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog> {
     @Autowired
     CheckInHistoryLogMapper checkInHistoryLogMapper;
 
     /**
      * 通过房号和离店结算序列号获得一条记录（换房的话容易报错）
      */
-    public CheckInHistoryLog getByRoomIDAndCheckOutSerial(String roomId,String checkOutSerial){
-        CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
+    public CheckInHistoryLog getByRoomIDAndCheckOutSerial(String roomId, String checkOutSerial) {
+        CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog();
         checkInHistoryLog.setRoomId(roomId);
         checkInHistoryLog.setCheckOutSerial(checkOutSerial);
-        List<CheckInHistoryLog> checkInHistoryLogList=checkInHistoryLogMapper.select(checkInHistoryLog);
+        List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogMapper.select(checkInHistoryLog);
         try {
             return checkInHistoryLogList.get(0);
         } catch (Exception e) {
@@ -35,22 +36,23 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
     /**
      * 通过自付账号和离店结算序列号获得一条记录
      */
-    public CheckInHistoryLog getBySelfAccountAndCheckOutSerial(String selfAccount,String checkOutSerial){
-        CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
+    public CheckInHistoryLog getBySelfAccountAndCheckOutSerial(String selfAccount, String checkOutSerial) {
+        CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog();
         checkInHistoryLog.setSelfAccount(selfAccount);
         checkInHistoryLog.setCheckOutSerial(checkOutSerial);
-        List<CheckInHistoryLog> checkInHistoryLogList=checkInHistoryLogMapper.select(checkInHistoryLog);
+        List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogMapper.select(checkInHistoryLog);
         try {
             return checkInHistoryLogList.get(0);
         } catch (Exception e) {
             return null;
         }
     }
+
     /**
      * 通过公付账号获得队列
      */
-    public List<CheckInHistoryLog> getByGroupAccount(String groupAccount){
-        CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
+    public List<CheckInHistoryLog> getByGroupAccount(String groupAccount) {
+        CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog();
         checkInHistoryLog.setGroupAccount(groupAccount);
         return checkInHistoryLogMapper.select(checkInHistoryLog);
     }
@@ -58,17 +60,24 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog>{
     /**
      * 通过离店序列号获取全部房号
      */
-    public List<CheckInHistoryLog> getByCheckOutSerial(String checkOutSerial){
-        CheckInHistoryLog checkInHistoryLog=new CheckInHistoryLog();
+    public List<CheckInHistoryLog> getByCheckOutSerial(String checkOutSerial) {
+        CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog();
         checkInHistoryLog.setCheckOutSerial(checkOutSerial);
         return checkInHistoryLogMapper.select(checkInHistoryLog);
     }
 
-    public List<String> getRoomIdListByCheckInHistoryLogList(List<CheckInHistoryLog> checkInHistoryLogList){
-        List<String> roomIdList=new ArrayList<>();
+    public List<String> getRoomIdListByCheckInHistoryLogList(List<CheckInHistoryLog> checkInHistoryLogList) {
+        List<String> roomIdList = new ArrayList<>();
         for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
             roomIdList.add(checkInHistoryLog.getRoomId());
         }
         return roomIdList;
+    }
+
+    /**
+     * 通过单位名称获得各个协议的消费总额
+     */
+    public List<CheckInHistoryLog> getConsumeGroupByProtocol(Date beginTime, Date endTime, String company) {
+        return checkInHistoryLogMapper.getConsumeGroupByProtocol(beginTime, endTime, company);
     }
 }
