@@ -1,23 +1,25 @@
 package com.sygdsoft.service;
 
 import com.mysql.jdbc.Connection;
-import com.sygdsoft.model.InCategory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.security.Key;
+import java.security.SecureRandom;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by 舒展 on 2016-05-20.
@@ -25,21 +27,54 @@ import java.util.*;
  */
 @Service
 public class RegisterService {
-    private int pass=0;//0是正式版,1是试用版，没有试用版，试用版就是没通过
-    private int passCK=0;//餐饮模块有没
-    private int passSN=0;//桑拿模块有没
+    public SimpleDateFormat shortFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public List<String> securityStr = new ArrayList<>();//秘钥数组，一个秘钥只能用一次
+    String key = "shuzhanxinqiaoyi";
+    String iv = "shuzhanxinqiaoyi";//初始化向量参数，AES 为16bytes. DES 为8bytes.
+    private Date limitTime = null;
+    private Boolean pass = false;//接待模块
+    private Boolean passCK = false;//餐饮模块
+    private Boolean passSN = false;//桑拿模块
     private List<Integer> module = new ArrayList<>();
     private Integer maxUser;
     private String serial;
-    private String serialCK;
-    private String serialSN;
 
-    public List<String> securityStr=new ArrayList<>();//秘钥数组，一个秘钥只能用一次
+    private static String byteToHexString(byte[] bytes) {
+        StringBuffer sb = new StringBuffer(bytes.length);
+        String sTemp;
+        for (int i = 0; i < bytes.length; i++) {
+            sTemp = Integer.toHexString(0xFF & bytes[i]);
+            if (sTemp.length() < 2)
+                sb.append(0);
+            sb.append(sTemp.toUpperCase());
+        }
+        return sb.toString();
+    }
+
+    private static byte[] hexStringToByte(String hexString) {
+        if (hexString == null || hexString.equals("")) {
+            return null;
+        }
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] d = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return d;
+    }
+
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
     /**
      * 定是清空秘钥数组
      */
     @Scheduled(fixedRate = 900000)
-    public void clearSecurityStr(){
+    public void clearSecurityStr() {
         this.securityStr.clear();
     }
 
@@ -47,7 +82,7 @@ public class RegisterService {
      * 初始化验证注册码,初始化httpClient
      */
     @PostConstruct
-    public void init() throws Exception {
+    public void init() {
         String driver = "com.mysql.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true";
         String username = "hotel";
@@ -59,87 +94,55 @@ public class RegisterService {
             PreparedStatement ps = conn.prepareStatement("SELECT * from other_param where other_param='注册码'");
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
-                String[] serial = resultSet.getString("value").split(",");
-                this.serial = serial[0];
-                this.serialCK = serial[1];
-                this.serialSN = serial[2];
+                this.serial = resultSet.getString("value");
             }
             conn.close();
             ps.close();
             resultSet.close();
+            this.check();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //this.check();
-        //this.checkCK();
-        //this.checkSN();
     }
 
-    public void check() throws IOException {
-        if (this.serial == null) {
-            this.pass = 1;
-        } else {
-            String parse = "";
-            String password = this.serial;
-            for (int i = 0; i < password.length(); i++) {
-                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)), 16);
-                parse += Integer.toHexString(int1 ^ 7);
-            }
-            if (parse.equals(getLocalSerial())) {
-                this.pass = 0;
-            } else {
-                this.pass = 1;
-            }
-        }
-    }
-
-    public void checkCK() throws IOException {
-        if (this.serialCK == null) {
-            this.passCK = 1;
-        } else {
-            String parse = "";
-            String password = this.serialCK;
-            for (int i = 0; i < password.length(); i++) {
-                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)), 16);
-                parse += Integer.toHexString(int1 ^ 8);
-            }
-            if (parse.equals(getLocalSerial())) {
-                this.passCK = 0;
-            } else {
-                this.passCK = 1;
-            }
-        }
-    }
-
-    public void checkSN() throws IOException {
-        if (this.serialSN == null) {
-            this.passSN = 1;
-        } else {
-            String parse = "";
-            String password = this.serialSN;
-            for (int i = 0; i < password.length(); i++) {
-                Integer int1 = Integer.valueOf(String.valueOf(password.charAt(i)), 16);
-                parse += Integer.toHexString(int1 ^ 9);
-            }
-            if (parse.equals(getLocalSerial())) {
-                this.passSN = 0;
-            } else {
-                this.passSN = 1;
+    public void check() throws Exception {
+        Key keySpec = new SecretKeySpec(key.getBytes(), "AES");    //两个参数，第一个为私钥字节数组， 第二个为加密方式 AES或者DES
+        IvParameterSpec ivSpec = new IvParameterSpec(iv.getBytes());
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        byte[] decodeBytes = hexStringToByte(this.serial);
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        keyGenerator.init(128, new SecureRandom(key.getBytes()));//key长可设为128，192，256位，这里只能设为128
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        byte[] result = cipher.doFinal(decodeBytes);
+        this.limitTime = shortFormat.parse(new String(result).substring(0, 10));//有效期
+        int module = Integer.parseInt(new String(result).substring(10, 11));//模块，1接待，2餐饮，3桑拿，4全部
+        decodeBytes = hexStringToByte(new String(result).substring(11));
+        keyGenerator.init(128, new SecureRandom(key.getBytes()));//key长可设为128，192，256位，这里只能设为128
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+        result = cipher.doFinal(decodeBytes);
+        String out = new String(result);
+        String code = out.substring(0, out.length() - 3);//机器码
+        if (code.equals(getLocalSerial())) {
+            switch (module) {
+                case 1:
+                    this.pass = true;
+                    break;
+                case 2:
+                    this.passCK = true;
+                    break;
+                case 3:
+                    this.passSN = true;
+                    break;
+                case 4:
+                    this.pass = true;
+                    this.passCK = true;
+                    this.passSN = true;
+                    break;
             }
         }
     }
 
     public String getLocalSerial() throws IOException {
-        /*获取cpu序列号*/
-        /*long start = System.currentTimeMillis();
-        Process process = Runtime.getRuntime().exec(
-                new String[]{"wmic", "cpu", "get", "ProcessorId"});
-        process.getOutputStream().close();
-        Scanner sc = new Scanner(process.getInputStream());
-        String property = sc.next();
-        String cpuSerial = sc.next();*/
-        //System.out.println("cpuSerial:" + cpuSerial);
-
         /*获取硬盘序列号*/
         String diskSerial = "";
         try {
@@ -164,58 +167,39 @@ public class RegisterService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //System.out.println("diskSerial:" + diskSerial);
-        /*获取主板序列号*/
-        /*String motherBoardSerial = "";
-        try {
-            File file = File.createTempFile("realhowto", ".vbs");
-            file.deleteOnExit();
-            FileWriter fw = new java.io.FileWriter(file);
-            String vbs = "Set objWMIService = GetObject(\"winmgmts:\\\\.\\root\\cimv2\")\n"
-                    + "Set colItems = objWMIService.ExecQuery _ \n"
-                    + "   (\"Select * from Win32_BaseBoard\") \n"
-                    + "For Each objItem in colItems \n"
-                    + "    Wscript.Echo objItem.SerialNumber \n"
-                    + "    exit for  ' do the first cpu only! \n" + "Next \n";
-            fw.write(vbs);
-            fw.close();
-            Process p = Runtime.getRuntime().exec(
-                    "cscript //NoLogo " + file.getPath());
-            BufferedReader input = new BufferedReader(new InputStreamReader(p
-                    .getInputStream()));
-            String line;
-            while ((line = input.readLine()) != null) {
-                motherBoardSerial += line;
-            }
-            input.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-        //System.out.println("motherBoardSerial:" + motherBoardSerial.trim());
-        String s = diskSerial;
-            /*单数的话补个0*/
-        if (s.length() % 2 == 1) {
-            s += "0";
-        }
-        /*去除乱七八糟的字符，设置为0*/
-        StringBuilder sb = new StringBuilder(s);
-        Integer int1 = null;
-        for (int i = 0; i < sb.length(); i++) {
-            try {
-                int1 = Integer.valueOf(String.valueOf(sb.charAt(i)), 16);
-            } catch (NumberFormatException e) {
-                sb.replace(i, i + 1, "0");
-            }
-        }
-        return String.valueOf(sb);
+        return diskSerial;
     }
 
-    public int getPass() {
-        return pass;
-    }
-
-    public void setPass(int pass) {
-        this.pass = pass;
+    public String getLocalSerialShow() throws Exception {
+        Key keySpec = new SecretKeySpec(key.getBytes(), "AES");    //两个参数，第一个为私钥字节数组， 第二个为加密方式 AES或者DES
+        IvParameterSpec ivSpec = new IvParameterSpec(iv.getBytes());
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        /*获取硬盘序列号*/
+        String diskSerial = "";
+        File file = File.createTempFile("realhowto", ".vbs");
+        file.deleteOnExit();
+        FileWriter fw = new java.io.FileWriter(file);
+        String vbs = "Set objFSO = CreateObject(\"Scripting.FileSystemObject\")\n"
+                + "Set colDrives = objFSO.Drives\n"
+                + "Set objDrive = colDrives.item(\"C\")\n"
+                + "Wscript.Echo objDrive.SerialNumber";  // see note
+        fw.write(vbs);
+        fw.close();
+        Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
+        BufferedReader input =
+                new BufferedReader
+                        (new InputStreamReader(p.getInputStream()));
+        String line;
+        while ((line = input.readLine()) != null) {
+            diskSerial += line;
+        }
+        input.close();
+        Random random = new Random();
+        String content = diskSerial + String.format("%03d", random.nextInt(999));
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+        //Cipher cipher = AesUtil.generateCipher(Cipher.ENCRYPT_MODE,"1234567890123456".getBytes(),"1234567890123456".getBytes());
+        byte[] byteResult = cipher.doFinal(content.getBytes());
+        return byteToHexString(byteResult);
     }
 
     public List<Integer> getModule() {
@@ -234,19 +218,35 @@ public class RegisterService {
         this.maxUser = maxUser;
     }
 
-    public int getPassCK() {
+    public Date getLimitTime() {
+        return limitTime;
+    }
+
+    public void setLimitTime(Date limitTime) {
+        this.limitTime = limitTime;
+    }
+
+    public Boolean getPass() {
+        return pass;
+    }
+
+    public void setPass(Boolean pass) {
+        this.pass = pass;
+    }
+
+    public Boolean getPassCK() {
         return passCK;
     }
 
-    public void setPassCK(int passCK) {
+    public void setPassCK(Boolean passCK) {
         this.passCK = passCK;
     }
 
-    public int getPassSN() {
+    public Boolean getPassSN() {
         return passSN;
     }
 
-    public void setPassSN(int passSN) {
+    public void setPassSN(Boolean passSN) {
         this.passSN = passSN;
     }
 }

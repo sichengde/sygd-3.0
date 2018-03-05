@@ -61,10 +61,10 @@ public class ModuleService {
      * 获取新版module
      */
     public Module[] moduleNewGet(){
-        if(registerService.getPassCK()==1){
+        if(!registerService.getPassCK()){
             moduleUltimateNew[1]=new Module("无餐饮权限","",new String[]{});
         }
-        if(registerService.getPassSN()==1){
+        if(!registerService.getPassSN()){
             moduleUltimateNew[2]=new Module("无桑拿权限","",new String[]{});
         }
         return moduleUltimateNew;
@@ -77,13 +77,13 @@ public class ModuleService {
      */
     public List<String> moduleCheck(){
         List<String> moduleList=new ArrayList<>();
-        if(registerService.getPass()==0){
+        if(registerService.getPass()){
             moduleList.add("room");
         }
-        if(registerService.getPassCK()==0){
+        if(registerService.getPassCK()){
             moduleList.add("eat");
         }
-        if(registerService.getPassSN()==0){
+        if(registerService.getPassSN()){
             moduleList.add("sauna");
         }
         return moduleList;

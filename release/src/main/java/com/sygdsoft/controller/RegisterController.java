@@ -20,8 +20,13 @@ public class RegisterController {
 
     @RequestMapping(value = "getRegisterNumber")
     public OnlyString getRegisterNumber()throws Exception{
-        String s=registerService.getLocalSerial();
+        String s=registerService.getLocalSerialShow();
         return new OnlyString(s);
+    }
+
+    @RequestMapping(value = "registerDateCheck")
+    public boolean registerDateCheck(){
+        return new Date().getTime()<registerService.getLimitTime().getTime();
     }
 
     /**
