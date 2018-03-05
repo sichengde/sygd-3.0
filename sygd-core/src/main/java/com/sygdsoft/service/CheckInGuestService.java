@@ -28,6 +28,18 @@ public class CheckInGuestService extends BaseService<CheckInGuest>{
         return checkInGuestMapper.select(checkInGroupQuery);
     }
     /**
+     * 通过房号列表获得客人姓名字符串
+     */
+    public String getListByRoomId(List<String> roomIdList){
+        String out="";
+        for (String roomId : roomIdList) {
+            List<CheckInGuest> checkInGuests=getListByRoomId(roomId);
+            out+=listToStringName(checkInGuests)+",";
+        }
+        return out;
+    }
+
+    /**
      * 通过房号数组获得在店宾客数组
      */
     public List<CheckInGuest> getListByRoomIdList(List<String> roomIdList){
@@ -60,4 +72,5 @@ public class CheckInGuestService extends BaseService<CheckInGuest>{
         checkInGuestQuery.setRoomId(roomId);
         checkInGuestMapper.delete(checkInGuestQuery);
     }
+
 }

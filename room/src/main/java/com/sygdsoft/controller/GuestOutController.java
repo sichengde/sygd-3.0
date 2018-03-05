@@ -456,6 +456,7 @@ public class GuestOutController {
             debtPay.setCurrencyAdd(currencyAdd);
             debtPay.setDoneTime(timeService.getNow());
             debtPay.setRoomId(roomService.roomListToString(roomIdList));
+            debtPay.setGuestName(checkInGuestService.getListByRoomId(roomIdList));
             if (groupAccount == null) {
                 CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));//在店户籍
                 debtPay.setCompany(checkIn.getCompany());
