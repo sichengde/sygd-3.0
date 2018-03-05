@@ -23,6 +23,7 @@ public class DebtPay extends BaseEntity {
     private String userId;//操作员
     private String roomId;//房间列表，没有就是空
     private Boolean lostDone;//哑房结算完成
+    private String guestName;//客人姓名
 
     public DebtPay() {
     }
@@ -171,5 +172,13 @@ public class DebtPay extends BaseEntity {
 
     public void setLostDone(Boolean lostDone) {
         this.lostDone = lostDone;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 }
