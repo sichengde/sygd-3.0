@@ -20,22 +20,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Service
 public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
-    private final MessageSendingOperations<String> messagingTemplate;
     private static final Logger logger = LoggerFactory.getLogger(Night.class);
-    private AtomicBoolean brokerAvailable = new AtomicBoolean();
+    private final MessageSendingOperations<String> messagingTemplate;
     @Autowired
     HotelService hotelService;
-
-    @Override
-    public void onApplicationEvent(BrokerAvailabilityEvent event) {
-        this.brokerAvailable.set(event.isBrokerAvailable());
-    }
-
-    @Autowired
-    public Night(MessageSendingOperations<String> messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-    }
-
     @Autowired
     DebtService debtService;
     @Autowired
@@ -72,6 +60,16 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     NightService nightService;
     @Autowired
     RegisterService registerService;
+    private AtomicBoolean brokerAvailable = new AtomicBoolean();
+    @Autowired
+    public Night(MessageSendingOperations<String> messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+
+    @Override
+    public void onApplicationEvent(BrokerAvailabilityEvent event) {
+        this.brokerAvailable.set(event.isBrokerAvailable());
+    }
 
     /**
      * 自动夜审
@@ -79,24 +77,30 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     @Scheduled(cron = "${night.action}")
     public void autoNightAction() throws Exception {
         logger.info("开始自动夜审");
-        if(!registerService.getPass()||new Date().getTime()>this.registerService.getLimitTime().getTime()){
-            JSONObject jsonObject=new JSONObject();
-            jsonObject.put("msg","磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+        if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg", "磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
             return;
         }
         timeService.setNow();
-        userLogService.addUserLogWithoutUserIp("自动夜审",userLogService.reception,userLogService.night);
+        userLogService.addUserLogWithoutUserIp("自动夜审", userLogService.reception, userLogService.night);
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
-        this.messagingTemplate.convertAndSend("/beginNight", true);
+        if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg", "磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
+        } else {
+            this.messagingTemplate.convertAndSend("/beginNight", true);
+        }
     }
 
     /**
      * 重置序列号
      */
     @Scheduled(cron = "0 0 0 * * *")
-    public void resetSerial(){
+    public void resetSerial() {
         logger.info("重设序列号");
         /*序列号重设为0*/
         serialService.setAllToOne();
@@ -105,12 +109,18 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     /**
      * 手动夜审
      */
-    public void manualNightAction() throws Exception{
-        if(!registerService.getPass()||new Date().getTime()>this.registerService.getLimitTime().getTime()){
+    public void manualNightAction() throws Exception {
+        if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
             throw new Exception("磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
         }
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
-        this.messagingTemplate.convertAndSend("/beginNight", true);
+        if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("msg", "磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
+        } else {
+            this.messagingTemplate.convertAndSend("/beginNight", true);
+        }
     }
 }
