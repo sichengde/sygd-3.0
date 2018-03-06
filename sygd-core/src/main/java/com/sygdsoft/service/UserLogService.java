@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -152,5 +153,12 @@ public class UserLogService extends BaseService<UserLog> {
      */
     public void deleteByPrimaryKey(Integer index) {
         userLogMapper.deleteByPrimaryKey(index);
+    }
+
+    /**
+     * 获得最近一条的时间，用于校验服务器时间是否被更改
+     */
+    public Date getRecentDate(){
+        return userLogMapper.getRecentDate();
     }
 }
