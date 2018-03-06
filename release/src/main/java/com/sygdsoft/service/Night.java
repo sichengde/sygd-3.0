@@ -1,8 +1,6 @@
 package com.sygdsoft.service;
 
-import com.sygdsoft.conf.CloudServiceConfig;
-import com.sygdsoft.controller.NightController;
-import com.sygdsoft.jsonModel.Query;
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.util.Util;
@@ -16,7 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -74,6 +72,8 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     UserLogService userLogService;
     @Autowired
     NightService nightService;
+    @Autowired
+    RegisterService registerService;
 
     /**
      * 自动夜审
@@ -81,9 +81,12 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     @Scheduled(cron = "${night.action}")
     public void autoNightAction() throws Exception {
         logger.info("开始自动夜审");
-        /*Map<String,String> map=new HashMap<>();
-        map.put("hotelId",hotelService.getHotelId());
-        hotelService.post(CloudServiceConfig.cloudAddress+"/manualNightCloud",map);*/
+        if(!registerService.getPass()||new Date().getTime()>this.registerService.getLimitTime().getTime()){
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("msg","磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
+            return;
+        }
         timeService.setNow();
         userLogService.addUserLogWithoutUserIp("自动夜审",userLogService.reception,userLogService.night);
         this.messagingTemplate.convertAndSend("/beginNight", false);
@@ -105,6 +108,9 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
      * 手动夜审
      */
     public void manualNightAction() throws Exception{
+        if(!registerService.getPass()||new Date().getTime()>this.registerService.getLimitTime().getTime()){
+            throw new Exception("磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+        }
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
         this.messagingTemplate.convertAndSend("/beginNight", true);
