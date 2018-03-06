@@ -61,6 +61,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     @Autowired
     RegisterService registerService;
     private AtomicBoolean brokerAvailable = new AtomicBoolean();
+
     @Autowired
     public Night(MessageSendingOperations<String> messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -77,7 +78,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     @Scheduled(cron = "${night.action}")
     public void autoNightAction() throws Exception {
         logger.info("开始自动夜审");
-        if(userLogService.getRecentDate().getTime()-new Date().getTime()<24*60*60*1000){
+        if (userLogService.getRecentDate().getTime() - new Date().getTime() > 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("msg", "服务器时间不准确，无法夜审，请联系供应商");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
@@ -116,7 +117,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
      * 手动夜审
      */
     public void manualNightAction() throws Exception {
-        if(userLogService.getRecentDate().getTime()-new Date().getTime()<24*60*60*1000){
+        if (userLogService.getRecentDate().getTime() - new Date().getTime() > 24 * 60 * 60 * 1000) {
             throw new Exception("服务器时间不准确，无法夜审，请联系供应商");
         }
         if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
