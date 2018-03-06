@@ -60,7 +60,7 @@ public class UserController {
     /*查*/
     @RequestMapping(value = "userGet")
     public List<User> userGet(HttpServletRequest request, Device device, @RequestBody Query query) throws Exception {
-        if(this.registerService.getPass()==0) {
+        if(this.registerService.getPass()) {
             return userService.get(query);
         }else {
             return null;
