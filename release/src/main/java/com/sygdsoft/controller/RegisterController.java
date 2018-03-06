@@ -24,9 +24,9 @@ public class RegisterController {
         return new OnlyString(s);
     }
 
-    @RequestMapping(value = "registerDateCheck")
-    public boolean registerDateCheck(){
-        return new Date().getTime()<registerService.getLimitTime().getTime();
+    @RequestMapping(value = "getRegisterDate")
+    public Date registerDateCheck(){
+        return registerService.getLimitTime();
     }
 
     /**
