@@ -82,13 +82,13 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         logger.info("开始自动夜审");
         if (userLogService.getRecentDate().getTime() - new Date().getTime() > 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "服务器时间不准确，无法夜审，请联系供应商");
+            jsonObject.put("msg", "服务器时间不准确，无法夜审，请及时处理");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
             return;
         }
         if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
             return;
         }
@@ -98,7 +98,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         nightService.nightActionLogic();
         if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
         } else {
             this.messagingTemplate.convertAndSend("/beginNight", true);
@@ -120,16 +120,16 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
      */
     public void manualNightAction() throws Exception {
         if (userLogService.getRecentDate().getTime() - new Date().getTime() > 24 * 60 * 60 * 1000) {
-            throw new Exception("服务器时间不准确，无法夜审，请联系供应商");
+            throw new Exception("服务器时间不准确，无法夜审，请及时处理");
         }
         if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
-            throw new Exception("磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            throw new Exception("数据空间不够，无法夜审，请及时处理");
         }
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
         if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "磁盘数据损坏，无法夜审，请联系供应商，避免数据丢失");
+            jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
         } else {
             this.messagingTemplate.convertAndSend("/beginNight", true);
