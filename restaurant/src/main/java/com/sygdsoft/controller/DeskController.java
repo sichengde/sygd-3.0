@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.jsonModel.PrintMessage;
@@ -108,6 +109,22 @@ public class DeskController {
         List<Desk> deskList = deskService.getByPointOfSale(pointOfSale);
         deskService.setDeskDetail(deskList, date);
         return deskList;
+    }
+
+    @RequestMapping(value = "changeDesk")
+    public void changeDesk(@RequestBody JSONObject jsonObject) throws Exception {
+        String sourceDesk=jsonObject.getString("sourceDesk");
+        String targetDesk=jsonObject.getString("targetDesk");
+        String pointOfSale=jsonObject.getString("pointOfSale");
+        DeskIn deskIn=deskInService.getByDesk(sourceDesk,pointOfSale);
+        deskIn.setDesk(targetDesk);
+        deskInService.update(deskIn);
+        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null);
+        for (DeskDetail deskDetail : deskDetailList) {
+            deskDetail.setDesk(targetDesk);
+        }
+        deskDetailService.update(deskDetailList);
+        userLogService.addUserLog(sourceDesk+"->"+targetDesk, userLogService.desk, userLogService.deskChange,deskIn.getDesk());
     }
 
     /**

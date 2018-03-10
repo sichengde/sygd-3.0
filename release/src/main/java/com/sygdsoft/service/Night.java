@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     private static final Logger logger = LoggerFactory.getLogger(Night.class);
-    private final MessageSendingOperations<String> messagingTemplate;
     @Autowired
     HotelService hotelService;
     @Autowired
@@ -60,6 +59,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     NightService nightService;
     @Autowired
     RegisterService registerService;
+    private final MessageSendingOperations<String> messagingTemplate;
     private AtomicBoolean brokerAvailable = new AtomicBoolean();
 
     @Autowired
