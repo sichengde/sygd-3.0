@@ -43,6 +43,7 @@ public class UserLogService extends BaseService<UserLog> {
     public String updateBook = "更新订单";
     /*-----------------------------餐饮-----------------------------*/
     public String deskDetailIn = "点菜";
+    public String deskChange = "换台";
     public String deskOut = "结算";
     public String deskOutReverse = "结算叫回";
     public String deskBookUpdate = "订单修改";

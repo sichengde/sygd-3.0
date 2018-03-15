@@ -23,7 +23,7 @@ import java.util.Random;
 
 /**
  * Created by 舒展 on 2016-05-20.
- * 验证注册码，没有就是测试版，试用版只有前三个模块（接待餐饮桑拿）
+ * yyyy-MM-dd+1位模块+注册码
  */
 @Service
 public class RegisterService {

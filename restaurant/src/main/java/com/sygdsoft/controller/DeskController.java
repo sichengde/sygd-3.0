@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.jsonModel.PrintMessage;
@@ -110,6 +111,22 @@ public class DeskController {
         return deskList;
     }
 
+    @RequestMapping(value = "changeDesk")
+    public void changeDesk(@RequestBody JSONObject jsonObject) throws Exception {
+        String sourceDesk=jsonObject.getString("sourceDesk");
+        String targetDesk=jsonObject.getString("targetDesk");
+        String pointOfSale=jsonObject.getString("pointOfSale");
+        DeskIn deskIn=deskInService.getByDesk(sourceDesk,pointOfSale);
+        deskIn.setDesk(targetDesk);
+        deskInService.update(deskIn);
+        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null);
+        for (DeskDetail deskDetail : deskDetailList) {
+            deskDetail.setDesk(targetDesk);
+        }
+        deskDetailService.update(deskDetailList);
+        userLogService.addUserLog(sourceDesk+"->"+targetDesk, userLogService.desk, userLogService.deskChange,deskIn.getDesk());
+    }
+
     /**
      * 餐饮结账
      *
@@ -204,6 +221,7 @@ public class DeskController {
         * 2.单价
         * 3.数量
         * 4.小计
+        * 5.类别
         * */
         String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString()};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
