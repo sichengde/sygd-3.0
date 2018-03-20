@@ -35,6 +35,7 @@ public class RegisterService {
     private Boolean pass = false;//接待模块
     private Boolean passCK = false;//餐饮模块
     private Boolean passSN = false;//桑拿模块
+    private int alertType=0;//超时后提示方式，0：磁盘空间不足，1：系统运行期限已到
     private List<Integer> module = new ArrayList<>();
     private Integer maxUser;
     private String serial;
@@ -116,7 +117,8 @@ public class RegisterService {
         byte[] result = cipher.doFinal(decodeBytes);
         this.limitTime = shortFormat.parse(new String(result).substring(0, 10));//有效期
         int module = Integer.parseInt(new String(result).substring(10, 11));//模块，1接待，2餐饮，3桑拿，4全部
-        decodeBytes = hexStringToByte(new String(result).substring(11));
+        this.alertType= Integer.parseInt(new String(result).substring(11, 12));
+        decodeBytes = hexStringToByte(new String(result).substring(12));
         keyGenerator.init(128, new SecureRandom(key.getBytes()));//key长可设为128，192，256位，这里只能设为128
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
         result = cipher.doFinal(decodeBytes);
@@ -248,5 +250,13 @@ public class RegisterService {
 
     public void setPassSN(Boolean passSN) {
         this.passSN = passSN;
+    }
+
+    public int getAlertType() {
+        return alertType;
+    }
+
+    public void setAlertType(int alertType) {
+        this.alertType = alertType;
     }
 }

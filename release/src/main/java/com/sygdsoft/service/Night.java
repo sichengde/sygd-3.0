@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Service
 public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     private static final Logger logger = LoggerFactory.getLogger(Night.class);
+    private final MessageSendingOperations<String> messagingTemplate;
     @Autowired
     HotelService hotelService;
     @Autowired
@@ -59,7 +60,6 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     NightService nightService;
     @Autowired
     RegisterService registerService;
-    private final MessageSendingOperations<String> messagingTemplate;
     private AtomicBoolean brokerAvailable = new AtomicBoolean();
 
     @Autowired
@@ -86,7 +86,11 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         }
         if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
+            if (registerService.getAlertType() == 1) {
+                jsonObject.put("msg", "系统运行期限已到");
+            } else {
+                jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
+            }
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
             return;
         }
@@ -96,7 +100,11 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         nightService.nightActionLogic();
         if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
+            if (registerService.getAlertType() == 1) {
+                //jsonObject.put("msg", "系统运行期限已到");七天内不进行到期提醒
+            } else {
+                jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
+            }
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
         } else {
             this.messagingTemplate.convertAndSend("/beginNight", true);
@@ -121,13 +129,21 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
             throw new Exception("服务器时间不准确，无法夜审，请及时处理");
         }
         if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
-            throw new Exception("数据空间不够，无法夜审，请及时处理");
+            if (registerService.getAlertType() == 1) {
+                throw new Exception("系统运行期限已到");
+            } else {
+                throw new Exception("数据空间不够，无法夜审，请及时处理");
+            }
         }
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
         if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
+            if (registerService.getAlertType() == 1) {
+                //jsonObject.put("msg", "系统运行期限已到");//七天内不进行到期提醒
+            } else {
+                jsonObject.put("msg", "数据空间不够，无法夜审，请及时处理");
+            }
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
         } else {
             this.messagingTemplate.convertAndSend("/beginNight", true);

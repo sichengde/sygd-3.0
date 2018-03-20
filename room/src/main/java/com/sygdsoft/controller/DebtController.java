@@ -246,6 +246,10 @@ public class DebtController {
             debtService.addDebt(debt);
         }
         roomShopDetailService.add(roomShopDetailList);
+        /*是否直接冲减库存*/
+        if("y".equals(otherParamService.getValueByName("房吧直接冲减"))){
+
+        }
     }
 
     /**
