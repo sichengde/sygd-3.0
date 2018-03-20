@@ -29,6 +29,11 @@ public class RegisterController {
         return registerService.getLimitTime();
     }
 
+    @RequestMapping(value = "getAlertType")
+    public Integer getAlertType(){
+        return registerService.getAlertType();
+    }
+
     /**
      * 获取时间
      * @return
