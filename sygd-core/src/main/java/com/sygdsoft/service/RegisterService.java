@@ -1,6 +1,8 @@
 package com.sygdsoft.service;
 
 import com.mysql.jdbc.Connection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ import java.util.Random;
  */
 @Service
 public class RegisterService {
+    private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
     public SimpleDateFormat shortFormat = new SimpleDateFormat("yyyy-MM-dd");
     public List<String> securityStr = new ArrayList<>();//秘钥数组，一个秘钥只能用一次
     String key = "shuzhanxinqiaoyi";
@@ -124,6 +127,18 @@ public class RegisterService {
         result = cipher.doFinal(decodeBytes);
         String out = new String(result);
         String code = out.substring(0, out.length() - 3);//机器码
+        logger.info("数据库中的注册码:" + this.serial);
+        logger.info("解析后的机器码:" + code);
+        logger.info("本机码:" + getLocalSerial());
+        logger.info("有效期:"+this.limitTime);
+        logger.info("模块/人数:"+module);
+        logger.info("提示方式"+this.alertType);
+        if (code.equals(getLocalSerial())) {
+            logger.info("注册成功");
+            this.pass = true;
+        }else {
+            logger.info("注册失败");
+        }
         if (code.equals(getLocalSerial())) {
             switch (module) {
                 case 1:
