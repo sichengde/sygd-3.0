@@ -27,6 +27,7 @@ import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 @RestController
 public class GuestOutController {
+    private static final Object lock = new Object();
     @Autowired
     SerialService serialService;
     @Autowired
@@ -89,9 +90,7 @@ public class GuestOutController {
     CheckOutPayBackService checkOutPayBackService;
     @Autowired
     GuestIntegrationService guestIntegrationService;
-
     String checkOutSerial;
-    private static final Object lock=new Object();
 
     /**
      * 结算分为团队结算和单人结算
@@ -517,17 +516,16 @@ public class GuestOutController {
         }
         if (groupAccount == null) {
             CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));//在店户籍
-            if (checkIn.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
+            /*去掉必须是会员开房的限制*/
+            if (currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
                 vipService.updateVipScore(checkIn.getVipNumber(), money);
             }
         } else {
             CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
-            if (checkInGroup.getVipNumber() != null) {//有会员卡号并且币种是积分币种
-                List<Currency> currencyList = currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency)));
-                if (currencyList.size() > 0) {
-                    if (currencyList.get(0).getScore()) {
-                        vipService.updateVipScore(checkInGroup.getVipNumber(), money);
-                    }
+            List<Currency> currencyList = currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency)));
+            if (currencyList.size() > 0) {
+                if (currencyList.get(0).getScore()) {
+                    vipService.updateVipScore(checkInGroup.getVipNumber(), money);
                 }
             }
         }
@@ -803,9 +801,9 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex,debtPayService.companySplit1,debtPayService.companySplit2};
-        debtPayService.companySplit1=null;
-        debtPayService.companySplit2=null;
+        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2};
+        debtPayService.companySplit1 = null;
+        debtPayService.companySplit2 = null;
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
     }
 
@@ -881,18 +879,18 @@ public class GuestOutController {
         /*----------------------------先看是不是商品零售的补打----------------------------*/
         if (debtPayService.spls.equals(debtPay.getDebtCategory())) {
             /*商品零售报表
-        * parameter
-        * 1.操作员
-        * 2.金额
-        * 3.时间
-        * 4.消费项目
-        * 5.结账流水号
-        * 6.币种
-        * 7.酒店名称
-        * field
-        * 1.项目明细
-        * */
-        /*分析消费项目*/
+             * parameter
+             * 1.操作员
+             * 2.金额
+             * 3.时间
+             * 4.消费项目
+             * 5.结账流水号
+             * 6.币种
+             * 7.酒店名称
+             * field
+             * 1.项目明细
+             * */
+            /*分析消费项目*/
             List<FieldTemplate> templateList = new ArrayList<>();
             DebtHistory debtHistory = null;
             try {
@@ -948,7 +946,7 @@ public class GuestOutController {
         for (DebtPay pay : debtPayList) {
             currencyPostList.add(new CurrencyPost(pay));
             changeDebt += "币种:" + pay.getCurrency() + "/" + pay.getDebtMoney();
-            if("转单位".equals(pay.getCurrency())){
+            if ("转单位".equals(pay.getCurrency())) {
                 String company;
                 String lord;
                 try {
@@ -957,12 +955,12 @@ public class GuestOutController {
                 } catch (Exception e) {
                     throw new Exception("该笔转单位没有输入单位");
                 }
-                changeDebt+="转单位至："+company+" 签单人："+lord;
+                changeDebt += "转单位至：" + company + " 签单人：" + lord;
                 /*尝试分隔单位符号*/
-                String[] afterSplit=company.split("/");
-                if(afterSplit.length>1){
-                    debtPayService.companySplit1=afterSplit[0];
-                    debtPayService.companySplit2=afterSplit[1];
+                String[] afterSplit = company.split("/");
+                if (afterSplit.length > 1) {
+                    debtPayService.companySplit1 = afterSplit[0];
+                    debtPayService.companySplit2 = afterSplit[1];
                 }
                 break;
             }
