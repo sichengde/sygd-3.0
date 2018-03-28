@@ -472,7 +472,7 @@ public class GuestOutController {
             changeDebt += " 币种:" + currency + "/" + money;
             /*通过币种判断结账类型*/
             changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "接待");
-            this.checkVip(groupAccount, roomIdList, currency, money);
+            this.checkVip(groupAccount, roomIdList, currency,currencyAdd, money);
         }
         return changeDebt;
     }
@@ -509,25 +509,24 @@ public class GuestOutController {
     /**
      * 如果有会员号，并且结算的时候没有用会员余额或者积分计算的话，累计积分
      */
-    private void checkVip(String groupAccount, List<String> roomIdList, String currency, Double money) throws Exception {
+    private void checkVip(String groupAccount, List<String> roomIdList, String currency, String currencyAdd, Double money) throws Exception {
         /*转哑房不判断*/
         if ("转哑房".equals(currency)) {
             return;
         }
-        if (groupAccount == null) {
-            CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));//在店户籍
-            /*去掉必须是会员开房的限制*/
-            if (currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
-                vipService.updateVipScore(checkIn.getVipNumber(), money);
-            }
-        } else {
+        String vipNumber = null;
+        /*如果是会员结账，则积分记录到结账账户*/
+        if ("会员".equals(currency)) {
+            vipNumber = currencyAdd.split(" ")[0];
+        } else if (groupAccount == null) {
+            CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));
+            vipNumber=checkIn.getVipNumber();
+        }else {
             CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
-            List<Currency> currencyList = currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency)));
-            if (currencyList.size() > 0) {
-                if (currencyList.get(0).getScore()) {
-                    vipService.updateVipScore(checkInGroup.getVipNumber(), money);
-                }
-            }
+            vipNumber=checkInGroup.getVipNumber();
+        }
+        if(vipNumber!=null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()){
+            vipService.updateVipScore(vipNumber, money);
         }
     }
 
