@@ -3,7 +3,7 @@ package com.sygdsoft.model;
 /**
  * Created by Administrator on 2016/7/19 0019.
  */
-public class BookRoomCategory {
+public class BookRoomCategory extends BaseEntity{
     private String bookSerial;//预定号
     private String roomCategory;//房间类别
     private Integer num;//房间数量
