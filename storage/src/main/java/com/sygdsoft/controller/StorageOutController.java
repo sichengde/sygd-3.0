@@ -223,7 +223,6 @@ public class StorageOutController {
                     }
                 }
             }
-            deskDetailHistoryService.setStorageDoneTrue();
             /*出库总结，如果有剩余数量不足的，则需要两种，即是出库和直拨*/
             if (storageOutSerial) {//有数据才出库，否则不出库
                 StorageOut storageOut = new StorageOut();
@@ -243,6 +242,7 @@ public class StorageOutController {
                 }
             }
         }
+        deskDetailHistoryService.setStorageDoneTrue();
         /*返回打印序列号数组*/
         return reportList;
     }
