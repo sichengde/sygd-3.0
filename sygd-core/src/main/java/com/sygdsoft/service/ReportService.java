@@ -34,6 +34,10 @@ public class ReportService {
     private Map<Integer, ReportService> map = new ConcurrentHashMap<>();
     @Autowired
     HotelService hotelService;
+    @Autowired
+    TimeService timeService;
+    @Autowired
+    UserService userService;
 
     public ReportService() {
     }
@@ -101,6 +105,8 @@ public class ReportService {
         JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
         DeskDetail deskDetail = deskDetailList.get(0);
         param.put("parameter1", "传菜:  " + deskDetail.getDesk());
+        param.put("parameter2", timeService.dateToStringLong(deskDetail.getDoTime()));
+        param.put("parameter3",  userService.getCurrentUser());
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
         this.printByPrinterName(printerName, jasperPrint);
     }
