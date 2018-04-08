@@ -31,7 +31,8 @@ public class Book extends BaseEntity {
     private Date doTime;//下单时间
     private String state;//订单状态
     private String cardId;//身份证号
-    private Date remainTime;//身份证号
+    private Date remainTime;//保留时间
+    private String area;//楼区
     @Transient
     private BookRoom bookRoom;//根据房号查询预定订单时附带的房号信息
     @Transient
@@ -248,5 +249,13 @@ public class Book extends BaseEntity {
 
     public void setBookMoneyList(List<BookMoney> bookMoneyList) {
         this.bookMoneyList = bookMoneyList;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 }
