@@ -14,6 +14,7 @@ public class UserLog extends BaseEntity{
     private Date doTime;//操作时间
     private String ipAddress;//ip地址
     private String keyWord;//关键字，用来弹出索引，界面上不显示，例如如果一条结账操作，那么这里就填结账序列号
+    private String groupBy;//操作员分组
 
     public UserLog() {
     }
@@ -79,5 +80,13 @@ public class UserLog extends BaseEntity{
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+    }
+
+    public String getGroupBy() {
+        return groupBy;
+    }
+
+    public void setGroupBy(String groupBy) {
+        this.groupBy = groupBy;
     }
 }

@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.mapper.UserLogMapper;
+import com.sygdsoft.model.User;
 import com.sygdsoft.model.UserLog;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,15 +93,19 @@ public class UserLogService extends BaseService<UserLog> {
     /**
      * 增加一条操作员记录
      */
-    public int addUserLog(String action, String module, String category,String keyWord) throws Exception {
+    public int addUserLog(String action, String module, String category, String keyWord) throws Exception {
         UserLog userLog = new UserLog();
-        userLog.setUserId(userService.getCurrentUser());
         userLog.setAction(action);
         userLog.setModule(module);
         userLog.setDoTime(timeService.getNow());
         userLog.setCategory(category);
         userLog.setIpAddress(userService.getCurrentIpAddr());
         userLog.setKeyWord(keyWord);
+        if (userService.getCurrentUser() != null) {
+            User user = userService.getByName(userService.getCurrentUser());
+            userLog.setUserId(user.getUserId());
+            userLog.setGroupBy(user.getGroupBy());
+        }
         userLogMapper.insert(userLog);
         return userLog.getId();
     }
@@ -114,6 +119,11 @@ public class UserLogService extends BaseService<UserLog> {
         userLog.setModule(module);
         userLog.setDoTime(timeService.getNow());
         userLog.setCategory(category);
+        if (userService.getCurrentUser() != null) {
+            User user = userService.getByName(userService.getCurrentUser());
+            userLog.setGroupBy(user.getGroupBy());
+            userLog.setUserId(user.getUserId());
+        }
         userLogMapper.insert(userLog);
         return userLog.getId();
     }
@@ -121,15 +131,17 @@ public class UserLogService extends BaseService<UserLog> {
     /**
      * 增加一条操作员记录（指定操作员）
      */
-    public int addUserLog(String action, String module, String category,String user,String keyWord) throws IOException {
+    public int addUserLog(String action, String module, String category, String userId, String keyWord) throws IOException {
+        User user = userService.getByName(userId);
         UserLog userLog = new UserLog();
-        userLog.setUserId(user);
+        userLog.setUserId(userId);
         userLog.setAction(action);
         userLog.setModule(module);
         userLog.setDoTime(timeService.getNow());
         userLog.setCategory(category);
         userLog.setIpAddress(userService.getCurrentIpAddr());
         userLog.setKeyWord(keyWord);
+        userLog.setGroupBy(user.getGroupBy());
         userLogMapper.insert(userLog);
         return userLog.getId();
     }
@@ -159,7 +171,7 @@ public class UserLogService extends BaseService<UserLog> {
     /**
      * 获得最近一条的时间，用于校验服务器时间是否被更改
      */
-    public Date getRecentDate(){
+    public Date getRecentDate() {
         return userLogMapper.getRecentDate();
     }
 }

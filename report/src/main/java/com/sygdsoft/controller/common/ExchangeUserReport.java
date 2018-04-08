@@ -76,8 +76,13 @@ public class ExchangeUserReport {
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
+        String userGroup = reportJson.getParam1();
         if ("".equals(userId)) {
             userId = null;
+        }
+        /*操作员分组*/
+        if(userGroup!=null){
+            userGroup=userService.getNameStringByGroup(userGroup);
         }
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
