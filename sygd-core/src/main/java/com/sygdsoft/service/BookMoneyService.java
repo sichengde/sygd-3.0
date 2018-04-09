@@ -25,22 +25,14 @@ public class BookMoneyService extends BaseService<BookMoney> {
      * 计算该时间段内的订金总数
      */
     public Double getTotalBookSubscription(String userId, String currency, Date beginTime, Date endTime) {
-        if (userId == null) {
-            return bookMoneyMapper.getBookSubscription(currency, beginTime, endTime);
-        } else {
-            return bookMoneyMapper.getBookSubscriptionByUser(userId, currency, beginTime, endTime);
-        }
+            return bookMoneyMapper.getMoney(userId, currency, false,beginTime, endTime);
     }
 
     /**
      * 计算该时间段内的退订金总数
      */
     public Double getTotalCancelBookSubscription(String userId, String currency, Date beginTime, Date endTime) {
-        if (userId == null) {
-            return bookMoneyMapper.getCancelBookSubscription(currency, beginTime, endTime);
-        } else {
-            return bookMoneyMapper.getCancelBookSubscriptionByUser(userId, currency, beginTime, endTime);
-        }
+        return bookMoneyMapper.getMoney(userId, currency, true,beginTime, endTime);
     }
 
     /**
