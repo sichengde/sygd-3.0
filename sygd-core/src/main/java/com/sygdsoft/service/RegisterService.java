@@ -110,9 +110,7 @@ public class RegisterService {
     }
 
     public void check() throws Exception {
-        this.pass=true;
-        this.passCK=true;
-        /*Key keySpec = new SecretKeySpec(key.getBytes(), "AES");    //两个参数，第一个为私钥字节数组， 第二个为加密方式 AES或者DES
+        Key keySpec = new SecretKeySpec(key.getBytes(), "AES");    //两个参数，第一个为私钥字节数组， 第二个为加密方式 AES或者DES
         IvParameterSpec ivSpec = new IvParameterSpec(iv.getBytes());
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         byte[] decodeBytes = hexStringToByte(this.serial);
@@ -158,7 +156,7 @@ public class RegisterService {
                     this.passSN = true;
                     break;
             }
-        }*/
+        }
     }
 
     public String getLocalSerial() throws IOException {
