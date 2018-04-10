@@ -119,11 +119,11 @@ public class UserLogService extends BaseService<UserLog> {
         userLog.setModule(module);
         userLog.setDoTime(timeService.getNow());
         userLog.setCategory(category);
-        if (userService.getCurrentUser() != null) {
+        /*if (userService.getCurrentUser() != null) {
             User user = userService.getByName(userService.getCurrentUser());
             userLog.setGroupBy(user.getGroupBy());
             userLog.setUserId(user.getUserId());
-        }
+        }*/
         userLogMapper.insert(userLog);
         return userLog.getId();
     }
