@@ -38,16 +38,9 @@ public interface DebtMapper extends MyMapper<Debt> {
     /**
      * 获得全部的在店押金值
      */
-    @Select("select ifnull(sum(deposit),0) from debt where deposit is not null")
+    @SelectProvider(type = DebtSql.class,method = "getDepositMoneyAll")
     @ResultType(Double.class)
-    Double getDepositMoneyAll();
-
-    /**
-     * 获得某个币种的在店押金
-     */
-    @Select("select ifnull(sum(deposit),0) from debt where deposit is not null and currency=#{currency}")
-    @ResultType(Double.class)
-    Double getDepositMoneyAllByCurrency(@Param("currency")String currency);
+    Double getDepositMoneyAll(@Param("currency")String currency);
 
     /**
      * 获得全部的在店押金数组

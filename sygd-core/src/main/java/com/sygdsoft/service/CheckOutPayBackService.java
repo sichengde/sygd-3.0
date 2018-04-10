@@ -9,17 +9,14 @@ import java.util.Date;
 
 @Service
 @SzMapper(id = "checkOutPayBack")
-public class CheckOutPayBackService extends BaseService<CheckOutPayBack>{
+public class CheckOutPayBackService extends BaseService<CheckOutPayBack> {
     @Autowired
     CheckOutPayBackMapper checkOutPayBackMapper;
+
     /**
      * 获得时间段内该币种的找零总和
      */
-    public Double getTotal(String userId,String currency,Date beginTime,Date endTime){
-        if(userId==null) {
-            return checkOutPayBackMapper.getTotal(beginTime, endTime, currency);
-        }else {
-            return checkOutPayBackMapper.getTotalByUserId(beginTime, endTime, currency,userId);
-        }
+    public Double getTotal(String userId, String currency, Date beginTime, Date endTime) {
+        return checkOutPayBackMapper.getTotal(currency, userId, beginTime, endTime);
     }
 }

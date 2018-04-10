@@ -119,7 +119,7 @@ public class ExchangeUserReport {
         Double payTotal = debtPayService.getDebtMoney(userId, null, true, beginTime, endTime);
         Double moneyIn = debtHistoryService.getTotalAddByUserTimeZone(userId, beginTime, endTime);//杂单
         Double moneyOut = debtHistoryService.getTotalDiscountByUserTimeZone(userId, beginTime, endTime);//冲账
-        Double depositAll = debtService.getDepositMoneyAll();//在店押金
+        Double depositAll = debtService.getDepositMoneyAll(null);//在店押金
         List<String> paramList = new ArrayList<>();
         paramList.add(timeService.getNowLong());
         paramList.add(timeService.dateToStringLong(beginTime));
@@ -171,7 +171,7 @@ public class ExchangeUserReport {
         }
         Double payTotal = debtPayService.getDebtMoney(userId, null, true, beginTime, endTime);
         /*在店押金*/
-        Double depositAll = debtService.getDepositMoneyAll();//在店押金
+        Double depositAll = debtService.getDepositMoneyAll(null);//在店押金
         /*统计房吧零售*/
         List<RoomShopDetail> roomShopDetailList = roomShopDetailService.getRetailByDoneTimeUser(userId, beginTime, endTime);//商品零售明细
         ExchangeUserSmallJQRow exchangeUserSmallJQRowWait = new ExchangeUserSmallJQRow();
@@ -240,7 +240,7 @@ public class ExchangeUserReport {
         }
         Double payTotal = debtPayService.getDebtMoney(userId, null, true, beginTime, endTime);
         /*在店押金*/
-        Double depositAll = debtService.getDepositMoneyAll();//在店押金
+        Double depositAll = debtService.getDepositMoneyAll(null);//在店押金
         /*统计房吧零售*/
         List<RoomShopDetail> roomShopDetailList = roomShopDetailService.getRetailByDoneTimeUser(userId, beginTime, endTime);//商品零售明细
         FieldTemplate fieldTemplateWait = new FieldTemplate();

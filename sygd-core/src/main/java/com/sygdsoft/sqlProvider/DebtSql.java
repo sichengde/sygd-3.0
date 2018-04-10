@@ -21,4 +21,13 @@ public class DebtSql {
             return "select sum(consume) consume from debt where point_of_sale="+util.wrapWithBrackets(pointOfSale)+" and group_account="+util.wrapWithBrackets(serial);
         }
     }
+
+    public String getDepositMoneyAll(Map<String, Object> map){
+        String currency = (String) map.get("currency");
+        String basic = "select ifnull(sum(deposit),0) from debt where deposit is not null ";
+        if (currency != null) {
+            basic += " and currency=#{currency}";
+        }
+        return basic;
+    }
 }

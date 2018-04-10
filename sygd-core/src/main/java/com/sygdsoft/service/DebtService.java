@@ -149,15 +149,8 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 获得在店押金
      */
-    public Double getDepositMoneyAll() {
-        return debtMapper.getDepositMoneyAll();
-    }
-
-    /**
-     * 获得某个币种的在店押金
-     */
     public Double getDepositMoneyAll(String currency) {
-        return debtMapper.getDepositMoneyAllByCurrency(currency);
+        return debtMapper.getDepositMoneyAll(currency);
     }
 
 
