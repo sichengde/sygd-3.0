@@ -224,6 +224,10 @@ public class GuestOutController {
             debtHistoryService.add(debtHistory);
             remarkAdd += "不指定账务";
         }
+        /*TODO:在这插入一条退预付*/
+        /*debt.setDoTime(timeService.getNow());
+        debt.setUserId(userService.getCurrentUser());
+        debtService.addDebt(debt);*/
         /*更新在店户籍余额，按明细结算的话，就更新对应房间的余额，否则直接更新领队房余额*/
         if (debtList != null) {
             for (String s : roomIdList) {
