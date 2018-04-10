@@ -177,7 +177,9 @@ public class GuestOutController {
     @RequestMapping("guestOutMiddle")
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOutMiddle(@RequestBody GuestOutMiddle guestOutMiddle) throws Exception {
+        //int i=1/0;
         Boolean real = guestOutMiddle.getNotNullReal();
+        Boolean cancelDeposit = guestOutMiddle.getNotNullCancelDeposit();
         if (!real) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
