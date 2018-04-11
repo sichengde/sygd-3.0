@@ -22,8 +22,6 @@ import java.util.List;
  */
 @RestController
 public class DebtController {
-    //TODO: 发现bug之后就可以删了
-    private static final Logger logger = LoggerFactory.getLogger(DebtController.class);
     @Autowired
     DebtService debtService;
     @Autowired

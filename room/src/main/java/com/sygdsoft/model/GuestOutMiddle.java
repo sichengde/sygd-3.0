@@ -18,6 +18,7 @@ public class GuestOutMiddle {
     private String paySerial;//结账序列号，补打时有用
     private List<Debt> debtList;//账务明细，根据账务中间结算时用
     private Boolean real;//真实结算，针对于辽阳宾馆这种喜欢结账之后再确认的
+    private Boolean cancelDeposit;//是否冲减押金
 
     public GuestOutMiddle() {
     }
@@ -27,6 +28,14 @@ public class GuestOutMiddle {
             return false;
         }else {
             return real;
+        }
+    }
+
+    public Boolean getNotNullCancelDeposit(){
+        if(cancelDeposit==null){
+            return false;
+        }else {
+            return cancelDeposit;
         }
     }
 
@@ -100,5 +109,13 @@ public class GuestOutMiddle {
 
     public void setReal(Boolean real) {
         this.real = real;
+    }
+
+    public Boolean getCancelDeposit() {
+        return cancelDeposit;
+    }
+
+    public void setCancelDeposit(Boolean cancelDeposit) {
+        this.cancelDeposit = cancelDeposit;
     }
 }

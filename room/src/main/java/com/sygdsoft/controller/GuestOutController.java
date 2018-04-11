@@ -177,7 +177,9 @@ public class GuestOutController {
     @RequestMapping("guestOutMiddle")
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOutMiddle(@RequestBody GuestOutMiddle guestOutMiddle) throws Exception {
+        //int i=1/0;
         Boolean real = guestOutMiddle.getNotNullReal();
+        Boolean cancelDeposit = guestOutMiddle.getNotNullCancelDeposit();
         if (!real) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
@@ -221,6 +223,22 @@ public class GuestOutController {
             debtHistory.setConsume(payMoney);
             debtHistoryService.add(debtHistory);
             remarkAdd += "不指定账务";
+        }
+        /*TODO:在这插入一条退预付*/
+        if(cancelDeposit) {
+            Debt cancelDebt = new Debt();
+            cancelDebt.setDoTime(timeService.getNow());
+            cancelDebt.setPointOfSale(pointOfSaleService.FF);
+            cancelDebt.setDeposit(-payMoney);
+            cancelDebt.setCurrency("人民币");
+            cancelDebt.setDescription("中间结算退预付");
+            cancelDebt.setGroupAccount(groupAccount);
+            cancelDebt.setUserId(userService.getCurrentUser());
+            cancelDebt.setCategory(debtService.cancelDeposit);
+            cancelDebt.setSelfAccount(checkIn.getSelfAccount());
+            cancelDebt.setRoomId(checkIn.getRoomId());
+            cancelDebt.setCompany(checkIn.getCompany());
+            debtService.addDebt(cancelDebt);
         }
         /*更新在店户籍余额，按明细结算的话，就更新对应房间的余额，否则直接更新领队房余额*/
         if (debtList != null) {
