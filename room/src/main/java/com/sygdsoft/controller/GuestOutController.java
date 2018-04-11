@@ -225,9 +225,21 @@ public class GuestOutController {
             remarkAdd += "不指定账务";
         }
         /*TODO:在这插入一条退预付*/
-        /*debt.setDoTime(timeService.getNow());
-        debt.setUserId(userService.getCurrentUser());
-        debtService.addDebt(debt);*/
+        if(cancelDeposit) {
+            Debt cancelDebt = new Debt();
+            cancelDebt.setDoTime(timeService.getNow());
+            cancelDebt.setPointOfSale(pointOfSaleService.FF);
+            cancelDebt.setDeposit(-payMoney);
+            cancelDebt.setCurrency("人民币");
+            cancelDebt.setDescription("中间结算退预付");
+            cancelDebt.setGroupAccount(groupAccount);
+            cancelDebt.setUserId(userService.getCurrentUser());
+            cancelDebt.setCategory(debtService.cancelDeposit);
+            cancelDebt.setSelfAccount(checkIn.getSelfAccount());
+            cancelDebt.setRoomId(checkIn.getRoomId());
+            cancelDebt.setCompany(checkIn.getCompany());
+            debtService.addDebt(cancelDebt);
+        }
         /*更新在店户籍余额，按明细结算的话，就更新对应房间的余额，否则直接更新领队房余额*/
         if (debtList != null) {
             for (String s : roomIdList) {
