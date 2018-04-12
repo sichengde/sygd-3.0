@@ -1,8 +1,6 @@
 package com.sygdsoft.model;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by 舒展 on 2016-05-25.
@@ -34,20 +32,44 @@ public class FieldTemplate {
     public FieldTemplate() {
     }
 
+    public FieldTemplate(String init) {
+        this.field1 = init;
+        this.field2 = init;
+        this.field3 = init;
+        this.field4 = init;
+        this.field5 = init;
+        this.field6 = init;
+        this.field7 = init;
+        this.field8 = init;
+        this.field9 = init;
+        this.field10 = init;
+        this.field11 = init;
+        this.field12 = init;
+        this.field13 = init;
+        this.field14 = init;
+        this.field15 = init;
+        this.field16 = init;
+        this.field17 = init;
+        this.field18 = init;
+        this.field19 = init;
+        this.field20 = init;
+    }
+
     /**
      * 为第N个域赋值
+     *
      * @param index
      */
-    public void setFieldN(Integer index,String fieldValue) throws Exception {
-        Field field=this.getClass().getDeclaredField("field"+index);
-        field.set(this,fieldValue);
+    public void setFieldN(Integer index, String fieldValue) throws Exception {
+        Field field = this.getClass().getDeclaredField("field" + index);
+        field.set(this, fieldValue);
     }
 
     /**
      * 获取第N个域的值
      */
     public String getFieldN(Integer index) throws Exception {
-        Field field=this.getClass().getDeclaredField("field"+index);
+        Field field = this.getClass().getDeclaredField("field" + index);
         return (String) field.get(this);
     }
 

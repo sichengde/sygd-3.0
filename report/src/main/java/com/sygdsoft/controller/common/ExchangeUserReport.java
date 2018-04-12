@@ -110,6 +110,15 @@ public class ExchangeUserReport {
             }
             templateList.add(fieldTemplate);
         }
+        /*再生成一列合计*/
+        FieldTemplate templateSum=new FieldTemplate("0");
+        templateSum.setField1("合计");
+        for (FieldTemplate template : templateList) {
+            for (int i = 2; i < 12; i++) {
+                templateSum.setFieldN(i, String.valueOf(szMath.formatTwoDecimalReturnDouble(templateSum.getFieldN(i))+szMath.formatTwoDecimalReturnDouble(template.getFieldN(i))));
+            }
+        }
+        templateList.add(templateSum);
         /*生成水晶报表字段*/
         ExchangeUserJQ exchangeUserJQ = new ExchangeUserJQ();
         List<ExchangeUserRow> exchangeUserRowList = new ArrayList<>();
