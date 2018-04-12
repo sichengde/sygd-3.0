@@ -22,20 +22,30 @@ public class RoomSnapshot extends BaseEntity {
     private Boolean hourRoom;
     private Boolean addRoom;
     private Boolean nightRoom;
-    private Integer sumRealRoom;
-    private Integer sumEmpty;
-    private Integer sumRepair;
-    private Integer sumSelf;
-    private Integer sumBackUp;
-    private Integer sumRent;
-    private Integer sumAllDayRoom;
-    private Integer sumHourRoom;
-    private Integer sumAddRoom;
-    private Integer sumNightRoom;
     private Double allDayRoomConsume;
     private Double hourRoomConsume;
     private Double addRoomConsume;
     private Double nightRoomConsume;
+    @Transient
+    private Integer sumRealRoom;
+    @Transient
+    private Integer sumEmpty;
+    @Transient
+    private Integer sumRepair;
+    @Transient
+    private Integer sumSelf;
+    @Transient
+    private Integer sumBackUp;
+    @Transient
+    private Integer sumRent;
+    @Transient
+    private Integer sumAllDayRoom;
+    @Transient
+    private Integer sumHourRoom;
+    @Transient
+    private Integer sumAddRoom;
+    @Transient
+    private Integer sumNightRoom;
     @Transient
     private String currency;
 
