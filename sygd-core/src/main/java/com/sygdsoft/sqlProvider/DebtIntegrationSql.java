@@ -10,7 +10,7 @@ public class DebtIntegrationSql {
     }
     public String getDepositByUserCurrencyDate(Map<String, Object> parameters){
         String userId= (String) parameters.get("userId");
-        String basic="SELECT abs(sum(deposit)) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0";
+        String basic="SELECT ifnull(abs(sum(deposit)),0) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0";
         if(userId!=null){
             basic+=" and user_id = #{userId}";
         }

@@ -61,4 +61,11 @@ public interface DebtMapper extends MyMapper<Debt> {
     @Select("select sum(consume) from debt where group_account=#{groupAccount}")
     @ResultType(Double.class)
     Double getTotalConsumeByGroupAccount(@Param("groupAccount") String groupAccount);
+
+    /**
+     * 获取押金币种聚合
+     */
+    @Select("SELECT group_concat(DISTINCT currency) currency FROM debt WHERE ifnull(deposit,0)!=0 AND self_account=#{selfAccount} GROUP BY self_account;")
+    @ResultType(String.class)
+    String getCurrencyGroup(@Param("selfAccount") String selfAccount);
 }

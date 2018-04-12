@@ -278,4 +278,11 @@ public class DebtService extends BaseService<Debt> {
             update(debt);
         }
     }
+
+    /**
+     * 获取押金币种聚合
+     */
+    public String getCurrencyGroup(String selfAccount){
+        return debtMapper.getCurrencyGroup(selfAccount);
+    }
 }
