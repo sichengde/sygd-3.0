@@ -28,7 +28,9 @@ public class RoomStateReport extends BaseEntity {
     private Double nightRoomConsume;//凌晨房房费
     private Date reportTime;//报表日期
     @Transient
-    private String currency;//平均房价
+    private Double avaPrice;//平均房价
+    @Transient
+    private Double rentRate;//出租率
 
     public RoomStateReport() {
     }
@@ -190,11 +192,19 @@ public class RoomStateReport extends BaseEntity {
         this.nightRoomConsume = nightRoomConsume;
     }
 
-    public String getCurrency() {
-        return currency;
+    public Double getAvaPrice() {
+        return avaPrice;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public void setAvaPrice(Double avaPrice) {
+        this.avaPrice = avaPrice;
+    }
+
+    public Double getRentRate() {
+        return rentRate;
+    }
+
+    public void setRentRate(Double rentRate) {
+        this.rentRate = rentRate;
     }
 }
