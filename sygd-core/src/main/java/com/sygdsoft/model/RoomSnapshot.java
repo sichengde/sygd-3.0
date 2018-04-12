@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 public class RoomSnapshot extends BaseEntity {
@@ -21,10 +22,22 @@ public class RoomSnapshot extends BaseEntity {
     private Boolean hourRoom;
     private Boolean addRoom;
     private Boolean nightRoom;
+    private Integer sumRealRoom;
+    private Integer sumEmpty;
+    private Integer sumRepair;
+    private Integer sumSelf;
+    private Integer sumBackUp;
+    private Integer sumRent;
+    private Integer sumAllDayRoom;
+    private Integer sumHourRoom;
+    private Integer sumAddRoom;
+    private Integer sumNightRoom;
     private Double allDayRoomConsume;
     private Double hourRoomConsume;
     private Double addRoomConsume;
     private Double nightRoomConsume;
+    @Transient
+    private String currency;
 
     public RoomSnapshot() {
     }
@@ -203,5 +216,93 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setNightRoomConsume(Double nightRoomConsume) {
         this.nightRoomConsume = nightRoomConsume;
+    }
+
+    public Integer getSumRealRoom() {
+        return sumRealRoom;
+    }
+
+    public void setSumRealRoom(Integer sumRealRoom) {
+        this.sumRealRoom = sumRealRoom;
+    }
+
+    public Integer getSumEmpty() {
+        return sumEmpty;
+    }
+
+    public void setSumEmpty(Integer sumEmpty) {
+        this.sumEmpty = sumEmpty;
+    }
+
+    public Integer getSumRepair() {
+        return sumRepair;
+    }
+
+    public void setSumRepair(Integer sumRepair) {
+        this.sumRepair = sumRepair;
+    }
+
+    public Integer getSumSelf() {
+        return sumSelf;
+    }
+
+    public void setSumSelf(Integer sumSelf) {
+        this.sumSelf = sumSelf;
+    }
+
+    public Integer getSumBackUp() {
+        return sumBackUp;
+    }
+
+    public void setSumBackUp(Integer sumBackUp) {
+        this.sumBackUp = sumBackUp;
+    }
+
+    public Integer getSumRent() {
+        return sumRent;
+    }
+
+    public void setSumRent(Integer sumRent) {
+        this.sumRent = sumRent;
+    }
+
+    public Integer getSumAllDayRoom() {
+        return sumAllDayRoom;
+    }
+
+    public void setSumAllDayRoom(Integer sumAllDayRoom) {
+        this.sumAllDayRoom = sumAllDayRoom;
+    }
+
+    public Integer getSumHourRoom() {
+        return sumHourRoom;
+    }
+
+    public void setSumHourRoom(Integer sumHourRoom) {
+        this.sumHourRoom = sumHourRoom;
+    }
+
+    public Integer getSumAddRoom() {
+        return sumAddRoom;
+    }
+
+    public void setSumAddRoom(Integer sumAddRoom) {
+        this.sumAddRoom = sumAddRoom;
+    }
+
+    public Integer getSumNightRoom() {
+        return sumNightRoom;
+    }
+
+    public void setSumNightRoom(Integer sumNightRoom) {
+        this.sumNightRoom = sumNightRoom;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

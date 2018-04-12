@@ -22,13 +22,16 @@ public class CurrencyRoomCountController {
      * 结束日期时间要设置为24:00:00
      */
     @RequestMapping(value = "currencyRoomCountReport")
-    public List<RoomSnapshot> roomCategorySaleReport(@RequestBody ReportJson reportJson) throws Exception {
+    public List<RoomSnapshot> currencyRoomCountReport(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = timeService.getMinTime(reportJson.getBeginTime());
         Date endTime = timeService.getMinTime(reportJson.getEndTime());
         /*效验roomStateReport表中有没有数据*/
         List<RoomSnapshot> roomCategoryRowList=roomSnapshotService.getPaidRoom(beginTime, endTime);
-        RoomSnapshot roomStateReport=roomSnapshotService.getSumByDate(beginTime, endTime);
-        roomCategoryRowList.add(roomStateReport);
+        RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime);
+        if(roomSnapshot!=null) {
+            roomSnapshot.setCurrency("总计(含未结)");
+            roomCategoryRowList.add(roomSnapshot);
+        }
         return roomCategoryRowList;
     }
 }
