@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @SzMapper(id = "roomSnapshot")
@@ -17,5 +18,13 @@ public class RoomSnapshotService extends BaseService<RoomSnapshot>{
      */
     public void deleteByDate(Date date){
         roomSnapshotMapper.deleteByDate(date);
+    }
+
+    public List<RoomSnapshot> getPaidRoom(Date beginTime, Date endTime) {
+        return roomSnapshotMapper.getPaidRoom(beginTime,endTime );
+    }
+
+    public RoomSnapshot getSumByDate(Date beginTime, Date endTime) {
+        return roomSnapshotMapper.getSum(beginTime, endTime);
     }
 }
