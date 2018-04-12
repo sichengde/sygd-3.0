@@ -86,7 +86,7 @@ public class RoomCategorySaleReport {
     }
 
     /**
-     * 分析数据，当前和历史都在此体现
+     * 分析数据，当前和历史都在此体现-(废弃)
      */
     private List<RoomCategoryRow> parseData(List<RoomCategoryRow> roomCategoryRowList) {
         if (roomCategoryRowList.size() == 0) {

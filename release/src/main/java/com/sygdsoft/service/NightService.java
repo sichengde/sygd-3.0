@@ -52,6 +52,8 @@ public class NightService {
     @Autowired
     RoomStateReportService roomStateReportService;
     @Autowired
+    RoomSnapshotService roomSnapshotService;
+    @Autowired
     DebtIntegrationService debtIntegrationService;
     @Autowired
     CheckInService checkInService;
@@ -117,7 +119,9 @@ public class NightService {
         Date beginDateTime=nightDateService.getByDate(debtDate);
         Date endDateTime=timeService.getNow();
         roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
+        roomSnapshotService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
         List<RoomStateReport> roomStateReportList=new ArrayList<>();
+        List<RoomSnapshot> roomSnapshotList=new ArrayList<>();
         String oldCategory=null;
         Integer total=0;
         Integer totalReal=0;
@@ -135,6 +139,7 @@ public class NightService {
         Double addRoomConsume=0.0;
         Double nightRoomConsume=0.0;
         for (Room room : roomList) {//roomList在之前已经根据房类排列好了
+            RoomSnapshot roomSnapshot=new RoomSnapshot();
             /*新建一行*/
             if(!room.getCategory().equals(oldCategory)){
                 if(oldCategory!=null){//插入之前的
@@ -160,10 +165,16 @@ public class NightService {
                 }
                 oldCategory=room.getCategory();
             }
+            roomSnapshot.setRoomId(room.getRoomId());
+            roomSnapshot.setReportTime(debtDate);
+            roomSnapshot.setCategory(room.getCategory());
+            roomSnapshot.setArea(room.getArea());
+            roomSnapshot.setState(room.getState());
             switch (room.getState()){
                 case "可用房":
                 case "走客房":
                     empty++;
+                    roomSnapshot.setEmpty(true);
                     break;
                 case "团队房":
                 case "散客房":
@@ -172,21 +183,31 @@ public class NightService {
                     if(checkIn.getRoomPriceCategory().equals("日租房")){
                         allDayRoom++;
                         allDayRoomConsume+=checkIn.getFinalRoomPrice();
+                        roomSnapshot.setAllDayRoom(true);
+                        roomSnapshot.setAllDayRoomConsume(checkIn.getFinalRoomPrice());
                     }
                     rent++;
+                    roomSnapshot.setRent(true);
+                    roomSnapshot.setCompany(checkIn.getCompany());
+                    roomSnapshot.setSelfAccount(checkIn.getSelfAccount());
+                    roomSnapshot.setGroupAccount(checkIn.getGroupAccount());
                     break;
                 case "维修房":
                     repair++;
+                    roomSnapshot.setRepair(true);
                     break;
                 case "自用房":
                     self++;
+                    roomSnapshot.setSelf(true);
                     break;
                 case "备用房":
                     backUp++;
+                    roomSnapshot.setBackUp(true);
                     break;
             }
             if(room.getNotNullIfRoom()){
                 totalReal++;
+                roomSnapshot.setRealRoom(true);
             }
             total++;
             List<DebtIntegration> debtIntegrationList;
@@ -196,24 +217,32 @@ public class NightService {
             for (DebtIntegration debtIntegration : debtIntegrationList) {
                 hourRoom++;
                 hourRoomConsume+=debtIntegration.getConsume();
+                roomSnapshot.setHourRoom(true);
+                roomSnapshot.setHourRoomConsume(debtIntegration.getConsume());
             }
             /*计算时间段内的加收房*/
             debtIntegrationList=debtIntegrationService.get(new Query("category=\'加收房租\'"+dateAndRoomCondition));
             for (DebtIntegration debtIntegration : debtIntegrationList) {
                 addRoom++;
                 addRoomConsume+=debtIntegration.getConsume();
+                roomSnapshot.setAddRoom(true);
+                roomSnapshot.setAddRoomConsume(debtIntegration.getConsume());
             }
             /*计算时间段内的凌晨房*/
             debtIntegrationList=debtIntegrationService.get(new Query("category=\'凌晨房费\'"+dateAndRoomCondition));
             for (DebtIntegration debtIntegration : debtIntegrationList) {
                 nightRoom++;
                 nightRoomConsume+=debtIntegration.getConsume();
+                roomSnapshot.setNightRoom(true);
+                roomSnapshot.setNightRoomConsume(debtIntegration.getConsume());
             }
+            roomSnapshotList.add(roomSnapshot);
         }
         /*最后一个插入*/
         RoomStateReport roomStateReport = new RoomStateReport(oldCategory, total, totalReal, empty, repair, self, backUp, rent, allDayRoom, hourRoom, addRoom, nightRoom, allDayRoomConsume, hourRoomConsume, addRoomConsume, nightRoomConsume, debtDate);
         roomStateReportList.add(roomStateReport);
         roomStateReportService.add(roomStateReportList);
+        roomSnapshotService.add(roomSnapshotList);
         /*设置最近一次夜审时间*/
         otherParamService.updateValueByName("上次夜审", timeService.getNowLong());
         /*设置该账务日期的夜审时间*/
