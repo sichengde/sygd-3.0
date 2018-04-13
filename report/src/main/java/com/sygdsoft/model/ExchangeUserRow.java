@@ -1,35 +1,38 @@
 package com.sygdsoft.model;
 
+import com.sygdsoft.util.SzMath;
+
 /**
  * Created by 舒展 on 2016-09-28.
  */
 public class ExchangeUserRow {
     private String currency;
-    private String pay;
-    private String deposit;
-    private String cancelDeposit;
-    private String cancelDepositSingle;
-    private String subscription;
-    private String cancelSubscription;
-    private String vipRecharge;
-    private String companyPay;
-    private String payBack;//结账召回的币种信息
-    private String depositAll;//在店预付币种
+    private Double pay;
+    private Double deposit;
+    private Double cancelDeposit;
+    private Double cancelDepositSingle;
+    private Double subscription;
+    private Double cancelSubscription;
+    private Double vipRecharge;
+    private Double companyPay;
+    private Double payBack;//结账召回的币种信息
+    private Double depositAll;//在店预付币种
 
     public ExchangeUserRow() {
     }
     public ExchangeUserRow(FieldTemplate fieldTemplate) {
+        SzMath szMath=new SzMath();
         this.currency=fieldTemplate.getField1();
-        this.pay=fieldTemplate.getField2();
-        this.deposit=fieldTemplate.getField3();
-        this.cancelDeposit=fieldTemplate.getField4();
-        this.cancelDepositSingle=fieldTemplate.getField5();
-        this.subscription=fieldTemplate.getField6();
-        this.cancelSubscription=fieldTemplate.getField7();
-        this.vipRecharge=fieldTemplate.getField8();
-        this.companyPay=fieldTemplate.getField9();//暂时作废
-        this.payBack=fieldTemplate.getField10();
-        this.depositAll=fieldTemplate.getField11();
+        this.pay=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField2());
+        this.deposit=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3());
+        this.cancelDeposit=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField4());
+        this.cancelDepositSingle=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField5());
+        this.subscription=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField6());
+        this.cancelSubscription=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField7());
+        this.vipRecharge=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField8());
+        this.companyPay=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField9());//暂时作废
+        this.payBack=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField10());
+        this.depositAll=szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField11());
     }
 
     public String getCurrency() {
@@ -40,83 +43,83 @@ public class ExchangeUserRow {
         this.currency = currency;
     }
 
-    public String getPay() {
+    public Double getPay() {
         return pay;
     }
 
-    public void setPay(String pay) {
+    public void setPay(Double pay) {
         this.pay = pay;
     }
 
-    public String getDeposit() {
+    public Double getDeposit() {
         return deposit;
     }
 
-    public void setDeposit(String deposit) {
+    public void setDeposit(Double deposit) {
         this.deposit = deposit;
     }
 
-    public String getCancelDeposit() {
+    public Double getCancelDeposit() {
         return cancelDeposit;
     }
 
-    public void setCancelDeposit(String cancelDeposit) {
+    public void setCancelDeposit(Double cancelDeposit) {
         this.cancelDeposit = cancelDeposit;
     }
 
-    public String getSubscription() {
-        return subscription;
-    }
-
-    public void setSubscription(String subscription) {
-        this.subscription = subscription;
-    }
-
-    public String getCancelSubscription() {
-        return cancelSubscription;
-    }
-
-    public void setCancelSubscription(String cancelSubscription) {
-        this.cancelSubscription = cancelSubscription;
-    }
-
-    public String getVipRecharge() {
-        return vipRecharge;
-    }
-
-    public void setVipRecharge(String vipRecharge) {
-        this.vipRecharge = vipRecharge;
-    }
-
-    public String getCompanyPay() {
-        return companyPay;
-    }
-
-    public void setCompanyPay(String companyPay) {
-        this.companyPay = companyPay;
-    }
-
-    public String getCancelDepositSingle() {
+    public Double getCancelDepositSingle() {
         return cancelDepositSingle;
     }
 
-    public void setCancelDepositSingle(String cancelDepositSingle) {
+    public void setCancelDepositSingle(Double cancelDepositSingle) {
         this.cancelDepositSingle = cancelDepositSingle;
     }
 
-    public String getPayBack() {
+    public Double getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Double subscription) {
+        this.subscription = subscription;
+    }
+
+    public Double getCancelSubscription() {
+        return cancelSubscription;
+    }
+
+    public void setCancelSubscription(Double cancelSubscription) {
+        this.cancelSubscription = cancelSubscription;
+    }
+
+    public Double getVipRecharge() {
+        return vipRecharge;
+    }
+
+    public void setVipRecharge(Double vipRecharge) {
+        this.vipRecharge = vipRecharge;
+    }
+
+    public Double getCompanyPay() {
+        return companyPay;
+    }
+
+    public void setCompanyPay(Double companyPay) {
+        this.companyPay = companyPay;
+    }
+
+    public Double getPayBack() {
         return payBack;
     }
 
-    public void setPayBack(String payBack) {
+    public void setPayBack(Double payBack) {
         this.payBack = payBack;
     }
 
-    public String getDepositAll() {
+    public Double getDepositAll() {
         return depositAll;
     }
 
-    public void setDepositAll(String depositAll) {
+    public void setDepositAll(Double depositAll) {
         this.depositAll = depositAll;
     }
 }

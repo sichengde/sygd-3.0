@@ -35,6 +35,8 @@ public class RoomService extends BaseService<Room> {
     OtherParamService otherParamService;
     @Autowired
     RoomCategoryService roomCategoryService;
+    @Autowired
+    DebtService debtService;
 
     /**
      * 通过房号获取
@@ -102,6 +104,8 @@ public class RoomService extends BaseService<Room> {
                         room.setBirthday(true);
                     }
                 }
+                /*设置押金币种*/
+                checkIn.setCurrency(debtService.getCurrencyGroup(checkIn.getSelfAccount()));
             }
             List<Book> bookList=bookService.getBookByRoomId(room.getRoomId());
             if(bookList.size()>0) {
