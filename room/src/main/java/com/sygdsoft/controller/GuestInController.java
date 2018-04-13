@@ -314,6 +314,7 @@ public class GuestInController {
         * 24.大写押金值         util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getMoney()))
         * 25.补打标志           guestIn.getAgain()
         * 26.其余押金           otherDeposit
+        * 27.客源               checkIn.getGuestSource()
         * */
         if (guestIn.getCheckInGroup() == null) {
             /*散客要考虑多重押金*/
@@ -328,7 +329,7 @@ public class GuestInController {
                 otherDeposit+=currencyPost.getCurrency()+":"+currencyPost.getDeposit();
             }
             CheckIn checkIn = guestIn.getCheckInList().get(0);
-            return reportService.generateReport(null, new String[]{checkInGuest.getName(), checkInGuest.getSex(), timeService.dateToStringShort(checkInGuest.getBirthdayTime()), checkInGuest.getCardType(), checkInGuest.getCardId(), timeService.dateToStringLong(checkIn.getReachTime()), timeService.dateToStringLong(checkIn.getLeaveTime()), checkIn.getRoomId(), String.valueOf(checkIn.getFinalRoomPrice()), checkIn.getVipNumber(), checkInGuest.getAddress(), currencyPostMain.getCurrency(), checkIn.getImportant(), checkIn.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getSelfAccount(), String.valueOf(currencyPostMain.getDeposit()), checkIn.getCompany(), checkIn.getRoomPriceCategory(), checkIn.getProtocol(), checkIn.getBreakfast(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getDeposit())), guestIn.getAgain(),otherDeposit}, "deposit", "pdf");
+            return reportService.generateReport(null, new String[]{checkInGuest.getName(), checkInGuest.getSex(), timeService.dateToStringShort(checkInGuest.getBirthdayTime()), checkInGuest.getCardType(), checkInGuest.getCardId(), timeService.dateToStringLong(checkIn.getReachTime()), timeService.dateToStringLong(checkIn.getLeaveTime()), checkIn.getRoomId(), String.valueOf(checkIn.getFinalRoomPrice()), checkIn.getVipNumber(), checkInGuest.getAddress(), currencyPostMain.getCurrency(), checkIn.getImportant(), checkIn.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getSelfAccount(), String.valueOf(currencyPostMain.getDeposit()), checkIn.getCompany(), checkIn.getRoomPriceCategory(), checkIn.getProtocol(), checkIn.getBreakfast(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getDeposit())), guestIn.getAgain(),otherDeposit,checkIn.getGuestSource()}, "deposit", "pdf");
         } else {
         /*创建团队押金单报表,并返回单据号
         * parameter：
@@ -350,9 +351,10 @@ public class GuestInController {
         * 16.大写押金值       util.number2CNMontrayUnit(BigDecimal.valueOf(checkInGroup.getNotNullGroupDeposit()))
         * 17.房号明细         checkInService.getTotalRoomString(guestIn.getCheckInList())
         * 18.补打标志         guestIn.getAgain()
+        * 19.客源             checkIn.getGuestSource()
         * */
             CheckInGroup checkInGroup = guestIn.getCheckInGroup();
-            return reportService.generateReport(null, new String[]{checkInGroup.getName(), timeService.dateToStringLong(checkInGroup.getReachTime()), timeService.dateToStringLong(checkInGroup.getLeaveTime()), String.valueOf(checkInGroup.getTotalRoom()), checkInGroup.getVipNumber(), checkInGroup.getCurrency(), checkInGroup.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getGroupAccount(), String.valueOf(checkInGroup.getDeposit()), checkInGroup.getCompany(), checkInGroup.getRoomPriceCategory(), checkInGroup.getProtocol(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(checkInGroup.getNotNullGroupDeposit())), checkInService.getTotalRoomString(guestIn.getCheckInList(),false), guestIn.getAgain()}, "depositGroup", "pdf");
+            return reportService.generateReport(null, new String[]{checkInGroup.getName(), timeService.dateToStringLong(checkInGroup.getReachTime()), timeService.dateToStringLong(checkInGroup.getLeaveTime()), String.valueOf(checkInGroup.getTotalRoom()), checkInGroup.getVipNumber(), checkInGroup.getCurrency(), checkInGroup.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getGroupAccount(), String.valueOf(checkInGroup.getDeposit()), checkInGroup.getCompany(), checkInGroup.getRoomPriceCategory(), checkInGroup.getProtocol(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(checkInGroup.getNotNullGroupDeposit())), checkInService.getTotalRoomString(guestIn.getCheckInList(),false), guestIn.getAgain(),checkInGroup.getGuestSource()}, "depositGroup", "pdf");
         }
     }
 
