@@ -27,6 +27,18 @@ public class GuestSourceController {
         guestSourceService.add(guestSource);
     }
 
+    @RequestMapping(value = "guestSourceUpdate")
+    @Transactional
+    public void guestSourceAdd(@RequestBody List<GuestSource> guestSourceList) throws Exception {
+        if (guestSourceList.size() > 1) {
+            if (guestSourceList.get(0).getId().equals(guestSourceList.get(guestSourceList.size() / 2).getId())) {
+                guestSourceService.update(guestSourceList.subList(0, guestSourceList.size() / 2));
+                return;
+            }
+        }
+        guestSourceService.update(guestSourceList);
+    }
+
     @RequestMapping(value = "guestSourceDelete")
     @Transactional(rollbackFor = Exception.class)
     public void guestSourceDelete(@RequestBody List<GuestSource> guestSourceList) throws Exception {
