@@ -35,6 +35,8 @@ public class CheckIn extends BaseEntity{
     private String realProtocol;//真实的协议，区别于可编辑房价的临时协议
     @Transient
     private String currency;//押金币种，其实没啥用，只是在开房时用到，因为后期补交押金可能会导致跟之前的币种不一样的情况发生
+    @Transient
+    private String nameString;//姓名字符串，逗号分隔
 
     public CheckIn() {
     }
@@ -277,5 +279,13 @@ public class CheckIn extends BaseEntity{
 
     public void setRealProtocol(String realProtocol) {
         this.realProtocol = realProtocol;
+    }
+
+    public String getNameString() {
+        return nameString;
+    }
+
+    public void setNameString(String nameString) {
+        this.nameString = nameString;
     }
 }

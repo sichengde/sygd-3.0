@@ -4,10 +4,7 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.CheckIn;
 import com.sygdsoft.model.CheckInGroup;
 import com.sygdsoft.model.Protocol;
-import com.sygdsoft.service.CheckInGroupService;
-import com.sygdsoft.service.CheckInService;
-import com.sygdsoft.service.OtherParamService;
-import com.sygdsoft.service.ProtocolService;
+import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,13 +27,19 @@ public class CheckInController {
     ProtocolService protocolService;
     @Autowired
     OtherParamService otherParamService;
+    @Autowired
+    CheckInGuestService checkInGuestService;
 
     /**
      * 获取全部在店户籍
      */
     @RequestMapping(value = "checkInGet")
     public List<CheckIn> checkInGet(@RequestBody Query query) throws Exception {
-        return checkInService.get(query);
+        List<CheckIn> checkInList=checkInService.get(query);
+        for (CheckIn checkIn : checkInList) {
+            checkIn.setNameString(checkInGuestService.listToStringName(checkInGuestService.getListByRoomId(checkIn.getRoomId())));
+        }
+        return checkInList;
     }
 
     /**
