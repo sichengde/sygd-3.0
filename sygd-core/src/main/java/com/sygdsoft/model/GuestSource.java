@@ -7,6 +7,7 @@ package com.sygdsoft.model;
 public class GuestSource extends BaseEntity {
     private String guestSource;//客源名称
     private String countCategory;//统计分类
+    private Boolean companyNotNull;//统计分类
 
     public GuestSource() {
     }
@@ -29,5 +30,13 @@ public class GuestSource extends BaseEntity {
 
     public void setCountCategory(String countCategory) {
         this.countCategory = countCategory;
+    }
+
+    public Boolean getCompanyNotNull() {
+        return companyNotNull;
+    }
+
+    public void setCompanyNotNull(Boolean companyNotNull) {
+        this.companyNotNull = companyNotNull;
     }
 }

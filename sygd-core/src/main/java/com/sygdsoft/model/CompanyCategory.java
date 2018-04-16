@@ -6,6 +6,7 @@ package com.sygdsoft.model;
 public class CompanyCategory extends BaseEntity{
     private String category;
     private String availablePos;
+    private String guestSource;
 
     public CompanyCategory() {
     }
@@ -24,5 +25,13 @@ public class CompanyCategory extends BaseEntity{
 
     public void setAvailablePos(String availablePos) {
         this.availablePos = availablePos;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 }
