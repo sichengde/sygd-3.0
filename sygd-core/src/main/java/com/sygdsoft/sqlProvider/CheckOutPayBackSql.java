@@ -11,7 +11,7 @@ public class CheckOutPayBackSql {
         String currency = (String) map.get("currency");
         String basic = "SELECT round(sum(money),2) from check_out_pay_back WHERE done_time>#{beginTime} AND done_time<#{endTime} ";
         if (userId != null) {
-            basic += " and userId=#{userId}";
+            basic += " and user_id=#{userId}";
         }
         if (currency != null) {
             basic += " and currency=#{currency}";
