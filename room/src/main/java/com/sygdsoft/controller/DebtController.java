@@ -134,6 +134,7 @@ public class DebtController {
         Date now = timeService.setNow();
         for (Debt debt : debtList) {
             debt.setRemark("已退");
+            debt.setBack(true);
         }
         debtService.update(debtList);
         for (Debt debt : debtList) {
