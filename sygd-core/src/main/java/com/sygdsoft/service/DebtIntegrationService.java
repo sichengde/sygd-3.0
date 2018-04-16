@@ -94,4 +94,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     public Double getSumDepositByEndTime(Date beginTime,Date endTime,String userId){
         return debtIntegrationMapper.getSumDepositByEndTime(beginTime, endTime, userId);
     }
+
+    /**
+     * 获取每日出租房数
+     */
+    public List<DebtIntegration> getDailyCount(Date beginTime,Date endTime){
+        return debtIntegrationMapper.getDailyCount(beginTime,endTime);
+    }
 }
