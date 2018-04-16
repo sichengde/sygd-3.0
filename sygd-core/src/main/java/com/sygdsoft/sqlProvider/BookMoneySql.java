@@ -12,7 +12,7 @@ public class BookMoneySql {
         Boolean negative = (Boolean) map.get("negative");
         String basic = "select sum(subscription) from book_money where do_time > #{beginTime} and do_time< #{endTime} ";
         if (userId != null) {
-            basic += " and userId=#{userId}";
+            basic += " and user_id=#{userId}";
         }
         if (currency != null) {
             basic += " and currency=#{currency}";
