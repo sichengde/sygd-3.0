@@ -102,8 +102,7 @@ public class RoomController {
      */
     @RequestMapping(value = "roomGetPure")
     public List<Room> roomGetPure(@RequestBody Query query) throws Exception {
-        List<Room> roomList = roomService.get(query);
-        return roomList;
+        return roomService.get(query);
     }
 
     /**
