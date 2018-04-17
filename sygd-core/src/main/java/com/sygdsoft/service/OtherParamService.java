@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @SzMapper(id = "otherParam")
 public class OtherParamService extends BaseService<OtherParam> {
+    public String debtDate="账务日期";
     @Autowired
     OtherParamMapper otherParamMapper;
 
@@ -18,6 +19,13 @@ public class OtherParamService extends BaseService<OtherParam> {
         return otherParamMapper.getValueByName(name);
     }
 
+    public void insertNewRow(String name,String value,String module){
+        OtherParam otherParam=new OtherParam();
+        otherParam.setModule(module);
+        otherParam.setOtherParam(name);
+        otherParam.setValue(value);
+        otherParamMapper.insert(otherParam);
+    }
     public void updateValueByName(String name,String value){
         otherParamMapper.updateValueByName(name, value);
     }

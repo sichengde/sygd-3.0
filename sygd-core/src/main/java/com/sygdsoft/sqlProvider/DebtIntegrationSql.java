@@ -47,4 +47,7 @@ public class DebtIntegrationSql {
         return basic;
     }
 
+    public String getDailyCount(){
+        return null;
+    }
 }

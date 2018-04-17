@@ -97,8 +97,8 @@ public class ExchangeUserReport {
             fieldTemplate.setField3(szMath.ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//预付
             Double cancelDeposit=szMath.formatTwoDecimalReturnDouble(debtHistoryService.getTotalCancelDeposit(userId, currencyString, beginTime, endTime));
             cancelDepositAll+=cancelDeposit;
-            fieldTemplate.setField4(szMath.ifNotNullGetString(cancelDeposit));//退预付
-            fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//单退预付
+            fieldTemplate.setField4(szMath.ifNotNullGetString(cancelDeposit));//结账退预付
+            fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//手动退预付
             fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
             fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime,userId, currencyString,"接待")));//会员充值

@@ -87,4 +87,7 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     @SelectProvider(type = DebtIntegrationSql.class,method = "getSumDepositByEndTime")
     @ResultType(Double.class)
     Double getSumDepositByEndTime(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("userId")String userId);
+
+    @SelectProvider(type = DebtIntegrationSql.class,method = "getDailyCount")
+    List<DebtIntegration> getDailyCount(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
 }

@@ -33,6 +33,7 @@ public class Debt extends BaseEntity {
     private Double totalConsume;//录完该笔消费后消费合计
     private String guestName;//客人姓名
     private String sourceRoom;//原房号
+    private Boolean back;//已退款标志(针对押金，以前是在remark中用字符串"已退"标记)
 
     @Transient
     private String area;
@@ -62,6 +63,7 @@ public class Debt extends BaseEntity {
         this.company=debt.getCompany();
         this.guestName=debt.getGuestName();
         this.sourceRoom=debt.getSourceRoom();
+        this.back=debt.getBack();
     }
 
     public Debt(DebtHistory debtHistory){
@@ -86,6 +88,7 @@ public class Debt extends BaseEntity {
         this.company=debtHistory.getCompany();
         this.guestName=debtHistory.getGuestName();
         this.sourceRoom=debtHistory.getSourceRoom();
+        this.back=debtHistory.getBack();
     }
 
     public Double getNotNullDeposit(){
@@ -281,5 +284,13 @@ public class Debt extends BaseEntity {
 
     public void setArea(String area) {
         this.area = area;
+    }
+
+    public Boolean getBack() {
+        return back;
+    }
+
+    public void setBack(Boolean back) {
+        this.back = back;
     }
 }
