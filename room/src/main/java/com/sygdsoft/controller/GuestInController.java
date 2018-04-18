@@ -366,12 +366,6 @@ public class GuestInController {
     public Integer depositPrintAgain(@RequestBody Debt debt) throws Exception {
         /*构造一个GuestIn用于打印*/
         GuestIn guestIn = new GuestIn();
-        CheckIn checkIn = checkInService.getByRoomId(debt.getRoomId());
-        checkIn.setCurrency(debt.getCurrency());
-        checkIn.setDeposit(debt.getDeposit());
-        List<CheckIn> checkInList = new ArrayList<>();
-        checkInList.add(checkIn);
-        guestIn.setCheckInList(checkInList);
         List<CurrencyPost> currencyPostList=new ArrayList<>();
         CurrencyPost currencyPost=new CurrencyPost();
         currencyPost.setCurrency(debt.getCurrency());
@@ -379,13 +373,23 @@ public class GuestInController {
         currencyPostList.add(currencyPost);
         guestIn.setCurrencyPostList(currencyPostList);
         if (debt.getGroupAccount() == null) {
+            /*设置在店宾客数组*/
             List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(debt.getRoomId());
             guestIn.setCheckInGuestList(checkInGuestList);
+            /*设置在店户籍数组*/
+            CheckIn checkIn = checkInService.getByRoomId(debt.getRoomId());
+            checkIn.setCurrency(debt.getCurrency());
+            checkIn.setDeposit(debt.getDeposit());
+            List<CheckIn> checkInList = new ArrayList<>();
+            checkInList.add(checkIn);
+            guestIn.setCheckInList(checkInList);
         } else {
             CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(debt.getGroupAccount());
             List<CheckInGuest> checkInGuestList = checkInGuestService.getListByRoomId(debt.getRoomId());
             guestIn.setCheckInGroup(checkInGroup);
             guestIn.setCheckInGuestList(checkInGuestList);
+            /*设置在店户籍数组*/
+            guestIn.setCheckInList(checkInService.getList(checkInGroup.getGroupAccount()));
         }
         guestIn.setAgain("补打");
         return this.reportProcess(guestIn);
