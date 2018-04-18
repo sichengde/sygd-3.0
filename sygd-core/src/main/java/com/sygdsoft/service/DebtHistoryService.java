@@ -97,8 +97,8 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 拼接融合账务信息
      */
-    public List<DebtHistory> mergeDebtHistory(List<DebtHistory> debtList) {
-        if (otherParamService.getValueByName("房间账单合并").equals("y")) {
+    public List<DebtHistory> mergeDebtHistory(List<DebtHistory> debtList,boolean group) {
+        if (group) {
             List<DebtHistory> compressDebtList = new ArrayList<>();
             List<String> roomIdListCheck = new ArrayList<>();//用来检测哪些房间加入了
             Integer liveDay = 2;//统计房费天数
