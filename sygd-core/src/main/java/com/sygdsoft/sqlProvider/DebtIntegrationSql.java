@@ -48,6 +48,7 @@ public class DebtIntegrationSql {
     }
 
     public String getDailyCount(){
-        return null;
+        String basic="SELECT day doTime, count(*) count FROM (SELECT substr(do_time - INTERVAL #{fixDate} DAY, 1, 10) day FROM debt_integration di WHERE do_time - INTERVAL #{fixDate} DAY>=#{beginDate} and do_time - INTERVAL #{fixDate} DAY<=#{endDate} AND (category = '全日房费' OR category = '凌晨房费')) sub GROUP BY day ORDER BY day";
+        return basic;
     }
 }

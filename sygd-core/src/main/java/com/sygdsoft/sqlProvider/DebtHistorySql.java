@@ -83,7 +83,7 @@ public class DebtHistorySql {
 
     public String getTotalCancelDeposit(Map<String, Object> parameters) {
         String userId = (String) parameters.get("userId");
-        String basic = "select round(sum(debt_history.deposit),2) deposit from debt_history LEFT JOIN check_out ON debt_history.self_account=check_out.self_account where debt_history.done_time > #{beginTime} and debt_history.done_time< #{endTime} and debt_history.currency=#{currency} and debt_history.deposit>0 and ifnull(back,false)=false";
+        String basic = "select round(sum(debt_history.deposit),2) deposit from debt_history LEFT JOIN check_out ON debt_history.self_account=check_out.self_account where debt_history.done_time > #{beginTime} and debt_history.done_time< #{endTime} and debt_history.currency=#{currency} and ifnull(back,false)=false";
         if (userId != null) {
             basic += " and check_out.user_id = #{userId}";
         }

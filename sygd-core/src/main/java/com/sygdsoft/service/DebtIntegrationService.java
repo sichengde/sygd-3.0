@@ -21,6 +21,8 @@ import java.util.List;
 public class DebtIntegrationService extends BaseService<DebtIntegration> {
     @Autowired
     DebtIntegrationMapper debtIntegrationMapper;
+    @Autowired
+    TimeService timeService;
     /**
      * 根据发生时间获得消费总额
      */
@@ -98,7 +100,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 获取每日出租房数
      */
-    public List<DebtIntegration> getDailyCount(Date beginTime,Date endTime){
-        return debtIntegrationMapper.getDailyCount(beginTime,endTime);
+    public List<DebtIntegration> getDailyCount(Date beginTime,Date endTime,boolean fixDate)throws Exception{
+        int fixDateInt=0;
+        if(fixDate){
+            fixDateInt=1;
+        }
+        return debtIntegrationMapper.getDailyCount(beginTime,endTime,fixDateInt);
     }
 }

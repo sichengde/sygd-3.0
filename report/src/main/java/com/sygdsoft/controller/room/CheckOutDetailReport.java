@@ -70,6 +70,7 @@ public class CheckOutDetailReport {
     /*TODO:哑房结算不参与*/
     @RequestMapping(value = "checkOutDetailReport")
     public Integer checkOutDetailReport(@RequestBody ReportJson reportJson) throws Exception {
+        Boolean groupConsume=reportJson.getNotNullParamBool();
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
@@ -145,7 +146,7 @@ public class CheckOutDetailReport {
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
                 query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
-                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList);
+                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList,groupConsume);
                 for (DebtHistory debtHistory : debtHistoryList) {
                     fieldTemplate = new FieldTemplate();//循环输出结账明细
                     fieldTemplate.setField1(timeService.longFormat.format(debtHistory.getDoTime()));
@@ -208,6 +209,7 @@ public class CheckOutDetailReport {
      */
     @RequestMapping(value = "checkOutDetailMobile")
     public CheckOutDetailReturn checkOutDetailMobile(@RequestBody ReportJson reportJson) throws Exception {
+        Boolean groupConsume=reportJson.getNotNullParamBool();
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
@@ -243,7 +245,7 @@ public class CheckOutDetailReport {
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
                 query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
-                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList);
+                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList,groupConsume);
                 for (DebtHistory debtHistory : debtHistoryList) {
                     checkOutDetailRow = new CheckOutDetailRow();//循环输出结账明细
                     checkOutDetailRow.setDoTime(timeService.dateToStringLong(debtHistory.getDoTime()));
