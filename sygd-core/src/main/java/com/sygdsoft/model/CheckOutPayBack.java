@@ -11,6 +11,8 @@ public class CheckOutPayBack extends BaseEntity{
     private String userId;
     @Transient
     private String roomId;
+    @Transient
+    private String guestName;
 
     public CheckOutPayBack() {
     }
@@ -61,5 +63,13 @@ public class CheckOutPayBack extends BaseEntity{
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 }

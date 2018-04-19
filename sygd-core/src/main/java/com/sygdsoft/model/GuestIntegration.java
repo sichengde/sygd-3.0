@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class GuestIntegration {
     private String cardId;
+    private String name;
     private String country;
     private String guestSource;
     private String roomCategory;
@@ -71,5 +72,13 @@ public class GuestIntegration {
 
     public void setRoomCategory(String roomCategory) {
         this.roomCategory = roomCategory;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -93,4 +93,11 @@ public class GuestIntegrationService extends BaseService<GuestIntegration>{
         guestIntegrationQuery.setSelfAccount(paySerial);
         return guestIntegrationMapper.select(guestIntegrationQuery);
     }
+
+    /**
+     * 根据自付账号获取姓名字符串
+     */
+    public String getGuestNameBySelfAccount(String selfAccount){
+        return guestIntegrationMapper.getGuestNameBySelfAccount(selfAccount);
+    }
 }
