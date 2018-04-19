@@ -54,4 +54,12 @@ public class DebtHistoryController {
         }
         return debtHistoryList;
     }
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    @RequestMapping("getTotalDepositByPaySerial")
+    public Double getTotalDepositByPaySerial(@RequestBody String paySerial){
+        return debtHistoryService.getTotalDeposit(paySerial);
+    }
 }

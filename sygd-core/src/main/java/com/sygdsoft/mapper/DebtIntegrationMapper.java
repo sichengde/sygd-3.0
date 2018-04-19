@@ -97,4 +97,11 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
 
     @SelectProvider(type = DebtIntegrationSql.class,method = "getDailyCount")
     List<DebtIntegration> getDailyCount(@Param("beginDate") Date beginDate,@Param("endDate") Date endDate,@Param("fixDate") Integer fixDate);
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    @Select("SELECT round(sum(deposit),2) FROM debt_integration WHERE pay_serial=#{pay_serial}")
+    @ResultType(value = Double.class)
+    Double getTotalDeposit(String paySerial);
 }
