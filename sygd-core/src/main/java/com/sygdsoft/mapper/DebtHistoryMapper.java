@@ -43,7 +43,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
 
     @SelectProvider(type = DebtHistorySql.class,method = "getCancelDeposit")
     @Results(value = {
-            @Result(property = "userId",column = "debt_pay.user_id"),
+            @Result(property = "userId",column = "user_id"),
             @Result(property = "doTime", column = "do_time"),
             @Result(property = "pointOfSale", column = "point_of_sale"),
             @Result(property = "selfAccount", column = "self_account"),
