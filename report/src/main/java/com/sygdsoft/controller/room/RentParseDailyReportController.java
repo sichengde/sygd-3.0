@@ -17,6 +17,6 @@ public class RentParseDailyReportController {
 
     @RequestMapping(value = "rentParseDailyReport")
     public List<DebtIntegration> rentParseDailyReport(@RequestBody ReportJson reportJson) throws Exception {
-        return debtIntegrationService.getDailyCount(reportJson.getBeginTime(),reportJson.getEndTime());
+        return debtIntegrationService.getDailyCount(reportJson.getBeginTime(),reportJson.getEndTime(),reportJson.getNotNullParamBool());
     }
 }

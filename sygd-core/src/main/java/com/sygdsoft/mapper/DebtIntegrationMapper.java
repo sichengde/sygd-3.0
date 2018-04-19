@@ -65,6 +65,13 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     Double getDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
+     * 根据操作员，币种，时间，算出单退押金总和
+     */
+    @SelectProvider(type = DebtIntegrationSql.class,method = "getDepositList")
+    @ResultType(Double.class)
+    List<DebtIntegration> getDepositList(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    /**
      * 根据发生时间获得消费总额
      */
     @SelectProvider(type = DebtIntegrationSql.class,method = "getSumConsumeByDoTime")
@@ -89,5 +96,12 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     Double getSumDepositByEndTime(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("userId")String userId);
 
     @SelectProvider(type = DebtIntegrationSql.class,method = "getDailyCount")
-    List<DebtIntegration> getDailyCount(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime);
+    List<DebtIntegration> getDailyCount(@Param("beginDate") Date beginDate,@Param("endDate") Date endDate,@Param("fixDate") Integer fixDate);
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    @Select("SELECT round(sum(deposit),2) FROM debt_integration WHERE pay_serial=#{pay_serial}")
+    @ResultType(value = Double.class)
+    Double getTotalDeposit(String paySerial);
 }

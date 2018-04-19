@@ -34,7 +34,7 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     }
 
     /**
-     * 查询该时间段该操作员的退预付
+     * 查询该时间段该结账操作员的退预付
      */
     public Double getTotalCancelDeposit(String userId, String currency, Date beginTime, Date endTime) {
         return debtHistoryMapper.getTotalCancelDeposit(userId, currency, beginTime, endTime);
@@ -97,8 +97,8 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 拼接融合账务信息
      */
-    public List<DebtHistory> mergeDebtHistory(List<DebtHistory> debtList) {
-        if (otherParamService.getValueByName("房间账单合并").equals("y")) {
+    public List<DebtHistory> mergeDebtHistory(List<DebtHistory> debtList,boolean group) {
+        if (group) {
             List<DebtHistory> compressDebtList = new ArrayList<>();
             List<String> roomIdListCheck = new ArrayList<>();//用来检测哪些房间加入了
             Integer liveDay = 2;//统计房费天数
@@ -188,5 +188,12 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
      */
     public void deleteMiddlePay() {
         debtHistoryMapper.deleteMiddlePay();
+    }
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    public Double getTotalDeposit(String paySerial){
+        return debtHistoryMapper.getTotalDeposit(paySerial);
     }
 }

@@ -21,6 +21,8 @@ import java.util.List;
 public class DebtIntegrationService extends BaseService<DebtIntegration> {
     @Autowired
     DebtIntegrationMapper debtIntegrationMapper;
+    @Autowired
+    TimeService timeService;
     /**
      * 根据发生时间获得消费总额
      */
@@ -82,6 +84,13 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     }
 
     /**
+     * 根据操作员，币种，时间，算出单退押金明细（没用上）
+     */
+    List<DebtIntegration> getDepositList(String userId, String currency, Date beginTime, Date endTime) {
+        return debtIntegrationMapper.getDepositList(userId, currency, beginTime, endTime);
+    }
+
+    /**
      * 获得时间段内该房类走势
      */
     public List<RoomCategoryLine> parseRoomCategoryDebtLine(Date beginTime, Date endTime, String category) {
@@ -98,7 +107,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     /**
      * 获取每日出租房数
      */
-    public List<DebtIntegration> getDailyCount(Date beginTime,Date endTime){
-        return debtIntegrationMapper.getDailyCount(beginTime,endTime);
+    public List<DebtIntegration> getDailyCount(Date beginTime,Date endTime,boolean fixDate)throws Exception{
+        int fixDateInt=0;
+        if(fixDate){
+            fixDateInt=1;
+        }
+        return debtIntegrationMapper.getDailyCount(beginTime,endTime,fixDateInt);
     }
 }

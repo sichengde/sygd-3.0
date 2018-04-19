@@ -132,7 +132,7 @@ public class UserLogService extends BaseService<UserLog> {
      * 增加一条操作员记录（指定操作员）
      */
     public int addUserLog(String action, String module, String category, String userId, String keyWord) throws IOException {
-        User user = userService.getByName(userId);
+        //User user = userService.getByName(userId);
         UserLog userLog = new UserLog();
         userLog.setUserId(userId);
         userLog.setAction(action);
@@ -141,7 +141,7 @@ public class UserLogService extends BaseService<UserLog> {
         userLog.setCategory(category);
         userLog.setIpAddress(userService.getCurrentIpAddr());
         userLog.setKeyWord(keyWord);
-        userLog.setGroupBy(user.getGroupBy());
+//        userLog.setGroupBy(user.getGroupBy());
         userLogMapper.insert(userLog);
         return userLog.getId();
     }

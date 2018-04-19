@@ -17,6 +17,15 @@ public class DebtIntegrationSql {
         return basic;
     }
 
+    public String getDepositList(Map<String, Object> parameters){
+        String userId= (String) parameters.get("userId");
+        String basic="SELECT * FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0";
+        if(userId!=null){
+            basic+=" and user_id = #{userId}";
+        }
+        return basic;
+    }
+
     public String getSumConsumeByDoTime(Map<String, Object> parameters){
         String pointOfSale= (String) parameters.get("pointOfSale");
         boolean excludeChange= (boolean) parameters.get("excludeChange");
@@ -48,6 +57,7 @@ public class DebtIntegrationSql {
     }
 
     public String getDailyCount(){
-        return null;
+        String basic="SELECT day doTime, count(*) count FROM (SELECT substr(do_time - INTERVAL #{fixDate} DAY, 1, 10) day FROM debt_integration di WHERE do_time - INTERVAL #{fixDate} DAY>=#{beginDate} and do_time - INTERVAL #{fixDate} DAY<=#{endDate} AND (category = '全日房费' OR category = '凌晨房费')) sub GROUP BY day ORDER BY day";
+        return basic;
     }
 }

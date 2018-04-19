@@ -29,6 +29,8 @@ public class DebtIntegration {
     private String count;
     @Transient
     private String categoryRoom;
+    @Transient
+    private String guestName;
 
     public DebtIntegration() {
     }
@@ -191,5 +193,13 @@ public class DebtIntegration {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 }

@@ -82,4 +82,10 @@ public class CheckInService extends BaseService<CheckIn> {
     public List<CheckIn> getNotAddRoomPrice(){
         return checkInMapper.getNotAddRoomPrice();
     }
+
+    public List<CheckIn> getList(String groupAccount){
+        CheckIn checkInQuery=new CheckIn();
+        checkInQuery.setGroupAccount(groupAccount);
+        return checkInMapper.select(checkInQuery);
+    }
 }

@@ -26,6 +26,14 @@ public class ReportJson {
         this.endTime = endTime;
     }
 
+    public boolean getNotNullParamBool(){
+        if(paramBool==null){
+            return false;
+        }else {
+            return paramBool;
+        }
+    }
+
     public String getUserId() {
         return userId;
     }

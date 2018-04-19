@@ -72,6 +72,14 @@ public class DebtPayService extends BaseService<DebtPay> {
         return debtPayMapper.select(debtPayQuery);
     }
 
+
+    /*离店序列号*/
+    public List<DebtPay> getListByCheckOutSerial(String checkOutSerial) {
+        DebtPay debtPayQuery = new DebtPay();
+        debtPayQuery.setCheckOutSerial(checkOutSerial);
+        return debtPayMapper.select(debtPayQuery);
+    }
+
     /*结账序列号*/
     public List<DebtPay> getListByPaySerial(String paySerial) {
         DebtPay debtPayQuery = new DebtPay();
@@ -122,6 +130,12 @@ public class DebtPayService extends BaseService<DebtPay> {
                     debt.setCategory("客房挂账");
                 }
                 debtService.addDebt(debt);
+                /*if(deposit!=null&&deposit!=0.0){
+                    *//*转预付*//*
+                    debt.setDeposit(deposit);
+                    debt.setCategory(debtService.deposit);
+                    debtService.addDebt(debt);
+                }*/
                 changeDebt += " 转房客至:" + currencyAdd;
                 break;//不转移账务明细
             case "转哑房"://转哑房
