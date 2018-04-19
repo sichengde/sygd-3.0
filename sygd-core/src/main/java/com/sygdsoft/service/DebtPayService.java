@@ -72,6 +72,14 @@ public class DebtPayService extends BaseService<DebtPay> {
         return debtPayMapper.select(debtPayQuery);
     }
 
+
+    /*离店序列号*/
+    public List<DebtPay> getListByCheckOutSerial(String checkOutSerial) {
+        DebtPay debtPayQuery = new DebtPay();
+        debtPayQuery.setCheckOutSerial(checkOutSerial);
+        return debtPayMapper.select(debtPayQuery);
+    }
+
     /*结账序列号*/
     public List<DebtPay> getListByPaySerial(String paySerial) {
         DebtPay debtPayQuery = new DebtPay();

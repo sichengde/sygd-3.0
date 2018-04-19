@@ -5,6 +5,7 @@ import com.sygdsoft.jsonModel.QuerySubReport;
 import com.sygdsoft.model.DebtHistory;
 import com.sygdsoft.service.DebtIntegrationService;
 import com.sygdsoft.model.DebtIntegration;
+import com.sygdsoft.service.GuestIntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +21,16 @@ import java.util.List;
 public class DebtIntegrationController {
     @Autowired
     DebtIntegrationService debtIntegrationService;
+    @Autowired
+    GuestIntegrationService guestIntegrationService;
 
     @RequestMapping(value = "debtIntegrationGet")
     public List<DebtIntegration> debtIntegrationGet(@RequestBody Query query) throws Exception {
-        return debtIntegrationService.get(query);
+        List<DebtIntegration> debtIntegrationList=debtIntegrationService.get(query);
+        for (DebtIntegration debtIntegration : debtIntegrationList) {
+            debtIntegration.setGuestName(guestIntegrationService.getGuestNameBySelfAccount(debtIntegration.getSelfAccount()));
+        }
+        return debtIntegrationList;
     }
 
 }

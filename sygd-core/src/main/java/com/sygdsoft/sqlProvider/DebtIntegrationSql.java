@@ -17,6 +17,15 @@ public class DebtIntegrationSql {
         return basic;
     }
 
+    public String getDepositList(Map<String, Object> parameters){
+        String userId= (String) parameters.get("userId");
+        String basic="SELECT * FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0";
+        if(userId!=null){
+            basic+=" and user_id = #{userId}";
+        }
+        return basic;
+    }
+
     public String getSumConsumeByDoTime(Map<String, Object> parameters){
         String pointOfSale= (String) parameters.get("pointOfSale");
         boolean excludeChange= (boolean) parameters.get("excludeChange");

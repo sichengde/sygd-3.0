@@ -40,4 +40,7 @@ public interface GuestIntegrationMapper extends MyMapper<GuestIntegration>{
             @Result(column = "if_in",property = "ifIn"),
     })
     List<CountryGuestRow> getList(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    @Select("SELECT group_concat(name) FROM guest_integration WHERE self_account=#{selfAccount}")
+    String getGuestNameBySelfAccount(@Param("selfAccount") String selfAccount);
 }
