@@ -220,3 +220,6 @@ CREATE OR REPLACE VIEW debt_integration AS
           `hotel`.`debt`.`company`       AS `company`,
           `hotel`.`debt`.`back`       AS `back`
         FROM `hotel`.`debt`;
+#2018-04-21 增加锁定结账功能
+ALTER TABLE hotel.check_in ADD disable_check_out TEXT NULL;
+ALTER TABLE hotel.check_in_group ADD disable_check_out TEXT NULL;
