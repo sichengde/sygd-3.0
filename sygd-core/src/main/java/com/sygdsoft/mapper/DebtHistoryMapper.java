@@ -51,7 +51,6 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
             @Result(property = "roomId", column = "room_id"),
             @Result(property = "paySerial", column = "pay_serial"),
             @Result(property = "doneTime", column = "done_time"),
-            @Result(property = "userId", column = "user_id"),
             @Result(property = "vipNumber", column = "vip_number"),
             @Result(property = "fromRoom", column = "from_room"),
             @Result(property = "companyPaid", column = "company_paid"),
