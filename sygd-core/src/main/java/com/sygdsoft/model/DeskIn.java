@@ -28,6 +28,22 @@ public class DeskIn extends BaseEntity{
         this.pointOfSale=deskInHistory.getPointOfSale();
     }
 
+    public Double getNotNullConsume(){
+        if(consume==null){
+            return 0.0;
+        }else {
+            return consume;
+        }
+    }
+
+    public Integer getNotNullNum(){
+        if(num==null){
+            return 0;
+        }else {
+            return num;
+        }
+    }
+
     public String getDesk() {
         return desk;
     }
