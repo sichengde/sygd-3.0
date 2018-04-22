@@ -10,6 +10,7 @@ public class CurrencyPost {
     private String currencyAdd;
     private Double money;
     private Double deposit;
+    private Boolean changeDeposit;//是否转移押金
 
     public CurrencyPost() {
     }
@@ -22,6 +23,14 @@ public class CurrencyPost {
         this.currency=debtPay.getCurrency();
         this.currencyAdd=debtPay.getCurrencyAdd();
         this.money=debtPay.getDebtMoney();
+    }
+
+    public Boolean getNotNullChangeDeposit(){
+        if(changeDeposit==null){
+            return false;
+        }else {
+            return changeDeposit;
+        }
     }
 
     public String getCurrency() {
@@ -54,5 +63,13 @@ public class CurrencyPost {
 
     public void setDeposit(Double deposit) {
         this.deposit = deposit;
+    }
+
+    public Boolean getChangeDeposit() {
+        return changeDeposit;
+    }
+
+    public void setChangeDeposit(Boolean changeDeposit) {
+        this.changeDeposit = changeDeposit;
     }
 }
