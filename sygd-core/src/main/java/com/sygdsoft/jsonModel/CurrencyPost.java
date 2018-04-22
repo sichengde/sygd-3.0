@@ -10,27 +10,19 @@ public class CurrencyPost {
     private String currencyAdd;
     private Double money;
     private Double deposit;
-    private Boolean changeDeposit;//是否转移押金
 
     public CurrencyPost() {
     }
 
     /**
      * 通过结账分单数组生成，用于补打结账单
+     *
      * @param debtPay
      */
-    public CurrencyPost(DebtPay debtPay){
-        this.currency=debtPay.getCurrency();
-        this.currencyAdd=debtPay.getCurrencyAdd();
-        this.money=debtPay.getDebtMoney();
-    }
-
-    public Boolean getNotNullChangeDeposit(){
-        if(changeDeposit==null){
-            return false;
-        }else {
-            return changeDeposit;
-        }
+    public CurrencyPost(DebtPay debtPay) {
+        this.currency = debtPay.getCurrency();
+        this.currencyAdd = debtPay.getCurrencyAdd();
+        this.money = debtPay.getDebtMoney();
     }
 
     public String getCurrency() {
@@ -65,11 +57,4 @@ public class CurrencyPost {
         this.deposit = deposit;
     }
 
-    public Boolean getChangeDeposit() {
-        return changeDeposit;
-    }
-
-    public void setChangeDeposit(Boolean changeDeposit) {
-        this.changeDeposit = changeDeposit;
-    }
 }
