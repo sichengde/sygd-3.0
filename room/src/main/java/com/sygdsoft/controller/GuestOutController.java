@@ -139,7 +139,7 @@ public class GuestOutController {
                 checkOutSerial = serialService.setCheckOutSerial();//生成离店序列号
             }
             serialService.setPaySerial();//生成结账序列号
-            /*TODO:判断是否只有一条转房客*/
+            /*TODO:判断是否只有一条转房客，分单结算不能选择转明细，转明细的话也是迁移到账务历史，但是新生成一条一条的明细，不是只有一条，并且加上不参与发生额统计的标志*/
             /*转换房态*/
             this.updateRoomStateGuestOut(guestOut.getRoomIdList());
             /*额外的加收房租*/
@@ -164,7 +164,7 @@ public class GuestOutController {
             Integer reportIndex = this.reportProcess(guestOut, guestInfo, changeDebt, debtList);
             /*操作员记录*/
             this.addUserLog(guestOut, changeDebt);
-            /*删除账务，开房信息，团队开房信息，在店宾客（如果删早可能会导致后边的方法获取不到相关信息），房价协议（如果有）*/
+            /*删除账务，开房信息，团队开房信息，在店宾客（如果删早可能会导致后边的方法获取不到相关信息），房价协议（如果有）*///TODO:不能删
             this.delete(guestOut);
             /*找零信息记表*/
             for (CheckOutPayBack checkOutPayBack : guestOut.getCheckOutPayBackList()) {
