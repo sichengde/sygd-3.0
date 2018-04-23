@@ -1,6 +1,7 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.service.Night;
+import com.sygdsoft.service.OtherParamService;
 import com.sygdsoft.service.TimeService;
 import com.sygdsoft.service.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class NightController {
     UserLogService userLogService;
     @Autowired
     TimeService timeService;
+    @Autowired
+    OtherParamService otherParamService;
 
     @RequestMapping(value = "manualNightAction")
     @Transactional(rollbackFor = Exception.class)
