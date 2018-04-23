@@ -122,7 +122,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 debt.setCurrency("挂账");
                 debt.setRoomId(currencyAdd);
                 debt.setUserId(userService.getCurrentUser());
-                debt.setDescription(roomService.roomListToString(roomList) + "挂账");
+                debt.setDescription(roomService.roomListToString(roomList) + description+"挂账");
                 debt.setFromRoom(paySerial);
                 if (paySerial.contains("ck")) {
                     debt.setCategory("餐饮挂账");
