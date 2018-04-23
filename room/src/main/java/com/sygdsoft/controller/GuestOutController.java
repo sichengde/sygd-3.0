@@ -410,6 +410,7 @@ public class GuestOutController {
         List<String> roomList = guestOut.getRoomIdList();
         boolean changeDeposit = guestOut.getNotNullChangeDeposit();
         if (changeDeposit) {
+            depositList=new ArrayList<>();
             for (String s : roomList) {
                 List<Debt> debtList1 = debtService.getListByRoomIdPure(s);
                 for (Debt debt : debtList1) {

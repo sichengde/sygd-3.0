@@ -220,5 +220,48 @@ CREATE OR REPLACE VIEW debt_integration AS
           `hotel`.`debt`.`company`       AS `company`,
           `hotel`.`debt`.`back`       AS `back`
         FROM `hotel`.`debt`;
+#2018-04-17 增加两个索引
+CREATE INDEX debt_room_id_index ON debt (room_id);
+CREATE INDEX debt_history_room_id_index ON debt_history (room_id);
+#2018-04-19 修复库存盘点错误
+CREATE OR REPLACE VIEW storage_remain AS
+  SELECT
+    `hotel`.`storage_in_detail`.`house`                    AS `house`,
+    `hotel`.`storage_in_detail`.`cargo`                    AS `cargo`,
+    `hotel`.`storage_in_detail`.`unit`                     AS `unit`,
+    sum(`hotel`.`storage_in_detail`.`remain`)              AS `remain`,
+    round((sum((`hotel`.`storage_in_detail`.`remain` * `hotel`.`storage_in_detail`.`price`)) /
+           sum(`hotel`.`storage_in_detail`.`remain`)), 2) AS `price`
+  FROM `hotel`.`storage_in_detail`
+  GROUP BY `hotel`.`storage_in_detail`.`house`, `hotel`.`storage_in_detail`.`cargo`, `hotel`.`storage_in_detail`.`unit`;
+CREATE OR REPLACE VIEW guest_integration AS
+  SELECT
+    `hotel`.`check_in_guest`.`card_id`          AS `card_id`,
+    `hotel`.`check_in_guest`.`name`          AS `name`,
+    `hotel`.`check_in_guest`.`country`          AS `country`,
+    `hotel`.`guest_map_check_in`.`self_account` AS `self_account`,
+    `check_in_integration`.`reach_time`         AS `reach_time`,
+    `check_in_integration`.`guest_source`       AS `guest_source`,
+    `check_in_integration`.`room_category`      AS `room_category`,
+    1                                           AS `if_in`
+  FROM ((`hotel`.`check_in_guest`
+    LEFT JOIN `hotel`.`guest_map_check_in`
+      ON ((`hotel`.`check_in_guest`.`card_id` = `hotel`.`guest_map_check_in`.`card_id`))) LEFT JOIN
+    `hotel`.`check_in_integration`
+      ON ((`hotel`.`guest_map_check_in`.`self_account` = `check_in_integration`.`self_account`)))
+  UNION SELECT
+          `hotel`.`check_in_history`.`card_id`        AS `card_id`,
+          `hotel`.`check_in_history`.`name`        AS `name`,
+          `hotel`.`check_in_history`.`country`        AS `country`,
+          `hotel`.`guest_map_check_in`.`self_account` AS `self_account`,
+          `check_in_integration`.`reach_time`         AS `reach_time`,
+          `check_in_integration`.`guest_source`       AS `guest_source`,
+          `check_in_integration`.`room_category`      AS `room_category`,
+          0                                           AS `if_in`
+        FROM ((`hotel`.`check_in_history`
+          LEFT JOIN `hotel`.`guest_map_check_in`
+            ON ((`hotel`.`check_in_history`.`card_id` = `hotel`.`guest_map_check_in`.`card_id`))) LEFT JOIN
+          `hotel`.`check_in_integration`
+            ON ((`hotel`.`guest_map_check_in`.`self_account` = `check_in_integration`.`self_account`)));
 #2018-04-21 增加锁定结账功能
 ALTER TABLE hotel.check_in ADD disable_check_out TEXT NULL;
