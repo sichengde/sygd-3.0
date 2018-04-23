@@ -189,4 +189,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public void deleteMiddlePay() {
         debtHistoryMapper.deleteMiddlePay();
     }
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    public Double getTotalDeposit(String paySerial){
+        return debtHistoryMapper.getTotalDeposit(paySerial);
+    }
 }

@@ -127,6 +127,28 @@ public class DeskController {
         userLogService.addUserLog(sourceDesk+"->"+targetDesk, userLogService.desk, userLogService.deskChange,deskIn.getDesk());
     }
 
+    @RequestMapping(value = "mergeDesk")
+    @Transactional(rollbackFor = Exception.class)
+    public void mergeDesk(@RequestBody JSONObject jsonObject) throws Exception {
+        String sourceDesk=jsonObject.getString("sourceDesk");
+        String targetDesk=jsonObject.getString("targetDesk");
+        String pointOfSale=jsonObject.getString("pointOfSale");
+        DeskIn deskInTarget=deskInService.getByDesk(targetDesk,pointOfSale);
+        DeskIn deskInSource=deskInService.getByDesk(sourceDesk,pointOfSale);
+        /*删除原桌台*/
+        deskInService.delete(deskInSource);
+        deskInTarget.setConsume(deskInTarget.getNotNullConsume()+deskInSource.getNotNullConsume());
+        deskInTarget.setNum(deskInTarget.getNotNullNum()+deskInSource.getNotNullNum());
+        deskInService.update(deskInTarget);
+        List<DeskDetail> sourceDeskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null);
+        for (DeskDetail deskDetail : sourceDeskDetailList) {
+            deskDetail.setDesk(targetDesk);
+            deskDetail.setFoodName(targetDesk+":"+deskDetail.getFoodName());
+        }
+        deskDetailService.update(sourceDeskDetailList);
+        userLogService.addUserLog(sourceDesk+" 并入 "+targetDesk, userLogService.desk, userLogService.deskChange,sourceDesk);
+    }
+
     /**
      * 餐饮结账
      *

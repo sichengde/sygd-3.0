@@ -5,7 +5,7 @@ ALTER TABLE debt_history ADD source_room VARCHAR(100) NULL;
 ALTER TABLE debt MODIFY room_id VARCHAR(100);#扩大房号长度
 #2017-12-11 10:10:00
 create OR REPLACE view check_in_integration as
-SELECT
+  SELECT
     `ci`.`room_id`          AS `room_id`,
     `ci`.`room_category`    AS `room_category`,
     `ci`.`room_price_category`    AS `room_price_category`,
@@ -83,20 +83,20 @@ ALTER TABLE vip MODIFY category VARCHAR(10) NOT NULL;
 #大更新，增加单位储值功能
 create table company_money
 (
-	id int not null auto_increment
-		primary key,
-	company varchar(100) null,
-	category varchar(20) null,
-	money double null,
-	currency varchar(20) null,
-	do_time datetime null,
-	user_id varchar(100) null,
-	remark varchar(100) null,
-	company_pay_serial varchar(20) null
+  id int not null auto_increment
+    primary key,
+  company varchar(100) null,
+  category varchar(20) null,
+  money double null,
+  currency varchar(20) null,
+  do_time datetime null,
+  user_id varchar(100) null,
+  remark varchar(100) null,
+  company_pay_serial varchar(20) null
 );
 #2018-01-19 更新一个视图，餐饮区分结账和开台操作员
 create OR REPLACE view desk_pay_rich as
-SELECT
+  SELECT
     `hotel`.`desk_pay`.`pay_money`            AS `pay_money`,
     `hotel`.`desk_pay`.`currency`             AS `currency`,
     `hotel`.`desk_pay`.`currency_add`         AS `currency_add`,
@@ -121,12 +121,12 @@ ALTER TABLE other_param MODIFY value TEXT;
 #2018-03-26 增加早餐明细表
 CREATE TABLE breakfast_detail
 (
-    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    hotel_id INT,
-    room_id VARCHAR(100),
-    self_account VARCHAR(100),
-    do_time DATETIME,
-    user_id INT
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  hotel_id INT,
+  room_id VARCHAR(100),
+  self_account VARCHAR(100),
+  do_time DATETIME,
+  user_id INT
 );
 #2018-04-07 增加操作员和楼栋分组
 ALTER TABLE hotel.user ADD group_by VARCHAR(100) NULL;
@@ -135,30 +135,30 @@ ALTER TABLE hotel.book ADD area VARCHAR(100) NULL;
 #2018-04-11 增加夜审房间快照
 create table room_snapshot
 (
-	id int not null auto_increment
-		primary key,
-	room_id varchar(100) null,
-	report_time date null,
-	category varchar(100) null,
-	area varchar(100) null,
-	state varchar(100) null,
-	company varchar(100) null,
-	empty tinyint(1) null,
-	repair tinyint(1) null,
-	self tinyint(1) null,
-	back_up tinyint(1) null,
-	rent tinyint(1) null,
-	all_day_room tinyint(1) null,
-	hour_room tinyint(1) null,
-	add_room tinyint(1) null,
-	night_room tinyint(1) null,
-	all_day_room_consume double null,
-	hour_room_consume double null,
-	add_room_consume double null,
-	night_room_consume double null,
-	self_account varchar(100) null,
-	group_account varchar(100) null,
-	real_room tinyint(1) null
+  id int not null auto_increment
+    primary key,
+  room_id varchar(100) null,
+  report_time date null,
+  category varchar(100) null,
+  area varchar(100) null,
+  state varchar(100) null,
+  company varchar(100) null,
+  empty tinyint(1) null,
+  repair tinyint(1) null,
+  self tinyint(1) null,
+  back_up tinyint(1) null,
+  rent tinyint(1) null,
+  all_day_room tinyint(1) null,
+  hour_room tinyint(1) null,
+  add_room tinyint(1) null,
+  night_room tinyint(1) null,
+  all_day_room_consume double null,
+  hour_room_consume double null,
+  add_room_consume double null,
+  night_room_consume double null,
+  self_account varchar(100) null,
+  group_account varchar(100) null,
+  real_room tinyint(1) null
 );
 #2018-04-12 给debtPay表增加索引
 CREATE INDEX debt_pay_self_account_index ON hotel.debt_pay (self_account);
@@ -168,3 +168,100 @@ CREATE INDEX room_snapshot_group_account_index ON hotel.room_snapshot (group_acc
 #2018-04-15 给单位类别增加客源
 ALTER TABLE hotel.company_category ADD guest_source VARCHAR(100) NULL;
 ALTER TABLE hotel.guest_source ADD company_not_null BOOLEAN NULL;
+#2018-04-16 增加已退款标志
+ALTER TABLE hotel.debt ADD back BOOLEAN NULL;
+ALTER TABLE hotel.debt_history ADD back BOOLEAN NULL;
+CREATE OR REPLACE VIEW debt_integration AS
+  SELECT
+    `hotel`.`debt_history`.`id`            AS `id`,
+    `hotel`.`debt_history`.`do_time`       AS `do_time`,
+    `hotel`.`debt_history`.`point_of_sale` AS `point_of_sale`,
+    `hotel`.`debt_history`.`consume`       AS `consume`,
+    `hotel`.`debt_history`.`deposit`       AS `deposit`,
+    `hotel`.`debt_history`.`currency`      AS `currency`,
+    `hotel`.`debt_history`.`description`   AS `description`,
+    `hotel`.`debt_history`.`self_account`  AS `self_account`,
+    `hotel`.`debt_history`.`group_account` AS `group_account`,
+    `hotel`.`debt_history`.`room_id`       AS `room_id`,
+    `hotel`.`debt_history`.`area`          AS `area`,
+    `hotel`.`debt_history`.`pay_serial`    AS `pay_serial`,
+    `hotel`.`debt_history`.`protocol`      AS `protocol`,
+    `hotel`.`debt_history`.`done_time`     AS `done_time`,
+    `hotel`.`debt_history`.`user_id`       AS `user_id`,
+    `hotel`.`debt_history`.`remark`        AS `remark`,
+    `hotel`.`debt_history`.`bed`           AS `bed`,
+    `hotel`.`debt_history`.`vip_number`    AS `vip_number`,
+    `hotel`.`debt_history`.`category`      AS `category`,
+    `hotel`.`debt_history`.`guest_source`  AS `guest_source`,
+    `hotel`.`debt_history`.`company`       AS `company`,
+    `hotel`.`debt_history`.`back`       AS `back`
+  FROM `hotel`.`debt_history`
+  UNION SELECT
+          `hotel`.`debt`.`id`            AS `id`,
+          `hotel`.`debt`.`do_time`       AS `do_time`,
+          `hotel`.`debt`.`point_of_sale` AS `point_of_sale`,
+          `hotel`.`debt`.`consume`       AS `consume`,
+          `hotel`.`debt`.`deposit`       AS `deposit`,
+          `hotel`.`debt`.`currency`      AS `currency`,
+          `hotel`.`debt`.`description`   AS `description`,
+          `hotel`.`debt`.`self_account`  AS `self_account`,
+          `hotel`.`debt`.`group_account` AS `group_account`,
+          `hotel`.`debt`.`room_id`       AS `room_id`,
+          `hotel`.`debt`.`area`          AS `area`,
+          `hotel`.`debt`.`pay_serial`    AS `pay_serial`,
+          `hotel`.`debt`.`protocol`      AS `protocol`,
+          NULL                           AS `done_time`,
+          `hotel`.`debt`.`user_id`       AS `user_id`,
+          `hotel`.`debt`.`remark`        AS `remark`,
+          `hotel`.`debt`.`bed`           AS `bed`,
+          `hotel`.`debt`.`vip_number`    AS `vip_number`,
+          `hotel`.`debt`.`category`      AS `category`,
+          `hotel`.`debt`.`guest_source`  AS `guest_source`,
+          `hotel`.`debt`.`company`       AS `company`,
+          `hotel`.`debt`.`back`       AS `back`
+        FROM `hotel`.`debt`;
+#2018-04-17 增加两个索引
+CREATE INDEX debt_room_id_index ON debt (room_id);
+CREATE INDEX debt_history_room_id_index ON debt_history (room_id);
+#2018-04-19 修复库存盘点错误
+CREATE OR REPLACE VIEW storage_remain AS
+  SELECT
+    `hotel`.`storage_in_detail`.`house`                    AS `house`,
+    `hotel`.`storage_in_detail`.`cargo`                    AS `cargo`,
+    `hotel`.`storage_in_detail`.`unit`                     AS `unit`,
+    sum(`hotel`.`storage_in_detail`.`remain`)              AS `remain`,
+    round((sum((`hotel`.`storage_in_detail`.`remain` * `hotel`.`storage_in_detail`.`price`)) /
+           sum(`hotel`.`storage_in_detail`.`remain`)), 2) AS `price`
+  FROM `hotel`.`storage_in_detail`
+  GROUP BY `hotel`.`storage_in_detail`.`house`, `hotel`.`storage_in_detail`.`cargo`, `hotel`.`storage_in_detail`.`unit`;
+CREATE OR REPLACE VIEW guest_integration AS
+  SELECT
+    `hotel`.`check_in_guest`.`card_id`          AS `card_id`,
+    `hotel`.`check_in_guest`.`name`          AS `name`,
+    `hotel`.`check_in_guest`.`country`          AS `country`,
+    `hotel`.`guest_map_check_in`.`self_account` AS `self_account`,
+    `check_in_integration`.`reach_time`         AS `reach_time`,
+    `check_in_integration`.`guest_source`       AS `guest_source`,
+    `check_in_integration`.`room_category`      AS `room_category`,
+    1                                           AS `if_in`
+  FROM ((`hotel`.`check_in_guest`
+    LEFT JOIN `hotel`.`guest_map_check_in`
+      ON ((`hotel`.`check_in_guest`.`card_id` = `hotel`.`guest_map_check_in`.`card_id`))) LEFT JOIN
+    `hotel`.`check_in_integration`
+      ON ((`hotel`.`guest_map_check_in`.`self_account` = `check_in_integration`.`self_account`)))
+  UNION SELECT
+          `hotel`.`check_in_history`.`card_id`        AS `card_id`,
+          `hotel`.`check_in_history`.`name`        AS `name`,
+          `hotel`.`check_in_history`.`country`        AS `country`,
+          `hotel`.`guest_map_check_in`.`self_account` AS `self_account`,
+          `check_in_integration`.`reach_time`         AS `reach_time`,
+          `check_in_integration`.`guest_source`       AS `guest_source`,
+          `check_in_integration`.`room_category`      AS `room_category`,
+          0                                           AS `if_in`
+        FROM ((`hotel`.`check_in_history`
+          LEFT JOIN `hotel`.`guest_map_check_in`
+            ON ((`hotel`.`check_in_history`.`card_id` = `hotel`.`guest_map_check_in`.`card_id`))) LEFT JOIN
+          `hotel`.`check_in_integration`
+            ON ((`hotel`.`guest_map_check_in`.`self_account` = `check_in_integration`.`self_account`)));
+#2018-04-21 增加锁定结账功能
+ALTER TABLE hotel.check_in ADD disable_check_out TEXT NULL;

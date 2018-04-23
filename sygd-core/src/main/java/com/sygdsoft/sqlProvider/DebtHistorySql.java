@@ -83,7 +83,7 @@ public class DebtHistorySql {
 
     public String getTotalCancelDeposit(Map<String, Object> parameters) {
         String userId = (String) parameters.get("userId");
-        String basic = "SELECT round(sum(debt_history.deposit), 2) deposit FROM debt_history LEFT JOIN check_in_history_log ON debt_history.self_account = check_in_history_log.self_account LEFT JOIN check_out ON check_in_history_log.check_out_serial = check_out.check_out_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE AND check_out.check_out_serial IS NOT NULL and debt_history.deposit>0";
+        String basic = "SELECT round(sum(debt_history.deposit), 2) deposit FROM debt_history LEFT JOIN check_in_history_log ON debt_history.self_account = check_in_history_log.self_account LEFT JOIN check_out ON check_in_history_log.check_out_serial = check_out.check_out_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE AND check_out.check_out_serial IS NOT NULL";
         if (userId != null) {
             basic += " and check_out.user_id = #{userId}";
         }
@@ -92,10 +92,11 @@ public class DebtHistorySql {
 
     public String getCancelDeposit(Map<String, Object> parameters) {
         String userId = (String) parameters.get("userId");
-        String basic = "SELECT * FROM debt_history LEFT JOIN check_in_history_log ON debt_history.self_account = check_in_history_log.self_account LEFT JOIN check_out ON check_in_history_log.check_out_serial = check_out.check_out_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE AND check_out.check_out_serial IS NOT NULL and debt_history.deposit>0";
+        String basic = "SELECT debt_history.self_account, debt_history.room_id roomId, sum(debt_history.deposit) deposit, check_out.user_id, currency, '结账退预付' description FROM debt_history LEFT JOIN check_in_history_log ON debt_history.self_account = check_in_history_log.self_account LEFT JOIN check_out ON check_in_history_log.check_out_serial = check_out.check_out_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE AND check_out.check_out_serial IS NOT NULL";
         if (userId != null) {
             basic += " and check_out.user_id = #{userId}";
         }
+        basic+=" GROUP BY debt_history.self_account,currency";
         return basic;
     }
 }

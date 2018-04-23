@@ -51,7 +51,6 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
             @Result(property = "roomId", column = "room_id"),
             @Result(property = "paySerial", column = "pay_serial"),
             @Result(property = "doneTime", column = "done_time"),
-            @Result(property = "userId", column = "user_id"),
             @Result(property = "vipNumber", column = "vip_number"),
             @Result(property = "fromRoom", column = "from_room"),
             @Result(property = "companyPaid", column = "company_paid"),
@@ -205,4 +204,11 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     @Delete("delete from debt_history where category=\'中间结算冲账\'")
     void deleteMiddlePay();
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    @Select("SELECT round(sum(deposit),2) FROM debt_history WHERE pay_serial=#{paySerial}")
+    @ResultType(value = Double.class)
+    Double getTotalDeposit(String paySerial);
 }

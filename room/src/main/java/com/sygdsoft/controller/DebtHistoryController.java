@@ -40,7 +40,7 @@ public class DebtHistoryController {
      * 根结账表联表查询押金，带操作员
      */
     @RequestMapping(value = "getDebtHistoryByPayUser")
-    public List<DebtHistory> getByPayUser(@RequestBody ReportJson reportJson){
+    public List<DebtHistory> getDebtHistoryByPayUser(@RequestBody ReportJson reportJson){
         String userId=reportJson.getUserId();
         if("".equals(userId)){
             userId=null;
@@ -53,5 +53,13 @@ public class DebtHistoryController {
             debtHistory.setGuestName(guestIntegrationService.getGuestNameBySelfAccount(debtHistory.getSelfAccount()));
         }
         return debtHistoryList;
+    }
+
+    /**
+     * 根据结账序列号获取押金总和
+     */
+    @RequestMapping("getTotalDepositByPaySerial")
+    public Double getTotalDepositByPaySerial(@RequestBody String paySerial){
+        return debtHistoryService.getTotalDeposit(paySerial);
     }
 }
