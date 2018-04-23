@@ -102,7 +102,7 @@ public class GuestOutController {
     public Integer guestOut(@RequestBody GuestOut guestOut) throws Exception {
         synchronized (lock) {
             guestOutGlobal = guestOut;
-            //TODO: 离店数据校验,发现bug之后就可以删了
+            //离店数据校验,发现bug之后就可以删了
             Double totalTest = 0.0;
             Double totalCheckInConsume = 0.0;
             for (String roomId : guestOut.getRoomIdList()) {
@@ -124,7 +124,7 @@ public class GuestOutController {
             if (!Objects.equals(totalCurrency, totalTest)) {
                 throw new Exception("结账金额有变动，请重新进入结账页面");
             }
-            //TODO: 离店数据校验,发现bug之后就可以删了--完毕
+            //离店数据校验,发现bug之后就可以删了--完毕
             Boolean real = guestOut.getNotNullReal();
             if (!real) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -132,12 +132,14 @@ public class GuestOutController {
         /*获取有用信息*/
             String checkOutSerialCategory = guestOut.getCheckOutSerialCategory();
             timeService.setNow();//当前时间
+            /*判断是否生成发票序列号*/
             if (SerialService.FA_PIAO_CO.equals(checkOutSerialCategory)) {
                 checkOutSerial = serialService.setCheckOutSerialFp();//生成离店序列号发票
             } else {
                 checkOutSerial = serialService.setCheckOutSerial();//生成离店序列号
             }
             serialService.setPaySerial();//生成结账序列号
+            /*TODO:判断是否只有一条转房客*/
             /*转换房态*/
             this.updateRoomStateGuestOut(guestOut.getRoomIdList());
             /*额外的加收房租*/
@@ -147,10 +149,10 @@ public class GuestOutController {
             /*检查是否有没退的预付，有的话自动退了*/
             //this.cancelDeposit(guestOut);//先保留，以后如果没用就删了
             /*账务明细转移到账务历史，并返回需要结算的账务*/
-            List<Debt> debtList = this.debtToHistory(guestOut);
-            /*查找中间结算，没有离店序列号的都是中间结算*/
+            List<Debt> debtList = this.debtToHistory(guestOut);//TODO:不能转
+            /*查找中间结算，没有离店序列号的都是中间结算，找到后更新结账序列号，因为中间结算的结账明细没有结账序列号*/
             this.debtPayMiddle(guestOut);
-            /*结账记录，循环分单，记录操作员挂账信息*/
+            /*结账记录，循环分单，记录操作员挂账信息*///TODO:不能生成
             String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
             /*判断押金币种，如果是会员则需要把钱还回去*/
             this.checkVipDeposit(guestOut);
