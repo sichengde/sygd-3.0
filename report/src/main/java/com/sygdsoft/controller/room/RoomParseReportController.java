@@ -197,23 +197,23 @@ public class RoomParseReportController {
             if (debtIntegration.getGuestSource() == null) {
                 continue;
             }
-            titleValueList.add(ifNotNullGetString(debtIntegration.getConsume()));
+            titleValueList.add(String.valueOf(szMath.nullToZero(debtIntegration.getConsume())));
             titleList.add(debtIntegration.getGuestSource()+"房费");
         }
         /*分析二级营业部门销售情况*/
         debtIntegrationList = debtIntegrationService.getSumConsumeByDatePointOfSale(beginTime, endTime);
         for (DebtIntegration debtIntegration : debtIntegrationList) {
             if (debtIntegration.getPointOfSale() == null) {
-                titleValueList.add(ifNotNullGetString(debtIntegration.getConsume()));
+                titleValueList.add(String.valueOf(szMath.nullToZero(debtIntegration.getConsume())));
                 titleList.add("未定义");
                 continue;
             }
             if (debtIntegration.getPointOfSale().equals("房费")) {
                 continue;
             }
-            titleValueList.add(ifNotNullGetString(debtIntegration.getConsume()));
+            titleValueList.add(String.valueOf(szMath.nullToZero(debtIntegration.getConsume())));
             titleList.add(debtIntegration.getPointOfSale());
-            titleValueList.add(debtIntegration.getCount());
+            titleValueList.add(String.valueOf(szMath.nullToZero(debtIntegration.getCount())));
             titleList.add(debtIntegration.getPointOfSale() + "次数");
         }
         roomParseReportRow.setTitleValueList(titleValueList);
