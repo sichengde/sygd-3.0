@@ -504,6 +504,7 @@ public class GuestOutController {
                     debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
                     debtNeedInsert.setGroupAccount(checkIn.getGroupAccount());
                     debtNeedInsert.setTotalConsume(checkIn.getNotNullConsume() + debtNeedInsert.getNotNullConsume());
+                    debtNeedInsert.setNotPartIn(true);
                     debtService.add(debtNeedInsert);
                     debtService.updateGuestInMoney(checkIn.getRoomId(), debtNeedInsert.getConsume(), debtNeedInsert.getDeposit());
                 }
