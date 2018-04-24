@@ -25,6 +25,7 @@ public class DebtIntegration {
     private String category;//账务类别，便于在账务明细中筛选
     private String guestSource;//客源
     private String company;//单位
+    private Boolean notPartIn;//不参与营业收入发生额等的统计
     @Transient
     private String count;
     @Transient
@@ -201,5 +202,13 @@ public class DebtIntegration {
 
     public void setGuestName(String guestName) {
         this.guestName = guestName;
+    }
+
+    public Boolean getNotPartIn() {
+        return notPartIn;
+    }
+
+    public void setNotPartIn(Boolean notPartIn) {
+        this.notPartIn = notPartIn;
     }
 }
