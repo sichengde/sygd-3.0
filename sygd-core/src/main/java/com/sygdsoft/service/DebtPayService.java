@@ -210,6 +210,7 @@ public class DebtPayService extends BaseService<DebtPay> {
         switch (currency) {
             case "转房客"://把转的金额取消
                 debtService.deleteByCheckOutSerial(serial);//删除房账
+                debtService.updateGuestInMoney(currencyAdd,0.0,0.0);
                 break;//不转移账务明细
             case "转哑房"://转哑房
                 break;
