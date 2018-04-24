@@ -34,6 +34,7 @@ public class Debt extends BaseEntity {
     private String guestName;//客人姓名
     private String sourceRoom;//原房号
     private Boolean back;//已退款标志(针对押金，以前是在remark中用字符串"已退"标记)
+    private Boolean notPartIn;//不参与营业收入发生额等的统计
 
     @Transient
     private String area;
@@ -64,6 +65,7 @@ public class Debt extends BaseEntity {
         this.guestName=debt.getGuestName();
         this.sourceRoom=debt.getSourceRoom();
         this.back=debt.getBack();
+        this.notPartIn=debt.getBack();
     }
 
     public Debt(DebtHistory debtHistory){
@@ -89,6 +91,7 @@ public class Debt extends BaseEntity {
         this.guestName=debtHistory.getGuestName();
         this.sourceRoom=debtHistory.getSourceRoom();
         this.back=debtHistory.getBack();
+        this.notPartIn=debtHistory.getNotPartIn();
     }
 
     public Double getNotNullDeposit(){
@@ -292,5 +295,13 @@ public class Debt extends BaseEntity {
 
     public void setBack(Boolean back) {
         this.back = back;
+    }
+
+    public Boolean getNotPartIn() {
+        return notPartIn;
+    }
+
+    public void setNotPartIn(Boolean notPartIn) {
+        this.notPartIn = notPartIn;
     }
 }

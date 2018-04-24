@@ -91,8 +91,8 @@ public class GuestOutController {
     @Autowired
     GuestIntegrationService guestIntegrationService;
     String checkOutSerial;
-    List<Debt> depositList;
     GuestOut guestOutGlobal;
+    List<Debt> debtList;
 
     /**
      * 结算分为团队结算和单人结算
@@ -129,7 +129,7 @@ public class GuestOutController {
             if (!real) {
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }
-        /*获取有用信息*/
+            /*获取有用信息*/
             String checkOutSerialCategory = guestOut.getCheckOutSerialCategory();
             timeService.setNow();//当前时间
             /*判断是否生成发票序列号*/
@@ -139,7 +139,6 @@ public class GuestOutController {
                 checkOutSerial = serialService.setCheckOutSerial();//生成离店序列号
             }
             serialService.setPaySerial();//生成结账序列号
-            /*TODO:判断是否只有一条转房客，分单结算不能选择转明细，转明细的话也是迁移到账务历史，但是新生成一条一条的明细，不是只有一条，并且加上不参与发生额统计的标志*/
             /*转换房态*/
             this.updateRoomStateGuestOut(guestOut.getRoomIdList());
             /*额外的加收房租*/
@@ -149,10 +148,10 @@ public class GuestOutController {
             /*检查是否有没退的预付，有的话自动退了*/
             //this.cancelDeposit(guestOut);//先保留，以后如果没用就删了
             /*账务明细转移到账务历史，并返回需要结算的账务*/
-            List<Debt> debtList = this.debtToHistory(guestOut);//TODO:不能转
+            debtList = this.debtToHistory(guestOut);
             /*查找中间结算，没有离店序列号的都是中间结算，找到后更新结账序列号，因为中间结算的结账明细没有结账序列号*/
             this.debtPayMiddle(guestOut);
-            /*结账记录，循环分单，记录操作员挂账信息*///TODO:不能生成
+            /*结账记录，循环分单，记录操作员挂账信息*/
             String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
             /*判断押金币种，如果是会员则需要把钱还回去*/
             this.checkVipDeposit(guestOut);
@@ -410,23 +409,8 @@ public class GuestOutController {
     private List<Debt> debtToHistory(GuestOut guestOut) throws Exception {
         List<Debt> debtList = new ArrayList<>();
         List<String> roomList = guestOut.getRoomIdList();
-        boolean changeDeposit = guestOut.getNotNullChangeDeposit();
-        if (changeDeposit) {
-            depositList=new ArrayList<>();
-            for (String s : roomList) {
-                List<Debt> debtList1 = debtService.getListByRoomIdPure(s);
-                for (Debt debt : debtList1) {
-                    if (debt.getDeposit() == null) {
-                        debtList.add(debt);
-                    } else {
-                        depositList.add(debt);
-                    }
-                }
-            }
-        } else {
-            for (String s : roomList) {
-                debtList.addAll(debtService.getListByRoomIdPure(s));
-            }
+        for (String s : roomList) {
+            debtList.addAll(debtService.getListByRoomIdPure(s));
         }
         newDebtHistory(debtList);
         return debtList;
@@ -508,23 +492,28 @@ public class GuestOutController {
             debtPay.setUserId(userService.getCurrentUser());
             debtPayService.add(debtPay);
             changeDebt += " 币种:" + currency + "/" + money;
+            /*检查转房客，转押金，因为只有离店时有这个选项*/
+            boolean noNeedParse=false;
+            if ("转房客".equals(currency) && guestOutGlobal.getNotNullChangeDetail()) {
+                noNeedParse=true;
+                CheckIn checkIn = checkInService.getByRoomId(currencyAdd);
+                for (Debt debt : debtList) {
+                    Debt debtNeedInsert=new Debt(debt);
+                    debtNeedInsert.setFromRoom(serialService.getPaySerial());
+                    debtNeedInsert.setRoomId(currencyAdd);
+                    debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
+                    debtNeedInsert.setGroupAccount(checkIn.getGroupAccount());
+                    debtNeedInsert.setTotalConsume(checkIn.getNotNullConsume() + debtNeedInsert.getNotNullConsume());
+                    debtService.add(debtNeedInsert);
+                    debtService.updateGuestInMoney(checkIn.getRoomId(), debtNeedInsert.getConsume(), debtNeedInsert.getDeposit());
+                }
+            }
             /*通过币种判断结账类型*/
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "接待");
+            if(!noNeedParse) {
+                changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "接待");
+            }
             /*检查会员*/
             this.checkVip(groupAccount, roomIdList, currency, currencyAdd, money);
-            /*检查转房客，转押金，因为只有离店时有这个选项*/
-            if ("转房客".equals(currency) && guestOutGlobal.getNotNullChangeDeposit()) {
-                CheckIn checkIn=checkInService.getByRoomId(currencyAdd);
-                Double totalDeposit=0.0;
-                for (Debt debt : depositList) {
-                    debt.setRoomId(currencyAdd);
-                    debt.setSelfAccount(checkIn.getSelfAccount());
-                    debt.setGroupAccount(checkIn.getGroupAccount());
-                    totalDeposit+=debt.getNotNullDeposit();
-                }
-                debtService.update(depositList);
-                debtService.updateGuestInMoney(currencyAdd,0.0,totalDeposit);
-            }
         }
         return changeDebt;
     }
