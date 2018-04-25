@@ -30,16 +30,21 @@ public class FoodSetService extends BaseService<FoodSet>{
      * 通过套餐名称转化为所有点菜的菜品
      */
     public List<DeskDetail> getDeskDetailBySetName(DeskDetail foodSetDeskDetail){
-        List<FoodSet> foodSetList = getBySetName(foodSetDeskDetail.getFoodName());
+        List<FoodSet> foodSetList = getBySetName(foodSetDeskDetail.getFoodSign());
         List<DeskDetail> deskDetailList=new ArrayList<>();
         for (FoodSet foodSet : foodSetList) {
             DeskDetail deskDetail=new DeskDetail(foodSetDeskDetail);
-            deskDetail.setNum(foodSet.getFoodNum());
+            deskDetail.setNum(foodSet.getFoodNum()*foodSetDeskDetail.getNum());
             deskDetail.setFoodName(foodSet.getFoodName());
             deskDetail.setFoodSign(foodSet.getFoodName());
             deskDetail.setPrice(null);
             deskDetailList.add(deskDetail);
         }
         return deskDetailList;
+    }
+
+
+    public void deleteBySetName(String name) {
+        foodSetMapper.deleteBySetName(name);
     }
 }

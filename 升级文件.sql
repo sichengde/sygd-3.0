@@ -220,6 +220,100 @@ CREATE OR REPLACE VIEW debt_integration AS
           `hotel`.`debt`.`company`       AS `company`,
           `hotel`.`debt`.`back`       AS `back`
         FROM `hotel`.`debt`;
+#2018-04-17 增加两个索引
+CREATE INDEX debt_room_id_index ON debt (room_id);
+CREATE INDEX debt_history_room_id_index ON debt_history (room_id);
+#2018-04-19 修复库存盘点错误
+CREATE OR REPLACE VIEW storage_remain AS
+  SELECT
+    `hotel`.`storage_in_detail`.`house`                    AS `house`,
+    `hotel`.`storage_in_detail`.`cargo`                    AS `cargo`,
+    `hotel`.`storage_in_detail`.`unit`                     AS `unit`,
+    sum(`hotel`.`storage_in_detail`.`remain`)              AS `remain`,
+    round((sum((`hotel`.`storage_in_detail`.`remain` * `hotel`.`storage_in_detail`.`price`)) /
+           sum(`hotel`.`storage_in_detail`.`remain`)), 2) AS `price`
+  FROM `hotel`.`storage_in_detail`
+  GROUP BY `hotel`.`storage_in_detail`.`house`, `hotel`.`storage_in_detail`.`cargo`, `hotel`.`storage_in_detail`.`unit`;
+CREATE OR REPLACE VIEW guest_integration AS
+  SELECT
+    `hotel`.`check_in_guest`.`card_id`          AS `card_id`,
+    `hotel`.`check_in_guest`.`name`          AS `name`,
+    `hotel`.`check_in_guest`.`country`          AS `country`,
+    `hotel`.`guest_map_check_in`.`self_account` AS `self_account`,
+    `check_in_integration`.`reach_time`         AS `reach_time`,
+    `check_in_integration`.`guest_source`       AS `guest_source`,
+    `check_in_integration`.`room_category`      AS `room_category`,
+    1                                           AS `if_in`
+  FROM ((`hotel`.`check_in_guest`
+    LEFT JOIN `hotel`.`guest_map_check_in`
+      ON ((`hotel`.`check_in_guest`.`card_id` = `hotel`.`guest_map_check_in`.`card_id`))) LEFT JOIN
+    `hotel`.`check_in_integration`
+      ON ((`hotel`.`guest_map_check_in`.`self_account` = `check_in_integration`.`self_account`)))
+  UNION SELECT
+          `hotel`.`check_in_history`.`card_id`        AS `card_id`,
+          `hotel`.`check_in_history`.`name`        AS `name`,
+          `hotel`.`check_in_history`.`country`        AS `country`,
+          `hotel`.`guest_map_check_in`.`self_account` AS `self_account`,
+          `check_in_integration`.`reach_time`         AS `reach_time`,
+          `check_in_integration`.`guest_source`       AS `guest_source`,
+          `check_in_integration`.`room_category`      AS `room_category`,
+          0                                           AS `if_in`
+        FROM ((`hotel`.`check_in_history`
+          LEFT JOIN `hotel`.`guest_map_check_in`
+            ON ((`hotel`.`check_in_history`.`card_id` = `hotel`.`guest_map_check_in`.`card_id`))) LEFT JOIN
+          `hotel`.`check_in_integration`
+            ON ((`hotel`.`guest_map_check_in`.`self_account` = `check_in_integration`.`self_account`)));
 #2018-04-21 增加锁定结账功能
 ALTER TABLE hotel.check_in ADD disable_check_out TEXT NULL;
-ALTER TABLE hotel.check_in_group ADD disable_check_out TEXT NULL;
+#2018-04-24 重写转房客
+ALTER TABLE debt ADD not_part_in BOOLEAN NULL;
+ALTER TABLE debt_history ADD not_part_in BOOLEAN NULL;
+CREATE or replace VIEW debt_integration AS
+  SELECT
+    `hotel`.`debt_history`.`id`            AS `id`,
+    `hotel`.`debt_history`.`do_time`       AS `do_time`,
+    `hotel`.`debt_history`.`point_of_sale` AS `point_of_sale`,
+    `hotel`.`debt_history`.`consume`       AS `consume`,
+    `hotel`.`debt_history`.`deposit`       AS `deposit`,
+    `hotel`.`debt_history`.`currency`      AS `currency`,
+    `hotel`.`debt_history`.`description`   AS `description`,
+    `hotel`.`debt_history`.`self_account`  AS `self_account`,
+    `hotel`.`debt_history`.`group_account` AS `group_account`,
+    `hotel`.`debt_history`.`room_id`       AS `room_id`,
+    `hotel`.`debt_history`.`area`          AS `area`,
+    `hotel`.`debt_history`.`pay_serial`    AS `pay_serial`,
+    `hotel`.`debt_history`.`protocol`      AS `protocol`,
+    `hotel`.`debt_history`.`done_time`     AS `done_time`,
+    `hotel`.`debt_history`.`user_id`       AS `user_id`,
+    `hotel`.`debt_history`.`remark`        AS `remark`,
+    `hotel`.`debt_history`.`bed`           AS `bed`,
+    `hotel`.`debt_history`.`vip_number`    AS `vip_number`,
+    `hotel`.`debt_history`.`category`      AS `category`,
+    `hotel`.`debt_history`.`guest_source`  AS `guest_source`,
+    `hotel`.`debt_history`.`company`       AS `company`,
+    `hotel`.`debt_history`.`not_part_in`       AS `not_part_in`
+  FROM `hotel`.`debt_history`
+  UNION SELECT
+          `hotel`.`debt`.`id`            AS `id`,
+          `hotel`.`debt`.`do_time`       AS `do_time`,
+          `hotel`.`debt`.`point_of_sale` AS `point_of_sale`,
+          `hotel`.`debt`.`consume`       AS `consume`,
+          `hotel`.`debt`.`deposit`       AS `deposit`,
+          `hotel`.`debt`.`currency`      AS `currency`,
+          `hotel`.`debt`.`description`   AS `description`,
+          `hotel`.`debt`.`self_account`  AS `self_account`,
+          `hotel`.`debt`.`group_account` AS `group_account`,
+          `hotel`.`debt`.`room_id`       AS `room_id`,
+          `hotel`.`debt`.`area`       AS `area`,
+          `hotel`.`debt`.`pay_serial`    AS `pay_serial`,
+          `hotel`.`debt`.`protocol`      AS `protocol`,
+          NULL                           AS `done_time`,
+          `hotel`.`debt`.`user_id`       AS `user_id`,
+          `hotel`.`debt`.`remark`        AS `remark`,
+          `hotel`.`debt`.`bed`           AS `bed`,
+          `hotel`.`debt`.`vip_number`    AS `vip_number`,
+          `hotel`.`debt`.`category`      AS `category`,
+          `hotel`.`debt`.`guest_source`  AS `guest_source`,
+          `hotel`.`debt`.`company`       AS `company`,
+          `hotel`.`debt`.`not_part_in`  AS `not_part_in`
+        FROM `hotel`.`debt`;

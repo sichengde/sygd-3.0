@@ -239,7 +239,7 @@ public class DebtService extends BaseService<Debt> {
     public void deleteByCheckOutSerial(String serial) throws Exception {
         Debt debtQuery = new Debt();
         debtQuery.setFromRoom(serial);
-        this.delete(debtQuery);
+        debtMapper.delete(debtQuery);
     }
 
     /**

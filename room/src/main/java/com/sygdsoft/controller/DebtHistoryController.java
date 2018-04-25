@@ -40,7 +40,7 @@ public class DebtHistoryController {
      * 根结账表联表查询押金，带操作员
      */
     @RequestMapping(value = "getDebtHistoryByPayUser")
-    public List<DebtHistory> getByPayUser(@RequestBody ReportJson reportJson){
+    public List<DebtHistory> getDebtHistoryByPayUser(@RequestBody ReportJson reportJson){
         String userId=reportJson.getUserId();
         if("".equals(userId)){
             userId=null;

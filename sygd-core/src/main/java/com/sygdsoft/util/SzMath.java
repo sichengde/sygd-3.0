@@ -15,18 +15,26 @@ public class SzMath {
     private NumberFormat nt = NumberFormat.getPercentInstance();
 
     public String formatPercent(Double var1, Double var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         return percent.format(var1 / var2);
     }
 
     public String formatPercent(Integer var1, Double var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         return percent.format(var1 * 1.0 / var2);
     }
 
     public String formatPercent(Double var1, Integer var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         return percent.format(var1 / (var2 * 1.0));
     }
 
     public String formatPercent(Integer var1, Integer var2) {
+        var1=this.nullToZero(var1);
+        var2=this.nullToZero(var2);
         return percent.format(var1 * 1.0 / (var2 * 1.0));
     }
 

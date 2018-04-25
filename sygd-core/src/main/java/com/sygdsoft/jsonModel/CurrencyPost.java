@@ -16,12 +16,13 @@ public class CurrencyPost {
 
     /**
      * 通过结账分单数组生成，用于补打结账单
+     *
      * @param debtPay
      */
-    public CurrencyPost(DebtPay debtPay){
-        this.currency=debtPay.getCurrency();
-        this.currencyAdd=debtPay.getCurrencyAdd();
-        this.money=debtPay.getDebtMoney();
+    public CurrencyPost(DebtPay debtPay) {
+        this.currency = debtPay.getCurrency();
+        this.currencyAdd = debtPay.getCurrencyAdd();
+        this.money = debtPay.getDebtMoney();
     }
 
     public String getCurrency() {
@@ -55,4 +56,5 @@ public class CurrencyPost {
     public void setDeposit(Double deposit) {
         this.deposit = deposit;
     }
+
 }

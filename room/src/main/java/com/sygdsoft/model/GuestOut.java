@@ -21,8 +21,17 @@ public class GuestOut {
     private String checkOutSerial;//离店序列号，补打时有用
     private Boolean real;//真实结算，针对于辽阳宾馆这种喜欢结账之后再确认的
     private Double fpMoney;//手写发票金额，仅用于打印结账单和补打
+    private Boolean changeDetail;//是否转移押金
 
     public GuestOut() {
+    }
+
+    public Boolean getNotNullChangeDetail(){
+        if(changeDetail==null){
+            return false;
+        }else {
+            return changeDetail;
+        }
     }
 
     public Boolean getNotNullReal(){
@@ -127,5 +136,13 @@ public class GuestOut {
 
     public void setFpMoney(Double fpMoney) {
         this.fpMoney = fpMoney;
+    }
+
+    public Boolean getChangeDetail() {
+        return changeDetail;
+    }
+
+    public void setChangeDetail(Boolean changeDetail) {
+        this.changeDetail = changeDetail;
     }
 }
