@@ -75,7 +75,8 @@ public class FoodSetController {
                 menuOld.setPrice(menuNew.getPrice());
                 menuOld.setCategory(menuNew.getCategory());
                 menuService.update(menuOld);
-                foodSetService.delete
+                foodSetService.deleteBySetName(menuNew.getName());
+                foodSetService.add(fastAddFoodSetEntity.foodSetDetailList);
             }else {
                 throw new Exception("套餐名称与非套餐菜品名称重复");
             }
