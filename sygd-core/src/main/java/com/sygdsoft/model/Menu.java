@@ -32,6 +32,14 @@ public class Menu extends BaseEntity {
         }
     }
 
+    public Boolean getNotNullFoodSet(){
+        if(foodSet==null){
+            return false;
+        }else {
+            return foodSet;
+        }
+    }
+
     public Boolean getNotNullSellOut(){
         if(sellOut==null){
             return false;
