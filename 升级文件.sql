@@ -317,3 +317,5 @@ CREATE or replace VIEW debt_integration AS
           `hotel`.`debt`.`company`       AS `company`,
           `hotel`.`debt`.`not_part_in`  AS `not_part_in`
         FROM `hotel`.`debt`;
+#2018-04-26 增加全单备注功能
+ALTER TABLE hotel.desk_in ADD remark VARCHAR(100) NULL;

@@ -116,7 +116,7 @@ public class DeskDetailController {
             deskIn.setDoTime(timeService.getNow());
             deskIn.setDesk(deskDetail.getDesk());
             deskIn.setNum(deskDetail.getPeople());
-            deskIn.setConsume(consume);
+            deskIn.setRemark(deskDetail.getGlobalRemark());
             deskIn.setPointOfSale(deskDetail.getPointOfSale());
             deskIn.setUserId(userService.getCurrentUser());
             logAction = "开台点菜：" + deskDetail.getDesk();
@@ -124,6 +124,7 @@ public class DeskDetailController {
         } else {
             deskIn.setConsume(consume);
             deskIn.setNum(deskDetail.getPeople());
+            deskIn.setRemark(deskDetail.getGlobalRemark());
             deskInService.update(deskIn);
             logAction = "修改菜品：" + deskDetail.getDesk();
         }
@@ -157,7 +158,7 @@ public class DeskDetailController {
         }
         for (String s : deskDetailMap.keySet()) {
             for (int i = 0; i < printNumMap.get(s); i++) {
-                reportService.printPassFood(s, deskDetailMap.get(s));
+                reportService.printPassFood(s, deskDetailMap.get(s),deskIn);
             }
         }
     }

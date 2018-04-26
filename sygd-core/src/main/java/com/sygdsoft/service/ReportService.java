@@ -100,13 +100,13 @@ public class ReportService {
     /**
      * 进行传菜打印
      */
-    public void printPassFood(String printerName, List<DeskDetail> deskDetailList) throws Exception {
+    public void printPassFood(String printerName, List<DeskDetail> deskDetailList,DeskIn deskIn) throws Exception {
         Map<String, Object> param = new HashMap<>();
         JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
-        DeskDetail deskDetail = deskDetailList.get(0);
-        param.put("parameter1", "传菜:  " + deskDetail.getDesk());
-        param.put("parameter2", timeService.dateToStringLong(deskDetail.getDoTime()));
+        param.put("parameter1", "传菜:  " + deskIn.getDesk());
+        param.put("parameter2", timeService.dateToStringLong(deskIn.getDoTime()));
         param.put("parameter3",  userService.getCurrentUser());
+        param.put("parameter4",  deskIn.getRemark());
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
         this.printByPrinterName(printerName, jasperPrint);
     }
