@@ -1,7 +1,9 @@
 package logicTest;
 
 import application.ApplicationTest;
+import com.alibaba.fastjson.JSON;
 import com.google.zxing.WriterException;
+import com.sygdsoft.controller.DeskDetailController;
 import com.sygdsoft.controller.NightController;
 import com.sygdsoft.controller.StorageOutController;
 import com.sygdsoft.controller.common.SzTableReportController;
@@ -18,6 +20,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -61,10 +64,15 @@ public class NightActionTest extends ApplicationTest {
     UserLogService userLogService;
     @Autowired
     DeskCategoryService deskCategoryService;
+    @Autowired
+    DeskDetailController deskDetailController;
 
     @Test
     public void testdc() throws Exception {
-        deskCategoryService.get(null);
+        DeskDetail deskDetail=JSON.<DeskDetail>parseObject("{\"foodName\":\"厅饮料\",\"num\":\"1\",\"desk\":\"散台1\",\"price\":5,\"category\":\"酒水饮料\",\"pointOfSale\":\"餐饮部\",\"needInsert\":true,\"foodSign\":\"厅饮料\",\"foodSet\":false,\"ifDiscount\":null,\"cookroom\":\"吧台间\",\"cargo\":null,\"people\":1}",DeskDetail.class);
+        List<DeskDetail> deskDetails= new ArrayList<>();
+        deskDetails.add(deskDetail);
+        deskDetailController.deskAction(deskDetails);
     }
 
     @Test
