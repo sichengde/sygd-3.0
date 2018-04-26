@@ -14,6 +14,7 @@ public class DeskIn extends BaseEntity{
     private Double consume;//消费
     private String userId;
     private String pointOfSale;
+    private String remark;
     @Transient
     private List<DeskDetail> deskDetailList;
 
@@ -98,5 +99,13 @@ public class DeskIn extends BaseEntity{
 
     public void setDeskDetailList(List<DeskDetail> deskDetailList) {
         this.deskDetailList = deskDetailList;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

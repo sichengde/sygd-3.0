@@ -32,6 +32,8 @@ public class DeskDetail extends BaseEntity {
     private boolean needInsert;//新加的菜品
     @Transient
     private Integer people;//用餐人数
+    @Transient
+    private String globalRemark;//整单备注
 
     public DeskDetail() {
     }
@@ -285,5 +287,13 @@ public class DeskDetail extends BaseEntity {
 
     public void setCooked(Boolean cooked) {
         this.cooked = cooked;
+    }
+
+    public String getGlobalRemark() {
+        return globalRemark;
+    }
+
+    public void setGlobalRemark(String globalRemark) {
+        this.globalRemark = globalRemark;
     }
 }
