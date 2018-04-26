@@ -54,6 +54,22 @@ public class DeskDetailHistory extends BaseEntity {
         }
     }
 
+    public Double getNotNullPrice(){
+        if(price==null){
+            return 0.0;
+        }else {
+            return price;
+        }
+    }
+
+    public Double getNotNullNum(){
+        if(num==null){
+            return 0.0;
+        }else {
+            return num;
+        }
+    }
+
     public String getCkSerial() {
         return ckSerial;
     }
