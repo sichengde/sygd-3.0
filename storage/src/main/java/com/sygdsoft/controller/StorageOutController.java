@@ -185,12 +185,12 @@ public class StorageOutController {
                     storageOutDetail.setUnit(cargo.getUnit());
                     storageOutDetail.setMyUsage("自动出库-房吧销售统计");
                     storageOutDetail.setCategory(cargo.getCategory());
-                    if (remain >= deskDetailHistory.getNum()) {//库存充足
+                    if (remain >= deskDetailHistory.getNotNullNum()) {//库存充足
                         if (!storageOutSerial) {
                             storageOutSerial = true;
                         }
-                        storageOutDetail.setNum(deskDetailHistory.getNum());
-                        storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNum()))));
+                        storageOutDetail.setNum(deskDetailHistory.getNotNullNum());
+                        storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), deskDetailHistory.getNotNullNum()))));
                         storageOutDetail.setOldTotal(Double.valueOf(szMath.formatTwoDecimal(storageOutDetail.getNum() * storageOutDetail.getOldPrice())));
                         storageOutDetail.setTotal(deskDetailHistory.getAfterDiscount());
                         storageOutDetailListNormal.add(storageOutDetail);
@@ -198,7 +198,7 @@ public class StorageOutController {
                         if (!storageOutSerialDirect) {
                             storageOutSerialDirect = true;
                         }
-                        double num1 = deskDetailHistory.getNum();
+                        double num1 = deskDetailHistory.getNotNullNum();
                         double totalMoneyRemain = deskDetailHistory.getAfterDiscount();
                         //有库存不足的情况，首先就要增加一个直拨序列号
                         if (remain > 0) {//剩余的库存正常出库
@@ -209,7 +209,7 @@ public class StorageOutController {
                             storageOutDetail.setNum(remain);
                             storageOutDetail.setOldPrice(Double.valueOf(szMath.formatTwoDecimal(storageInDetailService.storageParsePrice(house, cargo.getName(), remain))));
                             storageOutDetail.setOldTotal(storageOutDetail.getNum() * storageOutDetail.getOldPrice());
-                            storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNum())));
+                            storageOutDetail.setTotal(Double.valueOf(szMath.formatTwoDecimal(deskDetailHistory.getAfterDiscount() * remain, deskDetailHistory.getNotNullNum())));
                             totalMoneyRemain = totalMoneyRemain - storageOutDetail.getTotal();
                             storageOutDetailListNormal.add(storageOutDetail);
                         }

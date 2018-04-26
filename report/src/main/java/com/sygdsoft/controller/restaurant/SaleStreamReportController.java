@@ -85,7 +85,7 @@ public class SaleStreamReportController {
             } else {
                 fieldTemplate.setField1(deskDetailHistory.getFoodName());
             }
-            fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getNum()));
+            fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getNotNullNum()));
             fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getTotal()));
             SaleStreamRow saleStreamRow = new SaleStreamRow();
             if (mergeFood) {
@@ -93,13 +93,13 @@ public class SaleStreamReportController {
             } else {
                 saleStreamRow.setFoodName(deskDetailHistory.getFoodName());
             }
-            saleStreamRow.setNum(deskDetailHistory.getNum());
+            saleStreamRow.setNum(deskDetailHistory.getNotNullNum());
             saleStreamRow.setTotal(deskDetailHistory.getTotal());
             saleStreamRowList.add(saleStreamRow);
             templateList.add(fieldTemplate);
             if (deskDetailHistory.getTotal() != null) {//有一行是类别，则总和为空，在此生成该类别的分析
                 categoryConsume += deskDetailHistory.getTotal();
-                categoryNum += deskDetailHistory.getNum();
+                categoryNum += deskDetailHistory.getNotNullNum();
                 totalConsume += deskDetailHistory.getTotal();
             } else {//为空时，在此生成该类别的分析
                 if (!"".equals(lastFoodName)) {
@@ -109,8 +109,8 @@ public class SaleStreamReportController {
                 categoryConsume = 0.0;
                 categoryNum = 0.0;
             }
-            if (deskDetailHistory.getNum() != null) {
-                totalNum += deskDetailHistory.getNum();
+            if (deskDetailHistory.getNotNullNum() != null) {
+                totalNum += deskDetailHistory.getNotNullNum();
             }
         }
         if (!"".equals(lastFoodName)) {

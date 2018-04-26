@@ -58,11 +58,11 @@ public class DeskControllerService {
             /*打印信息*/
                 FieldTemplate fieldTemplate = new FieldTemplate();
                 fieldTemplate.setField1(deskDetailHistory.getFoodName());
-                fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getPrice()));
-                fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getNum()));
-                fieldTemplate.setField4(ifNotNullGetString(deskDetailHistory.getPrice() * deskDetailHistory.getNum()));
+                fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getNotNullPrice()));
+                fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getNotNullNum()));
+                fieldTemplate.setField4(ifNotNullGetString(deskDetailHistory.getNotNullPrice() * deskDetailHistory.getNotNullNum()));
                 templateList.add(fieldTemplate);
-                categoryTotal+=deskDetailHistory.getPrice() * deskDetailHistory.getNum();
+                categoryTotal+=deskDetailHistory.getNotNullPrice() * deskDetailHistory.getNotNullNum();
             }else {
                 if(!lastCategory.equals("")){
                     fieldTemplateSum.setField1(fieldTemplateSum.getField1()+categoryTotal);
@@ -74,11 +74,11 @@ public class DeskControllerService {
                 categoryTotal=0.0;
                 FieldTemplate fieldTemplate = new FieldTemplate();
                 fieldTemplate.setField1(deskDetailHistory.getFoodName());
-                fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getPrice()));
-                fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getNum()));
-                fieldTemplate.setField4(ifNotNullGetString(deskDetailHistory.getPrice() * deskDetailHistory.getNum()));
+                fieldTemplate.setField2(ifNotNullGetString(deskDetailHistory.getNotNullPrice()));
+                fieldTemplate.setField3(ifNotNullGetString(deskDetailHistory.getNotNullNum()));
+                fieldTemplate.setField4(ifNotNullGetString(deskDetailHistory.getNotNullPrice()* deskDetailHistory.getNotNullNum()));
                 templateList.add(fieldTemplate);
-                categoryTotal+=deskDetailHistory.getPrice() * deskDetailHistory.getNum();
+                categoryTotal+=deskDetailHistory.getNotNullPrice() * deskDetailHistory.getNotNullNum();
             }
         }
         fieldTemplateSum.setField1(fieldTemplateSum.getField1()+categoryTotal);
