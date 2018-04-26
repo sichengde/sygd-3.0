@@ -17,7 +17,7 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
     /**
      * 根据销售员和时间获得各个单位的总消费额
      */
-    @Select("SELECT c.name name,sum(dp.debt_money) consume FROM debt_pay dp LEFT JOIN company c  ON c.name=dp.company WHERE c.sale_man=#{saleMan} and done_time>#{beginTime} and done_time<#{endTime} GROUP BY c.name")
+    @Select("SELECT c.name name,sale_man saleMan,sum(dp.debt_money) consume FROM debt_pay dp LEFT JOIN company c  ON c.name=dp.company WHERE c.name is not null and done_time>#{beginTime} and done_time<#{endTime} GROUP BY c.name,c.sale_man")
     List<Company> getTotalDebtBySaleManDate(@Param("saleMan") String saleMan, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /**
