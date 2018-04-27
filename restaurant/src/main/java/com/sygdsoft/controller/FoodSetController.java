@@ -1,6 +1,7 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.Query;
+import com.sygdsoft.model.DeskDetail;
 import com.sygdsoft.model.FoodSet;
 import com.sygdsoft.model.Menu;
 import com.sygdsoft.service.FoodSetService;
