@@ -116,6 +116,7 @@ public class DeskDetailController {
             deskIn.setDoTime(timeService.getNow());
             deskIn.setDesk(deskDetail.getDesk());
             deskIn.setNum(deskDetail.getPeople());
+            deskIn.setConsume(consume);
             deskIn.setRemark(deskDetail.getGlobalRemark());
             deskIn.setPointOfSale(deskDetail.getPointOfSale());
             deskIn.setUserId(userService.getCurrentUser());
