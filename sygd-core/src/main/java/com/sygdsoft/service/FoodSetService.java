@@ -3,6 +3,7 @@ package com.sygdsoft.service;
 import com.sygdsoft.mapper.FoodSetMapper;
 import com.sygdsoft.model.DeskDetail;
 import com.sygdsoft.model.FoodSet;
+import com.sygdsoft.model.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ import java.util.List;
 public class FoodSetService extends BaseService<FoodSet>{
     @Autowired
     FoodSetMapper foodSetMapper;
+    @Autowired
+    MenuService menuService;
     /**
      * 通过套餐名称获取所有菜拼
      */
@@ -33,11 +36,18 @@ public class FoodSetService extends BaseService<FoodSet>{
         List<FoodSet> foodSetList = getBySetName(foodSetDeskDetail.getFoodSign());
         List<DeskDetail> deskDetailList=new ArrayList<>();
         for (FoodSet foodSet : foodSetList) {
+            Menu menu=menuService.getByName(foodSet.getFoodName());
             DeskDetail deskDetail=new DeskDetail(foodSetDeskDetail);
             deskDetail.setNum(foodSet.getFoodNum()*foodSetDeskDetail.getNum());
             deskDetail.setFoodName(foodSet.getFoodName());
             deskDetail.setFoodSign(foodSet.getFoodName());
-            deskDetail.setPrice(null);
+            deskDetail.setPrice(0.0);
+            deskDetail.setNeedInsert(true);
+            if(menu!=null) {
+                deskDetail.setCategory(menu.getCategory());
+                deskDetail.setCookRoom(menu.getCookRoom());
+                deskDetail.setCargo(menu.getCargo());
+            }
             deskDetailList.add(deskDetail);
         }
         return deskDetailList;

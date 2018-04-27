@@ -62,7 +62,7 @@ public class ReportService {
     /**
      * 进行厨房打印
      */
-    public void printCook(String printerName, DeskDetail deskDetail) throws Exception {
+    public void printCook(String printerName, DeskDetail deskDetail,DeskIn deskIn) throws Exception {
         Map<String, Object> param = new HashMap<>();
         /*参数注释
         * 1.桌号
@@ -70,6 +70,7 @@ public class ReportService {
         * 3.数量
         * 4.备注加上叫起标志
         * 5.菜品类别
+        * 6.全单备注
         * */
         param.put("parameter1", deskDetail.getDesk());
         param.put("parameter2", deskDetail.getFoodName());
@@ -93,6 +94,7 @@ public class ReportService {
             param.put("parameter4", null);
         }
         param.put("parameter5", deskDetail.getCategory());
+        param.put("parameter6", deskIn.getRemark());
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/cookRoom.jasper", param, new JREmptyDataSource());
         this.printByPrinterName(printerName, jasperPrint);
     }

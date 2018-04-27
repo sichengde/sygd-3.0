@@ -21,6 +21,7 @@ public class RoomShopDetail extends BaseEntity{
     private String unit;//单位
     private Boolean cargo;//是否参与库存统计
     private Boolean storageDone;//是否参与库存统计
+    private String pointOfSaleShop;//商品部门
 
     @Transient
     private Date doneTime;//跟debtPay联表查询得出的结账时间
@@ -146,5 +147,13 @@ public class RoomShopDetail extends BaseEntity{
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getPointOfSaleShop() {
+        return pointOfSaleShop;
+    }
+
+    public void setPointOfSaleShop(String pointOfSaleShop) {
+        this.pointOfSaleShop = pointOfSaleShop;
     }
 }

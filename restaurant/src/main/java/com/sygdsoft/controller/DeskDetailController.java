@@ -54,6 +54,11 @@ public class DeskDetailController {
         }
     }
 
+    @RequestMapping("deskDetailGetBySetName")
+    public List<DeskDetail> deskDetailGetBySetName(@RequestBody DeskDetail deskDetail){
+        return foodSetService.getDeskDetailBySetName(deskDetail);
+    }
+
     /**
      * 设置已做未做（电子划菜）
      * @param deskDetail
@@ -92,13 +97,14 @@ public class DeskDetailController {
             if (deskDetail.isNeedInsert()) {//如果有插入标志则忽略更新标志
                 deskDetail.setDoTime(timeService.getNow());
                 deskDetailInsert.add(deskDetail);
-                if (deskDetail.getNotNullFoodSet()) {//如果是套餐则需要打印所有明细菜品
+                /*套餐明细改为在前端生成*/
+                /*if (deskDetail.getNotNullFoodSet()) {//如果是套餐则需要打印所有明细菜品
                     List<DeskDetail> foodSubSetList = foodSetService.getDeskDetailBySetName(deskDetail);
                     deskDetailPrint.addAll(foodSubSetList);
                     deskDetailInsert.addAll(foodSubSetList);
-                } else {
+                } else {*/
                     deskDetailPrint.add(deskDetail);
-                }
+                //}
             } else if (deskDetail.isNeedUpdate()) {
                 deskDetail.setDoTime(timeService.getNow());
                 deskDetailUpdate.add(deskDetail);
@@ -143,7 +149,7 @@ public class DeskDetailController {
                 for (CookRoom cookRoom : cookRoomList) {
                     if (cookRoom.getNotNullCut()) {//有cut就不是传菜
                         for (int i = 0; i < cookRoom.getNotNullNum(); i++) {
-                            reportService.printCook(cookRoom.getPrinter(), detail);
+                            reportService.printCook(cookRoom.getPrinter(), detail,deskIn);
                         }
                     } else {
                         if (deskDetailMap.containsKey(cookRoom.getPrinter())) {//如果有这个厨房
