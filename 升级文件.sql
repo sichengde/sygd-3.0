@@ -328,3 +328,5 @@ CREATE TABLE point_of_sale_shop
 );
 ALTER TABLE room_shop ADD point_of_sale_shop VARCHAR(100) NULL;
 ALTER TABLE room_shop_detail ADD point_of_sale_shop VARCHAR(100) NULL;
+#2018-04-30 小数点保留两位
+ALTER TABLE hotel.desk_in MODIFY consume DOUBLE(16,3);

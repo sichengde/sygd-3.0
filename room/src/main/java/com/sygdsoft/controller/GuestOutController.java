@@ -499,6 +499,7 @@ public class GuestOutController {
                 CheckIn checkIn = checkInService.getByRoomId(currencyAdd);
                 for (Debt debt : debtList) {
                     Debt debtNeedInsert=new Debt(debt);
+                    debtNeedInsert.setPaySerial(null);
                     debtNeedInsert.setFromRoom(serialService.getPaySerial());
                     debtNeedInsert.setRoomId(currencyAdd);
                     debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
