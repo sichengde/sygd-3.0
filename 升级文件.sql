@@ -319,3 +319,12 @@ CREATE or replace VIEW debt_integration AS
         FROM `hotel`.`debt`;
 #2018-04-26 增加全单备注功能
 ALTER TABLE hotel.desk_in ADD remark VARCHAR(100) NULL;
+#2018-04-27 增加房吧营业部门
+CREATE TABLE point_of_sale_shop
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100),
+  type VARCHAR(100)
+);
+ALTER TABLE room_shop ADD point_of_sale_shop VARCHAR(100) NULL;
+ALTER TABLE room_shop_detail ADD point_of_sale_shop VARCHAR(100) NULL;

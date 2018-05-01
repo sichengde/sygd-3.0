@@ -10,6 +10,7 @@ public class RoomShop extends BaseEntity{
     private String pointOfSale;//营业部门
     private String unit;//单位
     private Boolean cargo;//是否参与库存
+    private String pointOfSaleShop;//商品部门
 
     public RoomShop() {
     }
@@ -60,5 +61,13 @@ public class RoomShop extends BaseEntity{
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getPointOfSaleShop() {
+        return pointOfSaleShop;
+    }
+
+    public void setPointOfSaleShop(String pointOfSaleShop) {
+        this.pointOfSaleShop = pointOfSaleShop;
     }
 }
