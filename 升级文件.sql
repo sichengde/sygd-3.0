@@ -330,3 +330,15 @@ ALTER TABLE room_shop ADD point_of_sale_shop VARCHAR(100) NULL;
 ALTER TABLE room_shop_detail ADD point_of_sale_shop VARCHAR(100) NULL;
 #2018-04-30 小数点保留两位
 ALTER TABLE hotel.desk_in MODIFY consume DOUBLE(16,3);
+#2018-05-02 哑房挂账全部设置为不参与统计，为华苑发生额报表做准备，以后所有账务必须带客源，没有客源会报错
+UPDATE debt SET not_part_in=TRUE WHERE category='哑房挂账';
+UPDATE debt_history SET not_part_in=TRUE WHERE category='哑房挂账';
+UPDATE check_in set guest_source='未定义' WHERE guest_source is NULL;
+ALTER TABLE hotel.check_in MODIFY guest_source VARCHAR(100) NOT NULL;
+UPDATE check_in_history_log set guest_source='未定义' WHERE guest_source is NULL;
+ALTER TABLE hotel.check_in_history_log MODIFY guest_source VARCHAR(100) NOT NULL;
+UPDATE debt set guest_source='未定义' WHERE guest_source is NULL;
+ALTER TABLE hotel.debt MODIFY guest_source VARCHAR(100) NOT NULL;
+UPDATE debt_history set guest_source='未定义' WHERE guest_source is NULL;
+ALTER TABLE hotel.debt_history MODIFY guest_source VARCHAR(100) NOT NULL;
+ALTER TABLE hotel.room_snapshot ADD available BOOLEAN NULL;

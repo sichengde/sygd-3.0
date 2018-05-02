@@ -18,6 +18,7 @@ public class RoomSnapshot extends BaseEntity {
     private Boolean self;
     private Boolean backUp;
     private Boolean rent;
+    private Boolean available;
     private Boolean allDayRoom;
     private Boolean hourRoom;
     private Boolean addRoom;
@@ -46,6 +47,8 @@ public class RoomSnapshot extends BaseEntity {
     private Integer sumAddRoom;
     @Transient
     private Integer sumNightRoom;
+    @Transient
+    private Integer sumAvailable;
     @Transient
     private String currency;
 
@@ -314,5 +317,21 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
+    public Integer getSumAvailable() {
+        return sumAvailable;
+    }
+
+    public void setSumAvailable(Integer sumAvailable) {
+        this.sumAvailable = sumAvailable;
     }
 }

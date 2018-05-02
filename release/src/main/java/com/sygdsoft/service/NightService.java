@@ -172,12 +172,16 @@ public class NightService {
             roomSnapshot.setState(room.getState());
             switch (room.getState()){
                 case "可用房":
+                    roomSnapshot.setAvaliable(true);
                 case "走客房":
+                    roomSnapshot.setAvaliable(true);
                     empty++;
                     roomSnapshot.setEmpty(true);
                     break;
                 case "团队房":
+                    roomSnapshot.setAvaliable(true);
                 case "散客房":
+                    roomSnapshot.setAvaliable(true);
                     /*判断是不是全日房*/
                     CheckIn checkIn=checkInService.getByRoomId(room.getRoomId());
                     if(checkIn.getRoomPriceCategory().equals("日租房")){
@@ -194,14 +198,17 @@ public class NightService {
                     break;
                 case "维修房":
                     repair++;
+                    roomSnapshot.setAvaliable(false);
                     roomSnapshot.setRepair(true);
                     break;
                 case "自用房":
                     self++;
+                    roomSnapshot.setAvaliable(false);
                     roomSnapshot.setSelf(true);
                     break;
                 case "备用房":
                     backUp++;
+                    roomSnapshot.setAvaliable(false);
                     roomSnapshot.setBackUp(true);
                     break;
             }
