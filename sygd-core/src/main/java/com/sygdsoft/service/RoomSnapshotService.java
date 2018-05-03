@@ -44,5 +44,8 @@ public class RoomSnapshotService extends BaseService<RoomSnapshot>{
     public int getNotRoomCount(Date beginTime, Date endTime){
         return roomSnapshotMapper.getNotRoomCount(beginTime,endTime);
     }
+    public int getNotRoomAvailableCount(Date beginTime, Date endTime){
+        return roomSnapshotMapper.getNotRoomCount(beginTime,endTime);
+    }
 
 }

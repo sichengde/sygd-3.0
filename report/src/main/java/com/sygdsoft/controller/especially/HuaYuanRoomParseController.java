@@ -192,6 +192,14 @@ public class HuaYuanRoomParseController {
         row.setMonth((double) roomSnapshotService.getNotRoomCount(beginTimeMonth,endTimeMonth));
         row.setYear((double) roomSnapshotService.getNotRoomCount(beginTimeYear,endTimeYear));
         huaYuanRoomParseReturnList.add(row);
+        /*会议室收入*/
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("会议室收入");
+        row.setSubProject("可出租会议室数");
+        row.setDay((double) roomSnapshotService.getNotRoomAvailableCount(beginTimeDay,endTimeDay));
+        row.setMonth((double) roomSnapshotService.getNotRoomAvailableCount(beginTimeMonth,endTimeMonth));
+        row.setYear((double) roomSnapshotService.getNotRoomAvailableCount(beginTimeYear,endTimeYear));
+        huaYuanRoomParseReturnList.add(row);
         /*统计其他收入合计*/
         row=new HuaYuanRoomParseReturn();
         row.setSubProject("其他收入合计");
