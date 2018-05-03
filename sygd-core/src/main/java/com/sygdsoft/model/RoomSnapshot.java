@@ -10,6 +10,7 @@ public class RoomSnapshot extends BaseEntity {
     private String area;
     private String state;
     private String company;
+    private String guestSource;
     private String selfAccount;
     private String groupAccount;
     private Boolean realRoom;//属于房间
@@ -54,6 +55,8 @@ public class RoomSnapshot extends BaseEntity {
     private Integer sumAvailable;
     @Transient
     private String currency;
+    @Transient
+    private String countCategory;
 
     public RoomSnapshot() {
     }
@@ -352,5 +355,21 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setSumFree(Integer sumFree) {
         this.sumFree = sumFree;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
+    }
+
+    public String getCountCategory() {
+        return countCategory;
+    }
+
+    public void setCountCategory(String countCategory) {
+        this.countCategory = countCategory;
     }
 }

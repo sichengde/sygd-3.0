@@ -1,11 +1,16 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 public class GuestSnapshot extends BaseEntity{
     private Date reportTime;
     private Integer come;
     private Integer exist;
+    @Transient
+    private Integer sumCome;
+    @Transient
+    private Integer sumExist;
 
     public GuestSnapshot() {
     }
@@ -32,5 +37,21 @@ public class GuestSnapshot extends BaseEntity{
 
     public void setExist(Integer exist) {
         this.exist = exist;
+    }
+
+    public Integer getSumCome() {
+        return sumCome;
+    }
+
+    public void setSumCome(Integer sumCome) {
+        this.sumCome = sumCome;
+    }
+
+    public Integer getSumExist() {
+        return sumExist;
+    }
+
+    public void setSumExist(Integer sumExist) {
+        this.sumExist = sumExist;
     }
 }

@@ -1,10 +1,8 @@
 package com.sygdsoft.controller.especially;
 
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.SqlMapper;
-import com.sygdsoft.model.DebtIntegration;
-import com.sygdsoft.model.GuestSource;
-import com.sygdsoft.model.ReportJson;
-import com.sygdsoft.model.RoomSnapshot;
+import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
 import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +31,11 @@ public class HuaYuanRoomParseController {
     SzMath szMath;
     @Autowired
     GuestSnapshotService guestSnapshotService;
+    @Autowired
+    GuestSourceService guestSourceService;
 
     @RequestMapping(value = "huayuanRoomParseReport")
-    public List<HuaYuanRoomParseReturn> huayuanRoomParseReport(@RequestBody ReportJson reportJson) throws ParseException {
+    public List<HuaYuanRoomParseReturn> huayuanRoomParseReport(@RequestBody ReportJson reportJson) throws Exception {
         Date date=reportJson.getBeginTime();
         Date beginTimeDay=timeService.getMinTime(date);
         Date endTimeDay=timeService.getMaxTime(date);
@@ -95,9 +95,9 @@ public class HuaYuanRoomParseController {
         row=new HuaYuanRoomParseReturn();
         row.setProject("房间状态");
         row.setSubProject("已出租房间数");
-        row.setDay(Double.valueOf(roomSnapshotDay.getSumRent()));
-        row.setMonth(Double.valueOf(roomSnapshotMonth.getSumRent()));
-        row.setYear(Double.valueOf(roomSnapshotYear.getSumRent()));
+        row.setDay((double) (roomSnapshotDay.getSumAllDayRoom() + roomSnapshotDay.getSumNightRoom()));
+        row.setMonth((double) (roomSnapshotMonth.getSumAllDayRoom() + roomSnapshotMonth.getSumNightRoom()));
+        row.setYear((double) (roomSnapshotYear.getSumAllDayRoom() + roomSnapshotYear.getSumNightRoom()));
         huaYuanRoomParseReturnList.add(row);
         row=new HuaYuanRoomParseReturn();
         row.setProject("房间状态");
@@ -122,9 +122,9 @@ public class HuaYuanRoomParseController {
         row=new HuaYuanRoomParseReturn();
         row.setProject("房间状态");
         row.setSubProject("房间出租率%");
-        row.setDay(szMath.formatTwoDecimalReturnDouble(roomSnapshotDay.getSumRent(),roomSnapshotDay.getSumRealRoom()));
-        row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getSumRent(),roomSnapshotMonth.getSumRealRoom()));
-        row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getSumRent(),roomSnapshotYear.getSumRealRoom()));
+        row.setDay(szMath.formatTwoDecimalReturnDouble((double) (roomSnapshotDay.getSumAllDayRoom() + roomSnapshotDay.getSumNightRoom()),roomSnapshotDay.getSumRealRoom()));
+        row.setMonth(szMath.formatTwoDecimalReturnDouble((double) (roomSnapshotMonth.getSumAllDayRoom() + roomSnapshotMonth.getSumNightRoom()),roomSnapshotMonth.getSumRealRoom()));
+        row.setYear(szMath.formatTwoDecimalReturnDouble((double) (roomSnapshotYear.getSumAllDayRoom() + roomSnapshotYear.getSumNightRoom()),roomSnapshotYear.getSumRealRoom()));
         huaYuanRoomParseReturnList.add(row);
         row=new HuaYuanRoomParseReturn();
         row.setProject("房间状态");
@@ -133,12 +133,64 @@ public class HuaYuanRoomParseController {
         row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getAllDayRoomConsume()+roomSnapshotMonth.getNightRoomConsume(),roomSnapshotMonth.getSumAllDayRoom()+roomSnapshotMonth.getSumNightRoom()));
         row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getAllDayRoomConsume()+roomSnapshotYear.getNightRoomConsume(),roomSnapshotYear.getSumAllDayRoom()+roomSnapshotYear.getSumNightRoom()));
         huaYuanRoomParseReturnList.add(row);
+        /*人数快照*/
+        GuestSnapshot guestSnapshotDay=guestSnapshotService.getSum(beginTimeDay, endTimeDay);
+        GuestSnapshot guestSnapshotMonth=guestSnapshotService.getSum(beginTimeMonth, endTimeMonth);
+        GuestSnapshot guestSnapshotYear=guestSnapshotService.getSum(beginTimeYear, endTimeYear);
         row=new HuaYuanRoomParseReturn();
         row.setProject("房间状态");
         row.setSubProject("到店客人数");
-        row.setDay(szMath.formatTwoDecimalReturnDouble(roomSnapshotDay.getAllDayRoomConsume()+roomSnapshotDay.getNightRoomConsume(),roomSnapshotDay.getSumAllDayRoom()+roomSnapshotDay.getSumNightRoom()));
-        row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getAllDayRoomConsume()+roomSnapshotMonth.getNightRoomConsume(),roomSnapshotMonth.getSumAllDayRoom()+roomSnapshotMonth.getSumNightRoom()));
-        row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getAllDayRoomConsume()+roomSnapshotYear.getNightRoomConsume(),roomSnapshotYear.getSumAllDayRoom()+roomSnapshotYear.getSumNightRoom()));
+        row.setDay(Double.valueOf(guestSnapshotDay.getSumCome()));
+        row.setMonth(Double.valueOf(guestSnapshotMonth.getSumCome()));
+        row.setYear(Double.valueOf(guestSnapshotYear.getSumCome()));
+        huaYuanRoomParseReturnList.add(row);
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("当天客人总数");
+        row.setDay(Double.valueOf(guestSnapshotDay.getSumExist()));
+        row.setMonth(Double.valueOf(guestSnapshotMonth.getSumExist()));
+        row.setYear(Double.valueOf(guestSnapshotYear.getSumExist()));
+        huaYuanRoomParseReturnList.add(row);
+        /*开始客源分析*/
+        Query query=new Query();
+        query.setOrderByList(new String[]{"countCategory"});
+        List<GuestSource> guestSourceList1=guestSourceService.get(query);
+        String lastCountCategory=null;
+        for (GuestSource guestSource : guestSourceList1) {
+            if(lastCountCategory!=null&&!lastCountCategory.equals(guestSource.getCountCategory())){
+                /*生成上一个大类的记录*/
+                row=new HuaYuanRoomParseReturn();
+                row.setProject("客源分析");
+                row.setSubProject(lastCountCategory+"平均房价");
+                row.setDay(roomSnapshotService.getConsumeByGuestSource(beginTimeDay,endTimeDay,lastCountCategory));
+                row.setMonth(roomSnapshotService.getConsumeByGuestSource(beginTimeMonth,endTimeMonth,lastCountCategory));
+                row.setYear(roomSnapshotService.getConsumeByGuestSource(beginTimeYear,endTimeYear,lastCountCategory));
+                huaYuanRoomParseReturnList.add(row);
+            }
+            lastCountCategory=guestSource.getCountCategory();
+            row=new HuaYuanRoomParseReturn();
+            row.setProject("客源分析");
+            row.setSubProject(guestSource.getGuestSource()+"房间数");
+            row.setDay(roomSnapshotService.getSumByGuestSource(beginTimeDay,endTimeDay,guestSource.getGuestSource()));
+            row.setMonth(roomSnapshotService.getSumByGuestSource(beginTimeMonth,endTimeMonth,guestSource.getGuestSource()));
+            row.setYear(roomSnapshotService.getSumByGuestSource(beginTimeYear,endTimeYear,guestSource.getGuestSource()));
+            huaYuanRoomParseReturnList.add(row);
+        }
+        /*生成上一个大类的记录*/
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("客源分析");
+        row.setSubProject(lastCountCategory+"平均房价");
+        row.setDay(roomSnapshotService.getConsumeByGuestSource(beginTimeDay,endTimeDay,lastCountCategory));
+        row.setMonth(roomSnapshotService.getConsumeByGuestSource(beginTimeMonth,endTimeMonth,lastCountCategory));
+        row.setYear(roomSnapshotService.getConsumeByGuestSource(beginTimeYear,endTimeYear,lastCountCategory));
+        huaYuanRoomParseReturnList.add(row);
+        /*会议室收入*/
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("会议室收入");
+        row.setSubProject("会议室总数");
+        row.setDay((double) roomSnapshotService.getNotRoomCount(beginTimeDay,endTimeDay));
+        row.setMonth((double) roomSnapshotService.getNotRoomCount(beginTimeMonth,endTimeMonth));
+        row.setYear((double) roomSnapshotService.getNotRoomCount(beginTimeYear,endTimeYear));
         huaYuanRoomParseReturnList.add(row);
         /*统计其他收入合计*/
         row=new HuaYuanRoomParseReturn();

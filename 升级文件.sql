@@ -351,3 +351,4 @@ CREATE TABLE guest_snapshot
   come INT,
   exist INT
 );
+ALTER TABLE room_snapshot ADD guest_source VARCHAR(100) NULL;

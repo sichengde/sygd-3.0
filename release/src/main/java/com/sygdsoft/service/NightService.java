@@ -127,6 +127,7 @@ public class NightService {
         Date endDateTime=timeService.getNow();
         roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
         roomSnapshotService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
+        guestSnapshotService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
         List<RoomStateReport> roomStateReportList=new ArrayList<>();
         List<RoomSnapshot> roomSnapshotList=new ArrayList<>();
         String oldCategory=null;
@@ -200,6 +201,7 @@ public class NightService {
                     rent++;
                     roomSnapshot.setRent(true);
                     roomSnapshot.setCompany(checkIn.getCompany());
+                    roomSnapshot.setGuestSource(checkIn.getGuestSource());
                     roomSnapshot.setSelfAccount(checkIn.getSelfAccount());
                     roomSnapshot.setGroupAccount(checkIn.getGroupAccount());
                     if(checkIn.getNotNullFinalRoomPrice()==0.0){

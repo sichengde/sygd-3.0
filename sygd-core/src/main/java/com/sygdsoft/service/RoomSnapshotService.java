@@ -33,4 +33,16 @@ public class RoomSnapshotService extends BaseService<RoomSnapshot>{
     public RoomSnapshot getSumByDate(Date beginTime, Date endTime,String state) {
         return roomSnapshotMapper.getSum(beginTime, endTime,state);
     }
+
+    public Double getSumByGuestSource(Date beginTime, Date endTime,String guestSource) {
+        return roomSnapshotMapper.getNumByGuestSource(beginTime, endTime,guestSource);
+    }
+    public Double getConsumeByGuestSource(Date beginTime, Date endTime,String guestSource) {
+        return roomSnapshotMapper.getConsumeByGuestSource(beginTime, endTime,guestSource);
+    }
+
+    public int getNotRoomCount(Date beginTime, Date endTime){
+        return roomSnapshotMapper.getNotRoomCount(beginTime,endTime);
+    }
+
 }
