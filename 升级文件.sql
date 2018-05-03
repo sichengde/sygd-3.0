@@ -342,3 +342,4 @@ ALTER TABLE hotel.debt MODIFY guest_source VARCHAR(100) NOT NULL;
 UPDATE debt_history set guest_source='未定义' WHERE guest_source is NULL;
 ALTER TABLE hotel.debt_history MODIFY guest_source VARCHAR(100) NOT NULL;
 ALTER TABLE hotel.room_snapshot ADD available BOOLEAN NULL;
+ALTER TABLE hotel.room_snapshot ADD free BOOLEAN NULL;

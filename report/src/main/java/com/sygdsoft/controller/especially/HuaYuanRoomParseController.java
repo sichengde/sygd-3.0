@@ -72,9 +72,6 @@ public class HuaYuanRoomParseController {
         row.setMonth(totalMonth);
         row.setYear(totalYear);
         huaYuanRoomParseReturnList.add(0,row);
-        row=new HuaYuanRoomParseReturn();
-        row.setSubProject("其他收入合计");
-        huaYuanRoomParseReturnList.add(row);
         /*开始统计房数*/
         RoomSnapshot roomSnapshotDay=roomSnapshotService.getSumByDate(beginTimeDay, endTimeDay,null);
         RoomSnapshot roomSnapshotMonth=roomSnapshotService.getSumByDate(beginTimeMonth, endTimeMonth,null);
@@ -100,7 +97,37 @@ public class HuaYuanRoomParseController {
         row.setMonth(Double.valueOf(roomSnapshotMonth.getSumRent()));
         row.setYear(Double.valueOf(roomSnapshotYear.getSumRent()));
         huaYuanRoomParseReturnList.add(row);
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("招待房间数");
+        row.setDay(Double.valueOf(roomSnapshotDay.getSumFree()));
+        row.setMonth(Double.valueOf(roomSnapshotMonth.getSumFree()));
+        row.setYear(Double.valueOf(roomSnapshotYear.getSumFree()));
+        huaYuanRoomParseReturnList.add(row);
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("自用房间数");
+        row.setDay(Double.valueOf(roomSnapshotDay.getSumSelf()));
+        row.setMonth(Double.valueOf(roomSnapshotMonth.getSumSelf()));
+        row.setYear(Double.valueOf(roomSnapshotYear.getSumSelf()));
+        huaYuanRoomParseReturnList.add(row);
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("维修房间数");
+        row.setDay(Double.valueOf(roomSnapshotDay.getSumRepair()));
+        row.setMonth(Double.valueOf(roomSnapshotMonth.getSumRepair()));
+        row.setYear(Double.valueOf(roomSnapshotYear.getSumRepair()));
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("房间出租率%");
+        row.setDay(szMath.formatTwoDecimalReturnDouble(roomSnapshotDay.getSumRent(),roomSnapshotDay.getSumRealRoom()));
+        row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getSumRent(),roomSnapshotMonth.getSumRealRoom()));
+        row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getSumRent(),roomSnapshotYear.getSumRealRoom()));
+        huaYuanRoomParseReturnList.add(row);
         /*统计其他收入合计*/
+        row=new HuaYuanRoomParseReturn();
+        row.setSubProject("其他收入合计");
+        huaYuanRoomParseReturnList.add(row);
         return huaYuanRoomParseReturnList;
     }
 

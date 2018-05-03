@@ -195,6 +195,9 @@ public class NightService {
                     roomSnapshot.setCompany(checkIn.getCompany());
                     roomSnapshot.setSelfAccount(checkIn.getSelfAccount());
                     roomSnapshot.setGroupAccount(checkIn.getGroupAccount());
+                    if(checkIn.getNotNullFinalRoomPrice()==0.0){
+                        roomSnapshot.setFree(true);
+                    }
                     break;
                 case "维修房":
                     repair++;

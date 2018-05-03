@@ -12,13 +12,14 @@ public class RoomSnapshot extends BaseEntity {
     private String company;
     private String selfAccount;
     private String groupAccount;
-    private Boolean realRoom;
-    private Boolean empty;
-    private Boolean repair;
-    private Boolean self;
-    private Boolean backUp;
-    private Boolean rent;
-    private Boolean available;
+    private Boolean realRoom;//属于房间
+    private Boolean empty;//空房
+    private Boolean repair;//维修房
+    private Boolean self;//自用房
+    private Boolean backUp;//备用房
+    private Boolean rent;//出租房
+    private Boolean available;//可用房
+    private Boolean free;//招待房/免费房
     private Boolean allDayRoom;
     private Boolean hourRoom;
     private Boolean addRoom;
@@ -39,6 +40,8 @@ public class RoomSnapshot extends BaseEntity {
     private Integer sumBackUp;
     @Transient
     private Integer sumRent;
+    @Transient
+    private Integer sumFree;
     @Transient
     private Integer sumAllDayRoom;
     @Transient
@@ -333,5 +336,21 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setSumAvailable(Integer sumAvailable) {
         this.sumAvailable = sumAvailable;
+    }
+
+    public Boolean getFree() {
+        return free;
+    }
+
+    public void setFree(Boolean free) {
+        this.free = free;
+    }
+
+    public Integer getSumFree() {
+        return sumFree;
+    }
+
+    public void setSumFree(Integer sumFree) {
+        this.sumFree = sumFree;
     }
 }
