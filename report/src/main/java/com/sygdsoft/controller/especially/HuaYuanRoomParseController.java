@@ -31,6 +31,8 @@ public class HuaYuanRoomParseController {
     RoomSnapshotService roomSnapshotService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    GuestSnapshotService guestSnapshotService;
 
     @RequestMapping(value = "huayuanRoomParseReport")
     public List<HuaYuanRoomParseReturn> huayuanRoomParseReport(@RequestBody ReportJson reportJson) throws ParseException {
@@ -123,6 +125,20 @@ public class HuaYuanRoomParseController {
         row.setDay(szMath.formatTwoDecimalReturnDouble(roomSnapshotDay.getSumRent(),roomSnapshotDay.getSumRealRoom()));
         row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getSumRent(),roomSnapshotMonth.getSumRealRoom()));
         row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getSumRent(),roomSnapshotYear.getSumRealRoom()));
+        huaYuanRoomParseReturnList.add(row);
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("平均房价");
+        row.setDay(szMath.formatTwoDecimalReturnDouble(roomSnapshotDay.getAllDayRoomConsume()+roomSnapshotDay.getNightRoomConsume(),roomSnapshotDay.getSumAllDayRoom()+roomSnapshotDay.getSumNightRoom()));
+        row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getAllDayRoomConsume()+roomSnapshotMonth.getNightRoomConsume(),roomSnapshotMonth.getSumAllDayRoom()+roomSnapshotMonth.getSumNightRoom()));
+        row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getAllDayRoomConsume()+roomSnapshotYear.getNightRoomConsume(),roomSnapshotYear.getSumAllDayRoom()+roomSnapshotYear.getSumNightRoom()));
+        huaYuanRoomParseReturnList.add(row);
+        row=new HuaYuanRoomParseReturn();
+        row.setProject("房间状态");
+        row.setSubProject("到店客人数");
+        row.setDay(szMath.formatTwoDecimalReturnDouble(roomSnapshotDay.getAllDayRoomConsume()+roomSnapshotDay.getNightRoomConsume(),roomSnapshotDay.getSumAllDayRoom()+roomSnapshotDay.getSumNightRoom()));
+        row.setMonth(szMath.formatTwoDecimalReturnDouble(roomSnapshotMonth.getAllDayRoomConsume()+roomSnapshotMonth.getNightRoomConsume(),roomSnapshotMonth.getSumAllDayRoom()+roomSnapshotMonth.getSumNightRoom()));
+        row.setYear(szMath.formatTwoDecimalReturnDouble(roomSnapshotYear.getAllDayRoomConsume()+roomSnapshotYear.getNightRoomConsume(),roomSnapshotYear.getSumAllDayRoom()+roomSnapshotYear.getSumNightRoom()));
         huaYuanRoomParseReturnList.add(row);
         /*统计其他收入合计*/
         row=new HuaYuanRoomParseReturn();

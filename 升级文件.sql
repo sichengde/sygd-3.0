@@ -343,3 +343,11 @@ UPDATE debt_history set guest_source='未定义' WHERE guest_source is NULL;
 ALTER TABLE hotel.debt_history MODIFY guest_source VARCHAR(100) NOT NULL;
 ALTER TABLE hotel.room_snapshot ADD available BOOLEAN NULL;
 ALTER TABLE hotel.room_snapshot ADD free BOOLEAN NULL;
+#2018-05-03 华苑大报表
+CREATE TABLE guest_snapshot
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  report_time DATE,
+  come INT,
+  exist INT
+);

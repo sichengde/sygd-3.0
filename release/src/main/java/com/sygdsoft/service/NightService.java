@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.Query;
+import com.sygdsoft.mapper.CheckInGuestMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.util.Util;
@@ -59,6 +60,12 @@ public class NightService {
     CheckInService checkInService;
     @Autowired
     NightDateService nightDateService;
+    @Autowired
+    GuestSnapshotService guestSnapshotService;
+    @Autowired
+    CheckInGuestMapper checkInGuestMapper;
+    @Autowired
+    GuestIntegrationService guestIntegrationService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic()throws Exception{
@@ -253,6 +260,12 @@ public class NightService {
         roomStateReportList.add(roomStateReport);
         roomStateReportService.add(roomStateReportList);
         roomSnapshotService.add(roomSnapshotList);
+        /*生成当日客人快照*/
+        GuestSnapshot guestSnapshot=new GuestSnapshot();
+        guestSnapshot.setReportTime(debtDate);
+        guestSnapshot.setExist(checkInGuestMapper.selectCount(null));
+        guestSnapshot.setCome(guestIntegrationService.getSumNumByDate(debtDate,null,null ));
+        guestSnapshotService.add(guestSnapshot);
         /*设置最近一次夜审时间*/
         otherParamService.updateValueByName("上次夜审", timeService.getNowLong());
         /*设置该账务日期的夜审时间*/

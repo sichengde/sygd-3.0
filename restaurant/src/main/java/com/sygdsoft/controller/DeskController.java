@@ -264,9 +264,16 @@ public class DeskController {
         String desk = deskOut.getDesk();
         String pointOfSale = deskOut.getPointOfSale();
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
+        /*矫正结账金额*/
+        Double consume = 0.0;
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
+        for (DeskDetail deskDetail : deskDetailList) {
+            consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
+        }
+        deskIn.setConsume(consume);
+        deskInService.update(deskIn);
         Double discount = deskOut.getDiscount();
         Double finalPrice = deskOut.getFinalPrice();
-        List<DeskDetail> deskDetailList;
         if (deskOut.getDeskDetailList() != null) {
             deskDetailList = deskOut.getDeskDetailList();
         } else {
