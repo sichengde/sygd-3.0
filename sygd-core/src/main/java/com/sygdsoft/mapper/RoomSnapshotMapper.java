@@ -29,11 +29,11 @@ public interface RoomSnapshotMapper extends MyMapper<RoomSnapshot> {
     @ResultType(Double.class)
     Double getConsumeByGuestSource(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("countCategory")String countCategory);
 
-    @Select("SELECT count(*) FROM room_snapshot WHERE report_time>=#{beginTime} AND report_time<#{endTime} AND real_room is NULL;")
+    @Select("SELECT ifnull(count(*),0) FROM room_snapshot WHERE report_time>=#{beginTime} AND report_time<#{endTime} AND real_room is NULL;")
     @ResultType(Integer.class)
-    Integer getNotRoomCount(Date beginTime, Date endTime);
+    Integer getNotRoomCount(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
-    @Select("SELECT sum(available) FROM room_snapshot WHERE report_time>=#{beginTime} AND report_time<#{endTime} AND real_room is NULL;")
+    @Select("SELECT ifnull(sum(available),0) FROM room_snapshot WHERE report_time>=#{beginTime} AND report_time<#{endTime} AND real_room is NULL;")
     @ResultType(Integer.class)
-    Integer getNotRoomAvailableCount(Date beginTime, Date endTime);
+    Integer getNotRoomAvailableCount(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }
