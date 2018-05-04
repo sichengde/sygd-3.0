@@ -352,3 +352,13 @@ CREATE TABLE guest_snapshot
   exist INT
 );
 ALTER TABLE room_snapshot ADD guest_source VARCHAR(100) NULL;
+#2018-05-04 准备华苑餐饮大报表
+CREATE TABLE desk_guest_source
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100)
+);
+ALTER TABLE desk_in ADD guest_source VARCHAR(100) NULL;
+ALTER TABLE desk_in_history ADD guest_source VARCHAR(100) NULL;
+ALTER TABLE desk_in ADD sub_desk_num INT NULL;
+ALTER TABLE desk_in_history ADD sub_desk_num INT NULL;
