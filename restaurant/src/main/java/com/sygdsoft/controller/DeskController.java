@@ -244,6 +244,7 @@ public class DeskController {
         * 7.桌台号
         * 8.操作员
         * 9.点菜员
+        * 10.人数
         * field
         * 1.菜品
         * 2.单价
@@ -251,7 +252,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString()};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
