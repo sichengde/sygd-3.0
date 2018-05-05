@@ -95,6 +95,7 @@ public class ReportService {
         }
         param.put("parameter5", deskDetail.getCategory());
         param.put("parameter6", deskIn.getRemark());
+        param.put("parameter7", deskDetail.getNotNullPrice());
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/cookRoom.jasper", param, new JREmptyDataSource());
         this.printByPrinterName(printerName, jasperPrint);
     }

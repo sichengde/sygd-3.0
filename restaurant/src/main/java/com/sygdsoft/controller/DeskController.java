@@ -169,6 +169,12 @@ public class DeskController {
         List<CurrencyPost> currencyPostList = deskOut.getCurrencyPostList();
         DeskBook deskBook = deskOut.getDeskBook();
         List<DeskPay> deskPayList = new ArrayList<>();
+        /*矫正结账金额*/
+        Double consume = 0.0;
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
+        for (DeskDetail deskDetail : deskDetailList) {
+            consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
+        }
         /*生成结账信息*/
         String changeDebt = "";//转账信息
         for (CurrencyPost currencyPost : currencyPostList) {
@@ -182,6 +188,7 @@ public class DeskController {
         deskPayService.add(deskPayList);
         /*餐桌信息转移到历史*/
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
+        deskIn.setConsume(consume);
         DeskInHistory deskInHistory = new DeskInHistory(deskIn);
         deskInHistory.setDiscount(discount);
         deskInHistory.setFinalPrice(finalPrice);
@@ -197,7 +204,6 @@ public class DeskController {
             deskControllerService.generateDetail(deskDetailService.getListByDesk(desk, pointOfSale, "category"), templateList);
         }
         /*菜品明细转移到历史*/
-        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
         List<DeskDetailHistory> deskDetailHistoryList = new ArrayList<>();
         for (DeskDetail deskDetail : deskDetailList) {
             DeskDetailHistory deskDetailHistory = new DeskDetailHistory(deskDetail);
@@ -238,6 +244,7 @@ public class DeskController {
         * 7.桌台号
         * 8.操作员
         * 9.点菜员
+        * 10.人数
         * field
         * 1.菜品
         * 2.单价
@@ -245,7 +252,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString()};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -258,9 +265,16 @@ public class DeskController {
         String desk = deskOut.getDesk();
         String pointOfSale = deskOut.getPointOfSale();
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
+        /*矫正结账金额*/
+        Double consume = 0.0;
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
+        for (DeskDetail deskDetail : deskDetailList) {
+            consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
+        }
+        deskIn.setConsume(consume);
+        deskInService.update(deskIn);
         Double discount = deskOut.getDiscount();
         Double finalPrice = deskOut.getFinalPrice();
-        List<DeskDetail> deskDetailList;
         if (deskOut.getDeskDetailList() != null) {
             deskDetailList = deskOut.getDeskDetailList();
         } else {

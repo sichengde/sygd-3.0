@@ -1,6 +1,7 @@
 package com.sygdsoft.service;
 
 import com.sygdsoft.jsonModel.Query;
+import com.sygdsoft.mapper.CheckInGuestMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.util.Util;
@@ -59,6 +60,12 @@ public class NightService {
     CheckInService checkInService;
     @Autowired
     NightDateService nightDateService;
+    @Autowired
+    GuestSnapshotService guestSnapshotService;
+    @Autowired
+    CheckInGuestMapper checkInGuestMapper;
+    @Autowired
+    GuestIntegrationService guestIntegrationService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic()throws Exception{
@@ -120,6 +127,7 @@ public class NightService {
         Date endDateTime=timeService.getNow();
         roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
         roomSnapshotService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
+        guestSnapshotService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
         List<RoomStateReport> roomStateReportList=new ArrayList<>();
         List<RoomSnapshot> roomSnapshotList=new ArrayList<>();
         String oldCategory=null;
@@ -172,12 +180,16 @@ public class NightService {
             roomSnapshot.setState(room.getState());
             switch (room.getState()){
                 case "可用房":
+                    roomSnapshot.setAvailable(true);
                 case "走客房":
+                    roomSnapshot.setAvailable(true);
                     empty++;
                     roomSnapshot.setEmpty(true);
                     break;
                 case "团队房":
+                    roomSnapshot.setAvailable(true);
                 case "散客房":
+                    roomSnapshot.setAvailable(true);
                     /*判断是不是全日房*/
                     CheckIn checkIn=checkInService.getByRoomId(room.getRoomId());
                     if(checkIn.getRoomPriceCategory().equals("日租房")){
@@ -189,19 +201,26 @@ public class NightService {
                     rent++;
                     roomSnapshot.setRent(true);
                     roomSnapshot.setCompany(checkIn.getCompany());
+                    roomSnapshot.setGuestSource(checkIn.getGuestSource());
                     roomSnapshot.setSelfAccount(checkIn.getSelfAccount());
                     roomSnapshot.setGroupAccount(checkIn.getGroupAccount());
+                    if(checkIn.getNotNullFinalRoomPrice()==0.0){
+                        roomSnapshot.setFree(true);
+                    }
                     break;
                 case "维修房":
                     repair++;
+                    roomSnapshot.setAvailable(false);
                     roomSnapshot.setRepair(true);
                     break;
                 case "自用房":
                     self++;
+                    roomSnapshot.setAvailable(false);
                     roomSnapshot.setSelf(true);
                     break;
                 case "备用房":
                     backUp++;
+                    roomSnapshot.setAvailable(false);
                     roomSnapshot.setBackUp(true);
                     break;
             }
@@ -243,6 +262,12 @@ public class NightService {
         roomStateReportList.add(roomStateReport);
         roomStateReportService.add(roomStateReportList);
         roomSnapshotService.add(roomSnapshotList);
+        /*生成当日客人快照*/
+        GuestSnapshot guestSnapshot=new GuestSnapshot();
+        guestSnapshot.setReportTime(debtDate);
+        guestSnapshot.setExist(checkInGuestMapper.selectCount(null));
+        guestSnapshot.setCome(guestIntegrationService.getSumNumByDate(debtDate,null,null ));
+        guestSnapshotService.add(guestSnapshot);
         /*设置最近一次夜审时间*/
         otherParamService.updateValueByName("上次夜审", timeService.getNowLong());
         /*设置该账务日期的夜审时间*/

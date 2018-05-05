@@ -16,8 +16,10 @@ public class DeskInHistory extends BaseEntity {
     private Double discount;//优惠价格，为以后计算折扣预留
     private String userId;
     private String pointOfSale;
+    private String guestSource;
     private Integer num;//就餐人数
     private Boolean disabled;//该账单作废，自助餐是被冲减，正常桌台是被叫回
+    private Integer subDeskNum;
 
     public DeskInHistory() {
     }
@@ -29,6 +31,8 @@ public class DeskInHistory extends BaseEntity {
         this.totalPrice=deskIn.getConsume();
         this.userId=deskIn.getUserId();
         this.pointOfSale=deskIn.getPointOfSale();
+        this.guestSource=deskIn.getGuestSource();
+        this.subDeskNum=deskIn.getSubDeskNum();
     }
 
     public Integer getNotNullNum(){
@@ -125,5 +129,21 @@ public class DeskInHistory extends BaseEntity {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
+    }
+
+    public Integer getSubDeskNum() {
+        return subDeskNum;
+    }
+
+    public void setSubDeskNum(Integer subDeskNum) {
+        this.subDeskNum = subDeskNum;
     }
 }

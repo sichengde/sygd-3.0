@@ -15,6 +15,8 @@ public class DeskIn extends BaseEntity{
     private String userId;
     private String pointOfSale;
     private String remark;
+    private String guestSource;
+    private Integer subDeskNum;//子餐桌数量，针对于婚宴大厅
     @Transient
     private List<DeskDetail> deskDetailList;
 
@@ -27,6 +29,8 @@ public class DeskIn extends BaseEntity{
         this.consume=deskInHistory.getTotalPrice();
         this.userId=deskInHistory.getUserId();
         this.pointOfSale=deskInHistory.getPointOfSale();
+        this.guestSource=deskInHistory.getGuestSource();
+        this.subDeskNum=deskInHistory.getSubDeskNum();
     }
 
     public Double getNotNullConsume(){
@@ -107,5 +111,21 @@ public class DeskIn extends BaseEntity{
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
+    }
+
+    public Integer getSubDeskNum() {
+        return subDeskNum;
+    }
+
+    public void setSubDeskNum(Integer subDeskNum) {
+        this.subDeskNum = subDeskNum;
     }
 }
