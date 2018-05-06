@@ -161,6 +161,7 @@ public class DeskController {
         serialService.setCkSerial();
         String desk = deskOut.getDesk();
         String pointOfSale = deskOut.getPointOfSale();
+        String guestSource=deskOut.getDeskGuestSource();
         Double discount = deskOut.getDiscount();
         if(discount==null){
             discount=1.0;
@@ -189,6 +190,7 @@ public class DeskController {
         /*餐桌信息转移到历史*/
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         deskIn.setConsume(consume);
+        deskIn.setGuestSource(guestSource);
         DeskInHistory deskInHistory = new DeskInHistory(deskIn);
         deskInHistory.setDiscount(discount);
         deskInHistory.setFinalPrice(finalPrice);
@@ -305,13 +307,14 @@ public class DeskController {
         * 7.桌台号
         * 8.操作员
         * 9.点菜员
+        * 10.人数
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString()};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
