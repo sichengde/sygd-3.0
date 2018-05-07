@@ -43,4 +43,27 @@ public interface HuaYuanMapper extends MyMapper<DebtIntegration>{
     @Select("SELECT ifnull(round(sum(total_money),2),0) FROM room_shop_detail WHERE do_time>#{beginTime} and do_time<#{endTime} and point_of_sale_shop=#{pointOfSaleShop}")
     @ResultType(Double.class)
     Double getRoomShopConsume(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("pointOfSaleShop")String pointOfSaleShop);
+
+    /*------------------------------------------------------------餐饮的------------------------------------------------------------*/
+
+    /**
+     * 获取餐饮客源消费
+     */
+    @Select("SELECT round(ifnull(sum(final_price),0),2) FROM desk_in_history WHERE done_time>#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource}")
+    @ResultType(Double.class)
+    Double getEatGuestSourceConsume(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
+
+    /**
+     * 获取客源用餐桌数
+     */
+    @Select("SELECT ifnull(count(*),0) FROM desk_in_history WHERE done_time>? and done_time<? AND guest_source=?")
+    @ResultType(Integer.class)
+    Integer getDeskNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
+
+    /**
+     * 获取散客用包房数
+     */
+    @Select("SELECT ifnull(count(*),0) FROM desk_in_history dih LEFT JOIN desk d ON dih.desk=d.name WHERE done_time>#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource} and d.category='包房'")
+    @ResultType(Integer.class)
+    Integer getGroupDeskNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
 }

@@ -1,6 +1,7 @@
 package com.sygdsoft.controller.especially;
 
 import com.sygdsoft.jsonModel.Query;
+import com.sygdsoft.mapper.DeskMapper;
 import com.sygdsoft.mapper.SqlMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
@@ -27,6 +28,10 @@ public class HuaYuanEatParseController {
     SzMath szMath;
     @Autowired
     DeskGuestSourceService deskGuestSourceService;
+    @Autowired
+    DeskMapper deskMapper;
+    @Autowired
+    DeskService deskService;
 
     @RequestMapping(value = "huayuanEatParseReport")
     public List<HuaYuanRoomParseReturn> huayuanEatParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -41,18 +46,60 @@ public class HuaYuanEatParseController {
         /*分析客源消费*/
         HuaYuanRoomParseReturn row;
         List<DeskGuestSource> deskGuestSourceList=deskGuestSourceService.get(null);
+        Double totalDay = 0.0;
+        Double totalMonth = 0.0;
+        Double totalYear = 0.0;
         for (DeskGuestSource deskGuestSource : deskGuestSourceList) {
             if (deskGuestSource.getName() == null) {
                 continue;
             }
             row = new HuaYuanRoomParseReturn();
-            row.setProject("房间收入明细");
+            row.setProject("客源分类");
             row.setSubProject(deskGuestSource.getName() + "收入");
-            //row.setDay();
-            //row.setMonth();
-            //row.setYear();
+            row.setDay(huaYuanService.getEatGuestSourceConsume(beginTimeDay,endTimeDay,deskGuestSource.getName()));
+            totalDay += row.getDay();
+            row.setMonth(huaYuanService.getEatGuestSourceConsume(beginTimeMonth,endTimeMonth,deskGuestSource.getName()));
+            totalMonth += row.getMonth();
+            row.setYear(huaYuanService.getEatGuestSourceConsume(beginTimeYear,endTimeYear,deskGuestSource.getName()));
+            totalYear += row.getYear();
             huaYuanRoomParseReturnList.add(row);
         }
+        //合计
+        row = new HuaYuanRoomParseReturn();
+        row.setSubProject("中餐总收入合计");
+        row.setDay(totalDay);
+        row.setMonth(totalMonth);
+        row.setYear(totalYear);
+        row = new HuaYuanRoomParseReturn();
+        /*散客用餐*/
+        row.setProject("散客用餐");
+        row.setSubProject("可用桌数");
+        Integer count=deskMapper.selectAll().size();
+        row.setDay(Double.valueOf(count));
+        row.setMonth(count*30.0);
+        row.setYear(count*365.0);
+        huaYuanRoomParseReturnList.add(row);
+        row = new HuaYuanRoomParseReturn();
+        row.setProject("散客用餐");
+        row.setSubProject("用餐桌数");
+        row.setDay(Double.valueOf(huaYuanService.getDeskNum(beginTimeDay,endTimeDay,"散客")));
+        row.setMonth(Double.valueOf(huaYuanService.getDeskNum(beginTimeMonth,endTimeMonth,"散客")));
+        row.setYear(Double.valueOf(huaYuanService.getDeskNum(beginTimeYear,endTimeYear,"散客")));
+        huaYuanRoomParseReturnList.add(row);
+        /*获取包房总数*/
+        Query query=new Query();
+        query.setCondition("category=\'包房\'");
+        Integer getTotalGroupRoom=deskService.get(query).size();
+        Integer day=huaYuanService.getGroupDeskNum(beginTimeDay,endTimeDay,"散客");
+        Integer Month=huaYuanService.getGroupDeskNum(beginTimeMonth,endTimeMonth,"散客");
+        Integer Year=huaYuanService.getGroupDeskNum(beginTimeYear,endTimeYear,"散客");
+        row = new HuaYuanRoomParseReturn();
+        row.setProject("散客用餐");
+        row.setSubProject("包房使用率");
+        row.setDay(szMath.formatTwoDecimalReturnDouble(getTotalGroupRoom,day));
+        row.setMonth(szMath.formatTwoDecimalReturnDouble(getTotalGroupRoom*30,Month));
+        row.setYear(szMath.formatTwoDecimalReturnDouble(getTotalGroupRoom*365,Year));
+        huaYuanRoomParseReturnList.add(row);
         return huaYuanRoomParseReturnList;
     }
 }

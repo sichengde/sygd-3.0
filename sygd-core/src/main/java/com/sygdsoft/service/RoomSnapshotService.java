@@ -52,4 +52,8 @@ public class RoomSnapshotService extends BaseService<RoomSnapshot> {
         return roomSnapshotMapper.getNotRoomAvailableCount(beginTime, endTime);
     }
 
+    public List<RoomSnapshot> getListGroupByCategory(Date beginTime, Date endTime) {
+        return roomSnapshotMapper.getListGroupByCategory(beginTime, endTime);
+    }
+
 }
