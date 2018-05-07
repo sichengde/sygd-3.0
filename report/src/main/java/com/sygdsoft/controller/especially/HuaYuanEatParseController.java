@@ -28,8 +28,8 @@ public class HuaYuanEatParseController {
     @Autowired
     DeskGuestSourceService deskGuestSourceService;
 
-    @RequestMapping(value = "huayuanRoomParseReport")
-    public List<HuaYuanRoomParseReturn> huayuanRoomParseReport(@RequestBody ReportJson reportJson) throws Exception {
+    @RequestMapping(value = "huayuanEatParseReport")
+    public List<HuaYuanRoomParseReturn> huayuanEatParseReport(@RequestBody ReportJson reportJson) throws Exception {
         Date date = reportJson.getBeginTime();
         Date beginTimeDay = timeService.getMinTime(date);
         Date endTimeDay = timeService.getMaxTime(date);
