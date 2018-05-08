@@ -116,6 +116,14 @@ public class HuaYuanEatParseController {
         row.setMonth(szMath.formatTwoDecimalReturnDouble(huaYuanService.getEatGuestSourceConsume(beginTimeMonth,endTimeMonth,"散客"),deskInHistoryService.getGuestNumByGuestSource(beginTimeMonth,endTimeMonth,"散客")));
         row.setYear(szMath.formatTwoDecimalReturnDouble(huaYuanService.getEatGuestSourceConsume(beginTimeYear,endTimeYear,"散客"),deskInHistoryService.getGuestNumByGuestSource(beginTimeYear,endTimeYear,"散客")));
         huaYuanRoomParseReturnList.add(row);
+        /*婚宴包席收入*/
+        row = new HuaYuanRoomParseReturn();
+        row.setProject("婚宴包席收入");
+        row.setSubProject("包席桌数");
+        //row.setDay();
+        //row.setMonth();
+        //row.setYear();
+        huaYuanRoomParseReturnList.add(row);
         return huaYuanRoomParseReturnList;
     }
 }

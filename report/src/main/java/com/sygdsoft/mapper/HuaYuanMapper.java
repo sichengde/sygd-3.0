@@ -66,4 +66,6 @@ public interface HuaYuanMapper extends MyMapper<DebtIntegration>{
     @Select("SELECT ifnull(count(*),0) FROM desk_in_history dih LEFT JOIN desk d ON dih.desk=d.name WHERE done_time>#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource} and d.category='包房'")
     @ResultType(Integer.class)
     Integer getGroupDeskNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
+
+    Integer getSubDeskNum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("guestSource") String guestSource);
 }

@@ -44,6 +44,10 @@ public class HuaYuanService {
         return huaYuanMapper.getDeskNum(beginTime, endTime, guestSource);
     }
 
+    public Integer getSubDeskNum(Date beginTime, Date endTime, String guestSource) {
+        return huaYuanMapper.getSubDeskNum(beginTime, endTime, guestSource);
+    }
+
     public Integer getGroupDeskNum(Date beginTime, Date endTime, String guestSource) {
         return huaYuanMapper.getGroupDeskNum(beginTime, endTime, guestSource);
     }

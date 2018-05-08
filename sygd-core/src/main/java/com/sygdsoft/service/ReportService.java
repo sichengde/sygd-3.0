@@ -102,6 +102,11 @@ public class ReportService {
 
     /**
      * 进行传菜打印
+     * param:
+     * 1.桌号
+     * 2.时间
+     * 3.操作员
+     * 4.整单备注
      */
     public void printPassFood(String printerName, List<DeskDetail> deskDetailList,DeskIn deskIn) throws Exception {
         Map<String, Object> param = new HashMap<>();
