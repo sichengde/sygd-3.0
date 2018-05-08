@@ -35,4 +35,11 @@ public interface DeskInHistoryMapper extends MyMapper<DeskInHistory>{
     @Select("SELECT ifnull(sum(num), 0) FROM desk_in_history WHERE done_time >#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource}")
     @ResultType(Integer.class)
     Integer getGuestNumByGuestSource(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
+
+    /**
+     * 根据客源获取用餐人数
+     */
+    @SelectProvider(type = DeskInHistorySql.class,method = "getSum")
+    @ResultType(Double.class)
+    Double getSum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("sumObject")String sumObject,@Param("pointOfSale")String pointOfSale);
 }

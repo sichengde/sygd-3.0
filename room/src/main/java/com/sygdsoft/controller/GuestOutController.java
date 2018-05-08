@@ -708,6 +708,7 @@ public class GuestOutController {
          * 5.押金
          * 6.币种
          * 7.操作员
+         * 8.起始房号
          * */
         String reachTime;
         String leaveTime = timeService.getNowLong();

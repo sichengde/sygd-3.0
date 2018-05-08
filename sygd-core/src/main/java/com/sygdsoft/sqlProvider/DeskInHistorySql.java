@@ -18,4 +18,14 @@ public class DeskInHistorySql {
         }
         return basic;
     }
+
+    public String getSum(Map<String, Object> parameters){
+        String sumObject= (String) parameters.get("sumObject");
+        String pointOfSale= (String) parameters.get("pointOfSale");
+        String basic="SELECT ifnull(sum("+sumObject+"), 0) FROM desk_in_history WHERE done_time >#{beginTime} and done_time<#{endTime}";
+        if(pointOfSale!=null){
+            basic+=" and point_of_sale=#{pointOfSale}";
+        }
+        return basic;
+    }
 }

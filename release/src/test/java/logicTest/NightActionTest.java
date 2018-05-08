@@ -112,7 +112,7 @@ public class NightActionTest extends ApplicationTest {
 
     @Test
     public void testMapper() throws Exception {
-        List<String> a = guestMapCheckInMapper.getHistoryRoomPriceByCardId("3123123123123123", "普通标间");
+        //List<String> a = guestMapCheckInMapper.getHistoryRoomPriceByCardId("3123123123123123", "普通标间");
     }
 
     @Test
