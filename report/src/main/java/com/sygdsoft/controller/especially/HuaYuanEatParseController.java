@@ -2,6 +2,7 @@ package com.sygdsoft.controller.especially;
 
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.DeskMapper;
+import com.sygdsoft.mapper.PointOfSaleMapper;
 import com.sygdsoft.mapper.SqlMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
@@ -34,6 +35,10 @@ public class HuaYuanEatParseController {
     DeskService deskService;
     @Autowired
     DeskInHistoryService deskInHistoryService;
+    @Autowired
+    PointOfSaleService pointOfSaleService;
+    @Autowired
+    DeskDetailHistoryService deskDetailHistoryService;
 
     @RequestMapping(value = "huayuanEatParseReport")
     public List<HuaYuanRoomParseReturn> huayuanEatParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -72,6 +77,7 @@ public class HuaYuanEatParseController {
         row.setDay(totalDay);
         row.setMonth(totalMonth);
         row.setYear(totalYear);
+        huaYuanRoomParseReturnList.add(0,row);
         row = new HuaYuanRoomParseReturn();
         /*散客用餐*/
         row.setProject("散客用餐");
@@ -120,10 +126,55 @@ public class HuaYuanEatParseController {
         row = new HuaYuanRoomParseReturn();
         row.setProject("婚宴包席收入");
         row.setSubProject("包席桌数");
-        //row.setDay();
-        //row.setMonth();
-        //row.setYear();
+        row.setDay((double) (huaYuanService.getSubDeskNum(beginTimeDay, endTimeDay, "婚宴") + huaYuanService.getSubDeskNum(beginTimeDay, endTimeDay, "包席")));
+        row.setMonth((double) (huaYuanService.getSubDeskNum(beginTimeMonth, endTimeMonth, "婚宴") + huaYuanService.getSubDeskNum(beginTimeMonth, endTimeMonth, "包席")));
+        row.setYear((double) (huaYuanService.getSubDeskNum(beginTimeYear, endTimeYear, "婚宴") + huaYuanService.getSubDeskNum(beginTimeYear, endTimeYear, "包席")));
         huaYuanRoomParseReturnList.add(row);
+        /*展开菜单*/
+        List<String> menuNameList=new ArrayList<>();
+        menuNameList.add("灯光费");
+        menuNameList.add("大屏费");
+        menuNameList.add("场地费");
+        menuNameList.add("其他");
+        for (String menuSign : menuNameList) {
+            row = new HuaYuanRoomParseReturn();
+            row.setProject("婚宴包席收入");
+            row.setSubProject(menuSign);
+            row.setDay(huaYuanService.getMenuGuestSourceConsume(beginTimeDay,endTimeDay,"婚宴",menuSign)+huaYuanService.getMenuGuestSourceConsume(beginTimeDay,endTimeDay,"包席",menuSign));
+            row.setMonth(huaYuanService.getMenuGuestSourceConsume(beginTimeMonth,endTimeMonth,"婚宴",menuSign)+huaYuanService.getMenuGuestSourceConsume(beginTimeMonth,endTimeMonth,"包席",menuSign));
+            row.setYear(huaYuanService.getMenuGuestSourceConsume(beginTimeYear,endTimeYear,"婚宴",menuSign)+huaYuanService.getMenuGuestSourceConsume(beginTimeYear,endTimeYear,"包席",menuSign));
+            huaYuanRoomParseReturnList.add(row);
+        }
+        /*会议收入*/
+        row = new HuaYuanRoomParseReturn();
+        row.setProject("会议收入");
+        row.setSubProject("会议桌数");
+        row.setDay((double) (huaYuanService.getSubDeskNum(beginTimeDay, endTimeDay, "会议")));
+        row.setMonth((double) (huaYuanService.getSubDeskNum(beginTimeMonth, endTimeMonth, "会议")));
+        row.setYear((double) (huaYuanService.getSubDeskNum(beginTimeYear, endTimeYear, "会议")));
+        huaYuanRoomParseReturnList.add(row);
+        /*展开菜单*/
+        menuNameList.add(0,"自助餐");
+        for (String menuSign : menuNameList) {
+            row = new HuaYuanRoomParseReturn();
+            row.setProject("会议收入");
+            row.setSubProject(menuSign);
+            row.setDay(huaYuanService.getMenuGuestSourceConsume(beginTimeDay,endTimeDay,"会议",menuSign));
+            row.setMonth(huaYuanService.getMenuGuestSourceConsume(beginTimeMonth,endTimeMonth,"会议",menuSign));
+            row.setYear(huaYuanService.getMenuGuestSourceConsume(beginTimeYear,endTimeYear,"会议",menuSign));
+            huaYuanRoomParseReturnList.add(row);
+        }
+        List<PointOfSale> pointOfSaleList=pointOfSaleService.getCKPointOfSaleList();
+        for (PointOfSale pointOfSale : pointOfSaleList) {
+            for (String item : pointOfSale.getSecondPointOfSale().split(" ")) {
+                row = new HuaYuanRoomParseReturn();
+                row.setSubProject(item);
+                row.setDay(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTimeDay,endTimeDay, pointOfSale.getFirstPointOfSale(), item));
+                row.setMonth(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTimeMonth,endTimeMonth, pointOfSale.getFirstPointOfSale(), item));
+                row.setYear(deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTimeYear,endTimeYear, pointOfSale.getFirstPointOfSale(), item));
+                huaYuanRoomParseReturnList.add(row);
+            }
+        }
         return huaYuanRoomParseReturnList;
     }
 }
