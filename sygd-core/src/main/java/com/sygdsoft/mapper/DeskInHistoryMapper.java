@@ -28,4 +28,11 @@ public interface DeskInHistoryMapper extends MyMapper<DeskInHistory>{
     @SelectProvider(type = DeskInHistorySql.class,method = "getTotalDiscount")
     @ResultType(Double.class)
     Double getTotalDiscount(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("category") String category);
+
+    /**
+     * 根据客源获取用餐人数
+     */
+    @Select("SELECT ifnull(sum(num), 0) FROM desk_in_history WHERE done_time >#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource}")
+    @ResultType(Integer.class)
+    Integer getGuestNumByGuestSource(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
 }

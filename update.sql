@@ -362,3 +362,37 @@ ALTER TABLE desk_in ADD guest_source VARCHAR(100) NULL;
 ALTER TABLE desk_in_history ADD guest_source VARCHAR(100) NULL;
 ALTER TABLE desk_in ADD sub_desk_num INT NULL;
 ALTER TABLE desk_in_history ADD sub_desk_num INT NULL;
+#2018-05-07 增加在店户籍快照
+-- auto-generated definition
+create table check_in_snapshot
+(
+  id int not null auto_increment
+    primary key,
+  report_date DATE null,
+  guest_name varchar(100) null,
+  room_id varchar(5) null,
+  room_category varchar(20) null,
+  self_account varchar(20) null,
+  group_account varchar(20) null,
+  reach_time datetime not null,
+  leave_time datetime not null,
+  guest_source varchar(100) not null,
+  important varchar(20) null,
+  vip tinyint(1) null,
+  breakfast varchar(1) null,
+  remark varchar(200) null,
+  final_room_price double null,
+  company varchar(20) null,
+  protocol varchar(100) null,
+  vip_number varchar(20) null,
+  deposit double null,
+  consume double null,
+  pay double null,
+  room_price_category varchar(10) null,
+  user_id varchar(10) null,
+  group_name varchar(20) null,
+  if_room tinyint(1) null,
+  real_protocol varchar(20) null,
+  area varchar(100) null,
+  disable_check_out text null
+);

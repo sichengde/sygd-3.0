@@ -32,6 +32,8 @@ public class HuaYuanEatParseController {
     DeskMapper deskMapper;
     @Autowired
     DeskService deskService;
+    @Autowired
+    DeskInHistoryService deskInHistoryService;
 
     @RequestMapping(value = "huayuanEatParseReport")
     public List<HuaYuanRoomParseReturn> huayuanEatParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -99,6 +101,20 @@ public class HuaYuanEatParseController {
         row.setDay(szMath.formatTwoDecimalReturnDouble(getTotalGroupRoom,day));
         row.setMonth(szMath.formatTwoDecimalReturnDouble(getTotalGroupRoom*30,Month));
         row.setYear(szMath.formatTwoDecimalReturnDouble(getTotalGroupRoom*365,Year));
+        huaYuanRoomParseReturnList.add(row);
+        row = new HuaYuanRoomParseReturn();
+        row.setProject("散客用餐");
+        row.setSubProject("用餐人数");
+        row.setDay(Double.valueOf(deskInHistoryService.getGuestNumByGuestSource(beginTimeDay,endTimeDay,"散客")));
+        row.setMonth(Double.valueOf(deskInHistoryService.getGuestNumByGuestSource(beginTimeMonth,endTimeMonth,"散客")));
+        row.setYear(Double.valueOf(deskInHistoryService.getGuestNumByGuestSource(beginTimeYear,endTimeYear,"散客")));
+        huaYuanRoomParseReturnList.add(row);
+        row = new HuaYuanRoomParseReturn();
+        row.setProject("散客用餐");
+        row.setSubProject("人平均消费数");
+        row.setDay(szMath.formatTwoDecimalReturnDouble(huaYuanService.getEatGuestSourceConsume(beginTimeDay,endTimeDay,"散客"),deskInHistoryService.getGuestNumByGuestSource(beginTimeDay,endTimeDay,"散客")));
+        row.setMonth(szMath.formatTwoDecimalReturnDouble(huaYuanService.getEatGuestSourceConsume(beginTimeMonth,endTimeMonth,"散客"),deskInHistoryService.getGuestNumByGuestSource(beginTimeMonth,endTimeMonth,"散客")));
+        row.setYear(szMath.formatTwoDecimalReturnDouble(huaYuanService.getEatGuestSourceConsume(beginTimeYear,endTimeYear,"散客"),deskInHistoryService.getGuestNumByGuestSource(beginTimeYear,endTimeYear,"散客")));
         huaYuanRoomParseReturnList.add(row);
         return huaYuanRoomParseReturnList;
     }

@@ -29,6 +29,7 @@ public class HuaYuanService {
 
     /**
      * 下边都是餐饮的
+     *
      * @param beginTime
      * @param endTime
      * @param guestSource
@@ -38,9 +39,11 @@ public class HuaYuanService {
     public Double getEatGuestSourceConsume(Date beginTime, Date endTime, String guestSource) {
         return huaYuanMapper.getEatGuestSourceConsume(beginTime, endTime, guestSource);
     }
+
     public Integer getDeskNum(Date beginTime, Date endTime, String guestSource) {
         return huaYuanMapper.getDeskNum(beginTime, endTime, guestSource);
     }
+
     public Integer getGroupDeskNum(Date beginTime, Date endTime, String guestSource) {
         return huaYuanMapper.getGroupDeskNum(beginTime, endTime, guestSource);
     }

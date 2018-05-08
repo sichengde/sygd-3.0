@@ -12,6 +12,6 @@ public interface GuestSnapshotMapper extends MyMapper<GuestSnapshot> {
     @Select("SELECT ifnull(round(sum(come),2),0) sumCome, ifnull(round(sum(exist),2),0) sumExist FROM guest_snapshot WHERE report_time>=#{beginTime} and report_time<#{endTime}")
     GuestSnapshot getSum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
-    @Delete("delete from guest_snapshot where report_time=#{date}")
-    void deleteByDate(Date debtDate);
+    @Delete("delete from guest_snapshot where report_time=#{debtDate}")
+    void deleteByDate(@Param("debtDate") Date debtDate);
 }

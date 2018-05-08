@@ -33,6 +33,8 @@ public class DeskDetail extends BaseEntity {
     @Transient
     private Integer people;//用餐人数
     @Transient
+    private Integer subDeskNum;//用餐桌数
+    @Transient
     private String globalRemark;//整单备注
 
     public DeskDetail() {
@@ -295,5 +297,13 @@ public class DeskDetail extends BaseEntity {
 
     public void setGlobalRemark(String globalRemark) {
         this.globalRemark = globalRemark;
+    }
+
+    public Integer getSubDeskNum() {
+        return subDeskNum;
+    }
+
+    public void setSubDeskNum(Integer subDeskNum) {
+        this.subDeskNum = subDeskNum;
     }
 }
