@@ -71,6 +71,10 @@ public class DeskController {
     DeskControllerService deskControllerService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    DeskInCancelAllService deskInCancelAllService;
+    @Autowired
+    DeskDetailCancelAllService deskDetailCancelAllService;
 
     @RequestMapping(value = "deskAdd")
     public void deskAdd(@RequestBody Desk desk) throws Exception {
@@ -513,6 +517,30 @@ public class DeskController {
         * */
         String[] params = new String[]{otherParamService.getValueByName("酒店名称"), userService.getCurrentUser(), ifNotNullGetString(totalNum), ifNotNullGetString(totalMoney)};
         return reportService.generateReport(fieldTemplateList, params, "buffetCancel", "pdf");
+    }
+
+    /**
+     * 整桌退菜
+     * 思路：删除所有退菜，重新退菜
+     */
+    @RequestMapping("cancelWholeDesk")
+    public void cancelWholeDesk(@RequestBody DeskIn deskIn) throws Exception {
+        Date now=new Date();
+        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(deskIn.getDesk(),deskIn.getPointOfSale(),null);
+        List<DeskDetailCancelAll> deskDetailCancelAllList=new ArrayList<>();
+        for (DeskDetail deskDetail : deskDetailList) {
+            DeskDetailCancelAll deskDetailCancelAll=new DeskDetailCancelAll(deskDetail);
+            deskDetailCancelAll.setDoneTime(now);
+            deskDetailCancelAllList.add(deskDetailCancelAll);
+        }
+        deskDetailService.delete(deskDetailList);
+        deskInService.delete(deskIn);
+        DeskInCancelAll deskInCancelAll=new DeskInCancelAll(deskIn);
+        deskInCancelAll.setDoneTime(now);
+        deskInCancelAll.setUserIdDone(userService.getCurrentUser());
+        deskInCancelAllService.add(deskInCancelAll);
+        deskDetailCancelAllService.add(deskDetailCancelAllList);
+        this.userLogService.addUserLog("整桌退菜", userLogService.desk, "退菜", deskIn.getDesk());
     }
 
     private void generateDeskPay(String pointOfSale, CurrencyPost currencyPost, List<DeskPay> deskPayList) throws Exception {

@@ -121,7 +121,9 @@ public class DeskDetailController {
             deskIn = new DeskIn();
             deskIn.setDoTime(timeService.getNow());
             deskIn.setDesk(deskDetail.getDesk());
-            deskIn.setNum(deskDetail.getPeople());
+            if(deskDetail.getPeople()!=null) {
+                deskIn.setNum(deskDetail.getPeople());
+            }
             deskIn.setSubDeskNum(deskDetail.getSubDeskNum());
             deskIn.setConsume(consume);
             deskIn.setRemark(deskDetail.getGlobalRemark());
@@ -131,7 +133,9 @@ public class DeskDetailController {
             deskInService.add(deskIn);
         } else {
             deskIn.setConsume(consume);
-            deskIn.setNum(deskDetail.getPeople());
+            if(deskDetail.getPeople()!=null) {
+                deskIn.setNum(deskDetail.getPeople());
+            }
             deskIn.setRemark(deskDetail.getGlobalRemark());
             deskIn.setSubDeskNum(deskDetail.getSubDeskNum());
             deskInService.update(deskIn);

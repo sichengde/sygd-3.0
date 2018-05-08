@@ -396,3 +396,49 @@ create table check_in_snapshot
   area varchar(100) null,
   disable_check_out text null
 );
+#2018-05-08 增加整单退桌功能
+CREATE TABLE desk_in_cancel_all
+(
+  id            INT AUTO_INCREMENT
+    PRIMARY KEY,
+  desk          VARCHAR(20)   NULL,
+  do_time       DATETIME      NULL,
+  num           VARCHAR(20)   NULL,
+  consume       DOUBLE(16, 3) NULL,
+  user_id       VARCHAR(20)   NULL,
+  point_of_sale VARCHAR(20)   NULL,
+  remark        VARCHAR(100)  NULL,
+  guest_source  VARCHAR(100)  NULL,
+  sub_desk_num  INT           NULL,
+  CONSTRAINT desk_in_desk_uindex
+  UNIQUE (desk)
+)
+  ENGINE = InnoDB;
+-- auto-generated definition
+CREATE TABLE desk_detail_cancel_all
+(
+  id            INT AUTO_INCREMENT
+    PRIMARY KEY,
+  food_name     VARCHAR(20)  NULL,
+  price         DOUBLE       NULL,
+  num           DOUBLE       NULL,
+  desk          VARCHAR(20)  NULL,
+  user_id       VARCHAR(20)  NULL,
+  point_of_sale VARCHAR(20)  NULL,
+  do_time       DATETIME     NULL,
+  food_sign     VARCHAR(20)  NULL,
+  category      VARCHAR(20)  NOT NULL,
+  wait_call     TINYINT(1)   NULL,
+  remark        VARCHAR(100) NULL,
+  call_up       TINYINT(1)   NULL,
+  unit          VARCHAR(10)  NULL,
+  if_discount   TINYINT(1)   NULL,
+  food_set      TINYINT(1)   NULL,
+  cook_room     VARCHAR(200) NULL,
+  cargo         TINYINT(1)   NULL,
+  storage_done  TINYINT(1)   NULL,
+  cooked        TINYINT(1)   NULL
+)
+  ENGINE = InnoDB;
+ALTER TABLE desk_in_cancel_all ADD done_time DATETIME NULL;
+ALTER TABLE desk_in_cancel_all ADD user_id_done VARCHAR(100) NULL;
