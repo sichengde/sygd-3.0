@@ -54,9 +54,16 @@ public interface HuaYuanMapper extends MyMapper<DebtIntegration>{
     Double getEatGuestSourceConsume(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
 
     /**
+     * 获取餐饮客源菜名消费
+     */
+    @Select("SELECT round(ifnull(sum(after_discount), 0), 2) FROM desk_detail_history ddh LEFT JOIN desk_in_history dih ON ddh.ck_serial=dih.ck_serial WHERE ddh.done_time >#{beginTime} and ddh.done_time<#{endTime} AND guest_source=#{guestSource} and ddh.food_sign=#{foodSign}")
+    @ResultType(Double.class)
+    Double getMenuGuestSourceConsume(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource,@Param("foodSign")String foodSign);
+
+    /**
      * 获取客源用餐桌数
      */
-    @Select("SELECT ifnull(count(*),0) FROM desk_in_history WHERE done_time>? and done_time<? AND guest_source=?")
+    @Select("SELECT ifnull(count(*),0) FROM desk_in_history WHERE done_time>#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource}")
     @ResultType(Integer.class)
     Integer getDeskNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
 
@@ -67,5 +74,7 @@ public interface HuaYuanMapper extends MyMapper<DebtIntegration>{
     @ResultType(Integer.class)
     Integer getGroupDeskNum(@Param("beginTime") Date beginTime,@Param("endTime") Date endTime,@Param("guestSource")String guestSource);
 
+    @Select("SELECT ifnull(sum(sub_desk_num), 0) FROM desk_in_history WHERE done_time >#{beginTime} and done_time<#{endTime} AND guest_source=#{guestSource}")
+    @ResultType(Integer.class)
     Integer getSubDeskNum(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("guestSource") String guestSource);
 }
