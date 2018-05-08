@@ -5,6 +5,7 @@ import com.sygdsoft.service.DeskDetailHistoryService;
 import com.sygdsoft.service.OtherParamService;
 import com.sygdsoft.service.ReportService;
 import com.sygdsoft.service.TimeService;
+import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,8 @@ public class SaleStreamReportController {
     OtherParamService otherParamService;
     @Autowired
     ReportService reportService;
+    @Autowired
+    SzMath szMath;
 
     /**
      * 参数：
@@ -94,7 +97,7 @@ public class SaleStreamReportController {
                 saleStreamRow.setFoodName(deskDetailHistory.getFoodName());
             }
             saleStreamRow.setNum(deskDetailHistory.getNotNullNum());
-            saleStreamRow.setTotal(deskDetailHistory.getTotal());
+            saleStreamRow.setTotal(szMath.formatTwoDecimalReturnDouble(deskDetailHistory.getTotal()));
             saleStreamRowList.add(saleStreamRow);
             templateList.add(fieldTemplate);
             if (deskDetailHistory.getTotal() != null) {//有一行是类别，则总和为空，在此生成该类别的分析

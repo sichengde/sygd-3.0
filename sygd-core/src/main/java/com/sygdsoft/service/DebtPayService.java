@@ -140,6 +140,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 debt2.setRoomId("哑房");
                 debt2.setUserId(userService.getCurrentUser());
                 debt2.setDescription(roomService.roomListToString(roomList) + "哑房挂账");
+                debt2.setNotPartIn(true);
                 debt2.setFromRoom(paySerial);
                 debt2.setCategory("哑房挂账");
                 debt2.setDoTime(new Date());

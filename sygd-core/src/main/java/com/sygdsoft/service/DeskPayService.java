@@ -57,4 +57,11 @@ public class DeskPayService extends BaseService<DeskPay> {
     public void setDisabledBySerial(String ckSerial) {
         deskPayMapper.setDisabledBySerial(ckSerial);
     }
+
+    /**
+     * 获取每日币种
+     */
+    public List<DeskPay> getConsumeEveryDay(Date beginTime, Date endTime){
+        return deskPayMapper.getConsumeEveryDay(beginTime, endTime);
+    }
 }

@@ -27,7 +27,7 @@ public class CurrencyRoomCountController {
         Date endTime = timeService.getMinTime(reportJson.getEndTime());
         /*效验roomStateReport表中有没有数据*/
         List<RoomSnapshot> roomCategoryRowList=roomSnapshotService.getPaidRoom(beginTime, endTime);
-        RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime);
+        RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime,null);
         if(roomSnapshot!=null) {
             roomSnapshot.setCurrency("总计(含未结)");
             roomCategoryRowList.add(roomSnapshot);

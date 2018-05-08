@@ -43,16 +43,6 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
     }
 
     /**
-     * 设置冲减标志为true
-     */
-    public void setDisabled(List<DeskInHistory> deskInHistoryList) throws Exception {
-        for (DeskInHistory deskInHistory : deskInHistoryList) {
-            deskInHistory.setDisabled(true);
-        }
-        update(deskInHistoryList);
-    }
-
-    /**
      * 获取人数线性统计
      */
     public List<HotelParseLineRow> deskManDateChart(Date beginTime, Date endTime){
@@ -71,5 +61,22 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
      */
     public Double getTotalDiscount(Date beginTime, Date endTime, String pointOfSale,String caetgory){
         return deskInHistoryMapper.getTotalDiscount(beginTime,endTime,pointOfSale,caetgory);
+    }
+
+    /**
+     * 根据客源获取用餐人数
+     */
+    public Integer getGuestNumByGuestSource( Date beginTime,Date endTime,String guestSource){
+        return deskInHistoryMapper.getGuestNumByGuestSource(beginTime, endTime, guestSource);
+    }
+
+    /**
+     * 设置冲减标志为true
+     */
+    public void setDisabled(List<DeskInHistory> deskInHistoryList) throws Exception {
+        for (DeskInHistory deskInHistory : deskInHistoryList) {
+            deskInHistory.setDisabled(true);
+        }
+        update(deskInHistoryList);
     }
 }

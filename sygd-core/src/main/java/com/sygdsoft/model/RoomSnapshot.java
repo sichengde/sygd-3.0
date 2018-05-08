@@ -10,14 +10,17 @@ public class RoomSnapshot extends BaseEntity {
     private String area;
     private String state;
     private String company;
+    private String guestSource;
     private String selfAccount;
     private String groupAccount;
-    private Boolean realRoom;
-    private Boolean empty;
-    private Boolean repair;
-    private Boolean self;
-    private Boolean backUp;
-    private Boolean rent;
+    private Boolean realRoom;//属于房间
+    private Boolean empty;//空房
+    private Boolean repair;//维修房
+    private Boolean self;//自用房
+    private Boolean backUp;//备用房
+    private Boolean rent;//出租房
+    private Boolean available;//可用房
+    private Boolean free;//招待房/免费房
     private Boolean allDayRoom;
     private Boolean hourRoom;
     private Boolean addRoom;
@@ -39,6 +42,8 @@ public class RoomSnapshot extends BaseEntity {
     @Transient
     private Integer sumRent;
     @Transient
+    private Integer sumFree;
+    @Transient
     private Integer sumAllDayRoom;
     @Transient
     private Integer sumHourRoom;
@@ -47,7 +52,11 @@ public class RoomSnapshot extends BaseEntity {
     @Transient
     private Integer sumNightRoom;
     @Transient
+    private Integer sumAvailable;
+    @Transient
     private String currency;
+    @Transient
+    private String countCategory;
 
     public RoomSnapshot() {
     }
@@ -314,5 +323,53 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
+    public Integer getSumAvailable() {
+        return sumAvailable;
+    }
+
+    public void setSumAvailable(Integer sumAvailable) {
+        this.sumAvailable = sumAvailable;
+    }
+
+    public Boolean getFree() {
+        return free;
+    }
+
+    public void setFree(Boolean free) {
+        this.free = free;
+    }
+
+    public Integer getSumFree() {
+        return sumFree;
+    }
+
+    public void setSumFree(Integer sumFree) {
+        this.sumFree = sumFree;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
+    }
+
+    public String getCountCategory() {
+        return countCategory;
+    }
+
+    public void setCountCategory(String countCategory) {
+        this.countCategory = countCategory;
     }
 }
