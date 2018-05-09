@@ -36,7 +36,7 @@ public class GuestMapCheckInService extends BaseService<GuestMapCheckIn>{
     /**
      * 通过身份证号和房类获取上次开房房价
      */
-    public List<String> getHistoryRoomPriceByCardId(String cardId , String roomCategory){
+    public List<CheckInHistoryLog> getHistoryRoomPriceByCardId(String cardId , String roomCategory){
         return guestMapCheckInMapper.getHistoryRoomPriceByCardId(cardId, roomCategory);
     }
 

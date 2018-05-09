@@ -2,7 +2,9 @@ package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.CheckInHistory;
+import com.sygdsoft.model.CheckInHistoryLog;
 import com.sygdsoft.model.GuestMapCheckIn;
+import com.sygdsoft.service.CheckInHistoryLogService;
 import com.sygdsoft.service.CheckInHistoryService;
 import com.sygdsoft.service.GuestMapCheckInService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +24,33 @@ public class CheckInHistoryController {
     CheckInHistoryService checkInHistoryService;
     @Autowired
     GuestMapCheckInService guestMapCheckInService;
+    @Autowired
+    CheckInHistoryLogService checkInHistoryLogService;
 
     @RequestMapping(value = "checkInHistoryGet")
     public List<CheckInHistory> checkInHistoryGet(@RequestBody Query query) throws Exception {
-        return checkInHistoryService.get(query);
+        List<CheckInHistory> checkInHistoryList = checkInHistoryService.get(query);
+        for (CheckInHistory checkInHistory : checkInHistoryList) {
+            List<GuestMapCheckIn> guestMapCheckInList = guestMapCheckInService.getByCardId(checkInHistory.getCardId());
+            List<CheckInHistoryLog> checkInHistoryLogList = new ArrayList<>();
+            for (GuestMapCheckIn guestMapCheckIn : guestMapCheckInList) {
+                checkInHistoryLogList.add(checkInHistoryLogService.getOneBySelfAccount(guestMapCheckIn.getSelfAccount()));
+            }
+            checkInHistory.setCheckInHistoryLogList(checkInHistoryLogList);
+        }
+        return checkInHistoryList;
     }
 
     /**
      * 通过自付账号获取历史宾客
+     *
      * @param selfAccount 自付账号
      * @return 历史宾客数组
      */
     @RequestMapping(value = "checkInHistoryGetBySelfAccount")
-    public List<CheckInHistory> checkInHistoryGetBySelfAccount(@RequestBody String selfAccount){
-        List<GuestMapCheckIn> guestMapCheckInList=guestMapCheckInService.getBySelfAccount(selfAccount);
-        List<CheckInHistory> checkInHistoryList=new ArrayList<>();
+    public List<CheckInHistory> checkInHistoryGetBySelfAccount(@RequestBody String selfAccount) {
+        List<GuestMapCheckIn> guestMapCheckInList = guestMapCheckInService.getBySelfAccount(selfAccount);
+        List<CheckInHistory> checkInHistoryList = new ArrayList<>();
         for (GuestMapCheckIn guestMapCheckIn : guestMapCheckInList) {
             checkInHistoryList.add(checkInHistoryService.getByCardId(guestMapCheckIn.getCardId()));
         }
@@ -47,14 +61,16 @@ public class CheckInHistoryController {
      * 通过身份证号和房类获取上次开房房价
      */
     @RequestMapping(value = "getHistoryRoomPriceByCardId")
-    public String getHistoryRoomPriceByCardId(@RequestBody List<String> param){
-        String cardId=param.get(0);
-        String roomCategory=param.get(1);
-        List<String> guestMapCheckInList=guestMapCheckInService.getHistoryRoomPriceByCardId(cardId,roomCategory);
-        if(guestMapCheckInList.size()>0){
+    public CheckInHistoryLog getHistoryRoomPriceByCardId(@RequestBody List<String> param) {
+        String cardId = param.get(0);
+        String roomCategory = param.get(1);
+        //List<GuestMapCheckIn> guestMapCheckInList=guestMapCheckInService.getByCardId(cardId);
+        //CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getOneBySelfAccount()
+        List<CheckInHistoryLog> guestMapCheckInList = guestMapCheckInService.getHistoryRoomPriceByCardId(cardId, roomCategory);
+        if (guestMapCheckInList.size() > 0) {
             return guestMapCheckInList.get(0);
-        }else {
-            return "";
+        } else {
+            return null;
         }
     }
 }

@@ -18,26 +18,28 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "deskInHistory")
-public class DeskInHistoryService extends BaseService<DeskInHistory>{
+public class DeskInHistoryService extends BaseService<DeskInHistory> {
     @Autowired
     DeskInHistoryMapper deskInHistoryMapper;
     @Autowired
     TimeService timeService;
     @Autowired
     Util util;
+
     /**
      * 通过结账序列号获取
      */
-    public DeskInHistory getByCkSerial(String ckSerial){
-        DeskInHistory deskInHistoryQuery=new DeskInHistory();
+    public DeskInHistory getByCkSerial(String ckSerial) {
+        DeskInHistory deskInHistoryQuery = new DeskInHistory();
         deskInHistoryQuery.setCkSerial(ckSerial);
         return deskInHistoryMapper.selectOne(deskInHistoryQuery);
     }
+
     /**
      * 通过结账时间和营业部门筛选
      */
-    public List<DeskInHistory> getByDatePointOfSale(Date begin,Date endTime,String pointOfSale) throws Exception {
-        Query query=new Query("done_time>\'"+timeService.dateToStringLong(begin)+"\' and done_time<\'"+timeService.dateToStringLong(endTime)+"\' and point_of_sale=\'"+pointOfSale+"\' and ifnull(disabled,false)=false");
+    public List<DeskInHistory> getByDatePointOfSale(Date begin, Date endTime, String pointOfSale) throws Exception {
+        Query query = new Query("done_time>\'" + timeService.dateToStringLong(begin) + "\' and done_time<\'" + timeService.dateToStringLong(endTime) + "\' and point_of_sale=\'" + pointOfSale + "\' and ifnull(disabled,false)=false");
         query.setOrderByListDesc(new String[]{"done_time"});
         return get(query);
     }
@@ -45,7 +47,7 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
     /**
      * 获取人数线性统计
      */
-    public List<HotelParseLineRow> deskManDateChart(Date beginTime, Date endTime){
+    public List<HotelParseLineRow> deskManDateChart(Date beginTime, Date endTime) {
         return deskInHistoryMapper.deskManDateChart(beginTime, endTime);
     }
 
@@ -59,14 +61,14 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
     /**
      * 获取某个营业点的所有折扣
      */
-    public Double getTotalDiscount(Date beginTime, Date endTime, String pointOfSale,String caetgory){
-        return deskInHistoryMapper.getTotalDiscount(beginTime,endTime,pointOfSale,caetgory);
+    public Double getTotalDiscount(Date beginTime, Date endTime, String pointOfSale, String category) {
+        return deskInHistoryMapper.getTotalDiscount(beginTime, endTime, pointOfSale, category);
     }
 
     /**
      * 根据客源获取用餐人数
      */
-    public Integer getGuestNumByGuestSource( Date beginTime,Date endTime,String guestSource){
+    public Integer getGuestNumByGuestSource(Date beginTime, Date endTime, String guestSource) {
         return deskInHistoryMapper.getGuestNumByGuestSource(beginTime, endTime, guestSource);
     }
 
@@ -78,5 +80,12 @@ public class DeskInHistoryService extends BaseService<DeskInHistory>{
             deskInHistory.setDisabled(true);
         }
         update(deskInHistoryList);
+    }
+
+    /**
+     * 获得某一项的合计
+     */
+    public Double getSum(Date beginTime, Date endTime, String sumObject, String pointOfSale) {
+        return deskInHistoryMapper.getSum(beginTime, endTime, sumObject, pointOfSale);
     }
 }

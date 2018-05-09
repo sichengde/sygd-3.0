@@ -67,6 +67,8 @@ public class ExchangeUserReport {
     CashBoxService cashBoxService;
     @Autowired
     CheckOutPayBackService checkOutPayBackService;
+    @Autowired
+    DeskInHistoryService deskInHistoryService;
 
     /**
      * 接待交班审核表
@@ -81,8 +83,8 @@ public class ExchangeUserReport {
             userId = null;
         }
         /*操作员分组*/
-        if(userGroup!=null){
-            userGroup=userService.getNameStringByGroup(userGroup);
+        if (userGroup != null) {
+            userGroup = userService.getNameStringByGroup(userGroup);
         }
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
@@ -95,13 +97,13 @@ public class ExchangeUserReport {
             fieldTemplate.setField1(currency.getCurrency());//币种
             fieldTemplate.setField2(szMath.ifNotNullGetString(debtPayService.getDebtMoney(userId, currencyString, false, beginTime, endTime)));//结算款
             fieldTemplate.setField3(szMath.ifNotNullGetString(debtHistoryService.getTotalDepositByUserCurrencyDate(userId, currencyString, beginTime, endTime)));//预付
-            Double cancelDeposit=szMath.formatTwoDecimalReturnDouble(debtHistoryService.getTotalCancelDeposit(userId, currencyString, beginTime, endTime));
-            cancelDepositAll+=cancelDeposit;
+            Double cancelDeposit = szMath.formatTwoDecimalReturnDouble(debtHistoryService.getTotalCancelDeposit(userId, currencyString, beginTime, endTime));
+            cancelDepositAll += cancelDeposit;
             fieldTemplate.setField4(szMath.ifNotNullGetString(cancelDeposit));//结账退预付
             fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//手动退预付
             fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
-            fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime,userId, currencyString,"接待")));//会员充值
+            fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime, userId, currencyString, "接待")));//会员充值
             fieldTemplate.setField10(szMath.ifNotNullGetString(checkOutPayBackService.getTotal(userId, currencyString, beginTime, endTime)));//找零信息
             fieldTemplate.setField11(szMath.ifNotNullGetString(debtService.getDepositMoneyAll(currencyString)));//在店预付信息
             CompanyPay companyPayQuery = companyPayService.getSumPay(null, userId, currency.getCurrency(), beginTime, endTime);
@@ -111,11 +113,11 @@ public class ExchangeUserReport {
             templateList.add(fieldTemplate);
         }
         /*再生成一列合计*/
-        FieldTemplate templateSum=new FieldTemplate("0");
+        FieldTemplate templateSum = new FieldTemplate("0");
         templateSum.setField1("合计");
         for (FieldTemplate template : templateList) {
             for (int i = 2; i < 12; i++) {
-                templateSum.setFieldN(i, String.valueOf(szMath.formatTwoDecimalReturnDouble(templateSum.getFieldN(i))+szMath.formatTwoDecimalReturnDouble(template.getFieldN(i))));
+                templateSum.setFieldN(i, String.valueOf(szMath.formatTwoDecimalReturnDouble(templateSum.getFieldN(i)) + szMath.formatTwoDecimalReturnDouble(template.getFieldN(i))));
             }
         }
         templateList.add(templateSum);
@@ -352,7 +354,7 @@ public class ExchangeUserReport {
                 if (debtIntegration.getGroupAccount() == null) {
                     query = new Query("self_account=\'" + debtIntegration.getSelfAccount() + "\' and deposit is not null");
                     query.setOrderByList(new String[]{"id"});
-                }else {
+                } else {
                     query = new Query("group_account=\'" + debtIntegration.getGroupAccount() + "\' and deposit is not null");
                     query.setOrderByList(new String[]{"id"});
                 }
@@ -478,25 +480,32 @@ public class ExchangeUserReport {
      * 第一次尝试水晶报表
      */
     @RequestMapping(value = "exchangeUserCkReport")
-    public List<ExchangeUserCk> exchangeUserCkReport(@RequestBody ReportJson reportJson) throws Exception {
+    public JSONObject exchangeUserCkReport(@RequestBody ReportJson reportJson) throws Exception {
         String userId = reportJson.getUserId();
         if ("".equals(userId)) {
             userId = null;
         }
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
-        String pointOfSale=reportJson.getPointOfSale();
+        String pointOfSale = reportJson.getPointOfSale();
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
         List<ExchangeUserCk> exchangeUserCkList = new ArrayList<>();
         List<Currency> currencyList = currencyService.get(null);
         FieldTemplate fieldTemplate;
+        Double total = 0.0;
+        Double totalReal = 0.0;
         for (Currency currency : currencyList) {
             /*打印报表赋值*/
             fieldTemplate = new FieldTemplate();
             String currencyString = currency.getCurrency();
             fieldTemplate.setField1(currency.getCurrency());//币种
-            fieldTemplate.setField2(ifNotNullGetString(deskPayService.getPay(userId, currencyString, pointOfSale, beginTime, endTime)));//结算款
+            Double pay = deskPayService.getPay(userId, currencyString, pointOfSale, beginTime, endTime);
+            fieldTemplate.setField2(ifNotNullGetString(pay));//结算款
+            total += pay;
+            if(currency.getNotNullPayTotal()) {
+                totalReal += pay;
+            }
             fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField6(ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
             fieldTemplate.setField7(ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime, userId, currencyString, pointOfSale)));//会员充值
@@ -506,9 +515,13 @@ public class ExchangeUserReport {
             ExchangeUserCk exchangeUserCk = new ExchangeUserCk(fieldTemplate);
             exchangeUserCkList.add(exchangeUserCk);
         }
-        exchangeUserCkList.get(0).setReportJson(new ReportJson(userId, beginTime, endTime));//为第一条信息设置查询条件，适用于水晶报表
-        String[] params = new String[]{timeService.getNowLong(), timeService.dateToStringLong(beginTime), timeService.dateToStringLong(endTime), userId};
-        reportService.generateReport(templateList, params, "exchangeUserCk", "pdf");
-        return exchangeUserCkList;
+        /*获取总应付金额*/
+        Double beforePrice=deskInHistoryService.getSum(beginTime, endTime, "total_price", pointOfSale);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("exchangeUserCkList", exchangeUserCkList);
+        String remark = "";
+        remark+="总结算款:" + total+" , 参与统计款:"+totalReal+" , 应收金额:"+beforePrice;
+        jsonObject.put("remark", remark);
+        return jsonObject;
     }
 }

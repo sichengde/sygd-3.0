@@ -441,4 +441,6 @@ CREATE TABLE desk_detail_cancel_all
 )
   ENGINE = InnoDB;
 ALTER TABLE desk_in_cancel_all ADD done_time DATETIME NULL;
+ALTER TABLE desk_detail_cancel_all ADD done_time DATETIME NULL;
 ALTER TABLE desk_in_cancel_all ADD user_id_done VARCHAR(100) NULL;
+ALTER TABLE hotel.guest_map_check_in MODIFY self_account VARCHAR(20) NOT NULL;

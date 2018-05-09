@@ -2,6 +2,7 @@ package com.sygdsoft.model;
 
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2016-04-13.
@@ -22,6 +23,8 @@ public class CheckInHistory extends BaseEntity {
     private Integer num;//来店次数
     @Transient
     private String roomId;
+    @Transient
+    private List<CheckInHistoryLog> checkInHistoryLogList;
 
     public CheckInHistory() {
     }
@@ -152,5 +155,11 @@ public class CheckInHistory extends BaseEntity {
         this.num = num;
     }
 
+    public List<CheckInHistoryLog> getCheckInHistoryLogList() {
+        return checkInHistoryLogList;
+    }
 
+    public void setCheckInHistoryLogList(List<CheckInHistoryLog> checkInHistoryLogList) {
+        this.checkInHistoryLogList = checkInHistoryLogList;
+    }
 }
