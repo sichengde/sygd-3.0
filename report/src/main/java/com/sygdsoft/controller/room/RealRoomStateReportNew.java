@@ -2,6 +2,7 @@ package com.sygdsoft.controller.room;
 
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.Book;
+import com.sygdsoft.model.CheckIn;
 import com.sygdsoft.model.FieldTemplate;
 import com.sygdsoft.model.Room;
 import com.sygdsoft.service.*;
@@ -65,11 +66,15 @@ public class RealRoomStateReportNew {
             String roomState = room.getState();
             fieldTemplate.setField3(roomState);
             if (roomState.equals(roomService.group) || roomState.equals(roomService.guest)) {
-                Double var1 = room.getCheckIn().getFinalRoomPrice();
-                fieldTemplate.setField4(String.valueOf(var1));
-                totalPrice = totalPrice + var1;
-                sumCheckInRoom++;
-                inRoom++;
+                CheckIn checkIn=room.getCheckIn();
+                if(checkIn!=null) {
+                    Double finalRoomPrice = room.getCheckIn().getFinalRoomPrice();
+                    fieldTemplate.setField4(String.valueOf(finalRoomPrice));
+                    fieldTemplate.setField5(String.valueOf(checkIn.getBreakfast()));
+                    totalPrice = totalPrice + finalRoomPrice;
+                    sumCheckInRoom++;
+                    inRoom++;
+                }
             } else if (roomState.equals(roomService.empty)) {
                 nullRoom++;
             } else if (roomState.equals(roomService.repair)) {
