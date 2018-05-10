@@ -8,6 +8,7 @@ public class FoodSet extends BaseEntity{
     private String foodName;//菜品名称
     private Double foodNum;//菜品数量
     private String pointOfSale;//营业部门
+    private String tempFood;//临时菜
 
     public FoodSet() {
     }
@@ -42,5 +43,13 @@ public class FoodSet extends BaseEntity{
 
     public void setPointOfSale(String pointOfSale) {
         this.pointOfSale = pointOfSale;
+    }
+
+    public String getTempFood() {
+        return tempFood;
+    }
+
+    public void setTempFood(String tempFood) {
+        this.tempFood = tempFood;
     }
 }
