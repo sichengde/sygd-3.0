@@ -24,7 +24,7 @@ public class CheckInHistory extends BaseEntity {
     @Transient
     private String roomId;
     @Transient
-    private List<CheckInHistoryLog> checkInHistoryLogList;
+    private List<CheckInIntegration> checkInIntegrationList;
 
     public CheckInHistory() {
     }
@@ -155,11 +155,11 @@ public class CheckInHistory extends BaseEntity {
         this.num = num;
     }
 
-    public List<CheckInHistoryLog> getCheckInHistoryLogList() {
-        return checkInHistoryLogList;
+    public List<CheckInIntegration> getCheckInIntegrationList() {
+        return checkInIntegrationList;
     }
 
-    public void setCheckInHistoryLogList(List<CheckInHistoryLog> checkInHistoryLogList) {
-        this.checkInHistoryLogList = checkInHistoryLogList;
+    public void setCheckInIntegrationList(List<CheckInIntegration> checkInIntegrationList) {
+        this.checkInIntegrationList = checkInIntegrationList;
     }
 }
