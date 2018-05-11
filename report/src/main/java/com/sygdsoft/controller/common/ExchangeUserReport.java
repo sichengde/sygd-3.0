@@ -520,7 +520,7 @@ public class ExchangeUserReport {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("exchangeUserCkList", exchangeUserCkList);
         String remark = "";
-        remark+="总结算款:" + total+" , 参与统计款(币种设置):"+totalReal+" , 应收金额(去掉折扣，四舍五入，自动抹零):"+beforePrice;
+        remark+="总结算款:" + total+" , 应收金额/参与统计款:"+totalReal+" , 折前金额(去掉折扣，四舍五入，自动抹零):"+beforePrice;
         jsonObject.put("remark", remark);
         return jsonObject;
     }
