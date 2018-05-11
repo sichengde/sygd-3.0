@@ -70,6 +70,14 @@ public class DeskDetailHistory extends BaseEntity {
         }
     }
 
+    public Boolean getNotNullFoodSet(){
+        if(foodSet==null){
+            return false;
+        }else {
+            return foodSet;
+        }
+    }
+
     public String getCkSerial() {
         return ckSerial;
     }

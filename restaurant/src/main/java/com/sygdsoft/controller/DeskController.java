@@ -239,7 +239,7 @@ public class DeskController {
         }
         /*生成操作员日志*/
         userLogService.addUserLog(desk + "台结算", userLogService.desk, userLogService.deskOut, desk);
-        /*处理报表
+        /*处理报表(餐饮账单一改得改三！！！！！！！！！！结账，预结，补打！！！！！！！！！)
         * param
         * 1.酒店名称
         * 2.结账序列号
@@ -251,6 +251,7 @@ public class DeskController {
         * 8.操作员
         * 9.点菜员
         * 10.人数
+        * 11.时间
         * field
         * 1.菜品
         * 2.单价
@@ -312,13 +313,14 @@ public class DeskController {
         * 8.操作员
         * 9.点菜员
         * 10.人数
+        * 11.时间
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(new Date())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -332,7 +334,7 @@ public class DeskController {
         DeskInHistory deskInHistory = deskInHistoryService.getByCkSerial(ckSerial);
         /*消费明细*/
         List<FieldTemplate> templateList = new ArrayList<>();
-        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial, "category,do_time");
+        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial, "category,do_time",null);
         deskControllerService.generateDetailHistory(deskDetailHistoryList, templateList);
         /*生成结账信息*/
         String changeDebt = "";//转账信息
@@ -344,7 +346,7 @@ public class DeskController {
                 changeDebt += currencyAdd;
             }
         }
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt, ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk()};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt, ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -367,7 +369,7 @@ public class DeskController {
         deskInHistoryService.delete(deskInHistory);
         /*增加点菜明细*/
         List<DeskDetail> deskDetailList = new ArrayList<>();
-        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial, null);
+        List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial, null,null);
         for (DeskDetailHistory deskDetailHistory : deskDetailHistoryList) {
             deskDetailList.add(new DeskDetail(deskDetailHistory));
         }
