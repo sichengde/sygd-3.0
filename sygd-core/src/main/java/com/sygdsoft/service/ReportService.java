@@ -72,7 +72,7 @@ public class ReportService {
         * 5.菜品类别
         * 6.全单备注
         * 7.单价
-        * 7.单位
+        * 8.单位
         * */
         param.put("parameter1", deskDetail.getDesk());
         param.put("parameter2", deskDetail.getFoodName());
