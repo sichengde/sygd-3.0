@@ -132,7 +132,7 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
             @Result(property = "cookRoom", column = "cook_room"),
             @Result(property = "storageDone", column = "storage_done"),
     })
-    List<DeskDetailHistory> getList(@Param("ckSerial") String ckSerial,  @Param("orderByList") String orderByList);
+    List<DeskDetailHistory> getList(@Param("ckSerial") String ckSerial,@Param("orderByList") String orderByList,@Param("foodSet") Boolean foodSet);
 
 
     @SelectProvider(type = DeskDetailHistorySql.class,method = "getSumList")
