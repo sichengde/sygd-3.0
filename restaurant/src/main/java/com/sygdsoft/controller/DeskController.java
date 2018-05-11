@@ -123,7 +123,7 @@ public class DeskController {
         DeskIn deskIn=deskInService.getByDesk(sourceDesk,pointOfSale);
         deskIn.setDesk(targetDesk);
         deskInService.update(deskIn);
-        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null);
+        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null,null);
         for (DeskDetail deskDetail : deskDetailList) {
             deskDetail.setDesk(targetDesk);
         }
@@ -144,7 +144,7 @@ public class DeskController {
         deskInTarget.setConsume(deskInTarget.getNotNullConsume()+deskInSource.getNotNullConsume());
         deskInTarget.setNum(deskInTarget.getNotNullNum()+deskInSource.getNotNullNum());
         deskInService.update(deskInTarget);
-        List<DeskDetail> sourceDeskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null);
+        List<DeskDetail> sourceDeskDetailList=deskDetailService.getListByDesk(sourceDesk, pointOfSale, null,null);
         for (DeskDetail deskDetail : sourceDeskDetailList) {
             deskDetail.setDesk(targetDesk);
             deskDetail.setFoodName(targetDesk+":"+deskDetail.getFoodName());
@@ -176,7 +176,7 @@ public class DeskController {
         List<DeskPay> deskPayList = new ArrayList<>();
         /*矫正结账金额*/
         Double consume = 0.0;
-        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time",null);
         for (DeskDetail deskDetail : deskDetailList) {
             consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
         }
@@ -207,7 +207,7 @@ public class DeskController {
         if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
             deskControllerService.generateDetail(deskDetailService.getListByDeskGroup(desk, pointOfSale), templateList);
         } else {
-            deskControllerService.generateDetail(deskDetailService.getListByDesk(desk, pointOfSale, "category"), templateList);
+            deskControllerService.generateDetail(deskDetailService.getListByDesk(desk, pointOfSale, "category",null), templateList);
         }
         /*菜品明细转移到历史*/
         List<DeskDetailHistory> deskDetailHistoryList = new ArrayList<>();
@@ -273,7 +273,7 @@ public class DeskController {
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         /*矫正结账金额*/
         Double consume = 0.0;
-        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time");
+        List<DeskDetail> deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category,do_time",null);
         for (DeskDetail deskDetail : deskDetailList) {
             consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
         }
@@ -287,7 +287,7 @@ public class DeskController {
             if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
                 deskDetailList = deskDetailService.getListByDeskGroup(desk, pointOfSale);
             } else {
-                deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category");
+                deskDetailList = deskDetailService.getListByDesk(desk, pointOfSale, "category",null);
             }
         }
         List<FieldTemplate> templateList = new ArrayList<>();
@@ -526,7 +526,7 @@ public class DeskController {
     @RequestMapping("cancelWholeDesk")
     public void cancelWholeDesk(@RequestBody DeskIn deskIn) throws Exception {
         Date now=new Date();
-        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(deskIn.getDesk(),deskIn.getPointOfSale(),null);
+        List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(deskIn.getDesk(),deskIn.getPointOfSale(),null,null);
         List<DeskDetailCancelAll> deskDetailCancelAllList=new ArrayList<>();
         for (DeskDetail deskDetail : deskDetailList) {
             DeskDetailCancelAll deskDetailCancelAll=new DeskDetailCancelAll(deskDetail);

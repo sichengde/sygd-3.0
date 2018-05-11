@@ -444,3 +444,6 @@ ALTER TABLE desk_in_cancel_all ADD done_time DATETIME NULL;
 ALTER TABLE desk_detail_cancel_all ADD done_time DATETIME NULL;
 ALTER TABLE desk_in_cancel_all ADD user_id_done VARCHAR(100) NULL;
 ALTER TABLE hotel.guest_map_check_in MODIFY self_account VARCHAR(20) NOT NULL;
+#2018-05-10 修正套餐明细里的数量
+ALTER TABLE hotel.food_set MODIFY food_num DOUBLE;
+ALTER TABLE hotel.food_set ADD temp_food VARCHAR(100) NULL;

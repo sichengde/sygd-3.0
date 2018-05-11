@@ -25,7 +25,7 @@ public interface DeskDetailMapper extends MyMapper<DeskDetail>{
             @Result(property = "cookRoom", column = "cook_room"),
             @Result(property = "storageDone", column = "storage_done"),
     })
-    List<DeskDetail> getList(@Param("desk") String desk, @Param("pointOfSale") String pointOfSale, @Param("orderByList") String orderByList);
+    List<DeskDetail> getList(@Param("desk") String desk, @Param("pointOfSale") String pointOfSale, @Param("orderByList") String orderByList, @Param("foodSet") Boolean foodSet);
 
     @Select("SELECT DISTINCT user_id FROM desk_detail WHERE desk=#{deskName} AND point_of_sale=#{pointOfSale}")
     List<String> getDistinctUserId(@Param("deskName") String deskName, @Param("pointOfSale") String pointOfSale);
