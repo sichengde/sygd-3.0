@@ -73,9 +73,9 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      * 获得当日的折扣，也就是冲账
      */
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where consume<0 and do_time>#{beginTime} and do_time<#{endTime} \n" +
+            "(select sum(consume) consume from debt where consume<0 and done_time>#{beginTime} and done_time<#{endTime} \n" +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where consume<0 and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where consume<0 and done_time>#{beginTime} and done_time<#{endTime}) a")
     @ResultType(Double.class)
     Double getTotalDiscount(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
