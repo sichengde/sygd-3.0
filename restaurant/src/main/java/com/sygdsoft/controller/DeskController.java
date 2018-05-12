@@ -259,7 +259,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
