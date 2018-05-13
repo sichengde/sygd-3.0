@@ -49,6 +49,7 @@ public class FoodSetService extends BaseService<FoodSet>{
             deskDetail.setPrice(0.0);
             deskDetail.setNeedInsert(true);
             if(menu!=null) {
+                deskDetail.setUnit(menu.getUnit());
                 deskDetail.setCategory(menu.getCategory());
                 deskDetail.setCookRoom(menu.getCookRoom());
                 deskDetail.setCargo(menu.getCargo());
