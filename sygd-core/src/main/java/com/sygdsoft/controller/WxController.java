@@ -11,13 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class WxController {
     @RequestMapping(value = "weChatTokenCheck", method = RequestMethod.GET)
-    public String doGet(
-            HttpServletRequest request,
-            HttpServletResponse response,
+    public boolean doGet(
             @RequestParam(value = "signature") String signature,
             @RequestParam(value = "timestamp") String timestamp,
             @RequestParam(value = "nonce") String nonce,
             @RequestParam(value = "echostr") String echostr) {
-        return echostr;
+        System.out.println(123);
+        return true;
     }
 }
