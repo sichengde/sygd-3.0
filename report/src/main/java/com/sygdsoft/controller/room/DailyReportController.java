@@ -165,7 +165,7 @@ public class DailyReportController {
                     old.setFieldN(field + 1, String.valueOf(money));
                 }
                 totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
-                if (currency.getNotNullPayTotal()) {
+                if (currency.getNotNullPayTotalRoom()) {//这里取的客房的
                     totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
                 }
             }

@@ -447,3 +447,6 @@ ALTER TABLE hotel.guest_map_check_in MODIFY self_account VARCHAR(20) NOT NULL;
 #2018-05-10 修正套餐明细里的数量
 ALTER TABLE hotel.food_set MODIFY food_num DOUBLE;
 ALTER TABLE hotel.food_set ADD temp_food VARCHAR(100) NULL;
+#2018-05-14 币种参与统计分开
+ALTER TABLE currency ADD pay_total_desk BOOLEAN NULL;
+ALTER TABLE currency CHANGE pay_total pay_total_room TINYINT(1);
