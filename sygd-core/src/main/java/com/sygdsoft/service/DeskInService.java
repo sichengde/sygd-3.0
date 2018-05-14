@@ -35,4 +35,14 @@ public class DeskInService extends BaseService<DeskIn>{
             deskIn.setDeskDetailList(deskDetailService.getListByDeskCookRoom(deskIn.getDesk()));
         }
     }
+
+    /**
+     * 计算金额
+     * @param desk
+     * @param pointOfSale
+     */
+    public void updateConsume(String desk, String pointOfSale) {
+        deskInMapper.updateConsume(desk,pointOfSale);
+    }
+
 }

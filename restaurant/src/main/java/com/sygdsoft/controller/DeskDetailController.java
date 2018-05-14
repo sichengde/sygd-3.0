@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
@@ -42,6 +43,7 @@ public class DeskDetailController {
     CookRoomService cookRoomService;
     @Autowired
     MenuService menuService;
+
 
     @RequestMapping(value = "deskDetailGet")
     public List<DeskDetail> deskDetailGet(@RequestBody Query query) throws Exception {
@@ -111,6 +113,16 @@ public class DeskDetailController {
                 if (deskDetail.getNotNullCallUp()||deskDetail.getNotNullWaitCall()) {//叫起的菜
                     deskDetailPrint.add(deskDetail);
                 }
+                if(deskDetail.getChangeNum()!=null){
+                    DeskDetail old=deskDetailService.getById(deskDetail.getId());
+                    deskDetail.setChangeAdd(",数量:"+old.getNum()+"=>"+deskDetail.getNum());
+                    deskDetailPrint.add(deskDetail);
+                }
+                if(deskDetail.getChangeName()!=null){
+                    DeskDetail old=deskDetailService.getById(deskDetail.getId());
+                    deskDetail.setChangeAdd(",菜名:"+old.getFoodName()+"=>"+deskDetail.getFoodName());
+                    deskDetailPrint.add(deskDetail);
+                }
             }
             consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
         }
@@ -142,6 +154,7 @@ public class DeskDetailController {
             logAction = "修改菜品：" + deskDetail.getDesk();
         }
         deskDetailService.add(deskDetailInsert);
+        deskInService.updateConsume(deskIn.getDesk(),deskIn.getPointOfSale());
         /*统计沽清*/
         menuService.setRemain(deskDetailInsert);
         deskDetailService.update(deskDetailUpdate);
@@ -174,5 +187,25 @@ public class DeskDetailController {
                 reportService.printPassFood(s, deskDetailMap.get(s),deskIn);
             }
         }
+    }
+
+    /**
+     * 菜品换台
+     */
+    @RequestMapping("menuChangeDesk")
+    @Transactional(rollbackFor = Exception.class)
+    public void menuChangeDesk(@RequestBody DeskDetail deskDetail) throws Exception {
+        String targetDesk=deskDetail.getGlobalRemark();
+        /*删除菜品*/
+        deskDetailService.delete(deskDetail);
+        /*更新deskIn*/
+        deskInService.updateConsume(deskDetail.getDesk(),deskDetail.getPointOfSale());
+        /*新桌点菜*/
+        deskDetail.setNeedInsert(true);
+        deskDetail.setRemark(deskDetail.getDesk()+"转入");
+        deskDetail.setDesk(targetDesk);
+        List<DeskDetail> deskDetailList=new ArrayList<>();
+        deskDetailList.add(deskDetail);
+        this.deskAction(deskDetailList);
     }
 }

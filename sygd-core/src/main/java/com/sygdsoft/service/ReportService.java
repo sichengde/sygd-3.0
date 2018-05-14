@@ -78,22 +78,19 @@ public class ReportService {
         param.put("parameter2", deskDetail.getFoodName());
         param.put("parameter3", deskDetail.getNum());
         /*备注和等叫叫起要合在一起*/
-        String call = null;
-        String remark = deskDetail.getRemark();
+        String call = "";
+        StringBuffer remark = new StringBuffer();
+        if(deskDetail.getRemark()!=null) {
+            remark.append(deskDetail.getRemark());
+        }
         if (deskDetail.getNotNullWaitCall()) {
-            call = "等叫";
+            remark.append("[等叫]");
         }
         if (deskDetail.getNotNullCallUp()) {
-            call = "叫起";
+            remark.append("[叫起]");
         }
-        if (call != null && remark != null) {
-            param.put("parameter4", remark + "[" + call + "]");
-        } else if (call == null && remark != null) {
-            param.put("parameter4", remark);
-        } else if (call!=null&&remark == null ) {
-            param.put("parameter4", call);
-        }else if(call==null&&remark == null ){
-            param.put("parameter4", null);
+        if(deskDetail.getChangeAdd()!=null){
+            remark.append(deskDetail.getChangeAdd());
         }
         param.put("parameter5", deskDetail.getCategory());
         param.put("parameter6", deskIn.getRemark());
