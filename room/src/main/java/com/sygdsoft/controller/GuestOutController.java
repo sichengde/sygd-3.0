@@ -501,6 +501,7 @@ public class GuestOutController {
                     Debt debtNeedInsert=new Debt(debt);
                     debtNeedInsert.setPaySerial(null);
                     debtNeedInsert.setFromRoom(serialService.getPaySerial());
+                    debtNeedInsert.setRemark(debtNeedInsert.getRoomId()+"->转入产生");
                     debtNeedInsert.setRoomId(currencyAdd);
                     debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
                     debtNeedInsert.setGroupAccount(checkIn.getGroupAccount());

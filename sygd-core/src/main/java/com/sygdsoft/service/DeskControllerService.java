@@ -23,6 +23,8 @@ public class DeskControllerService {
     DeskDetailHistoryService deskDetailHistoryService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    OtherParamService otherParamService;
 
     public void generateDetail(List<DeskDetail> deskDetailList, List<FieldTemplate> templateList) throws Exception {
         if (deskDetailList == null || deskDetailList.size() == 0) {
@@ -39,6 +41,11 @@ public class DeskControllerService {
             DeskDetail deskDetail = it.next();
             if (deskDetail.getNotNullFoodSet()) {
                 it.remove();
+            }
+            if (!"y".equals(otherParamService.getValueByName("结账包含退菜"))) {
+                if (deskDetail.getNum()==0.0){
+                    it.remove();
+                }
             }
         }
         /*然后再重新查找套餐，其实这个方法很蠢，但没办法，之前的代码太烂*/

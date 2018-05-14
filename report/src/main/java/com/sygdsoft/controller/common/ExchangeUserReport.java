@@ -91,7 +91,9 @@ public class ExchangeUserReport {
         List<Currency> currencyList = currencyService.get(null);
         FieldTemplate fieldTemplate;
         Double cancelDepositAll = 0.0;//退押金合计
+        HashMap<String, Boolean> currencyPayTotalMap = new HashMap<>();//币种是否参与统计map
         for (Currency currency : currencyList) {
+            currencyPayTotalMap.put(currency.getCurrency(), currency.getNotNullPayTotalRoom());
             fieldTemplate = new FieldTemplate();
             String currencyString = currency.getCurrency();
             fieldTemplate.setField1(currency.getCurrency());//币种
@@ -114,13 +116,19 @@ public class ExchangeUserReport {
         }
         /*再生成一列合计*/
         FieldTemplate templateSum = new FieldTemplate("0");
+        FieldTemplate templateSumPayTotal = new FieldTemplate("0");
         templateSum.setField1("合计");
+        templateSumPayTotal.setField1("参与统计");
         for (FieldTemplate template : templateList) {
             for (int i = 2; i < 12; i++) {
                 templateSum.setFieldN(i, String.valueOf(szMath.formatTwoDecimalReturnDouble(templateSum.getFieldN(i)) + szMath.formatTwoDecimalReturnDouble(template.getFieldN(i))));
+                if (currencyPayTotalMap.get(template.getField1())) {
+                    templateSumPayTotal.setFieldN(i, String.valueOf(szMath.formatTwoDecimalReturnDouble(templateSumPayTotal.getFieldN(i)) + szMath.formatTwoDecimalReturnDouble(template.getFieldN(i))));
+                }
             }
         }
         templateList.add(templateSum);
+        templateList.add(templateSumPayTotal);
         /*生成水晶报表字段*/
         ExchangeUserJQ exchangeUserJQ = new ExchangeUserJQ();
         List<ExchangeUserRow> exchangeUserRowList = new ArrayList<>();
@@ -503,7 +511,7 @@ public class ExchangeUserReport {
             Double pay = deskPayService.getPay(userId, currencyString, pointOfSale, beginTime, endTime);
             fieldTemplate.setField2(ifNotNullGetString(pay));//结算款
             total += pay;
-            if(currency.getNotNullPayTotalDesk()) {
+            if (currency.getNotNullPayTotalDesk()) {
                 totalReal += pay;
             }
             fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
@@ -516,11 +524,11 @@ public class ExchangeUserReport {
             exchangeUserCkList.add(exchangeUserCk);
         }
         /*获取总应付金额*/
-        Double beforePrice=deskInHistoryService.getSum(beginTime, endTime, "total_price", pointOfSale);
+        Double beforePrice = deskInHistoryService.getSum(beginTime, endTime, "total_price", pointOfSale);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("exchangeUserCkList", exchangeUserCkList);
         String remark = "";
-        remark+="总结算款:" + total+" , 应收金额/参与统计款:"+totalReal+" , 折前金额(去掉折扣，四舍五入，自动抹零):"+beforePrice;
+        remark += "总结算款:" + total + " , 应收金额/参与统计款:" + totalReal + " , 折前金额(去掉折扣，四舍五入，自动抹零):" + beforePrice;
         jsonObject.put("remark", remark);
         return jsonObject;
     }
