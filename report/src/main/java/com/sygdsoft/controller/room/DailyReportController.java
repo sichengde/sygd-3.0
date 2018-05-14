@@ -172,7 +172,7 @@ public class DailyReportController {
             /*每个销售点的折扣*/
             switch (module) {
                 case "接待":
-                    totalDiscountPerModule[field - 1] = debtHistoryService.getTotalDiscount(beginTime, endTime);//接待的就是冲账+宴请
+                    totalDiscountPerModule[field - 1] = debtHistoryService.getHistoryConsume(beginTime, endTime,null,false);//接待的就是冲账+宴请
                     break;
                 case "餐饮":
                     if (pointOfSale.getNotNullIfVirtual()) {

@@ -108,7 +108,7 @@ public class DeskDetailController {
             } else if (deskDetail.isNeedUpdate()) {
                 deskDetail.setDoTime(timeService.getNow());
                 deskDetailUpdate.add(deskDetail);
-                if (deskDetail.getNotNullCallUp()) {//叫起的菜
+                if (deskDetail.getNotNullCallUp()||deskDetail.getNotNullWaitCall()) {//叫起的菜
                     deskDetailPrint.add(deskDetail);
                 }
             }
@@ -121,7 +121,10 @@ public class DeskDetailController {
             deskIn = new DeskIn();
             deskIn.setDoTime(timeService.getNow());
             deskIn.setDesk(deskDetail.getDesk());
-            deskIn.setNum(deskDetail.getPeople());
+            if(deskDetail.getPeople()!=null) {
+                deskIn.setNum(deskDetail.getPeople());
+            }
+            deskIn.setSubDeskNum(deskDetail.getSubDeskNum());
             deskIn.setRemark(deskDetail.getGlobalRemark());
             deskIn.setRemark(deskDetail.getGlobalRemark());
             deskIn.setPointOfSale(deskDetail.getPointOfSale());
@@ -130,8 +133,11 @@ public class DeskDetailController {
             deskInService.add(deskIn);
         } else {
             deskIn.setConsume(consume);
-            deskIn.setNum(deskDetail.getPeople());
+            if(deskDetail.getPeople()!=null) {
+                deskIn.setNum(deskDetail.getPeople());
+            }
             deskIn.setRemark(deskDetail.getGlobalRemark());
+            deskIn.setSubDeskNum(deskDetail.getSubDeskNum());
             deskInService.update(deskIn);
             logAction = "修改菜品：" + deskDetail.getDesk();
         }

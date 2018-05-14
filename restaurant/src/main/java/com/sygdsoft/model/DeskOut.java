@@ -11,6 +11,7 @@ import java.util.List;
 public class DeskOut {
     private String pointOfSale;
     private String desk;
+    private String deskGuestSource;
     private Double discount;
     private Double finalPrice;
     private List<CurrencyPost> currencyPostList;
@@ -84,5 +85,13 @@ public class DeskOut {
 
     public void setDeskDetailList(List<DeskDetail> deskDetailList) {
         this.deskDetailList = deskDetailList;
+    }
+
+    public String getDeskGuestSource() {
+        return deskGuestSource;
+    }
+
+    public void setDeskGuestSource(String deskGuestSource) {
+        this.deskGuestSource = deskGuestSource;
     }
 }

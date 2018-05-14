@@ -1,17 +1,17 @@
 package com.sygdsoft.mapper;
 
-import com.sygdsoft.model.DeskDetail;
-import com.sygdsoft.sqlProvider.DeskDetailSql;
+import com.sygdsoft.model.DeskDetailCancelAll;
 import com.sygdsoft.util.MyMapper;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
-/**
- * Created by 舒展 on 2016-09-13.
- */
-public interface DeskDetailMapper extends MyMapper<DeskDetail>{
-    @SelectProvider(type = DeskDetailSql.class,method = "getList")
+public interface DeskDetailCancelAllMapper extends MyMapper<DeskDetailCancelAll> {
+    @Select("SELECT * FROM desk_detail_cancel_all WHERE point_of_sale=#{pointOfSale} and done_time=#{doneTime}")
     @Results(value = {
             @Result(property = "foodName", column = "food_name"),
             @Result(property = "userId", column = "user_id"),
@@ -25,8 +25,5 @@ public interface DeskDetailMapper extends MyMapper<DeskDetail>{
             @Result(property = "cookRoom", column = "cook_room"),
             @Result(property = "storageDone", column = "storage_done"),
     })
-    List<DeskDetail> getList(@Param("desk") String desk, @Param("pointOfSale") String pointOfSale, @Param("orderByList") String orderByList, @Param("foodSet") Boolean foodSet);
-
-    @Select("SELECT DISTINCT user_id FROM desk_detail WHERE desk=#{deskName} AND point_of_sale=#{pointOfSale}")
-    List<String> getDistinctUserId(@Param("deskName") String deskName, @Param("pointOfSale") String pointOfSale);
+    List<DeskDetailCancelAll> getList(@Param("pointOfSale") String pointOfSale, @Param("doneTime") Date doneTime);
 }

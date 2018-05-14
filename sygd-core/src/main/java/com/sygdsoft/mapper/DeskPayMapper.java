@@ -34,4 +34,10 @@ public interface DeskPayMapper extends MyMapper<DeskPay> {
 
     @Update("update desk_pay set disabled =true where ck_serial=#{ckSerial}")
     void setDisabledBySerial(@Param("ckSerial") String ckSerial);
+
+    /**
+     * 获取每日币种
+     */
+    @Select("SELECT substr(done_time,1,10) doneTime,round(ifnull(sum(pay_money),0),2) payMoney,currency FROM desk_pay WHERE done_time > #{beginTime} AND done_time < #{endTime} GROUP BY substr(done_time,1,10),currency order by substr(done_time,1,10)")
+    List<DeskPay> getConsumeEveryDay(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

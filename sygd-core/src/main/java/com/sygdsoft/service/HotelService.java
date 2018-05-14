@@ -1,5 +1,7 @@
 package com.sygdsoft.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -48,5 +50,30 @@ public class HotelService {
             System.out.println(content);
         }
         return content;
+    }
+
+    public JSONObject wxHttpPost(String url) throws Exception{
+        // 换取access_token 其中包含了openid
+        // 这里通过code换取的是一个特殊的网页授权access_token,与基础支持中的access_token（该access_token用于调用其他接口）不同。
+        //实例化httpClient
+        String content = null;
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+        //处理参数
+        List<NameValuePair> nvps = new ArrayList<>();
+        //结果
+        CloseableHttpResponse responseWX = null;
+        //提交的参数
+        UrlEncodedFormEntity uefEntity = new UrlEncodedFormEntity(nvps, "UTF-8");
+        //将参数给post方法
+        httpPost.setEntity(uefEntity);
+        //执行post方法
+        responseWX = httpclient.execute(httpPost);
+        if (responseWX.getStatusLine().getStatusCode() == 200) {
+            content = EntityUtils.toString(responseWX.getEntity(), "utf-8");
+            return (JSONObject) JSON.parse(content);
+        }else {
+            return null;
+        }
     }
 }

@@ -36,7 +36,12 @@ public class FoodSetService extends BaseService<FoodSet>{
         List<FoodSet> foodSetList = getBySetName(foodSetDeskDetail.getFoodSign());
         List<DeskDetail> deskDetailList=new ArrayList<>();
         for (FoodSet foodSet : foodSetList) {
-            Menu menu=menuService.getByName(foodSet.getFoodName());
+            Menu menu;
+            if(foodSet.getTempFood()!=null){
+                menu = menuService.getByName(foodSet.getTempFood());
+            }else {
+                menu = menuService.getByName(foodSet.getFoodName());
+            }
             DeskDetail deskDetail=new DeskDetail(foodSetDeskDetail);
             deskDetail.setNum(foodSet.getFoodNum()*foodSetDeskDetail.getNum());
             deskDetail.setFoodName(foodSet.getFoodName());
@@ -44,6 +49,7 @@ public class FoodSetService extends BaseService<FoodSet>{
             deskDetail.setPrice(0.0);
             deskDetail.setNeedInsert(true);
             if(menu!=null) {
+                deskDetail.setUnit(menu.getUnit());
                 deskDetail.setCategory(menu.getCategory());
                 deskDetail.setCookRoom(menu.getCookRoom());
                 deskDetail.setCargo(menu.getCargo());

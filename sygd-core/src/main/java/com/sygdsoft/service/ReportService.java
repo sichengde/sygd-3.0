@@ -71,6 +71,8 @@ public class ReportService {
         * 4.备注加上叫起标志
         * 5.菜品类别
         * 6.全单备注
+        * 7.单价
+        * 8.单位
         * */
         param.put("parameter1", deskDetail.getDesk());
         param.put("parameter2", deskDetail.getFoodName());
@@ -96,12 +98,18 @@ public class ReportService {
         param.put("parameter5", deskDetail.getCategory());
         param.put("parameter6", deskIn.getRemark());
         param.put("parameter7", deskDetail.getNotNullPrice());
+        param.put("parameter8", deskDetail.getUnit());
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/cookRoom.jasper", param, new JREmptyDataSource());
         this.printByPrinterName(printerName, jasperPrint);
     }
 
     /**
      * 进行传菜打印
+     * param:
+     * 1.桌号
+     * 2.时间
+     * 3.操作员
+     * 4.整单备注
      */
     public void printPassFood(String printerName, List<DeskDetail> deskDetailList,DeskIn deskIn) throws Exception {
         Map<String, Object> param = new HashMap<>();

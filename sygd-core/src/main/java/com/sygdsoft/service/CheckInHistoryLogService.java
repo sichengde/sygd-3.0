@@ -48,6 +48,12 @@ public class CheckInHistoryLogService extends BaseService<CheckInHistoryLog> {
         }
     }
 
+    public CheckInHistoryLog getOneBySelfAccount(String selfAccount){
+        CheckInHistoryLog checkInHistoryLogQuery=new CheckInHistoryLog();
+        checkInHistoryLogQuery.setSelfAccount(selfAccount);
+        return checkInHistoryLogMapper.selectOne(checkInHistoryLogQuery);
+    }
+
     /**
      * 通过公付账号获得队列
      */

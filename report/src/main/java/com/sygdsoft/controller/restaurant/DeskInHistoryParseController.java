@@ -51,8 +51,9 @@ public class DeskInHistoryParseController {
         /*先设置表头*/
         headFieldList.add(new HeadField("日期","field1"));
         headFieldList.add(new HeadField("人数","field2"));
+        headFieldList.add(new HeadField("桌号","field3"));
         Map<String,Integer> columnMap=new ManagedMap<>();
-        Integer column=3;
+        Integer column=4;
         List<DeskCategoryOut> deskCategoryOutTotalList=deskDetailHistoryService.getCategorySecondParse(beginTime, endTime, pointOfSale);//设置类别表头
         for (DeskCategoryOut deskCategoryOutTotal : deskCategoryOutTotalList) {
             if(deskCategoryOutTotal.getTotal()!=null){
@@ -88,6 +89,7 @@ public class DeskInHistoryParseController {
             /*设置日期和人数*/
             fieldTemplate.setField1(timeService.dateToStringShort(deskInHistory.getDoneTime()));
             fieldTemplate.setField2(ifNotNullGetString(deskInHistory.getNum()));
+            fieldTemplate.setField3(deskInHistory.getDesk());
             /*设置品种类别*/
             List<DeskCategoryOut> deskCategoryOutList=deskDetailHistoryService.getCategorySecondParseBySerial(beginTime, endTime, pointOfSale, deskInHistory.getCkSerial());
             for (DeskCategoryOut deskCategoryOut : deskCategoryOutList) {
