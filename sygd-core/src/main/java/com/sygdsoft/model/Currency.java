@@ -11,7 +11,8 @@ public class Currency extends BaseEntity{
     private Boolean score;//参与积分
     private Boolean checkOut;//结账币种
     private Boolean checkIn;//押金币种
-    private Boolean payTotal;//参与结算款统计
+    private Boolean payTotalRoom;//参与结算款统计
+    private Boolean payTotalDesk;//参与结算款统计
     private Boolean payBackRmb;//退预付转人民币
 
     public Currency() {
@@ -25,11 +26,19 @@ public class Currency extends BaseEntity{
         }
     }
 
-    public boolean getNotNullPayTotal() {
-        if (payTotal==null){
+    public boolean getNotNullPayTotalRoom() {
+        if (payTotalRoom==null){
             return false;
         }else {
-            return payTotal;
+            return payTotalRoom;
+        }
+    }
+
+    public boolean getNotNullPayTotalDesk() {
+        if (payTotalDesk==null){
+            return false;
+        }else {
+            return payTotalDesk;
         }
     }
 
@@ -69,12 +78,20 @@ public class Currency extends BaseEntity{
         this.checkOut = checkOut;
     }
 
-    public Boolean getPayTotal() {
-        return payTotal;
+    public Boolean getPayTotalRoom() {
+        return payTotalRoom;
     }
 
-    public void setPayTotal(Boolean payTotal) {
-        this.payTotal = payTotal;
+    public void setPayTotalRoom(Boolean payTotalRoom) {
+        this.payTotalRoom = payTotalRoom;
+    }
+
+    public Boolean getPayTotalDesk() {
+        return payTotalDesk;
+    }
+
+    public void setPayTotalDesk(Boolean payTotalDesk) {
+        this.payTotalDesk = payTotalDesk;
     }
 
     public Boolean getPayBackRmb() {

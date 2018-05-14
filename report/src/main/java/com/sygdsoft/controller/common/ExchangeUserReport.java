@@ -503,7 +503,7 @@ public class ExchangeUserReport {
             Double pay = deskPayService.getPay(userId, currencyString, pointOfSale, beginTime, endTime);
             fieldTemplate.setField2(ifNotNullGetString(pay));//结算款
             total += pay;
-            if(currency.getNotNullPayTotal()) {
+            if(currency.getNotNullPayTotalDesk()) {
                 totalReal += pay;
             }
             fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
