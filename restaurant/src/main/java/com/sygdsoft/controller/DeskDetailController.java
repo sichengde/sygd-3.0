@@ -1,10 +1,13 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,7 @@ import java.util.Map;
  */
 @RestController
 public class DeskDetailController {
+    private static final Logger logger = LoggerFactory.getLogger(DeskDetailController.class);
     @Autowired
     DeskDetailService deskDetailService;
     @Autowired
@@ -87,6 +91,7 @@ public class DeskDetailController {
     @RequestMapping(value = "deskDetailAction")
     @Transactional(rollbackFor = Exception.class)
     public synchronized void deskAction(@RequestBody List<DeskDetail> deskDetailList) throws Exception {
+        logger.info(JSON.toJSONString(deskDetailList));
         timeService.setNow();
         List<DeskDetail> deskDetailUpdate = new ArrayList<>();//需要更新的
         List<DeskDetail> deskDetailInsert = new ArrayList<>();//需要查入的
