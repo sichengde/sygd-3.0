@@ -450,3 +450,15 @@ ALTER TABLE hotel.food_set ADD temp_food VARCHAR(100) NULL;
 #2018-05-14 币种参与统计分开
 ALTER TABLE currency ADD pay_total_desk BOOLEAN NULL;
 ALTER TABLE currency CHANGE pay_total pay_total_room TINYINT(1);
+#2018-05-15 微信订房
+CREATE TABLE cloud_book_protocol
+(
+  id                  INT AUTO_INCREMENT
+    PRIMARY KEY,
+  guest_source            VARCHAR(100) NULL,
+  protocol            VARCHAR(100) NULL,
+  room_category       VARCHAR(10)  NULL,
+  room_price          DOUBLE       NULL
+)
+  ENGINE = InnoDB;
+ALTER TABLE book_room_category ADD price DOUBLE NULL;
