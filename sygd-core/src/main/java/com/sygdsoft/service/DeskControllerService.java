@@ -43,7 +43,7 @@ public class DeskControllerService {
                 it.remove();
             }
             if (!"y".equals(otherParamService.getValueByName("结账包含退菜"))) {
-                if (deskDetail.getNum()==0.0){
+                if (deskDetail.getNum()==0.0&&deskDetail.getNotNullFoodSet()){
                     it.remove();
                 }
             }
