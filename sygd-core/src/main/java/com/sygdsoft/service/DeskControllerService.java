@@ -30,22 +30,26 @@ public class DeskControllerService {
         if (deskDetailList == null || deskDetailList.size() == 0) {
             return;
         }
-        String deskName=deskDetailList.get(0).getDesk();
-        String pointOfSale=deskDetailList.get(0).getPointOfSale();
+        String deskName = deskDetailList.get(0).getDesk();
+        String pointOfSale = deskDetailList.get(0).getPointOfSale();
         String lastCategory = "";
         Double categoryTotal = 0.0;
         FieldTemplate fieldTemplateSum = new FieldTemplate();
         /*先把套餐都删掉*/
         Iterator<DeskDetail> it = deskDetailList.iterator();
         while (it.hasNext()) {
+            boolean remove = false;
             DeskDetail deskDetail = it.next();
             if (deskDetail.getNotNullFoodSet()) {
-                it.remove();
+                remove = true;
             }
             if (!"y".equals(otherParamService.getValueByName("结账包含退菜"))) {
-                if (deskDetail.getNum()==0.0&&deskDetail.getNotNullFoodSet()){
-                    it.remove();
+                if (deskDetail.getNum() == 0.0) {
+                    remove = true;
                 }
+            }
+            if (remove) {
+                it.remove();
             }
         }
         /*然后再重新查找套餐，其实这个方法很蠢，但没办法，之前的代码太烂*/
@@ -93,7 +97,7 @@ public class DeskControllerService {
         if (deskDetailHistoryList == null || deskDetailHistoryList.size() == 0) {
             return;
         }
-        String ckSerial=deskDetailHistoryList.get(0).getCkSerial();
+        String ckSerial = deskDetailHistoryList.get(0).getCkSerial();
         String lastCategory = "";
         Double categoryTotal = 0.0;
         FieldTemplate fieldTemplateSum = new FieldTemplate();
