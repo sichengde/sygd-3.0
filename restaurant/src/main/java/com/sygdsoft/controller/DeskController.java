@@ -203,6 +203,11 @@ public class DeskController {
         deskInService.delete(deskIn);
         deskInHistoryService.add(deskInHistory);
         /*处理报表*/
+        /*需要考虑的
+        * 1.菜品聚合
+        * 2.包括退菜
+        * 3.套餐在前
+        * */
         List<FieldTemplate> templateList = new ArrayList<>();
         if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
             deskControllerService.generateDetail(deskDetailService.getListByDeskGroup(desk, pointOfSale), templateList);
