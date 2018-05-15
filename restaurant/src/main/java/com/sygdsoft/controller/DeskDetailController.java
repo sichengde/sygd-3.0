@@ -142,8 +142,8 @@ public class DeskDetailController {
                 deskIn.setNum(deskDetail.getPeople());
             }
             deskIn.setSubDeskNum(deskDetail.getSubDeskNum());
-            deskIn.setConsume(consume);
             deskIn.setRemark(deskDetail.getGlobalRemark());
+            deskIn.setConsume(consume);
             deskIn.setPointOfSale(deskDetail.getPointOfSale());
             deskIn.setUserId(userService.getCurrentUser());
             logAction = "开台点菜：" + deskDetail.getDesk();
