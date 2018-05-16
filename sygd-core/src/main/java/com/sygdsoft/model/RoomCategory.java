@@ -15,8 +15,26 @@ public class RoomCategory extends BaseEntity {
     private Boolean clock;
     @Transient
     private Integer remain;//剩余数量
+    @Transient
+    private Integer todayLeave;//剩余数量
 
     public RoomCategory() {
+    }
+
+    public int getNotNullRemain(){
+        if(remain==null){
+            return 0;
+        }else {
+            return remain;
+        }
+    }
+
+    public int getNotNullTodayLeave(){
+        if(todayLeave==null){
+            return 0;
+        }else {
+            return todayLeave;
+        }
     }
 
     public RoomCategory(String category) {
@@ -77,5 +95,13 @@ public class RoomCategory extends BaseEntity {
 
     public void setRemain(Integer remain) {
         this.remain = remain;
+    }
+
+    public Integer getTodayLeave() {
+        return todayLeave;
+    }
+
+    public void setTodayLeave(Integer todayLeave) {
+        this.todayLeave = todayLeave;
     }
 }

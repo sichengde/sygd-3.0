@@ -6,6 +6,8 @@ package com.sygdsoft.model;
 public class CloudBookProtocol extends BaseEntity{
     private String guestSource;
     private String protocol;
+    private String roomCategory;
+    private Double roomPrice;
 
     public CloudBookProtocol() {
     }
@@ -24,5 +26,21 @@ public class CloudBookProtocol extends BaseEntity{
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getRoomCategory() {
+        return roomCategory;
+    }
+
+    public void setRoomCategory(String roomCategory) {
+        this.roomCategory = roomCategory;
+    }
+
+    public Double getRoomPrice() {
+        return roomPrice;
+    }
+
+    public void setRoomPrice(Double roomPrice) {
+        this.roomPrice = roomPrice;
     }
 }

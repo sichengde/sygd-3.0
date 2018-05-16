@@ -32,11 +32,25 @@ public class BookParseController {
     @Autowired
     BookRoomCategoryService bookRoomCategoryService;
 
-    @RequestMapping(value = "getRoomCategoryRemain")
-    public List<RoomCategory> getRoomCategoryRemain(@RequestBody ReportJson reportJson) throws Exception {
-        /*获取时间范围*/
+    @RequestMapping("futureRoomStateCategory")
+    public List<JSONObject> futureRoomStateCategory(@RequestBody ReportJson reportJson)throws Exception{
         Date beginTime = timeService.getMinTime(reportJson.getBeginTime());
         Date endTime = timeService.getMinTime(reportJson.getEndTime());
+        List<JSONObject> jsonObjectList=new ArrayList<>();
+        while (beginTime.getTime()<=endTime.getTime()){
+            List<RoomCategory> roomCategoryList=getRoomCategoryRemain(beginTime,timeService.addDay(beginTime,1));
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("date",timeService.dateToStringShort(beginTime));
+            for (RoomCategory roomCategory : roomCategoryList) {
+                jsonObject.put(roomCategory.getCategory(),roomCategory.getNotNullRemain()+"("+roomCategory.getNotNullTodayLeave()+")");
+            }
+            jsonObjectList.add(jsonObject);
+            beginTime=timeService.addDay(beginTime,1);
+        }
+        return jsonObjectList;
+    }
+
+    private List<RoomCategory> getRoomCategoryRemain(Date beginTime,Date endTime) throws Exception {
         /*先获取所有房间种类*/
         List<RoomCategory> roomCategoryList = roomCategoryService.get(null);
         /*每个房间种类的可用房*/
@@ -47,15 +61,20 @@ public class BookParseController {
             Integer total = roomService.getTotalCategoryNum(category);
             /*初始化每个房间种类的可用房*/
             roomCategory.setRemain(total);
+            roomCategory.setTodayLeave(0);
         }
         /*先分析有没有这个时间段在店的*/
         List<CheckIn> checkInList = checkInService.get(null);
         for (CheckIn checkIn : checkInList) {
-            if (checkIn.getLeaveTime().compareTo(beginTime) == 1) {
+            if (checkIn.getLeaveTime().compareTo(beginTime) >= 0) {
                 String category = checkIn.getRoomCategory();
                 for (RoomCategory roomCategory : roomCategoryList) {
                     if (roomCategory.getCategory().equals(category)) {
-                        roomCategory.setRemain(roomCategory.getRemain() - 1);
+                        if(checkIn.getLeaveTime().getTime()<endTime.getTime()){//只是预离
+                            roomCategory.setTodayLeave(roomCategory.getNotNullTodayLeave()+1);
+                        }else {//确实冲突
+                            roomCategory.setRemain(roomCategory.getRemain() - 1);
+                        }
                     }
                 }
             }
