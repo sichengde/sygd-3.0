@@ -451,6 +451,7 @@ ALTER TABLE hotel.food_set ADD temp_food VARCHAR(100) NULL;
 ALTER TABLE currency ADD pay_total_desk BOOLEAN NULL;
 ALTER TABLE currency CHANGE pay_total pay_total_room TINYINT(1);
 #2018-05-15 微信订房
+drop table cloud_book_protocol;
 CREATE TABLE cloud_book_protocol
 (
   id                  INT AUTO_INCREMENT
