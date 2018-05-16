@@ -105,11 +105,11 @@ public class BookParseController {
                 jsonObject.put(timeService.getReportFormat(beginTime), true);
                 String endTime = timeService.dateToStringShort(book.getLeaveTime());
                 while (true) {
-                    beginTime = timeService.addDay(beginTime, 1);
+                    jsonObject.put(timeService.getReportFormat(beginTime), true);
                     if (endTime.equals(timeService.dateToStringShort(beginTime))) {
                         break;
                     }
-                    jsonObject.put(timeService.getReportFormat(beginTime), true);
+                    beginTime = timeService.addDay(beginTime, 1);
                 }
             }
             jsonObjectList.add(jsonObject);

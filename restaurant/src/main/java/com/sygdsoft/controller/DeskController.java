@@ -181,14 +181,14 @@ public class DeskController {
             consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
         }
         /*生成结账信息*/
-        String changeDebt = "";//转账信息
+        StringBuilder changeDebt = new StringBuilder();//转账信息
         for (CurrencyPost currencyPost : currencyPostList) {
             this.generateDeskPay(pointOfSale, currencyPost, deskPayList);
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
-            changeDebt += " 币种:" + currency + "/" + money;
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, null, null, desk+"餐饮结账", serialService.getCkSerial(), "餐饮", pointOfSale);
+            changeDebt.append(" 币种:").append(currency).append("/").append(money);
+            changeDebt.append(debtPayService.parseCurrency(currency, currencyAdd, money, null, null, desk + "餐饮结账", serialService.getCkSerial(), "餐饮", pointOfSale));
         }
         deskPayService.add(deskPayList);
         /*餐桌信息转移到历史*/
@@ -264,7 +264,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
