@@ -463,3 +463,4 @@ CREATE TABLE cloud_book_protocol
 )
   ENGINE = InnoDB;
 ALTER TABLE book_room_category ADD price DOUBLE NULL;
+ALTER TABLE currency ADD show_in_report BOOLEAN DEFAULT TRUE ;
