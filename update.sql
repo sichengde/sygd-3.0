@@ -464,3 +464,5 @@ CREATE TABLE cloud_book_protocol
   ENGINE = InnoDB;
 ALTER TABLE book_room_category ADD price DOUBLE NULL;
 ALTER TABLE currency ADD show_in_report BOOLEAN DEFAULT TRUE ;
+#2018-05-17 增强房类预订
+ALTER TABLE book_room_category ADD opened_num INT DEFAULT 0 NULL;

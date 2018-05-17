@@ -7,6 +7,7 @@ public class BookRoomCategory extends BaseEntity{
     private String bookSerial;//预定号
     private String roomCategory;//房间类别
     private Integer num;//房间数量
+    private Integer openedNum;//开房数量
     private Double price;//指定价格
 
     public BookRoomCategory() {
@@ -42,5 +43,13 @@ public class BookRoomCategory extends BaseEntity{
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Integer getOpenedNum() {
+        return openedNum;
+    }
+
+    public void setOpenedNum(Integer openedNum) {
+        this.openedNum = openedNum;
     }
 }
