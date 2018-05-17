@@ -65,6 +65,8 @@ public class GuestInController {
     ProtocolService protocolService;
     @Autowired
     GuestMapCheckInService guestMapCheckInService;
+    @Autowired
+    BookRoomCategoryService bookRoomCategoryService;
 
     /**
      * 散客开房操作步骤
@@ -261,7 +263,11 @@ public class GuestInController {
         List<CheckIn> checkInList = guestIn.getCheckInList();
         /*如果有预订信息，则更新预订信息*/
         if (book != null) {
+            /*按房号预订*/
             bookRoomService.setOpened(book.getBookSerial(), checkInService.getTotalRoomString(checkInList,true));
+            /*按房类预订*/
+            bookRoomCategoryService.update(book.getBookRoomCategoryList());
+            /*更新订单*/
             book.setBookedRoom(checkInList.size() + book.getBookedRoom());
             if (Objects.equals(book.getTotalRoom(), book.getBookedRoom())) {
                 book.setState(bookService.cancel);
