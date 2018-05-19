@@ -91,7 +91,7 @@ public class DeskDetailController {
     @RequestMapping(value = "deskDetailAction")
     @Transactional(rollbackFor = Exception.class)
     public synchronized void deskAction(@RequestBody List<DeskDetail> deskDetailList) throws Exception {
-        logger.info(JSON.toJSONString(deskDetailList));
+        //logger.info(JSON.toJSONString(deskDetailList));
         timeService.setNow();
         List<DeskDetail> deskDetailUpdate = new ArrayList<>();//需要更新的
         List<DeskDetail> deskDetailInsert = new ArrayList<>();//需要查入的
