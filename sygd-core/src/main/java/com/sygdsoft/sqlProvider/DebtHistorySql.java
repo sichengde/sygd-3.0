@@ -31,7 +31,7 @@ public class DebtHistorySql {
     public String getHistoryConsume(Map<String, Object> parameters) {
         String pointOfSale = (String) parameters.get("pointOfSale");
         Boolean positive = (Boolean) parameters.get("positive");
-        String basic="select ifnull(sum(consume),0) consume from debt_history where done_time>#{beginTime} and done_time<#{endTime}";
+        String basic="select round(ifnull(sum(consume),0),2) consume from debt_history where done_time>#{beginTime} and done_time<#{endTime}";
         if(pointOfSale!=null){
             basic+=" and point_of_sale=#{pointOfSale}";
         }
