@@ -8,7 +8,7 @@ public class DeskInHistorySql {
     public String getTotalDiscount(Map<String, Object> parameters){
         String category= (String) parameters.get("category");
         String basic;
-        basic="SELECT ifnull(sum(final_price-total_price),0) FROM desk_in_history dih ";
+        basic="SELECT round(ifnull(sum(final_price-total_price),0),2) FROM desk_in_history dih ";
         if(category!=null){
             basic+=" LEFT JOIN desk d ON dih.desk = d.name ";
         }
