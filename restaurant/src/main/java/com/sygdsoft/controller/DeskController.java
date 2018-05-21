@@ -540,6 +540,7 @@ public class DeskController {
      * 思路：删除所有退菜，重新退菜
      */
     @RequestMapping("cancelWholeDesk")
+    @Transactional(rollbackFor = Exception.class)
     public void cancelWholeDesk(@RequestBody DeskIn deskIn) throws Exception {
         Date now=new Date();
         List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(deskIn.getDesk(),deskIn.getPointOfSale(),null,null);
