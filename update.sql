@@ -466,3 +466,5 @@ ALTER TABLE book_room_category ADD price DOUBLE NULL;
 ALTER TABLE currency ADD show_in_report BOOLEAN DEFAULT TRUE ;
 #2018-05-17 增强房类预订
 ALTER TABLE book_room_category ADD opened_num INT DEFAULT 0 NULL;
+#2018-05-21 bugFix
+DROP INDEX desk_in_desk_uindex ON desk_in_cancel_all;
