@@ -141,6 +141,9 @@ public class DailyReportController {
                 switch (module) {
                     case "接待":
                         money = debtPayService.getDebtMoney(null, currencyString, false, beginTime, endTime);
+                        if (currency.getNotNullPayTotalRoom()) {//这里取的客房的
+                            totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
+                        }
                         break;
                     case "餐饮":
                         if (pointOfSale.getNotNullIfVirtual()) {
@@ -150,6 +153,9 @@ public class DailyReportController {
                             }
                         } else {
                             money = deskPayService.getPay(null, currencyString, firstPointOfSale, beginTime, endTime);
+                        }
+                        if (currency.getNotNullPayTotalDesk()) {//这里取的客房的
+                            totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
                         }
                         break;
                     case "桑拿":
@@ -165,9 +171,6 @@ public class DailyReportController {
                     old.setFieldN(field + 1, String.valueOf(money));
                 }
                 totalCurrencyMoneyPerModule[field - 1] = totalCurrencyMoneyPerModule[field - 1] + money;
-                if (currency.getNotNullPayTotalRoom()) {//这里取的客房的
-                    totalCurrencyMoneyPerModuleRealMoney[field - 1] = totalCurrencyMoneyPerModuleRealMoney[field - 1] + money;
-                }
             }
             /*每个销售点的折扣*/
             switch (module) {
