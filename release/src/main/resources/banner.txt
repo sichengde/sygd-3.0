@@ -1,6 +1,6 @@
-${AnsiColor.GREEN} .   ____       __
-${AnsiColor.GREEN} /\\ / ___' __ _ \
-${AnsiColor.GREEN}( ( )\___ |/ _` | \
-${AnsiColor.GREEN} \\/  ___)| (_| |  )
-${AnsiColor.GREEN}  '  |____|\__, | /
-${AnsiColor.GREEN} =========||___/=/
+${AnsiColor.GREEN}         ________  ________
+${AnsiColor.GREEN}         \_____  \ \_____  \
+${AnsiColor.GREEN} ______   ____/  /  ____/  /
+${AnsiColor.GREEN}|______| |____   | |____   |
+${AnsiColor.GREEN}          ____\  \  ____\  \
+${AnsiColor.GREEN}         /_______/ /_______/
