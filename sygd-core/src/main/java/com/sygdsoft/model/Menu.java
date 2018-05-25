@@ -17,6 +17,7 @@ public class Menu extends BaseEntity {
     private Boolean cargo;//库存货品
     private Double cost;//成本
     private Double remain;//剩余
+    private Boolean showOnPad;//是否在pad上显示
 
 
     public Menu() {
@@ -148,5 +149,13 @@ public class Menu extends BaseEntity {
 
     public void setRemain(Double remain) {
         this.remain = remain;
+    }
+
+    public Boolean getShowOnPad() {
+        return showOnPad;
+    }
+
+    public void setShowOnPad(Boolean showOnPad) {
+        this.showOnPad = showOnPad;
     }
 }

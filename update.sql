@@ -468,3 +468,5 @@ ALTER TABLE currency ADD show_in_report BOOLEAN DEFAULT TRUE ;
 ALTER TABLE book_room_category ADD opened_num INT DEFAULT 0 NULL;
 #2018-05-21 bugFix
 DROP INDEX desk_in_desk_uindex ON desk_in_cancel_all;
+#2018-05-25 增加菜谱是否在pad上显示参数
+ALTER TABLE menu ADD show_on_pad BOOLEAN NULL;
