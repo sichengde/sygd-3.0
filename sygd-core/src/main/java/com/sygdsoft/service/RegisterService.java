@@ -105,6 +105,7 @@ public class RegisterService {
             resultSet.close();
             this.check();
         } catch (Exception e) {
+            logger.error("数据库里的注册码格式不对！99%是复制了回车换行符:"+this.serial,e);
             e.printStackTrace();
         }
     }
