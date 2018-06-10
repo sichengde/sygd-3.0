@@ -447,3 +447,29 @@ ALTER TABLE hotel.guest_map_check_in MODIFY self_account VARCHAR(20) NOT NULL;
 #2018-05-10 修正套餐明细里的数量
 ALTER TABLE hotel.food_set MODIFY food_num DOUBLE;
 ALTER TABLE hotel.food_set ADD temp_food VARCHAR(100) NULL;
+#2018-05-14 币种参与统计分开
+ALTER TABLE currency ADD pay_total_desk BOOLEAN NULL;
+ALTER TABLE currency CHANGE pay_total pay_total_room TINYINT(1);
+#2018-05-15 微信订房
+drop table cloud_book_protocol;
+CREATE TABLE cloud_book_protocol
+(
+  id                  INT AUTO_INCREMENT
+    PRIMARY KEY,
+  guest_source            VARCHAR(100) NULL,
+  protocol            VARCHAR(100) NULL,
+  room_category       VARCHAR(10)  NULL,
+  room_price          DOUBLE       NULL
+)
+  ENGINE = InnoDB;
+ALTER TABLE book_room_category ADD price DOUBLE NULL;
+ALTER TABLE currency ADD show_in_report BOOLEAN DEFAULT TRUE ;
+#2018-05-17 增强房类预订
+ALTER TABLE book_room_category ADD opened_num INT DEFAULT 0 NULL;
+#2018-05-21 bugFix
+DROP INDEX desk_in_desk_uindex ON desk_in_cancel_all;
+#2018-05-25 增加菜谱是否在pad上显示参数
+ALTER TABLE menu ADD show_on_pad BOOLEAN NULL;
+#2018-06-09 增加餐桌排序
+ALTER TABLE hotel.desk ADD desk_order INT NULL;
+ALTER TABLE hotel.menu ADD exist_picture BOOLEAN NULL;

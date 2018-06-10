@@ -45,7 +45,9 @@ public class CloudBookController {
         BookRoomCategory bookRoomCategory=new BookRoomCategory();
         bookRoomCategory.setBookSerial(bookSerial);
         bookRoomCategory.setNum(book.getTotalRoom());
+        bookRoomCategory.setPrice(cloudBook.getPrice());
         bookRoomCategory.setRoomCategory(cloudBook.getRoomCategory());
+        bookRoomCategory.setOpenedNum(0);
         List<BookRoomCategory> bookRoomCategoryList = new ArrayList<>();
         bookRoomCategoryList.add(bookRoomCategory);
         book.setBookSerial(bookSerial);

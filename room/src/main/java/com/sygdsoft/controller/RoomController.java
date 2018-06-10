@@ -148,6 +148,7 @@ public class RoomController {
         List<Debt> debtList = debtService.get(new Query("room_id=" + util.wrapWithBrackets(srcRoomId)));
         for (Debt debt : debtList) {
             debt.setRoomId(dstRoomId);
+            debt.setRemark(srcRoomId+"->换房产生");
             if (debt.getCategory().equals("凌晨房费")) {
                 /*如果是凌晨房，补齐杂单或者冲账*/
                 Double money = checkIn.getFinalRoomPrice() - srcRoom.getCheckIn().getFinalRoomPrice();

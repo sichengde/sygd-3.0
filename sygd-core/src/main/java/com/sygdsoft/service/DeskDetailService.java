@@ -23,11 +23,12 @@ public class DeskDetailService extends BaseService<DeskDetail> {
     Util util;
     @Autowired
     OtherParamService otherParamService;
+
     /**
      * 根据id获得实例一个
      */
-    public DeskDetail getById(Integer id){
-        DeskDetail deskDetail=new DeskDetail();
+    public DeskDetail getById(Integer id) {
+        DeskDetail deskDetail = new DeskDetail();
         deskDetail.setId(id);
         return deskDetailMapper.selectOne(deskDetail);
     }
@@ -38,21 +39,36 @@ public class DeskDetailService extends BaseService<DeskDetail> {
     public List<DeskDetail> getGroupByQuery(Query query) throws Exception {
         String[] orderBy = query.getOrderByList();
         String[] finalString;
+        String nameOrSign = "foodSign";
+        if ("y".equals(otherParamService.getValueByName("结账包含退菜"))) {
+            nameOrSign = "foodName";
+        }
         if (orderBy == null) {
-            finalString = new String[]{"foodName"};
+            finalString = new String[]{nameOrSign};
         } else {
             finalString = new String[orderBy.length + 1];
             System.arraycopy(orderBy, 0, finalString, 0, orderBy.length);
-            finalString[finalString.length-1] = "foodName";
+            finalString[finalString.length - 1] = nameOrSign;
         }
         query.setOrderByList(finalString);
             /*菜品聚合的话还要加一个条件，套餐的菜要放在最后边，通过price is null判断*/
-        String backUpCondition=query.getCondition();
-        query.setCondition(backUpCondition+" and price is not null");
         List<DeskDetail> deskDetailList = get(query);//不带套餐的菜品
-        query.setCondition(backUpCondition+" and price is null");
-        List<DeskDetail> out=groupByName(deskDetailList);
-        out.addAll(get(query));
+        List<DeskDetail> out = new ArrayList<>();
+        String lastName = null;
+        DeskDetail lastDeskDetail = null;
+        for (DeskDetail deskDetail : deskDetailList) {
+            String sign = deskDetail.getFoodSign();
+            if ("y".equals(otherParamService.getValueByName("结账包含退菜"))) {
+                sign = deskDetail.getFoodName();
+            }
+            if (sign.equals(lastName) && deskDetail.getNum() != null && lastDeskDetail.getNum() != null && deskDetail.getNotNullPrice().equals(lastDeskDetail.getNotNullPrice())) {//重名，并且两者数量都不是null（说明不是套餐里的菜），并且单价也不能一样，就聚合
+                lastDeskDetail.setNum(lastDeskDetail.getNum() + deskDetail.getNum());
+            } else {
+                out.add(deskDetail);
+                lastName = sign;
+                lastDeskDetail = deskDetail;
+            }
+        }
         return out;
     }
 
@@ -60,12 +76,12 @@ public class DeskDetailService extends BaseService<DeskDetail> {
      * 通过桌号和销售点获得该桌账务列表，不进行聚合，主要用于数据计表
      */
     /*考虑营业部门*/
-    public List<DeskDetail> getListByDesk(String deskName, String pointOfSale,String orderByList,Boolean foodSet) throws Exception {
-        return deskDetailMapper.getList(deskName, pointOfSale, orderByList,foodSet);
+    public List<DeskDetail> getListByDesk(String deskName, String pointOfSale, String orderByList, Boolean foodSet) throws Exception {
+        return deskDetailMapper.getList(deskName, pointOfSale, orderByList, foodSet);
     }
 
     /*根据厨房排序，用于电子划菜*/
-    public List<DeskDetail> getListByDeskCookRoom(String deskName)throws Exception{
+    public List<DeskDetail> getListByDeskCookRoom(String deskName) throws Exception {
         Query query = new Query("desk=" + util.wrapWithBrackets(deskName));
         query.setOrderByList(new String[]{"cookRoom"});
         return get(query);
@@ -81,28 +97,9 @@ public class DeskDetailService extends BaseService<DeskDetail> {
     }
 
     /**
-     * groupByName通过菜品名称来聚合菜品
-     * 注意，之前必须根据名称排序
-     */
-    public List<DeskDetail> groupByName(List<DeskDetail> deskDetailList){
-        List<DeskDetail> deskDetailListGroup = new ArrayList<>();
-        String lastName = null;
-        DeskDetail lastDeskDetail = null;
-        for (DeskDetail deskDetail : deskDetailList) {
-            if (deskDetail.getFoodName().equals(lastName)&&deskDetail.getNum()!=null&&lastDeskDetail.getNum()!=null&&deskDetail.getNotNullPrice().equals(lastDeskDetail.getNotNullPrice())) {//重名，并且两者数量都不是null（说明不是套餐里的菜），并且单价也不能一样，就聚合
-                lastDeskDetail.setNum(lastDeskDetail.getNum() + deskDetail.getNum());
-            } else {
-                deskDetailListGroup.add(deskDetail);
-                lastName = deskDetail.getFoodName();
-                lastDeskDetail = deskDetail;
-            }
-        }
-        return deskDetailListGroup;
-    }
-    /**
      * 通过桌号获得当前桌参与点菜的操作员
      */
-    public List<String> getDistinctUserId(String deskName, String pointOfSale){
-        return deskDetailMapper.getDistinctUserId(deskName,pointOfSale);
+    public List<String> getDistinctUserId(String deskName, String pointOfSale) {
+        return deskDetailMapper.getDistinctUserId(deskName, pointOfSale);
     }
 }

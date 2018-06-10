@@ -75,6 +75,8 @@ public class DeskController {
     DeskInCancelAllService deskInCancelAllService;
     @Autowired
     DeskDetailCancelAllService deskDetailCancelAllService;
+    @Autowired
+    CurrencyService currencyService;
 
     @RequestMapping(value = "deskAdd")
     public void deskAdd(@RequestBody Desk desk) throws Exception {
@@ -181,14 +183,19 @@ public class DeskController {
             consume += deskDetail.getNotNullPrice() * deskDetail.getNum();
         }
         /*生成结账信息*/
-        String changeDebt = "";//转账信息
+        StringBuilder changeDebt = new StringBuilder();//转账信息
         for (CurrencyPost currencyPost : currencyPostList) {
             this.generateDeskPay(pointOfSale, currencyPost, deskPayList);
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
-            changeDebt += " 币种:" + currency + "/" + money;
-            changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, null, null, desk+"餐饮结账", serialService.getCkSerial(), "餐饮", pointOfSale);
+            Currency currencyItem=currencyService.getByName(currency);
+            String prepareToAdd=debtPayService.parseCurrency(currency, currencyAdd, money, null, null, desk + "餐饮结账", serialService.getCkSerial(), "餐饮", pointOfSale);
+            prepareToAdd=prepareToAdd.split("签单人")[0];//不要签单人
+            if(currencyItem.getNotNullShowInReport()) {
+                changeDebt.append(" 币种:").append(currency).append("/").append(money);
+                changeDebt.append(prepareToAdd);
+            }
         }
         deskPayService.add(deskPayList);
         /*餐桌信息转移到历史*/
@@ -203,6 +210,11 @@ public class DeskController {
         deskInService.delete(deskIn);
         deskInHistoryService.add(deskInHistory);
         /*处理报表*/
+        /*需要考虑的
+        * 1.菜品聚合
+        * 2.包括退菜
+        * 3.套餐在前
+        * */
         List<FieldTemplate> templateList = new ArrayList<>();
         if ("y".equals(otherParamService.getValueByName("菜品聚合"))) {
             deskControllerService.generateDetail(deskDetailService.getListByDeskGroup(desk, pointOfSale), templateList);
@@ -259,7 +271,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -337,16 +349,19 @@ public class DeskController {
         List<DeskDetailHistory> deskDetailHistoryList = deskDetailHistoryService.getList(ckSerial, "category,do_time",null);
         deskControllerService.generateDetailHistory(deskDetailHistoryList, templateList);
         /*生成结账信息*/
-        String changeDebt = "";//转账信息
+        StringBuilder changeDebt = new StringBuilder();//转账信息
         List<DeskPay> deskPayList = deskPayService.getByCkSerial(ckSerial);
         for (DeskPay deskPay : deskPayList) {
-            changeDebt += " 币种:" + deskPay.getCurrency() + "/" + deskPay.getPayMoney() + '/';
             String currencyAdd = deskPay.getCurrencyAdd();
-            if (currencyAdd != null) {
-                changeDebt += currencyAdd;
+            Currency currencyItem=currencyService.getByName(deskPay.getCurrency());
+            if(currencyItem==null||currencyItem.getNotNullShowInReport()) {
+                changeDebt.append(" 币种:").append(deskPay.getCurrency()).append("/").append(deskPay.getPayMoney()).append('/');
+                if (currencyAdd != null) {
+                    changeDebt.append(currencyAdd);
+                }
             }
         }
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt, ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -526,6 +541,7 @@ public class DeskController {
      * 思路：删除所有退菜，重新退菜
      */
     @RequestMapping("cancelWholeDesk")
+    @Transactional(rollbackFor = Exception.class)
     public void cancelWholeDesk(@RequestBody DeskIn deskIn) throws Exception {
         Date now=new Date();
         List<DeskDetail> deskDetailList=deskDetailService.getListByDesk(deskIn.getDesk(),deskIn.getPointOfSale(),null,null);

@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.sygdsoft.jsonModel.CurrencyPost;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
@@ -339,30 +340,31 @@ public class DebtController {
     public Integer retailIn(@RequestBody RetailIn retailIn) throws Exception {
         serialService.setPaySerial();
         timeService.setNow();
-        DebtHistory debtHistory = retailIn.getDebtHistory();
-        String currency = debtHistory.getCurrency();
-        String currencyAdd = debtHistory.getCurrencyAdd();
-        Double money = debtHistory.getConsume();
-        /*判断是不是转单位*/
-        if ("转单位".equals(currency)) {
-            debtHistory.setCompany(currencyAdd.split(" ")[0]);
+        String description=retailIn.getDescription();
+        List<DebtHistory> debtHistoryList=retailIn.getDebtHistoryList();
+        for (DebtHistory debtHistory : debtHistoryList) {
+            debtHistory.setPaySerial(serialService.getPaySerial());
+            debtHistoryService.add(debtHistory);
         }
         /*生成一条结账记录*/
-        DebtPay debtPay = new DebtPay();
-        debtPay.setPaySerial(serialService.getPaySerial());
-        debtPay.setDebtMoney(money);
-        debtPay.setCurrency(currency);
-        debtPay.setCurrencyAdd(currencyAdd);
-        debtPay.setDoneTime(debtHistory.getDoneTime());
-        debtPay.setDebtCategory("商品零售");
-        debtPay.setDescription(debtHistory.getDescription());
-        debtPay.setPointOfSale(debtHistory.getPointOfSale());
-        debtPay.setUserId(debtHistory.getUserId());
-        debtHistory.setPaySerial(serialService.getPaySerial());
-        debtPayService.add(debtPay);
-        debtHistoryService.add(debtHistory);
-        /*判断币种*/
-        debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "商品零售", serialService.getPaySerial(), "接待", "接待");
+        List<CurrencyPost> currencyPostList=retailIn.getCurrencyPostList();
+        StringBuilder changeDebt= new StringBuilder();
+        for (CurrencyPost currencyPost : currencyPostList) {
+            DebtPay debtPay = new DebtPay();
+            debtPay.setPaySerial(serialService.getPaySerial());
+            debtPay.setDebtMoney(currencyPost.getMoney());
+            debtPay.setCurrency(currencyPost.getCurrency());
+            debtPay.setCurrencyAdd(currencyPost.getCurrencyAdd());
+            debtPay.setDoneTime(timeService.getNow());
+            debtPay.setDebtCategory("商品零售");
+            debtPay.setDescription(description);
+            debtPay.setPointOfSale("零售");
+            debtPay.setUserId(userService.getCurrentUser());
+            debtPayService.add(debtPay);
+            changeDebt.append(" 币种:").append(currencyPost.getCurrency()).append("/").append(currencyPost.getMoney());
+            /*判断币种*/
+            debtPayService.parseCurrency(currencyPost.getCurrency(), currencyPost.getCurrencyAdd(), currencyPost.getMoney(), null, null, "商品零售", serialService.getPaySerial(), "接待", "接待");
+        }
         /*创建房吧明细账务*/
         List<RoomShopDetail> roomShopDetailList = retailIn.getRoomShopDetailList();
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {
@@ -375,7 +377,7 @@ public class DebtController {
         /*商品零售报表
         * parameter
         * 1.操作员
-        * 2.金额
+        * 2.金额 (弃用)
         * 3.时间
         * 4.消费项目
         * 5.结账流水号
@@ -386,13 +388,13 @@ public class DebtController {
         * */
         /*分析消费项目*/
         List<FieldTemplate> templateList = new ArrayList<>();
-        String[] itemArray = debtHistory.getDescription().split("/");
+        String[] itemArray = description.split("/");
         for (String s : itemArray) {
             FieldTemplate var = new FieldTemplate();
             var.setField1(s);
             templateList.add(var);
         }
-        return reportService.generateReport(templateList, new String[]{userService.getCurrentUser(), String.valueOf(debtHistory.getConsume()), timeService.getNowLong(), debtHistory.getDescription(), serialService.getPaySerial(), debtHistory.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
+        return reportService.generateReport(templateList, new String[]{userService.getCurrentUser(), "", timeService.getNowLong(), description, serialService.getPaySerial(), changeDebt.toString(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
     }
 
 }

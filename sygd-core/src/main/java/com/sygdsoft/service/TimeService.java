@@ -154,14 +154,14 @@ public class TimeService {
         return timeFormat.format(date);
     }
 
-    public String dateToStringLong(Date date) {
+    public synchronized String dateToStringLong(Date date) {
         if (date == null) {
             return "";
         }
         return longFormat.format(date);
     }
 
-    public String dateToStringShort(Date date) {
+    public synchronized String dateToStringShort(Date date) {
         if (date == null) {
             return "";
         }

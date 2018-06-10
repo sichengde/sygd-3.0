@@ -36,6 +36,15 @@ public class DeskDetail extends BaseEntity {
     private Integer subDeskNum;//用餐桌数
     @Transient
     private String globalRemark;//整单备注
+    @Transient
+    private Boolean changeNum;//改变数量
+    @Transient
+    private Boolean changeName;//改变菜名
+    @Transient
+    private Boolean changeUnit;//改变单位名
+    @Transient
+    private String changeAdd;//改变对比，传菜打印用
+
 
     public DeskDetail() {
     }
@@ -305,5 +314,37 @@ public class DeskDetail extends BaseEntity {
 
     public void setSubDeskNum(Integer subDeskNum) {
         this.subDeskNum = subDeskNum;
+    }
+
+    public Boolean getChangeNum() {
+        return changeNum;
+    }
+
+    public void setChangeNum(Boolean changeNum) {
+        this.changeNum = changeNum;
+    }
+
+    public Boolean getChangeName() {
+        return changeName;
+    }
+
+    public void setChangeName(Boolean changeName) {
+        this.changeName = changeName;
+    }
+
+    public String getChangeAdd() {
+        return changeAdd;
+    }
+
+    public void setChangeAdd(String changeAdd) {
+        this.changeAdd = changeAdd;
+    }
+
+    public Boolean getChangeUnit() {
+        return changeUnit;
+    }
+
+    public void setChangeUnit(Boolean changeUnit) {
+        this.changeUnit = changeUnit;
     }
 }

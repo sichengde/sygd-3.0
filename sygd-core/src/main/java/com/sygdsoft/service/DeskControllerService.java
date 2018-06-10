@@ -7,6 +7,7 @@ import com.sygdsoft.util.SzMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,27 +24,53 @@ public class DeskControllerService {
     DeskDetailHistoryService deskDetailHistoryService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    OtherParamService otherParamService;
 
     public void generateDetail(List<DeskDetail> deskDetailList, List<FieldTemplate> templateList) throws Exception {
         if (deskDetailList == null || deskDetailList.size() == 0) {
             return;
         }
-        String deskName=deskDetailList.get(0).getDesk();
-        String pointOfSale=deskDetailList.get(0).getPointOfSale();
+        String deskName = deskDetailList.get(0).getDesk();
+        String pointOfSale = deskDetailList.get(0).getPointOfSale();
         String lastCategory = "";
         Double categoryTotal = 0.0;
         FieldTemplate fieldTemplateSum = new FieldTemplate();
-        /*先把套餐都删掉*/
+        /*先把数量为0的都删掉*/
+        List<String> not0SignList=new ArrayList<>();
         Iterator<DeskDetail> it = deskDetailList.iterator();
         while (it.hasNext()) {
+            boolean remove = false;
             DeskDetail deskDetail = it.next();
-            if (deskDetail.getNotNullFoodSet()) {
+            if (!"y".equals(otherParamService.getValueByName("结账包含退菜"))) {
+                if (deskDetail.getNum() == 0.0) {
+                    remove = true;
+                }
+            }
+            if (remove) {
                 it.remove();
+            }else {
+                not0SignList.add(deskDetail.getFoodSign());
+            }
+        }
+        /*再把套餐都删掉*/
+        Iterator<DeskDetail> it2 = deskDetailList.iterator();
+        while (it2.hasNext()) {
+            boolean remove = false;
+            DeskDetail deskDetail = it2.next();
+            if (deskDetail.getNotNullFoodSet()) {
+                remove = true;
+            }
+            if (remove) {
+                it2.remove();
             }
         }
         /*然后再重新查找套餐，其实这个方法很蠢，但没办法，之前的代码太烂*/
         List<DeskDetail> deskDetailListFoodSet = deskDetailService.getListByDesk(deskName, pointOfSale, null, true);
         for (DeskDetail deskDetail : deskDetailListFoodSet) {
+            if(not0SignList.indexOf(deskDetail.getFoodSign())==-1){
+                continue;
+            }
             FieldTemplate fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(deskDetail.getFoodName());
             fieldTemplate.setField2(ifNotNullGetString(deskDetail.getPrice()));
@@ -86,7 +113,7 @@ public class DeskControllerService {
         if (deskDetailHistoryList == null || deskDetailHistoryList.size() == 0) {
             return;
         }
-        String ckSerial=deskDetailHistoryList.get(0).getCkSerial();
+        String ckSerial = deskDetailHistoryList.get(0).getCkSerial();
         String lastCategory = "";
         Double categoryTotal = 0.0;
         FieldTemplate fieldTemplateSum = new FieldTemplate();

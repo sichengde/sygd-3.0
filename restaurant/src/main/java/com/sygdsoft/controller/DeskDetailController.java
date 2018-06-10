@@ -1,9 +1,13 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,7 @@ import java.util.Map;
  */
 @RestController
 public class DeskDetailController {
+    private static final Logger logger = LoggerFactory.getLogger(DeskDetailController.class);
     @Autowired
     DeskDetailService deskDetailService;
     @Autowired
@@ -42,6 +47,7 @@ public class DeskDetailController {
     CookRoomService cookRoomService;
     @Autowired
     MenuService menuService;
+
 
     @RequestMapping(value = "deskDetailGet")
     public List<DeskDetail> deskDetailGet(@RequestBody Query query) throws Exception {
@@ -85,6 +91,7 @@ public class DeskDetailController {
     @RequestMapping(value = "deskDetailAction")
     @Transactional(rollbackFor = Exception.class)
     public synchronized void deskAction(@RequestBody List<DeskDetail> deskDetailList) throws Exception {
+        //logger.info(JSON.toJSONString(deskDetailList));
         timeService.setNow();
         List<DeskDetail> deskDetailUpdate = new ArrayList<>();//需要更新的
         List<DeskDetail> deskDetailInsert = new ArrayList<>();//需要查入的
@@ -109,6 +116,21 @@ public class DeskDetailController {
                 deskDetail.setDoTime(timeService.getNow());
                 deskDetailUpdate.add(deskDetail);
                 if (deskDetail.getNotNullCallUp()||deskDetail.getNotNullWaitCall()) {//叫起的菜
+                    deskDetailPrint.add(deskDetail);
+                }
+                if(deskDetail.getChangeNum()!=null){
+                    DeskDetail old=deskDetailService.getById(deskDetail.getId());
+                    deskDetail.setChangeAdd(",数量:"+old.getNum()+"=>"+deskDetail.getNum());
+                    deskDetailPrint.add(deskDetail);
+                }
+                if(deskDetail.getChangeNum()!=null){
+                    DeskDetail old=deskDetailService.getById(deskDetail.getId());
+                    deskDetail.setChangeAdd(",单位:"+old.getUnit()+"=>"+deskDetail.getUnit());
+                    deskDetailPrint.add(deskDetail);
+                }
+                if(deskDetail.getChangeName()!=null){
+                    DeskDetail old=deskDetailService.getById(deskDetail.getId());
+                    deskDetail.setChangeAdd(",菜名:"+old.getFoodName()+"=>"+deskDetail.getFoodName());
                     deskDetailPrint.add(deskDetail);
                 }
             }
@@ -142,6 +164,7 @@ public class DeskDetailController {
             logAction = "修改菜品：" + deskDetail.getDesk();
         }
         deskDetailService.add(deskDetailInsert);
+        deskInService.updateConsume(deskIn.getDesk(),deskIn.getPointOfSale());
         /*统计沽清*/
         menuService.setRemain(deskDetailInsert);
         deskDetailService.update(deskDetailUpdate);
@@ -174,5 +197,25 @@ public class DeskDetailController {
                 reportService.printPassFood(s, deskDetailMap.get(s),deskIn);
             }
         }
+    }
+
+    /**
+     * 菜品换台
+     */
+    @RequestMapping("menuChangeDesk")
+    @Transactional(rollbackFor = Exception.class)
+    public void menuChangeDesk(@RequestBody DeskDetail deskDetail) throws Exception {
+        String targetDesk=deskDetail.getGlobalRemark();
+        /*删除菜品*/
+        deskDetailService.delete(deskDetail);
+        /*更新deskIn*/
+        deskInService.updateConsume(deskDetail.getDesk(),deskDetail.getPointOfSale());
+        /*新桌点菜*/
+        deskDetail.setNeedInsert(true);
+        deskDetail.setRemark(deskDetail.getDesk()+"转入");
+        deskDetail.setDesk(targetDesk);
+        List<DeskDetail> deskDetailList=new ArrayList<>();
+        deskDetailList.add(deskDetail);
+        this.deskAction(deskDetailList);
     }
 }
