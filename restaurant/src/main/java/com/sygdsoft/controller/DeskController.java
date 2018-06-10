@@ -191,6 +191,7 @@ public class DeskController {
             Double money = currencyPost.getMoney();
             Currency currencyItem=currencyService.getByName(currency);
             String prepareToAdd=debtPayService.parseCurrency(currency, currencyAdd, money, null, null, desk + "餐饮结账", serialService.getCkSerial(), "餐饮", pointOfSale);
+            prepareToAdd=prepareToAdd.split("签单人")[0];//不要签单人
             if(currencyItem.getNotNullShowInReport()) {
                 changeDebt.append(" 币种:").append(currency).append("/").append(money);
                 changeDebt.append(prepareToAdd);

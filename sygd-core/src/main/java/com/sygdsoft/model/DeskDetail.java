@@ -41,6 +41,8 @@ public class DeskDetail extends BaseEntity {
     @Transient
     private Boolean changeName;//改变菜名
     @Transient
+    private Boolean changeUnit;//改变单位名
+    @Transient
     private String changeAdd;//改变对比，传菜打印用
 
 
@@ -336,5 +338,13 @@ public class DeskDetail extends BaseEntity {
 
     public void setChangeAdd(String changeAdd) {
         this.changeAdd = changeAdd;
+    }
+
+    public Boolean getChangeUnit() {
+        return changeUnit;
+    }
+
+    public void setChangeUnit(Boolean changeUnit) {
+        this.changeUnit = changeUnit;
     }
 }

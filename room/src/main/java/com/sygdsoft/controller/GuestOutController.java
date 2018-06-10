@@ -490,6 +490,9 @@ public class GuestOutController {
             }
             debtPay.setPointOfSale(pointOfSaleService.JQ);
             debtPay.setUserId(userService.getCurrentUser());
+            if("转哑房".equals(debtPay.getCurrency())){
+                debtPay.setLostDone(false);
+            }
             debtPayService.add(debtPay);
             changeDebt += " 币种:" + currency + "/" + money;
             /*检查转房客，转押金，因为只有离店时有这个选项*/
@@ -750,6 +753,7 @@ public class GuestOutController {
                 totalRoomShopConsume = debtService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkIn.getSelfAccount());
             } else {
                 CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(guestOut.getGroupAccount());
+                roomID = checkInGroup.getLeaderRoom();
                 reachTime = timeService.dateToStringLong(checkInGroup.getReachTime());
                 company = checkInGroup.getCompany();
                 Double totalConsume = 0.0;
@@ -800,6 +804,7 @@ public class GuestOutController {
                 }
                 account = checkOut.getGroupAccount();
                 groupName = checkOut.getGroupName();
+                roomID=checkOutGroup.getLeaderRoom();
                 roomIdAll = roomService.roomListToString(roomList);
                 totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getGroupAccount());
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getGroupAccount());

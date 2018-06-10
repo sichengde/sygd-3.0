@@ -470,3 +470,6 @@ ALTER TABLE book_room_category ADD opened_num INT DEFAULT 0 NULL;
 DROP INDEX desk_in_desk_uindex ON desk_in_cancel_all;
 #2018-05-25 增加菜谱是否在pad上显示参数
 ALTER TABLE menu ADD show_on_pad BOOLEAN NULL;
+#2018-06-09 增加餐桌排序
+ALTER TABLE hotel.desk ADD desk_order INT NULL;
+ALTER TABLE hotel.menu ADD exist_picture BOOLEAN NULL;
