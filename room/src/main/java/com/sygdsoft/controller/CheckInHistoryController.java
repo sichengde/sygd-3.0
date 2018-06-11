@@ -1,17 +1,13 @@
 package com.sygdsoft.controller;
 
 import com.sygdsoft.jsonModel.Query;
-import com.sygdsoft.model.CheckInHistory;
-import com.sygdsoft.model.CheckInHistoryLog;
-import com.sygdsoft.model.CheckInIntegration;
-import com.sygdsoft.model.GuestMapCheckIn;
-import com.sygdsoft.service.CheckInHistoryLogService;
-import com.sygdsoft.service.CheckInHistoryService;
-import com.sygdsoft.service.CheckInIntegrationService;
-import com.sygdsoft.service.GuestMapCheckInService;
+import com.sygdsoft.mapper.DebtIntegrationMapper;
+import com.sygdsoft.model.*;
+import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -30,6 +26,12 @@ public class CheckInHistoryController {
     CheckInHistoryLogService checkInHistoryLogService;
     @Autowired
     CheckInIntegrationService checkInIntegrationService;
+    @Autowired
+    ReportService reportService;
+    @Autowired
+    DebtIntegrationMapper debtIntegrationMapper;
+    @Autowired
+    OtherParamService otherParamService;
 
     @RequestMapping(value = "checkInHistoryGet")
     public List<CheckInHistory> checkInHistoryGet(@RequestBody Query query) throws Exception {
@@ -76,5 +78,19 @@ public class CheckInHistoryController {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 根据来店历史打印账务明细
+     */
+    @RequestMapping(value = "printDebtDetailList")
+    public int printDebtDetailList(@RequestBody List<CheckInIntegration> checkInIntegrationList)throws Exception{
+        DebtIntegration debtIntegrationQuery=new DebtIntegration();
+        List<DebtIntegration> debtIntegrationList=new ArrayList<>();
+        for (CheckInIntegration checkInIntegration : checkInIntegrationList) {
+            debtIntegrationQuery.setSelfAccount(checkInIntegration.getSelfAccount());
+            debtIntegrationList.addAll(debtIntegrationMapper.select(debtIntegrationQuery));
+        }
+        return reportService.generateReport(debtIntegrationList,new String[]{otherParamService.getValueByName("酒店名称")},"printDebtDetailList","pdf" );
     }
 }

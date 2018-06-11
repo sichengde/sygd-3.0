@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Service
 public class ReportService {
-    private List<FieldTemplate> templateList;//fields
+    private List templateList;//fields
     private String[] parameters;//参数
     private String name;//报表名字(.jasper文件)
     private String format;//报表格式pdf/xls
@@ -42,14 +42,14 @@ public class ReportService {
     public ReportService() {
     }
 
-    public ReportService(List<FieldTemplate> templateList, String[] parameters, String name, String format) {
+    public ReportService(List templateList, String[] parameters, String name, String format) {
         this.templateList = templateList;
         this.parameters = parameters;
         this.name = name;
         this.format = format;
     }
 
-    public Integer generateReport(List<FieldTemplate> templateList, String[] parameters, String name, String format) {
+    public Integer generateReport(List templateList, String[] parameters, String name, String format) {
         map.put(getReportSerial(), new ReportService(templateList, parameters, name, format));
         return reportSerial;
     }
@@ -73,6 +73,7 @@ public class ReportService {
         * 6.全单备注
         * 7.单价
         * 8.单位
+        * 9.等叫叫起信息
         * */
         param.put("parameter1", deskDetail.getDesk());
         param.put("parameter2", deskDetail.getFoodName());
@@ -83,12 +84,6 @@ public class ReportService {
         if(deskDetail.getRemark()!=null) {
             remark.append(deskDetail.getRemark());
         }
-        if (deskDetail.getNotNullWaitCall()) {
-            remark.append("[等叫]");
-        }
-        if (deskDetail.getNotNullCallUp()) {
-            remark.append("[叫起]");
-        }
         if(deskDetail.getChangeAdd()!=null){
             remark.append(deskDetail.getChangeAdd());
         }
@@ -96,6 +91,12 @@ public class ReportService {
         param.put("parameter6", deskIn.getRemark());
         param.put("parameter7", deskDetail.getNotNullPrice());
         param.put("parameter8", deskDetail.getUnit());
+        if (deskDetail.getNotNullWaitCall()) {
+            param.put("parameter9", "[等叫]");
+        }
+        if (deskDetail.getNotNullCallUp()) {
+            param.put("parameter9", "[叫起]");
+        }
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/cookRoom.jasper", param, new JREmptyDataSource());
         this.printByPrinterName(printerName, jasperPrint);
     }
