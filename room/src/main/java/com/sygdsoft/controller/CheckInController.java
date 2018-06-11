@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by 舒展 on 2016-03-21.
@@ -65,7 +66,7 @@ public class CheckInController {
         checkIn.setDeposit(null);
         checkInService.updateSelective(checkIn);
         /*如果是可编辑房价的话，还要修改房价协议*/
-        if(otherParamService.getValueByName("可编辑房价").equals("y") && checkIn1.getFinalRoomPrice()==checkIn.getFinalRoomPrice()) {
+        if(otherParamService.getValueByName("可编辑房价").equals("y") && Objects.equals(checkIn1.getFinalRoomPrice(), checkIn.getFinalRoomPrice())) {
             Protocol protocol = protocolService.getByNameTemp(checkIn.getProtocol());
             protocol.setRoomPrice(checkIn.getFinalRoomPrice());
             protocolService.update(protocol);

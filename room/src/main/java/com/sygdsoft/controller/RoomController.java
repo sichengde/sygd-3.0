@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -144,11 +146,11 @@ public class RoomController {
         }
         checkInGuestService.update(checkInGuestList);
         /*更新账务*/
-        List<Debt> debtAddList=new ArrayList<>();
+        List<Debt> debtAddList = new ArrayList<>();
         List<Debt> debtList = debtService.get(new Query("room_id=" + util.wrapWithBrackets(srcRoomId)));
         for (Debt debt : debtList) {
             debt.setRoomId(dstRoomId);
-            debt.setRemark(srcRoomId+"->换房产生");
+            debt.setRemark(srcRoomId + "->换房产生");
             if (debt.getCategory().equals("凌晨房费")) {
                 /*如果是凌晨房，补齐杂单或者冲账*/
                 Double money = checkIn.getFinalRoomPrice() - srcRoom.getCheckIn().getFinalRoomPrice();
@@ -171,10 +173,24 @@ public class RoomController {
             }
         }
         debtService.update(debtList);
-        if(debtAddList.size()>0) {
+        if (debtAddList.size() > 0) {
             debtService.addDebt(debtAddList);
         }
         userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom, null);
+    }
+
+    /**
+     * 小时房转日租
+     */
+    @RequestMapping(value = "hourToNormal")
+    @Transactional(rollbackFor = Exception.class)
+    public void hourToNormal(@RequestBody CheckIn checkIn) throws Exception {
+        if (otherParamService.getValueByName("可编辑房价").equals("y")) {
+            Protocol protocol = protocolService.getByNameTemp(checkIn.getProtocol());
+            protocol.setRoomPrice(checkIn.getFinalRoomPrice());
+            protocolService.update(protocol);
+        }
+        checkInService.update(checkIn);
     }
 
     /**

@@ -16,7 +16,9 @@ public class RoomCategory extends BaseEntity {
     @Transient
     private Integer remain;//剩余数量
     @Transient
-    private Integer todayLeave;//剩余数量
+    private Integer live;//在住数量
+    @Transient
+    private Integer todayLeave;//预离数量
 
     public RoomCategory() {
     }
@@ -26,6 +28,14 @@ public class RoomCategory extends BaseEntity {
             return 0;
         }else {
             return remain;
+        }
+    }
+
+    public int getNotNullLive(){
+        if(live==null){
+            return 0;
+        }else {
+            return live;
         }
     }
 
@@ -103,5 +113,13 @@ public class RoomCategory extends BaseEntity {
 
     public void setTodayLeave(Integer todayLeave) {
         this.todayLeave = todayLeave;
+    }
+
+    public Integer getLive() {
+        return live;
+    }
+
+    public void setLive(Integer live) {
+        this.live = live;
     }
 }

@@ -33,24 +33,33 @@ public class BookParseController {
     BookRoomCategoryService bookRoomCategoryService;
 
     @RequestMapping("futureRoomStateCategory")
-    public List<JSONObject> futureRoomStateCategory(@RequestBody ReportJson reportJson)throws Exception{
+    public JSONObject futureRoomStateCategory(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = timeService.getMinTime(reportJson.getBeginTime());
         Date endTime = timeService.getMinTime(reportJson.getEndTime());
-        List<JSONObject> jsonObjectList=new ArrayList<>();
-        while (beginTime.getTime()<=endTime.getTime()){
-            List<RoomCategory> roomCategoryList=getRoomCategoryRemain(beginTime,timeService.addDay(beginTime,1));
-            JSONObject jsonObject=new JSONObject();
-            jsonObject.put("date",timeService.dateToStringShort(beginTime));
+        JSONObject result = new JSONObject();
+        List<JSONObject> jsonObjectList = new ArrayList<>();
+        Integer available = 0;
+        Integer leave = 0;
+        Integer live = 0;
+        while (beginTime.getTime() <= endTime.getTime()) {
+            List<RoomCategory> roomCategoryList = getRoomCategoryRemain(beginTime, timeService.addDay(beginTime, 1));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("date", timeService.dateToStringShort(beginTime));
             for (RoomCategory roomCategory : roomCategoryList) {
-                jsonObject.put(roomCategory.getCategory(),roomCategory.getNotNullRemain()+"("+roomCategory.getNotNullTodayLeave()+")");
+                jsonObject.put(roomCategory.getCategory(), roomCategory.getNotNullRemain() + "(" + roomCategory.getNotNullTodayLeave() + ")");
+                available += roomCategory.getNotNullRemain();
+                leave += roomCategory.getNotNullTodayLeave();
+                live += roomCategory.getNotNullLive();
             }
             jsonObjectList.add(jsonObject);
-            beginTime=timeService.addDay(beginTime,1);
+            beginTime = timeService.addDay(beginTime, 1);
         }
-        return jsonObjectList;
+        result.put("data", jsonObjectList);
+        result.put("remark", "预离房数:"+leave+" , 可用房数:"+available+" , 在店房间数量:"+ live);
+        return result;
     }
 
-    private List<RoomCategory> getRoomCategoryRemain(Date beginTime,Date endTime) throws Exception {
+    private List<RoomCategory> getRoomCategoryRemain(Date beginTime, Date endTime) throws Exception {
         /*先获取所有房间种类*/
         List<RoomCategory> roomCategoryList = roomCategoryService.get(null);
         /*每个房间种类的可用房*/
@@ -70,10 +79,11 @@ public class BookParseController {
                 String category = checkIn.getRoomCategory();
                 for (RoomCategory roomCategory : roomCategoryList) {
                     if (roomCategory.getCategory().equals(category)) {
-                        if(checkIn.getLeaveTime().getTime()<endTime.getTime()){//只是预离
-                            roomCategory.setTodayLeave(roomCategory.getNotNullTodayLeave()+1);
-                        }else {//确实冲突
+                        if (checkIn.getLeaveTime().getTime() < endTime.getTime()) {//只是预离
+                            roomCategory.setTodayLeave(roomCategory.getNotNullTodayLeave() + 1);
+                        } else {//确实冲突
                             roomCategory.setRemain(roomCategory.getRemain() - 1);
+                            roomCategory.setLive(roomCategory.getNotNullLive() + 1);
                         }
                     }
                 }
