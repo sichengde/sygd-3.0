@@ -23,8 +23,8 @@ public class DeskDetailHistoryService extends BaseService<DeskDetailHistory> {
     /**
      * 通过结账序列号获得历史菜品列表
      */
-    public List<DeskDetailHistory> getList(String ckSerial,String orderByList,Boolean foodSet) {
-        return deskDetailHistoryMapper.getList(ckSerial, orderByList,foodSet);
+    public List<DeskDetailHistory> getList(String ckSerial, String orderByList, Boolean foodSet) {
+        return deskDetailHistoryMapper.getList(ckSerial, orderByList, foodSet);
     }
 
     /**
@@ -36,6 +36,13 @@ public class DeskDetailHistoryService extends BaseService<DeskDetailHistory> {
         } else {
             return deskDetailHistoryMapper.getDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale, secondPointOfSale);
         }
+    }
+
+    /**
+     * 获得未定义的该日期该类别的消费额(二级统计类别)
+     */
+    public Double getUndefineDeskMoneyByDatePointOfSale(Date beginTime, Date endTime, String firstPointOfSale) {
+        return deskDetailHistoryMapper.getUndefineDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale);
     }
 
     /**
@@ -66,7 +73,7 @@ public class DeskDetailHistoryService extends BaseService<DeskDetailHistory> {
     /**
      * 统计各个菜品的销售数据，金额，数量
      */
-    public List<DeskDetailHistory> getSumList(Date beginTime, Date endTime, String pointOfSale, String category, Boolean mergeFood){
+    public List<DeskDetailHistory> getSumList(Date beginTime, Date endTime, String pointOfSale, String category, Boolean mergeFood) {
         return deskDetailHistoryMapper.getSumList(beginTime, endTime, pointOfSale, category, mergeFood);
     }
 

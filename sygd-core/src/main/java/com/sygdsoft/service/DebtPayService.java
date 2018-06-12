@@ -59,8 +59,8 @@ public class DebtPayService extends BaseService<DebtPay> {
     @Autowired
     TimeService timeService;
 
-    public String companySplit1=null;//如果单位可以用斜杠分隔，则这里输出分割后的两部分
-    public String companySplit2=null;
+    public String companySplit1 = null;//如果单位可以用斜杠分隔，则这里输出分割后的两部分
+    public String companySplit2 = null;
 
     /**
      * 查找结账记录
@@ -117,15 +117,16 @@ public class DebtPayService extends BaseService<DebtPay> {
                     throw new Exception("房间号不存在或者没有开房");
                 }
                 Debt debt = new Debt();
-                debt.setPointOfSale("挂账");
                 debt.setConsume(money);
+                debt.setPointOfSale("挂账");
                 debt.setCurrency("挂账");
                 debt.setRoomId(currencyAdd);
                 debt.setUserId(userService.getCurrentUser());
-                debt.setDescription(roomService.roomListToString(roomList) + description+"挂账");
+                debt.setDescription(roomService.roomListToString(roomList) + description + "挂账");
                 debt.setFromRoom(paySerial);
                 if (paySerial.contains("ck")) {
                     debt.setCategory("餐饮挂账");
+                    debt.setPointOfSale("餐饮挂账");
                 } else if (paySerial.contains("p")) {
                     debt.setCategory("客房挂账");
                 }
@@ -162,9 +163,9 @@ public class DebtPayService extends BaseService<DebtPay> {
                         changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, null, paySerial, pointOfSale);
                     } else {
                         CheckIn checkIn = checkInService.getByRoomId(roomList.get(0));//在店户籍
-                        if(checkIn==null){//哑房结算
+                        if (checkIn == null) {//哑房结算
                             changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, null, paySerial, pointOfSale);
-                        }else {
+                        } else {
                             changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, checkIn.getSelfAccount(), checkIn.getGroupAccount(), paySerial, pointOfSale);
                         }
                     }
@@ -183,10 +184,10 @@ public class DebtPayService extends BaseService<DebtPay> {
                     throw new Exception("请输入签单单位和签单人");
                 }
                 /*尝试分隔单位符号*/
-                String[] afterSplit=company.split("/");
-                if(afterSplit.length>1){
-                    companySplit1=afterSplit[0];
-                    companySplit2=afterSplit[1];
+                String[] afterSplit = company.split("/");
+                if (afterSplit.length > 1) {
+                    companySplit1 = afterSplit[0];
+                    companySplit2 = afterSplit[1];
                 }
                 changeDebt += companyService.companyAddDebt(company, lord, money, description, module, pointOfSale, paySerial);
                 break;
@@ -208,11 +209,11 @@ public class DebtPayService extends BaseService<DebtPay> {
     /**
      * 账单取消后退回币种
      */
-    public void cancelPay(String currency, String currencyAdd, Double money, String serial, String pointOfSale,String secondPointOfSale) throws Exception {
+    public void cancelPay(String currency, String currencyAdd, Double money, String serial, String pointOfSale, String secondPointOfSale) throws Exception {
         switch (currency) {
             case "转房客"://把转的金额取消
                 debtService.deleteByCheckOutSerial(serial);//删除房账
-                debtService.updateGuestInMoney(currencyAdd,0.0,0.0);
+                debtService.updateGuestInMoney(currencyAdd, 0.0, 0.0);
                 break;//不转移账务明细
             case "转哑房"://转哑房
                 break;
