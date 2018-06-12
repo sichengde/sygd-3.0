@@ -281,7 +281,7 @@ public class GuestOutController {
         }
         String[] parameters = new String[]{
                 otherParamService.getValueByName("酒店名称"),
-                null,
+                checkInGuestService.getListByRoomId(guestOutMiddle.getRoomIdList()),
                 firstRoom,
                 serialService.getPaySerial(),
                 timeService.dateToStringLong(checkIn.getReachTime()),
