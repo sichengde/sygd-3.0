@@ -68,8 +68,10 @@ public class CheckInController {
         /*如果是可编辑房价的话，还要修改房价协议*/
         if(otherParamService.getValueByName("可编辑房价").equals("y") && Objects.equals(checkIn1.getFinalRoomPrice(), checkIn.getFinalRoomPrice())) {
             Protocol protocol = protocolService.getByNameTemp(checkIn.getProtocol());
-            protocol.setRoomPrice(checkIn.getFinalRoomPrice());
-            protocolService.update(protocol);
+            if(protocol!=null) {
+                protocol.setRoomPrice(checkIn.getFinalRoomPrice());
+                protocolService.update(protocol);
+            }
         }
     }
 }

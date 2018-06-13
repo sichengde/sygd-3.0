@@ -22,6 +22,9 @@ public class RoomShopController {
 
     @RequestMapping(value = "roomShopAdd")
     public void roomShopAdd(@RequestBody RoomShop roomShop) throws Exception {
+        if(roomShop.getItem().indexOf("/")>0||roomShop.getItem().indexOf(":")>0){
+            throw new Exception("不可以含有特殊符号斜杠或者冒号");
+        }
         roomShopService.add(roomShop);
     }
 
