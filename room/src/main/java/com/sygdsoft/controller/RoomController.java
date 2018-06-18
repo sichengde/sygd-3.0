@@ -176,7 +176,7 @@ public class RoomController {
         if (debtAddList.size() > 0) {
             debtService.addDebt(debtAddList);
         }
-        userLogService.addUserLog("宾客换房从 " + srcRoomId + " 换至 " + dstRoomId, userLogService.reception, userLogService.changeRoom, null);
+        userLogService.addUserLog("宾客换房从 " + srcRoomId + "/"+srcRoom.getPrice()+"￥ 换至 " + dstRoomId+"/"+dstRoom.getPrice()+"￥", userLogService.reception, userLogService.changeRoom, null);
     }
 
     /**

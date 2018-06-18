@@ -473,3 +473,10 @@ ALTER TABLE menu ADD show_on_pad BOOLEAN NULL;
 #2018-06-09 增加餐桌排序
 ALTER TABLE hotel.desk ADD desk_order INT NULL;
 ALTER TABLE hotel.menu ADD exist_picture BOOLEAN NULL;
+#2018-06-18 优化单位结算表索引
+CREATE INDEX debt_history_pay_serial_index ON hotel.debt_history (pay_serial);
+CREATE INDEX check_in_history_card_id_index ON hotel.check_in_history (card_id);
+CREATE INDEX guest_map_check_in_card_id_index ON hotel.guest_map_check_in (card_id);
+CREATE INDEX debt_history_self_account_index ON hotel.debt_history (self_account);
+CREATE INDEX company_debt_company_index ON hotel.company_debt (company);
+CREATE INDEX company_debt_history_company_index ON hotel.company_debt_history (company);

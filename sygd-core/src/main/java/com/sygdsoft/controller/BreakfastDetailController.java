@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.BreakfastDetail;
 import com.sygdsoft.model.CheckIn;
+import com.sygdsoft.model.ReportJson;
 import com.sygdsoft.service.BreakfastDetailService;
 import com.sygdsoft.service.CheckInService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,7 +29,7 @@ public class BreakfastDetailController {
     }
 
     @RequestMapping(value = "breakfastDetailDelete")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void breakfastDetailDelete(@RequestBody List<BreakfastDetail> breakfastDetailList) throws Exception {
         breakfastDetailService.delete(breakfastDetailList);
     }
@@ -49,16 +51,24 @@ public class BreakfastDetailController {
         return breakfastDetailService.get(query);
     }
 
+    @RequestMapping(value = "breakfastDetailGetGroup")
+    public List<BreakfastDetail> breakfastDetailGetGroup(@RequestBody ReportJson reportJson) throws Exception {
+        Date beginTime = reportJson.getBeginTime();
+        Date endTime = reportJson.getEndTime();
+        return breakfastDetailService.getListGroup(beginTime, endTime);
+    }
+
     /**
-     * 录入早餐
+     * 录入早餐(弃用，delphi录入)
+     *
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "breakfastDetailIn")
-    public boolean breakfastDetailGetCount(@RequestBody JSONObject jsonObject){
-        String roomId=jsonObject.getString("roomId");
-        CheckIn checkIn=checkInService.getByRoomId(roomId);
-        int remain= breakfastDetailService.breakfastDetailGetCount(checkIn.getSelfAccount());
+    public boolean breakfastDetailGetCount(@RequestBody JSONObject jsonObject) {
+        String roomId = jsonObject.getString("roomId");
+        CheckIn checkIn = checkInService.getByRoomId(roomId);
+        int remain = breakfastDetailService.breakfastDetailGetCount(checkIn.getSelfAccount());
         //if(checkIn.getNotNullConsume())
         return true;
     }
