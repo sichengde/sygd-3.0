@@ -123,6 +123,11 @@ public class DeskDetailController {
                     deskDetail.setChangeAdd(",数量:"+old.getNum()+"=>"+deskDetail.getNum());
                     deskDetailPrint.add(deskDetail);
                 }
+                if(deskDetail.getChangeNum()!=null){
+                    DeskDetail old=deskDetailService.getById(deskDetail.getId());
+                    deskDetail.setChangeAdd(",单位:"+old.getUnit()+"=>"+deskDetail.getUnit());
+                    deskDetailPrint.add(deskDetail);
+                }
                 if(deskDetail.getChangeName()!=null){
                     DeskDetail old=deskDetailService.getById(deskDetail.getId());
                     deskDetail.setChangeAdd(",菜名:"+old.getFoodName()+"=>"+deskDetail.getFoodName());

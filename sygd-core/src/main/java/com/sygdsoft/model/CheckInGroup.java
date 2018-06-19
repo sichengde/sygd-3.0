@@ -11,7 +11,7 @@ public class CheckInGroup extends BaseEntity {
     private String groupAccount;//共付账号
     private String name;//团名
     private String leader;//领队姓名
-    private String leaderRoom;//领队姓名
+    private String leaderRoom;//领队房号
     private String phone;//领队电话
     private String currency;//押金币种
     private String vipNumber;//会员卡号

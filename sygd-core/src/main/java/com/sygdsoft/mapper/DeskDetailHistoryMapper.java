@@ -19,7 +19,7 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
      * 获得该时间段的结算款（不带操作员）
      */
     /*分二级营业部门*/
-    @Select("SELECT ifnull(sum(ddh.price*ddh.num),0) FROM desk_detail_history ddh LEFT JOIN sale_count sc ON ddh.category=sc.name where ddh.done_time>#{beginTime} and ddh.done_time<#{endTime} and sc.second_point_of_sale=#{secondPointOfSale} and sc.first_point_of_sale=#{firstPointOfSale} and ifnull(disabled,false)=false")
+    @Select("SELECT round(ifnull(sum(ddh.price*ddh.num),0),2) FROM desk_detail_history ddh LEFT JOIN sale_count sc ON ddh.category=sc.name where ddh.done_time>#{beginTime} and ddh.done_time<#{endTime} and sc.second_point_of_sale=#{secondPointOfSale} and sc.first_point_of_sale=#{firstPointOfSale} and ifnull(disabled,false)=false")
     Double getDeskMoneyByDatePointOfSale(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("firstPointOfSale") String firstPointOfSale, @Param("secondPointOfSale") String secondPointOfSale);
 
     /*只统计一级营业部门*/
@@ -151,4 +151,8 @@ public interface DeskDetailHistoryMapper extends MyMapper<DeskDetailHistory> {
             @Result(property = "storageDone", column = "storage_done"),
     })
     List<DeskDetailHistory> getSumList(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("category") String category, @Param("mergeFood") Boolean mergeFood);
+
+    @SelectProvider(type = DeskDetailHistorySql.class,method = "getUndefineDeskMoneyByDatePointOfSale")
+    @ResultType(Double.class)
+    Double getUndefineDeskMoneyByDatePointOfSale(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("firstPointOfSale") String firstPointOfSale);
 }

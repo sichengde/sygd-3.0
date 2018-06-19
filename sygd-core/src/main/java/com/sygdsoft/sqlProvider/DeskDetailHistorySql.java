@@ -46,4 +46,8 @@ public class DeskDetailHistorySql {
         return basic;
     }
 
+    public String getUndefineDeskMoneyByDatePointOfSale(Map<String, Object> parameters){
+        String basic="SELECT round(ifnull(sum(ddh.price*ddh.num),0)) from desk_detail_history ddh LEFT JOIN sale_count sc ON ddh.category=sc.name WHERE sc.id IS NULL and ifnull(disabled,false)=false and ddh.done_time>#{beginTime} and ddh.done_time<#{endTime} and point_of_sale=#{firstPointOfSale}";
+        return basic;
+    }
 }

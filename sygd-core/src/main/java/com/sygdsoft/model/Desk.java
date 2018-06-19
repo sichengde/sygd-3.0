@@ -12,6 +12,7 @@ public class Desk extends BaseEntity{
     private String pointOfSale;
     private String seat;
     private String category;
+    private Integer deskOrder;//排序
     @Transient
     private DeskIn deskIn;
     @Transient
@@ -66,5 +67,13 @@ public class Desk extends BaseEntity{
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Integer getDeskOrder() {
+        return deskOrder;
+    }
+
+    public void setDeskOrder(Integer deskOrder) {
+        this.deskOrder = deskOrder;
     }
 }

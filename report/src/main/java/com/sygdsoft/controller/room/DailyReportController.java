@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -85,7 +86,14 @@ public class DailyReportController {
                 virtualLine.add(field + 1);
             }
             /*每个销售点自定义的二级销售部门*/
-            for (String item : pointOfSale.getSecondPointOfSale().split(" ")) {
+            String[] secondList=pointOfSale.getSecondPointOfSale().split(" ");
+            if("餐饮".equals(module)){
+                String[] secondListLarge=new String[secondList.length+1];
+                System.arraycopy(secondList, 0, secondListLarge, 0, secondList.length);
+                secondList=secondListLarge;
+                secondList[secondList.length-1]="系统未定义";
+            }
+            for (String item : secondList) {
                 Double money = 0.0;
                 FieldTemplate old = null;
                 for (FieldTemplate fieldTemplate : templateList) {//如果二级统计部门跟其他pos点的统计部门重复，则不需要新增
@@ -109,7 +117,11 @@ public class DailyReportController {
                             }
                             money = deskInHistoryService.getCategorySum(beginTime, endTime, target, item);
                         } else {
-                            money = deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale, item);
+                            if("系统未定义".equals(item)){
+                                money = deskDetailHistoryService.getUndefineDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale);
+                            }else {
+                                money = deskDetailHistoryService.getDeskMoneyByDatePointOfSale(beginTime, endTime, firstPointOfSale, item);
+                            }
                         }
                         break;
                     case "桑拿":
