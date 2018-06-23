@@ -482,7 +482,7 @@ public class DeskController {
                         ObjectMapper mapper = new ObjectMapper();
                         hotelService.postJSON("http://" + cookRoom.getPrinterIp() + "/printClient", mapper.writeValueAsString(printMessage));
                     } else {//网口打印
-                        reportService.printBuffet(cookRoom.getPrinter(), paramList);
+                        reportService.printDirect(cookRoom.getPrinter(), paramList,"buffet");
                     }
                 }
             }
