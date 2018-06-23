@@ -121,19 +121,14 @@ public class ReportService {
     }
 
     /**
-     * 进行自助餐打印
+     * 进行直接打印
      */
-    public void printBuffet(String printerName, List<String> paramList) throws Exception {
+    public void printDirect(String printerName, List<String> paramList,String fileName) throws Exception {
         Map<String, Object> param = new HashMap<>();
-        param.put("parameter1", paramList.get(0));
-        param.put("parameter2", paramList.get(1));
-        param.put("parameter3", paramList.get(2));
-        param.put("parameter4", paramList.get(3));
-        param.put("parameter5", paramList.get(4));
-        param.put("parameter6", paramList.get(5));
-        param.put("parameter7", paramList.get(6));
-        param.put("parameter8", paramList.get(7));
-        JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/buffet.jasper", param, new JREmptyDataSource());
+        for (int i = 0; i < paramList.size(); i++) {
+            param.put("parameter"+(i+1), paramList.get(i));
+        }
+        JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/"+fileName+".jasper", param, new JREmptyDataSource());
         this.printByPrinterName(printerName, jasperPrint);
     }
 

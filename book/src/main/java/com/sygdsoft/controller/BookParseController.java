@@ -55,7 +55,15 @@ public class BookParseController {
             beginTime = timeService.addDay(beginTime, 1);
         }
         result.put("data", jsonObjectList);
-        result.put("remark", "预离房数:"+leave+" , 可用房数:"+available+" , 在店房间数量:"+ live);
+        String remark= "预离房数:"+leave+" , 可用房数:"+available+" , 在店房间数量:"+ live;
+        if(reportJson.getBeginTime().getTime() == reportJson.getEndTime().getTime() && reportJson.getBeginTime().getTime()==timeService.addDay(timeService.getNowShort(),1).getTime()){
+            Query query=new Query("state=\'维修房\'");
+            Integer repairNum=roomService.get(query).size();
+            query.setCondition("state=\'自用房\'");
+            Integer selfNum=roomService.get(query).size();
+            remark+=" , 维修房数:"+repairNum+" , 自用房数:"+selfNum;
+        }
+        result.put("remark",remark);
         return result;
     }
 
