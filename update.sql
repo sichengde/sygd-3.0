@@ -480,3 +480,5 @@ CREATE INDEX guest_map_check_in_card_id_index ON hotel.guest_map_check_in (card_
 CREATE INDEX debt_history_self_account_index ON hotel.debt_history (self_account);
 CREATE INDEX company_debt_company_index ON hotel.company_debt (company);
 CREATE INDEX company_debt_history_company_index ON hotel.company_debt_history (company);
+#2018-06-22 字段扩容
+ALTER TABLE check_out_room MODIFY name TEXT;
