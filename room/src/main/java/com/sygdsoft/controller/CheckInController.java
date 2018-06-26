@@ -1,8 +1,10 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.CheckIn;
 import com.sygdsoft.model.CheckInGroup;
+import com.sygdsoft.model.Debt;
 import com.sygdsoft.model.Protocol;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by 舒展 on 2016-03-21.
@@ -30,6 +31,8 @@ public class CheckInController {
     OtherParamService otherParamService;
     @Autowired
     CheckInGuestService checkInGuestService;
+    @Autowired
+    DebtService debtService;
 
     /**
      * 获取全部在店户籍
@@ -73,5 +76,31 @@ public class CheckInController {
                 protocolService.update(protocol);
             }
         }
+    }
+
+    /**
+     * 客账余额
+     */
+    @RequestMapping(value = "checkInRemainReport")
+    public List<JSONObject> checkInRemainReport()throws Exception{
+        List<CheckIn> checkInList=checkInService.get();
+        List<JSONObject> jsonObjectList=new ArrayList<>();
+        Map<String,JSONObject> roomIdCheckInMap=new HashMap<>();
+        for (CheckIn checkIn : checkInList) {
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("roomId",checkIn.getRoomId());
+            jsonObject.put("consume",checkIn.getNotNullConsume());
+            jsonObject.put("deposit",checkIn.getDeposit());
+            jsonObjectList.add(jsonObject);
+            roomIdCheckInMap.put(checkIn.getRoomId(),jsonObject);
+        }
+        List<Debt> debtList=debtService.getListGroupByRoomIdPointOfSale();
+        for (Debt debt : debtList) {
+            JSONObject row=roomIdCheckInMap.get(debt.getRoomId());
+            if(row!=null){
+                row.put(debt.getPointOfSale(),debt.getConsume());
+            }
+        }
+        return jsonObjectList;
     }
 }

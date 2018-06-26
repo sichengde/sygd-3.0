@@ -45,4 +45,9 @@ public class PointOfSaleController {
         }
         pointOfSaleService.update(pointOfSaleList);
     }
+
+    @RequestMapping(value = "getRoomPointOfSaleList")
+    public List<String> getRoomPointOfSaleList(){
+        return pointOfSaleService.getRoomPointOfSaleList();
+    }
 }
