@@ -133,22 +133,6 @@ public class DebtPayService extends BaseService<DebtPay> {
                 debtService.addDebt(debt);
                 changeDebt += " 转房客至:" + currencyAdd;
                 break;//不转移账务明细
-            case "转哑房"://转哑房
-                Debt debt2 = new Debt();
-                debt2.setPointOfSale("挂账");
-                debt2.setConsume(money);
-                debt2.setCurrency("挂账");
-                debt2.setRoomId("哑房");
-                debt2.setUserId(userService.getCurrentUser());
-                debt2.setDescription(roomService.roomListToString(roomList) + "哑房挂账");
-                debt2.setGuestSource("哑房");
-                debt2.setNotPartIn(true);
-                debt2.setFromRoom(paySerial);
-                debt2.setCategory("哑房挂账");
-                debt2.setDoTime(new Date());
-                debtService.add(debt2);
-                changeDebt += " 转为哑房";
-                break;
             case "会员"://会员
                 String vipNumber;
                 String payCategory;

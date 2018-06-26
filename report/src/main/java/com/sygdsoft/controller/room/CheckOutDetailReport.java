@@ -5,6 +5,7 @@ import com.sygdsoft.model.*;
 import com.sygdsoft.model.room.CheckOutDetailReturn;
 import com.sygdsoft.model.room.CheckOutDetailRow;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,28 +50,32 @@ public class CheckOutDetailReport {
     PointOfSaleService pointOfSaleService;
     @Autowired
     RoomShopService roomShopService;
+    @Autowired
+    SzMath szMath;
 
     /*
-    * parameters
-    * 1.结账合计
-    * 2.制表人
-    * 3.起始时间
-    * 4.终止时间
-    * 5.币种分析
-    * 6.消费分析
-    * fields
-    * 1.时间（主账号）
-    * 2.币种
-    * 3.描述
-    * 4.金额
-    * 5.房号
-    * 6.逻辑字段，用来判断什么时候显示主账号上边的横线
-    * 7.操作员
-    * */
+     * parameters
+     * 1.结账合计
+     * 2.制表人
+     * 3.起始时间
+     * 4.终止时间
+     * 5.币种分析
+     * 6.消费分析
+     * fields
+     * 1.时间（主账号）
+     * 2.币种
+     * 3.描述
+     * 4.金额
+     * 5.房号
+     * 6.逻辑字段，用来判断什么时候显示主账号上边的横线
+     * 7.操作员
+     * */
     /*TODO:哑房结算不参与*/
     @RequestMapping(value = "checkOutDetailReport")
     public Integer checkOutDetailReport(@RequestBody ReportJson reportJson) throws Exception {
-        Boolean groupConsume=reportJson.getNotNullParamBool();
+        Boolean groupConsume = reportJson.getNotNullParamBool();
+        Boolean withDeposit = reportJson.getNotNullWithDeposit();
+        Boolean onlyLostRoom = reportJson.getNotNullOnlyLostRoom();
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
@@ -85,6 +90,15 @@ public class CheckOutDetailReport {
         timeService.setNow();
         List<FieldTemplate> templateList = new ArrayList<>();
         List<DebtPay> debtPayList = debtPayService.getList(userId, currencyQuery, beginTime, endTime, "done_time");
+        /*只打印哑房*/
+        if(onlyLostRoom){
+            Iterator<DebtPay> iterator=debtPayList.iterator();
+            while (iterator.hasNext()){
+                if(!iterator.next().getDebtCategory().equals(debtPayService.yfjs)) {
+                    iterator.remove();
+                }
+            }
+        }
         FieldTemplate fieldTemplate;
         Double total = 0.0;//总的结账金额
         Map<String, Double> currencyMap = new HashMap<>();
@@ -143,14 +157,18 @@ public class CheckOutDetailReport {
                     templateList.add(fieldTemplate);
                 }
                 Query query = new Query();
-                query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
+                if (withDeposit) {
+                    query.setCondition("pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
+                } else {
+                    query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
+                }
                 query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
-                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList,groupConsume);
+                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList, groupConsume);
                 for (DebtHistory debtHistory : debtHistoryList) {
                     fieldTemplate = new FieldTemplate();//循环输出结账明细
                     fieldTemplate.setField1(timeService.longFormat.format(debtHistory.getDoTime()));
-                    fieldTemplate.setField4(String.valueOf(debtHistory.getConsume()));
+                    fieldTemplate.setField4(String.valueOf(debtHistory.getConsume()==null?-debtHistory.getNotNullDeposit():debtHistory.getConsume()));
                     fieldTemplate.setField3(debtHistory.getDescription());
                     fieldTemplate.setField5(debtHistory.getRoomId());
                     templateList.add(fieldTemplate);
@@ -160,7 +178,7 @@ public class CheckOutDetailReport {
                         String item = roomShopService.getShopItem(debtHistory.getDescription());
                         pointOfSale = roomShopService.getCategoryByName(item);
                     }
-                    pointOfSaleConsumeMap.put(pointOfSale, pointOfSaleConsumeMap.getOrDefault(pointOfSale, 0.0) + debtHistory.getNotNullConsume());
+                    pointOfSaleConsumeMap.put(pointOfSale, pointOfSaleConsumeMap.getOrDefault(pointOfSale, 0.0) + szMath.formatTwoDecimalReturnDouble(debtHistory.getNotNullConsume()));
                 }
             }
             fieldTemplate = new FieldTemplate();//最后一行是结账信息，俗称小计
@@ -209,7 +227,7 @@ public class CheckOutDetailReport {
      */
     @RequestMapping(value = "checkOutDetailMobile")
     public CheckOutDetailReturn checkOutDetailMobile(@RequestBody ReportJson reportJson) throws Exception {
-        Boolean groupConsume=reportJson.getNotNullParamBool();
+        Boolean groupConsume = reportJson.getNotNullParamBool();
         Date beginTime = reportJson.getBeginTime();
         Date endTime = reportJson.getEndTime();
         String userId = reportJson.getUserId();
@@ -245,7 +263,7 @@ public class CheckOutDetailReport {
                 query.setCondition("consume is not null and pay_serial = " + util.wrapWithBrackets(debtPay.getPaySerial()));
                 query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
                 List<DebtHistory> debtHistoryList = debtHistoryService.get(query);
-                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList,groupConsume);
+                debtHistoryList = debtHistoryService.mergeDebtHistory(debtHistoryList, groupConsume);
                 for (DebtHistory debtHistory : debtHistoryList) {
                     checkOutDetailRow = new CheckOutDetailRow();//循环输出结账明细
                     checkOutDetailRow.setDoTime(timeService.dateToStringLong(debtHistory.getDoTime()));
