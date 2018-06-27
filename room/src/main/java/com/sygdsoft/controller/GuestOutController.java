@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 import static com.sygdsoft.util.NullJudgement.nullToZero;
@@ -490,21 +487,53 @@ public class GuestOutController {
             }
             debtPay.setPointOfSale(pointOfSaleService.JQ);
             debtPay.setUserId(userService.getCurrentUser());
-            if("转哑房".equals(debtPay.getCurrency())){
+            boolean noNeedParse = false;
+            if ("转哑房".equals(currency)) {
                 debtPay.setLostDone(false);
+                noNeedParse = true;
+                /*欠款*/
+                Debt debt2 = new Debt();
+                debt2.setPointOfSale("挂账");
+                debt2.setConsume(money);
+                debt2.setCurrency("挂账");
+                debt2.setRoomId("哑房");
+                debt2.setUserId(userService.getCurrentUser());
+                debt2.setDescription(roomService.roomListToString(roomIdList) + "哑房挂账");
+                debt2.setGuestSource("哑房");
+                debt2.setNotPartIn(true);
+                debt2.setFromRoom(serialService.getPaySerial());
+                debt2.setCategory("哑房挂账");
+                debt2.setDoTime(new Date());
+                debtService.add(debt2);
+                /*押金*/
+                Map<String,Double> currencyMapDeposit=new HashMap<>();
+                for (Debt debt : debtList) {
+                    currencyMapDeposit.put(debt.getCurrency(),currencyMapDeposit.getOrDefault(debt.getCurrency(),0.0)+debt.getNotNullDeposit());
+                }
+                for (String s : currencyMapDeposit.keySet()) {
+                    if(currencyMapDeposit.get(s)==0.0){
+                        continue;
+                    }
+                    debt2.setId(null);
+                    debt2.setConsume(null);
+                    debt2.setDeposit(currencyMapDeposit.get(s));
+                    debt2.setCurrency(s);
+                    debt2.setDescription(roomService.roomListToString(roomIdList) + "哑房挂账(押金)");
+                    debtService.add(debt2);
+                }
             }
             debtPayService.add(debtPay);
             changeDebt += " 币种:" + currency + "/" + money;
             /*检查转房客，转押金，因为只有离店时有这个选项*/
-            boolean noNeedParse=false;
             if ("转房客".equals(currency) && guestOutGlobal.getNotNullChangeDetail()) {
-                noNeedParse=true;
+                noNeedParse = true;
                 CheckIn checkIn = checkInService.getByRoomId(currencyAdd);
+                changeDebt += " 转房客至:" + currencyAdd;
                 for (Debt debt : debtList) {
-                    Debt debtNeedInsert=new Debt(debt);
+                    Debt debtNeedInsert = new Debt(debt);
                     debtNeedInsert.setPaySerial(null);
                     debtNeedInsert.setFromRoom(serialService.getPaySerial());
-                    debtNeedInsert.setRemark(debtNeedInsert.getRoomId()+"->转入产生");
+                    debtNeedInsert.setRemark(debtNeedInsert.getRoomId() + "->转入产生");
                     debtNeedInsert.setRoomId(currencyAdd);
                     debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
                     debtNeedInsert.setGroupAccount(checkIn.getGroupAccount());
@@ -515,7 +544,7 @@ public class GuestOutController {
                 }
             }
             /*通过币种判断结账类型*/
-            if(!noNeedParse) {
+            if (!noNeedParse) {
                 changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "接待");
             }
             /*检查会员*/
@@ -804,7 +833,7 @@ public class GuestOutController {
                 }
                 account = checkOut.getGroupAccount();
                 groupName = checkOut.getGroupName();
-                roomID=checkOutGroup.getLeaderRoom();
+                roomID = checkOutGroup.getLeaderRoom();
                 roomIdAll = roomService.roomListToString(roomList);
                 totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getGroupAccount());
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getGroupAccount());

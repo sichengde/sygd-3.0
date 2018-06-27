@@ -25,6 +25,9 @@ public class BaseService<T> {
      * param[1]:数量
      * param[2]:排序
      */
+    public List<T> get() throws Exception {
+        return get(null);
+    }
     public List<T> get(Query query) throws Exception {
         String id = this.getClass().getAnnotation(SzMapper.class).id();
         entity = Class.forName("com.sygdsoft.model." + id.substring(0, 1).toUpperCase() + id.substring(1));

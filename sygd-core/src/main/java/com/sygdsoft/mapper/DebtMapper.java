@@ -68,4 +68,7 @@ public interface DebtMapper extends MyMapper<Debt> {
     @Select("SELECT group_concat(DISTINCT currency) currency FROM debt WHERE ifnull(deposit,0)!=0 AND self_account=#{selfAccount} GROUP BY self_account;")
     @ResultType(String.class)
     String getCurrencyGroup(@Param("selfAccount") String selfAccount);
+
+    @Select("SELECT room_id roomId,point_of_sale pointOfSale,ifnull(round(sum(consume),2),0) consume FROM debt GROUP BY room_id,pointOfSale")
+    List<Debt> getListGroupByRoomIdPointOfSale();
 }

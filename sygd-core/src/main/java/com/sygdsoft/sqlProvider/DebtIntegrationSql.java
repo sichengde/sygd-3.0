@@ -34,7 +34,7 @@ public class DebtIntegrationSql {
             basic+=" and point_of_sale = #{pointOfSale}";
         }
         if(excludeChange){
-            basic+=" and ifnull(point_of_sale,'未定义') !=\'挂账\' ";
+            basic+=" and ifnull(not_part_in,false) =false ";
         }
         return basic;
     }

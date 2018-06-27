@@ -14,6 +14,8 @@ public class ReportJson {
     private String param1;
     private String currency;
     private Boolean paramBool;
+    private Boolean withDeposit;
+    private Boolean onlyLostRoom;
     private String format;//pdf还是excel
     private Integer reportIndex;//当这个json作为数组第一个数据的返回值时，这个字段标注了想重打时的索引
 
@@ -31,6 +33,22 @@ public class ReportJson {
             return false;
         }else {
             return paramBool;
+        }
+    }
+
+    public boolean getNotNullWithDeposit(){
+        if(withDeposit==null){
+            return false;
+        }else {
+            return withDeposit;
+        }
+    }
+
+    public boolean getNotNullOnlyLostRoom(){
+        if(onlyLostRoom==null){
+            return false;
+        }else {
+            return onlyLostRoom;
         }
     }
 
@@ -104,5 +122,21 @@ public class ReportJson {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Boolean getWithDeposit() {
+        return withDeposit;
+    }
+
+    public void setWithDeposit(Boolean withDeposit) {
+        this.withDeposit = withDeposit;
+    }
+
+    public Boolean getOnlyLostRoom() {
+        return onlyLostRoom;
+    }
+
+    public void setOnlyLostRoom(Boolean onlyLostRoom) {
+        this.onlyLostRoom = onlyLostRoom;
     }
 }

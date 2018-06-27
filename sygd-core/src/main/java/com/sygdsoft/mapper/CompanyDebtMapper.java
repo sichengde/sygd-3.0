@@ -24,7 +24,7 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
      * 获得某个单位某段时间内的挂账款(算进支付的)
      */
     /*正负都算*/
-    @Select("select sum(debt) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime}")
+    @Select("select round(ifnull(sum(debt),0),2) from company_debt where company=#{company} and do_time>#{beginTime} and do_time<#{endTime}")
     @ResultType(Double.class)
     Double getDebtByCompanyDate(@Param("company") String company, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 

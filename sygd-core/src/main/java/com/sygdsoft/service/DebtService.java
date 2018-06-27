@@ -234,6 +234,13 @@ public class DebtService extends BaseService<Debt> {
     }
 
     /**
+     * 获取当前消费营业部门聚合
+     */
+    public List<Debt> getListGroupByRoomIdPointOfSale(){
+        return debtMapper.getListGroupByRoomIdPointOfSale();
+    }
+
+    /**
      * 根据挂账的序列号进行删除
      */
     public void deleteByCheckOutSerial(String serial) throws Exception {
