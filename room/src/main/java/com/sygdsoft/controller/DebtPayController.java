@@ -93,7 +93,14 @@ public class DebtPayController {
         debtPay.setLostDone(true);
         debtPayService.update(debtPay);
         List<String> roomIdList = checkInHistoryLogService.getRoomIdListByCheckInHistoryLogList(checkInHistoryLogService.getByCheckOutSerial(debtPay.getCheckOutSerial()));
-        for (CurrencyPost currencyPost : currencyPostList) {
+        /*如果有分单自动分销售点金额*/
+        int debtIndex=0;//账务索引
+        int currencyIndex=0;//账务索引
+        double debtAdjust=0.0;//分单修正
+        int debtSum=0;//账务累计
+        List<PayPointOfSale> payPointOfSaleList=new ArrayList<>();//先一条一条插，然后统一聚合
+        for (; currencyIndex < currencyPostList.size(); currencyIndex++) {
+            CurrencyPost currencyPost=currencyPostList.get(currencyIndex);
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
@@ -108,6 +115,40 @@ public class DebtPayController {
             debtPayInsert.setUserId(userService.getCurrentUser());
             debtPayInsert.setDebtCategory("哑房结算");
             debtPayService.add(debtPayInsert);
+            for (; debtIndex < debtList.size(); debtIndex++) {
+                Debt debt=debtList.get(debtIndex);
+                if(debt.getNotNullConsume()==0.0){//没消费就继续
+                    continue;
+                }
+                debtSum+=debt.getNotNullConsume();
+                /*先把实体建上，用不用再说*/
+                PayPointOfSale payPointOfSale=new PayPointOfSale();
+                payPointOfSale.setDebtPayId(debtPay.getId());
+                payPointOfSale.setCompanyPayId(null);
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(debtPay.getPointOfSale());
+                payPointOfSale.setMoney(debt.getNotNullConsume()-debtAdjust);
+                /*debtAdjust只能用一次，用完就清空*/
+                debtAdjust=0;
+                if(debtSum<debtPayInsert.getDebtMoney()){
+                    payPointOfSaleList.add(payPointOfSale);
+                    continue;
+                }
+                if(debtSum==debtPayInsert.getDebtMoney()){//相等最好了，不用拆，不过基本不可能
+                    payPointOfSaleList.add(payPointOfSale);
+                    debtSum=0;
+                    break;
+                }
+                /*不相等，需要拆分金额*/
+                if(debtSum>debtPayInsert.getDebtMoney()){
+                    debtAdjust=debtPayInsert.getDebtMoney()-(debtSum-debt.getNotNullConsume());
+                    payPointOfSaleList.add(payPointOfSale);
+
+                    debtAdjust=debt.getNotNullConsume()-debtAdjust;
+                    debtSum=debtAdjust;
+                    break;
+                }
+            }
             debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, debtPay.getGroupAccount(), "哑房结算", serialService.getPaySerial(), "接待", "接待");
         }
         String roomString = util.listToString(roomIdList);

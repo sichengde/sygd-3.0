@@ -567,4 +567,13 @@ CREATE OR REPLACE VIEW company_debt_rich AS
     ,user_id
     ,category
     ,remark
-    ,name
+    ,name;
+CREATE TABLE pay_point_of_sale
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  debt_pay_id INT,
+  company_pay_id INT,
+  point_of_sale VARCHAR(100),
+  money DOUBLE,
+  do_time DATETIME
+);
