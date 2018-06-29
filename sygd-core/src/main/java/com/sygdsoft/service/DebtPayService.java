@@ -124,6 +124,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 debt.setUserId(userService.getCurrentUser());
                 debt.setDescription(roomService.roomListToString(roomList) + description + "挂账");
                 debt.setFromRoom(paySerial);
+                debt.setNotPartIn(true);
                 if (paySerial.contains("ck")) {
                     debt.setCategory("餐饮挂账");
                     debt.setPointOfSale("餐饮挂账");

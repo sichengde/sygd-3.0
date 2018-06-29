@@ -519,6 +519,7 @@ public class GuestOutController {
                     debt2.setDeposit(currencyMapDeposit.get(s));
                     debt2.setCurrency(s);
                     debt2.setDescription(roomService.roomListToString(roomIdList) + "哑房挂账(押金)");
+                    debt2.setNotPartIn(true);
                     debtService.add(debt2);
                 }
             }

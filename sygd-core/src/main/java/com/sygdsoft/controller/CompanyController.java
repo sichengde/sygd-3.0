@@ -294,7 +294,7 @@ public class CompanyController {
                 companyDebtHistoryList.add(companyDebtHistory);
             }
             if (sign < paySerialMap.get(paySerial)) {
-                throw new Exception("结账序列号:" + paySerial + "可能存在分单，选中明细超过该笔分单金额，无法结算");
+                throw new Exception("结账序列号:" + paySerial + "可能存在分单，选中明细超过该笔分单金额，无法结算，请在挂账记录里结算");
             }
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
