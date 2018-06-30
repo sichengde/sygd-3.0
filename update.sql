@@ -574,6 +574,7 @@ CREATE TABLE pay_point_of_sale
   debt_pay_id INT,
   company_pay_id INT,
   point_of_sale VARCHAR(100),
+  currency VARCHAR(100),
   money DOUBLE,
   do_time DATETIME
 );

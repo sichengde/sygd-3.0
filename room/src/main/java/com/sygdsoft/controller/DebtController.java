@@ -315,6 +315,14 @@ public class DebtController {
         debtPay.setUserId(debtHistory.getUserId());
         debtHistory.setPaySerial(serialService.getPaySerial());
         debtPayService.add(debtPay);
+        PayPointOfSale payPointOfSale=new PayPointOfSale();
+        payPointOfSale.setDebtPayId(debtPay.getId());
+        payPointOfSale.setCompanyPayId(null);
+        payPointOfSale.setDoTime(timeService.getNow());
+        payPointOfSale.setPointOfSale(debtPay.getPointOfSale());
+        payPointOfSale.setMoney(debtPay.getDebtMoney());
+        payPointOfSale.setCurrency(debtPay.getCurrency());
+        payPointOfSaleService.add(payPointOfSale);
         debtHistoryService.add(debtHistory);
         timeService.setNow();
         userLogService.addUserLog("杂单冲账单位:" + company + " 金额:" + money, userLogService.reception, userLogService.ZC, serialService.getPaySerial());
@@ -370,6 +378,7 @@ public class DebtController {
             payPointOfSale.setDoTime(timeService.getNow());
             payPointOfSale.setPointOfSale(debtPay.getPointOfSale());
             payPointOfSale.setMoney(debtPay.getDebtMoney());
+            payPointOfSale.setCurrency(debtPay.getCurrency());
             payPointOfSaleService.add(payPointOfSale);
             changeDebt.append(" 币种:").append(currencyPost.getCurrency()).append("/").append(currencyPost.getMoney());
             /*判断币种*/

@@ -6,6 +6,7 @@ public class PayPointOfSale extends BaseEntity {
     private Integer debtPayId;
     private Integer companyPayId;
     private String pointOfSale;
+    private String currency;
     private Double money;
     private Date doTime;
 
@@ -58,5 +59,13 @@ public class PayPointOfSale extends BaseEntity {
 
     public void setDoTime(Date doTime) {
         this.doTime = doTime;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
