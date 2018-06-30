@@ -118,7 +118,7 @@ public class GuestOutController {
             for (Debt debt : guestOut.getDebtAddList()) {
                 totalTest += debt.getConsume();
             }
-            if (!Objects.equals(totalCurrency, totalTest)) {
+            if (!Objects.equals(totalCurrency, (double)(Math.round(totalTest*100)/100.0))) {
                 throw new Exception("结账金额有变动，请重新进入结账页面");
             }
             //离店数据校验,发现bug之后就可以删了--完毕
@@ -491,36 +491,12 @@ public class GuestOutController {
             if ("转哑房".equals(currency)) {
                 debtPay.setLostDone(false);
                 noNeedParse = true;
-                /*欠款*/
-                Debt debt2 = new Debt();
-                debt2.setPointOfSale("挂账");
-                debt2.setConsume(money);
-                debt2.setCurrency("挂账");
-                debt2.setRoomId("哑房");
-                debt2.setUserId(userService.getCurrentUser());
-                debt2.setDescription(roomService.roomListToString(roomIdList) + "哑房挂账");
-                debt2.setGuestSource("哑房");
-                debt2.setNotPartIn(true);
-                debt2.setFromRoom(serialService.getPaySerial());
-                debt2.setCategory("哑房挂账");
-                debt2.setDoTime(new Date());
-                debtService.add(debt2);
-                /*押金*/
-                Map<String,Double> currencyMapDeposit=new HashMap<>();
                 for (Debt debt : debtList) {
-                    currencyMapDeposit.put(debt.getCurrency(),currencyMapDeposit.getOrDefault(debt.getCurrency(),0.0)+debt.getNotNullDeposit());
-                }
-                for (String s : currencyMapDeposit.keySet()) {
-                    if(currencyMapDeposit.get(s)==0.0){
-                        continue;
-                    }
-                    debt2.setId(null);
-                    debt2.setConsume(null);
-                    debt2.setDeposit(currencyMapDeposit.get(s));
-                    debt2.setCurrency(s);
-                    debt2.setDescription(roomService.roomListToString(roomIdList) + "哑房挂账(押金)");
-                    debt2.setNotPartIn(true);
-                    debtService.add(debt2);
+                    Debt debtNeedInsert = new Debt(debt);
+                    debtNeedInsert.setRoomId("哑房");
+                    debtNeedInsert.setNotPartIn(true);
+                    debtNeedInsert.setFromRoom(serialService.getPaySerial());
+                    debtService.add(debtNeedInsert);
                 }
             }
             debtPayService.add(debtPay);

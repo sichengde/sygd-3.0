@@ -10,8 +10,17 @@ import java.util.List;
 public class LostRoom {
     private List<CurrencyPost> currencyPostList;
     private DebtPay debtPay;
+    private Boolean changeDetail;
 
     public LostRoom() {
+    }
+
+    public boolean getNotNullChangeDetail(){
+        if(changeDetail==null){
+            return false;
+        }else {
+            return changeDetail;
+        }
     }
 
     public List<CurrencyPost> getCurrencyPostList() {
@@ -28,5 +37,13 @@ public class LostRoom {
 
     public void setDebtPay(DebtPay debtPay) {
         this.debtPay = debtPay;
+    }
+
+    public Boolean getChangeDetail() {
+        return changeDetail;
+    }
+
+    public void setChangeDetail(Boolean changeDetail) {
+        this.changeDetail = changeDetail;
     }
 }

@@ -486,6 +486,7 @@ ALTER TABLE check_out_room MODIFY name TEXT;
 ALTER TABLE company  MODIFY debt DOUBLE(16,3);
 ALTER TABLE company_debt MODIFY debt DOUBLE(16,3);
 ALTER TABLE company_debt_history MODIFY debt DOUBLE(16,3);
+ALTER TABLE pay_point_of_sale MODIFY money DOUBLE(16,3);
 #2018-06-29 优化单位明细视图
 CREATE OR REPLACE VIEW company_debt_rich AS
   SELECT
