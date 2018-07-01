@@ -49,6 +49,8 @@ public class CompanyController {
     DebtHistoryService debtHistoryService;
     @Autowired
     CompanyMoneyService companyMoneyService;
+    @Autowired
+    PayPointOfSaleService payPointOfSaleService;
 
     @RequestMapping(value = "companyGet")
     public List<Company> companyGet(@RequestBody Query query) throws Exception {
@@ -99,7 +101,7 @@ public class CompanyController {
     }
 
     /**
-     * 结算
+     * 结算,定额和挂账记录结算都在这里
      * <p>
      * param 1：单位名。2：金额。3.使用多少余额。4.币种
      *
@@ -142,6 +144,7 @@ public class CompanyController {
         List<CompanyDebtHistory> companyDebtHistoryList = new ArrayList<>();
         CompanyDebtHistory companyDebtHistory;
         List<FieldTemplate> templateList = new ArrayList<>();
+        StringBuilder paySerial= new StringBuilder();
         for (CompanyDebt companyDebt : companyDebtList) {
             companyDebtHistory = new CompanyDebtHistory(companyDebt);
             companyDebtHistory.setDoneTime(timeService.getNow());
@@ -155,6 +158,9 @@ public class CompanyController {
             fieldTemplate.setField5(companyDebt.getDescription());
             fieldTemplate.setField6(companyDebt.getUserId());
             templateList.add(fieldTemplate);
+            if("接待".equals(companyDebt.getPointOfSale())) {
+                paySerial.append("\'").append(companyDebtHistory.getPaySerial()).append("\',");
+            }
         }
         /*如果杂单有冲账，最后一条需要进行杂单冲账，针对定额结算修补产生的*/
         CompanyDebt companyDebtLast = companyDebtList.get(companyDebtList.size() - 1);
@@ -182,6 +188,19 @@ public class CompanyController {
             companyMoney.setMoney(-pay);
             companyMoney.setUserId(userService.getCurrentUser());
             companyMoneyService.add(companyMoney);
+        }
+        /*生成payPointOfSale*/
+        List<DebtHistory> debtHistoryList=debtHistoryService.getListByCompanyPaid(paySerial.substring(0,paySerial.length()-1));
+        for (DebtHistory debtHistory : debtHistoryList) {
+            if(debtHistory.getNotNullConsume()!=0.0) {
+                PayPointOfSale payPointOfSale = new PayPointOfSale();
+                payPointOfSale.setCurrency(companyPay.getCurrency());
+                payPointOfSale.setCompanyPayId(companyPay.getId());
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                payPointOfSale.setMoney(debtHistory.getNotNullConsume());
+                payPointOfSaleService.add(payPointOfSale);
+            }
         }
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
         /*生成结算报表
@@ -261,6 +280,15 @@ public class CompanyController {
                 templateList.add(fieldTemplate);
                 companyDebtService.delete(companyDebt);
                 companyDebtHistoryList.add(companyDebtHistory);
+            }
+            if (debtHistory.getNotNullConsume() != 0.0) {//没消费就继续
+                PayPointOfSale payPointOfSale = new PayPointOfSale();
+                payPointOfSale.setCompanyPayId(companyPay.getId());
+                payPointOfSale.setCurrency(currency);
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                payPointOfSale.setMoney(debtHistory.getNotNullConsume());
+                payPointOfSaleService.add(payPointOfSale);
             }
         }
         /*循环map*/

@@ -196,4 +196,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public Double getTotalDeposit(String paySerial){
         return debtHistoryMapper.getTotalDeposit(paySerial);
     }
+
+    /**
+     * 获取没有结算的单位账务
+     */
+    public List<DebtHistory> getListByCompanyPaid(String paySerials){
+        return debtHistoryMapper.getListByCompanyPaid(paySerials);
+    }
 }

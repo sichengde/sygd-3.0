@@ -211,5 +211,8 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     @Select("SELECT round(sum(deposit),2) FROM debt_history WHERE pay_serial=#{paySerial}")
     @ResultType(value = Double.class)
-    Double getTotalDeposit(String paySerial);
+    Double getTotalDeposit(@Param("paySerial") String paySerial);
+
+    @SelectProvider(type = DebtHistorySql.class,method = "getListByCompanyPaid")
+    List<DebtHistory> getListByCompanyPaid(@Param("paySerials") String paySerials);
 }

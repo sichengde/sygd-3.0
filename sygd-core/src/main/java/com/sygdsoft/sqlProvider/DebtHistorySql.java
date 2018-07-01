@@ -103,4 +103,9 @@ public class DebtHistorySql {
         basic+=" GROUP BY debt_history.self_account,debt_history.currency";
         return basic;
     }
+
+    public String getListByCompanyPaid(Map<String, Object> parameters){
+        String paySerials = (String) parameters.get("paySerials");
+        return "SELECT id, do_time doTime, point_of_sale pointOfSale, consume, deposit, currency, description, self_account selfAccount, group_account groupAccount, room_id roomId, pay_serial paySerial, protocol, done_time doneTime, user_id userId, bed, vip_number vipNumber, category, remark, from_room fromRoom, guest_source guestSource, company_paid companyPaid, company, guest_name guestName, source_room sourceRoom, back, not_part_in notPartIn, area FROM debt_history WHERE pay_serial IN ("+paySerials+") AND ifnull(company_paid, FALSE ) = FALSE";
+    }
 }
