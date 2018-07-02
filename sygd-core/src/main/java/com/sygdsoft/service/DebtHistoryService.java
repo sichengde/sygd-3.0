@@ -203,4 +203,11 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     public List<DebtHistory> getListByCompanyPaid(String paySerials){
         return debtHistoryMapper.getListByCompanyPaid(paySerials);
     }
+
+    /**
+     * 获取没有结算的单位结算总金额
+     */
+    public Double getConsumeNotCompanyPaid(){
+        return debtHistoryMapper.getConsumeNotCompanyPaid();
+    }
 }

@@ -58,18 +58,7 @@ public class OldSystemAllHotelReportController {
         fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, null)));
         fieldTemplate.setField9(fieldTemplate.getField2());
         /*挂账未结=debt里的和companyDebt里的*/
-        Double debtConsume = debtService.getConsumeByPointOfSale(null);
-        for (DebtHistory debtHistory : debtHistoryList) {
-            debtConsume += debtHistory.getNotNullConsume();
-        }
-        for (CompanyDebt companyDebt : companyDebtList) {
-            /*定额结算产生的差价直接加*/
-            if (companyDebt.getNotNullOtherConsume()) {
-                debtConsume += companyDebt.getDebt();
-            }
-        }
-        fieldTemplate.setField10(szMath.formatTwoDecimal(debtConsume));
-            /*全部挂账*/
+        fieldTemplate.setField10(szMath.formatTwoDecimal(debtHistoryService.getConsumeNotCompanyPaid()));
         fieldTemplate.setField11(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(null, null, null, true)));
         fieldTemplateList.add(fieldTemplate);
         /*------------------------------------------再计算各自的明细------------------------------------------*/
@@ -97,7 +86,7 @@ public class OldSystemAllHotelReportController {
             fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, pointOfSale)));
             fieldTemplate.setField9(fieldTemplate.getField2());
             /*挂账未结=debt里的和companyDebt里的*/
-            debtConsume = debtService.getConsumeByPointOfSale(pointOfSale);
+            Double debtConsume = debtService.getConsumeByPointOfSale(pointOfSale);
             for (DebtHistory debtHistory : debtHistoryList) {
                 if (pointOfSale.equals(debtHistory.getPointOfSale())) {
                     debtConsume += debtHistory.getNotNullConsume();
