@@ -159,7 +159,19 @@ public class CompanyController {
             fieldTemplate.setField6(companyDebt.getUserId());
             templateList.add(fieldTemplate);
             if("接待".equals(companyDebt.getPointOfSale())) {
-                paySerial.append("\'").append(companyDebtHistory.getPaySerial()).append("\',");
+                if(companyDebtHistory.getPaySerial()!=null && !"".equals(companyDebtHistory.getPaySerial())) {
+                    paySerial.append("\'").append(companyDebtHistory.getPaySerial()).append("\',");
+                }
+            }
+            if(companyDebt.getNotNullOtherConsume()){
+                /*设置ppos*/
+                PayPointOfSale payPointOfSale = new PayPointOfSale();
+                payPointOfSale.setCurrency(companyPay.getCurrency());
+                payPointOfSale.setCompanyPayId(companyPay.getId());
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(companyDebt.getSecondPointOfSale());
+                payPointOfSale.setMoney(companyDebt.getDebt());
+                payPointOfSaleService.add(payPointOfSale);
             }
         }
         /*如果杂单有冲账，最后一条需要进行杂单冲账，针对定额结算修补产生的*/
@@ -172,6 +184,18 @@ public class CompanyController {
             } else {
                 companyDebt.setDescription("定额结算冲账");
             }
+            /*设置营业部门消费，杂单都设置为房费，偷懒的做法，最好的做法是筛选出最大大于他的营业部门，然后取这个，但是有一定概率没有，又要重新查找companyDebt，太他妈麻烦了*/
+            companyDebt.setOtherConsume(true);
+            companyDebt.setSecondPointOfSale("房费");
+            companyDebtLast.setSecondPointOfSale("房费");
+            /*根据上一条生成ppos*/
+            PayPointOfSale payPointOfSale = new PayPointOfSale();
+            payPointOfSale.setCurrency(companyPay.getCurrency());
+            payPointOfSale.setCompanyPayId(companyPay.getId());
+            payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setPointOfSale("房费");
+            payPointOfSale.setMoney(companyDebtLast.getDebt());
+            payPointOfSaleService.add(payPointOfSale);
             companyDebtService.add(companyDebt);
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
@@ -190,16 +214,18 @@ public class CompanyController {
             companyMoneyService.add(companyMoney);
         }
         /*生成payPointOfSale*/
-        List<DebtHistory> debtHistoryList=debtHistoryService.getListByCompanyPaid(paySerial.substring(0,paySerial.length()-1));
-        for (DebtHistory debtHistory : debtHistoryList) {
-            if(debtHistory.getNotNullConsume()!=0.0) {
-                PayPointOfSale payPointOfSale = new PayPointOfSale();
-                payPointOfSale.setCurrency(companyPay.getCurrency());
-                payPointOfSale.setCompanyPayId(companyPay.getId());
-                payPointOfSale.setDoTime(timeService.getNow());
-                payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
-                payPointOfSale.setMoney(debtHistory.getNotNullConsume());
-                payPointOfSaleService.add(payPointOfSale);
+        if(!paySerial.toString().equals("")) {
+            List<DebtHistory> debtHistoryList = debtHistoryService.getListByCompanyPaid(paySerial.substring(0, paySerial.length() - 1));
+            for (DebtHistory debtHistory : debtHistoryList) {
+                if (debtHistory.getNotNullConsume() != 0.0) {
+                    PayPointOfSale payPointOfSale = new PayPointOfSale();
+                    payPointOfSale.setCurrency(companyPay.getCurrency());
+                    payPointOfSale.setCompanyPayId(companyPay.getId());
+                    payPointOfSale.setDoTime(timeService.getNow());
+                    payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                    payPointOfSale.setMoney(debtHistory.getNotNullConsume());
+                    payPointOfSaleService.add(payPointOfSale);
+                }
             }
         }
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);

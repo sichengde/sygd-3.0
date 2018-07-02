@@ -579,3 +579,37 @@ CREATE TABLE pay_point_of_sale
   money DOUBLE,
   do_time DATETIME
 );
+#2018-07-02 增加單位杂单标志
+ALTER TABLE company_debt ADD other_consume BOOLEAN NULL;
+ALTER TABLE company_debt_history ADD other_consume BOOLEAN NULL;
+CREATE OR REPLACE VIEW company_debt_integration AS
+  SELECT
+    `hotel`.`company_debt`.`id`                   AS `id`,
+    `hotel`.`company_debt`.`company`              AS `company`,
+    `hotel`.`company_debt`.`lord`                 AS `lord`,
+    `hotel`.`company_debt`.`pay_serial`           AS `pay_serial`,
+    `hotel`.`company_debt`.`debt`                 AS `debt`,
+    `hotel`.`company_debt`.`do_time`              AS `do_time`,
+    `hotel`.`company_debt`.`user_id`              AS `user_id`,
+    `hotel`.`company_debt`.`description`          AS `description`,
+    `hotel`.`company_debt`.`point_of_sale`        AS `point_of_sale`,
+    `hotel`.`company_debt`.`second_point_of_sale` AS `second_point_of_sale`,
+    `hotel`.`company_debt`.`current_remain`       AS `current_remain`,
+    `hotel`.`company_debt`.`other_consume`       AS `other_consume`,
+    0                                             AS `company_paid`
+  FROM `hotel`.`company_debt`
+  UNION SELECT
+          `hotel`.`company_debt_history`.`id`                   AS `id`,
+          `hotel`.`company_debt_history`.`company`              AS `company`,
+          `hotel`.`company_debt_history`.`lord`                 AS `lord`,
+          `hotel`.`company_debt_history`.`pay_serial`           AS `pay_serial`,
+          `hotel`.`company_debt_history`.`debt`                 AS `debt`,
+          `hotel`.`company_debt_history`.`do_time`              AS `do_time`,
+          `hotel`.`company_debt_history`.`user_id`              AS `user_id`,
+          `hotel`.`company_debt_history`.`description`          AS `description`,
+          `hotel`.`company_debt_history`.`point_of_sale`        AS `point_of_sale`,
+          `hotel`.`company_debt_history`.`second_point_of_sale` AS `second_point_of_sale`,
+          `hotel`.`company_debt_history`.`current_remain`       AS `current_remain`,
+          `hotel`.`company_debt_history`.`other_consume`       AS `other_consume`,
+          1                                                     AS `company_paid`
+        FROM `hotel`.`company_debt_history`;

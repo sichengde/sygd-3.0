@@ -19,6 +19,7 @@ public class CompanyDebtIntegration extends BaseEntity{
     private String pointOfSale;//营业部门
     private String secondPointOfSale;//类别
     private Boolean companyPaid;//类别
+    private Boolean otherConsume;//类别
     @Transient
     public List<DebtHistory> debtHistoryList;//账务历史
 
@@ -119,5 +120,13 @@ public class CompanyDebtIntegration extends BaseEntity{
 
     public void setCompanyPaid(Boolean companyPaid) {
         this.companyPaid = companyPaid;
+    }
+
+    public Boolean getOtherConsume() {
+        return otherConsume;
+    }
+
+    public void setOtherConsume(Boolean otherConsume) {
+        this.otherConsume = otherConsume;
     }
 }
