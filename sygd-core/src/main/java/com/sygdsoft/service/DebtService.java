@@ -287,4 +287,11 @@ public class DebtService extends BaseService<Debt> {
     public String getCurrencyGroup(String selfAccount) {
         return debtMapper.getCurrencyGroup(selfAccount);
     }
+
+    /**
+     * 获取某个营业部门的消费
+     */
+    public Double getConsumeByPointOfSale(String pointOfSale){
+        return debtMapper.getConsumeByPointOfSale(pointOfSale);
+    }
 }

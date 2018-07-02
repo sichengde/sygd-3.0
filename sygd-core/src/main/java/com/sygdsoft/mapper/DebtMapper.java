@@ -71,4 +71,8 @@ public interface DebtMapper extends MyMapper<Debt> {
 
     @Select("SELECT room_id roomId,point_of_sale pointOfSale,ifnull(round(sum(consume),2),0) consume FROM debt GROUP BY room_id,pointOfSale")
     List<Debt> getListGroupByRoomIdPointOfSale();
+
+    @SelectProvider(type = DebtSql.class,method = "getConsumeByPointOfSale")
+    @ResultType(Double.class)
+    Double getConsumeByPointOfSale(@Param("pointOfSale") String pointOfSale);
 }
