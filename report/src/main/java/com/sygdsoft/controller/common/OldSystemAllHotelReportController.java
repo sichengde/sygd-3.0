@@ -45,7 +45,34 @@ public class OldSystemAllHotelReportController {
         Date endTime1 = timeService.getMaxTime(date);
         Date endTime2 = timeService.getMaxMonth(date);
         Date endTime3 = timeService.getMaxYear(date);
-        List<FieldTemplate> fieldTemplates = new ArrayList<>();
+        List<FieldTemplate> fieldTemplateList = new ArrayList<>();
+        /*先计算客房合计*/
+        FieldTemplate fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField1("合计");
+        fieldTemplate.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, true)));
+        fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, true)));
+        fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, null, true)));
+        fieldTemplate.setField5("0.00");//现金都设置为0
+        fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null)));
+        fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null)));
+        fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, null)));
+        fieldTemplate.setField9(fieldTemplate.getField2());
+        /*挂账未结=debt里的和companyDebt里的*/
+        Double debtConsume = debtService.getConsumeByPointOfSale(null);
+        for (DebtHistory debtHistory : debtHistoryList) {
+            debtConsume += debtHistory.getNotNullConsume();
+        }
+        for (CompanyDebt companyDebt : companyDebtList) {
+            /*定额结算产生的差价直接加*/
+            if (companyDebt.getNotNullOtherConsume()) {
+                debtConsume += companyDebt.getDebt();
+            }
+        }
+        fieldTemplate.setField10(szMath.formatTwoDecimal(debtConsume));
+            /*全部挂账*/
+        fieldTemplate.setField11(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(null, null, null, true)));
+        fieldTemplateList.add(fieldTemplate);
+        /*------------------------------------------再计算各自的明细------------------------------------------*/
         List<String> pointOfSaleList = pointOfSaleService.getRoomPointOfSaleList();
         List<CompanyDebt> companyDebtList = companyDebtService.get();
         StringBuilder paySerial = new StringBuilder();
@@ -54,12 +81,12 @@ public class OldSystemAllHotelReportController {
                 paySerial.append("\'").append(companyDebt.getPaySerial()).append("\',");
             }
         }
-        List<DebtHistory> debtHistoryList=new ArrayList<>();
+        List<DebtHistory> debtHistoryList = new ArrayList<>();
         if (!paySerial.toString().equals("")) {
             debtHistoryList = debtHistoryService.getListByCompanyPaid(paySerial.substring(0, paySerial.length() - 1));
         }
         for (String pointOfSale : pointOfSaleList) {
-            FieldTemplate fieldTemplate = new FieldTemplate();
+            fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(pointOfSale);
             fieldTemplate.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, pointOfSale, true)));
             fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, pointOfSale, true)));
@@ -70,7 +97,7 @@ public class OldSystemAllHotelReportController {
             fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, pointOfSale)));
             fieldTemplate.setField9(fieldTemplate.getField2());
             /*挂账未结=debt里的和companyDebt里的*/
-            Double debtConsume = debtService.getConsumeByPointOfSale(pointOfSale);
+            debtConsume = debtService.getConsumeByPointOfSale(pointOfSale);
             for (DebtHistory debtHistory : debtHistoryList) {
                 if (pointOfSale.equals(debtHistory.getPointOfSale())) {
                     debtConsume += debtHistory.getNotNullConsume();
@@ -78,14 +105,15 @@ public class OldSystemAllHotelReportController {
             }
             for (CompanyDebt companyDebt : companyDebtList) {
                 /*定额结算产生的差价直接加*/
-                if(companyDebt.getNotNullOtherConsume()&&pointOfSale.equals(companyDebt.getSecondPointOfSale())){
-                    debtConsume+=companyDebt.getDebt();
+                if (companyDebt.getNotNullOtherConsume() && pointOfSale.equals(companyDebt.getSecondPointOfSale())) {
+                    debtConsume += companyDebt.getDebt();
                 }
             }
             fieldTemplate.setField10(szMath.formatTwoDecimal(debtConsume));
             /*全部挂账*/
-
+            fieldTemplate.setField11(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(null, null, pointOfSale, true)));
+            fieldTemplateList.add(fieldTemplate);
         }
-        return reportService.generateReport(fieldTemplates, new String[]{}, "oldSystemAllHotel", "pdf");
+        return reportService.generateReport(fieldTemplateList, new String[]{}, "oldSystemAllHotel", "pdf");
     }
 }
