@@ -5,6 +5,7 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.jsonModel.QuerySubReport;
 import com.sygdsoft.model.*;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,12 @@ public class DebtPayController {
     TimeService timeService;
     @Autowired
     UserService userService;
+    @Autowired
+    PayPointOfSaleService payPointOfSaleService;
+    @Autowired
+    CheckInService checkInService;
+    @Autowired
+    SzMath szMath;
 
     @RequestMapping(value = "debtPayGet")
     public List<DebtPay> debtPayGet(@RequestBody Query query) throws Exception {
@@ -80,6 +87,7 @@ public class DebtPayController {
         DebtPay debtPay = lostRoom.getDebtPay();
         /*挂账记录转移到账务历史*/
         List<DebtHistory> debtHistoryList = new ArrayList<>();
+        //List<DebtHistory> debtHistoryListPreparePointOfSale = debtHistoryService.;
         List<Debt> debtList = debtService.get(new Query("from_room=\'" + debtPay.getPaySerial() + "\'"));
         for (Debt debt : debtList) {
             debt.setPaySerial(serialService.getPaySerial());
@@ -93,7 +101,15 @@ public class DebtPayController {
         debtPay.setLostDone(true);
         debtPayService.update(debtPay);
         List<String> roomIdList = checkInHistoryLogService.getRoomIdListByCheckInHistoryLogList(checkInHistoryLogService.getByCheckOutSerial(debtPay.getCheckOutSerial()));
-        for (CurrencyPost currencyPost : currencyPostList) {
+        /*如果有分单自动分销售点金额*/
+        int debtIndex=0;//账务索引
+        double debtAdjust=0;//账务索引
+        int currencyIndex=0;//账务索引
+        double debtSum=0.0;//账务累计
+        String lastPointOfSale=null;
+        List<PayPointOfSale> payPointOfSaleList=new ArrayList<>();//先一条一条插，然后统一聚合
+        for (; currencyIndex < currencyPostList.size(); currencyIndex++) {
+            CurrencyPost currencyPost=currencyPostList.get(currencyIndex);
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
@@ -108,8 +124,81 @@ public class DebtPayController {
             debtPayInsert.setUserId(userService.getCurrentUser());
             debtPayInsert.setDebtCategory("哑房结算");
             debtPayService.add(debtPayInsert);
-            debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, debtPay.getGroupAccount(), "哑房结算", serialService.getPaySerial(), "接待", "接待");
+            if(lastPointOfSale!=null){
+                PayPointOfSale payPointOfSale=new PayPointOfSale();
+                payPointOfSale.setDebtPayId(debtPayInsert.getId());
+                payPointOfSale.setCurrency(debtPayInsert.getCurrency());
+                payPointOfSale.setCompanyPayId(null);
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(lastPointOfSale);
+                payPointOfSale.setMoney(debtAdjust);
+                lastPointOfSale=null;
+                payPointOfSaleList.add(payPointOfSale);
+            }
+            for (; debtIndex < debtList.size(); debtIndex++) {
+                Debt debt=debtList.get(debtIndex);
+                if(debt.getNotNullConsume()==0.0){//没消费就继续
+                    continue;
+                }
+                debtSum+=debt.getNotNullConsume();
+                debtSum=szMath.formatTwoDecimalReturnDouble(debtSum);
+                /*先把实体建上，用不用再说*/
+                PayPointOfSale payPointOfSale=new PayPointOfSale();
+                payPointOfSale.setDebtPayId(debtPayInsert.getId());
+                payPointOfSale.setCurrency(debtPayInsert.getCurrency());
+                payPointOfSale.setCompanyPayId(null);
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(debt.getPointOfSale());
+                payPointOfSale.setMoney(debt.getNotNullConsume());
+                if(debtSum<debtPayInsert.getDebtMoney()){
+                    payPointOfSaleList.add(payPointOfSale);
+                    continue;
+                }
+                if(debtSum==debtPayInsert.getDebtMoney()){//相等最好了，不用拆，不过基本不可能
+                    payPointOfSaleList.add(payPointOfSale);
+                    debtSum=0;
+                    debtIndex++;
+                    break;
+                }
+                /*不相等，需要拆分金额*/
+                if(debtSum>debtPayInsert.getDebtMoney()){
+                    debtAdjust=debtPayInsert.getDebtMoney()-(debtSum-debt.getNotNullConsume());
+                    debtAdjust=szMath.formatTwoDecimalReturnDouble(debtAdjust);
+                    payPointOfSale.setMoney(debtAdjust);
+                    payPointOfSaleList.add(payPointOfSale);
+                    debtAdjust=debt.getNotNullConsume()-debtAdjust;
+                    debtSum=debtAdjust;
+                    debtSum=szMath.formatTwoDecimalReturnDouble(debtSum);
+                    lastPointOfSale=debt.getPointOfSale();
+                    debtIndex++;
+                    break;
+                }
+            }
+            /*检查转房客，转押金，因为只有离店时有这个选项*/
+            boolean noNeedParse = false;
+            if ("转房客".equals(currency) && lostRoom.getNotNullChangeDetail()) {
+                noNeedParse = true;
+                CheckIn checkIn = checkInService.getByRoomId(currencyAdd);
+                for (Debt debt : debtList) {
+                    Debt debtNeedInsert = new Debt(debt);
+                    debtNeedInsert.setPaySerial(null);
+                    debtNeedInsert.setFromRoom(serialService.getPaySerial());
+                    debtNeedInsert.setRemark(debtNeedInsert.getRoomId() + "->转入产生(哑房转入)");
+                    debtNeedInsert.setRoomId(currencyAdd);
+                    debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
+                    debtNeedInsert.setGroupAccount(checkIn.getGroupAccount());
+                    debtNeedInsert.setTotalConsume(checkIn.getNotNullConsume() + debtNeedInsert.getNotNullConsume());
+                    debtNeedInsert.setNotPartIn(true);
+                    debtService.add(debtNeedInsert);
+                    debtService.updateGuestInMoney(checkIn.getRoomId(), debtNeedInsert.getConsume(), debtNeedInsert.getDeposit());
+                }
+            }
+            if (!noNeedParse) {
+                debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, debtPay.getGroupAccount(), "哑房结算", serialService.getPaySerial(), "接待", "接待");
+            }
         }
+        /*不聚合payPointOfSaleList了，麻烦*/
+        payPointOfSaleService.add(payPointOfSaleList);
         String roomString = util.listToString(roomIdList);
         userLogService.addUserLog("哑房结算:" + roomString, userLogService.reception, userLogService.lostRoomCheckOut, roomString);
     }

@@ -1,5 +1,6 @@
 package com.sygdsoft.sqlProvider;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -28,8 +29,16 @@ public class DebtIntegrationSql {
 
     public String getSumConsumeByDoTime(Map<String, Object> parameters){
         String pointOfSale= (String) parameters.get("pointOfSale");
+        Date beginTime= (Date) parameters.get("beginTime");
+        Date endTime= (Date) parameters.get("endTime");
         boolean excludeChange= (boolean) parameters.get("excludeChange");
-        String basic="SELECT ifnull(sum(consume),0) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime}";
+        String basic="SELECT round(ifnull(sum(consume),0),2) FROM debt_integration WHERE 1=1 ";
+        if(beginTime!=null){
+            basic+=" and do_time > #{beginTime}";
+        }
+        if(endTime!=null){
+            basic+=" and do_time < #{endTime}";
+        }
         if(pointOfSale!=null){
             basic+=" and point_of_sale = #{pointOfSale}";
         }

@@ -49,6 +49,8 @@ public class CompanyController {
     DebtHistoryService debtHistoryService;
     @Autowired
     CompanyMoneyService companyMoneyService;
+    @Autowired
+    PayPointOfSaleService payPointOfSaleService;
 
     @RequestMapping(value = "companyGet")
     public List<Company> companyGet(@RequestBody Query query) throws Exception {
@@ -99,7 +101,7 @@ public class CompanyController {
     }
 
     /**
-     * 结算
+     * 结算,定额和挂账记录结算都在这里
      * <p>
      * param 1：单位名。2：金额。3.使用多少余额。4.币种
      *
@@ -142,6 +144,7 @@ public class CompanyController {
         List<CompanyDebtHistory> companyDebtHistoryList = new ArrayList<>();
         CompanyDebtHistory companyDebtHistory;
         List<FieldTemplate> templateList = new ArrayList<>();
+        StringBuilder paySerial= new StringBuilder();
         for (CompanyDebt companyDebt : companyDebtList) {
             companyDebtHistory = new CompanyDebtHistory(companyDebt);
             companyDebtHistory.setDoneTime(timeService.getNow());
@@ -155,6 +158,21 @@ public class CompanyController {
             fieldTemplate.setField5(companyDebt.getDescription());
             fieldTemplate.setField6(companyDebt.getUserId());
             templateList.add(fieldTemplate);
+            if("接待".equals(companyDebt.getPointOfSale())) {
+                if(companyDebtHistory.getPaySerial()!=null && !"".equals(companyDebtHistory.getPaySerial())) {
+                    paySerial.append("\'").append(companyDebtHistory.getPaySerial()).append("\',");
+                }
+            }
+            if(companyDebt.getNotNullOtherConsume()){
+                /*设置ppos*/
+                PayPointOfSale payPointOfSale = new PayPointOfSale();
+                payPointOfSale.setCurrency(companyPay.getCurrency());
+                payPointOfSale.setCompanyPayId(companyPay.getId());
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(companyDebt.getSecondPointOfSale());
+                payPointOfSale.setMoney(companyDebt.getDebt());
+                payPointOfSaleService.add(payPointOfSale);
+            }
         }
         /*如果杂单有冲账，最后一条需要进行杂单冲账，针对定额结算修补产生的*/
         CompanyDebt companyDebtLast = companyDebtList.get(companyDebtList.size() - 1);
@@ -166,6 +184,18 @@ public class CompanyController {
             } else {
                 companyDebt.setDescription("定额结算冲账");
             }
+            /*设置营业部门消费，杂单都设置为房费，偷懒的做法，最好的做法是筛选出最大大于他的营业部门，然后取这个，但是有一定概率没有，又要重新查找companyDebt，太他妈麻烦了*/
+            companyDebt.setOtherConsume(true);
+            companyDebt.setSecondPointOfSale("房费");
+            companyDebtLast.setSecondPointOfSale("房费");
+            /*根据上一条生成ppos*/
+            PayPointOfSale payPointOfSale = new PayPointOfSale();
+            payPointOfSale.setCurrency(companyPay.getCurrency());
+            payPointOfSale.setCompanyPayId(companyPay.getId());
+            payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setPointOfSale("房费");
+            payPointOfSale.setMoney(companyDebtLast.getDebt());
+            payPointOfSaleService.add(payPointOfSale);
             companyDebtService.add(companyDebt);
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
@@ -182,6 +212,21 @@ public class CompanyController {
             companyMoney.setMoney(-pay);
             companyMoney.setUserId(userService.getCurrentUser());
             companyMoneyService.add(companyMoney);
+        }
+        /*生成payPointOfSale*/
+        if(!paySerial.toString().equals("")) {
+            List<DebtHistory> debtHistoryList = debtHistoryService.getListByCompanyPaid(paySerial.substring(0, paySerial.length() - 1));
+            for (DebtHistory debtHistory : debtHistoryList) {
+                if (debtHistory.getNotNullConsume() != 0.0) {
+                    PayPointOfSale payPointOfSale = new PayPointOfSale();
+                    payPointOfSale.setCurrency(companyPay.getCurrency());
+                    payPointOfSale.setCompanyPayId(companyPay.getId());
+                    payPointOfSale.setDoTime(timeService.getNow());
+                    payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                    payPointOfSale.setMoney(debtHistory.getNotNullConsume());
+                    payPointOfSaleService.add(payPointOfSale);
+                }
+            }
         }
         userLogService.addUserLog("单位名称:" + companyName + " 结算:" + debt, "实付：" + pay, userLogService.company, userLogService.companyPay, companyName);
         /*生成结算报表
@@ -262,6 +307,15 @@ public class CompanyController {
                 companyDebtService.delete(companyDebt);
                 companyDebtHistoryList.add(companyDebtHistory);
             }
+            if (debtHistory.getNotNullConsume() != 0.0) {//没消费就继续
+                PayPointOfSale payPointOfSale = new PayPointOfSale();
+                payPointOfSale.setCompanyPayId(companyPay.getId());
+                payPointOfSale.setCurrency(currency);
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                payPointOfSale.setMoney(debtHistory.getNotNullConsume());
+                payPointOfSaleService.add(payPointOfSale);
+            }
         }
         /*循环map*/
         for (String paySerial : paySerialMap.keySet()) {
@@ -294,7 +348,7 @@ public class CompanyController {
                 companyDebtHistoryList.add(companyDebtHistory);
             }
             if (sign < paySerialMap.get(paySerial)) {
-                throw new Exception("结账序列号:" + paySerial + "可能存在分单，选中明细超过该笔分单金额，无法结算");
+                throw new Exception("结账序列号:" + paySerial + "可能存在分单，选中明细超过该笔分单金额，无法结算，请在挂账记录里结算");
             }
         }
         companyDebtHistoryService.add(companyDebtHistoryList);

@@ -30,4 +30,13 @@ public class DebtSql {
         }
         return basic;
     }
+
+    public String getConsumeByPointOfSale(Map<String, Object> map){
+        String pointOfSale = (String) map.get("pointOfSale");
+        String basic="SELECT ifnull(round(sum(consume),2),0) FROM debt ";
+        if(pointOfSale!=null){
+            basic+=" where point_of_sale = #{pointOfSale}";
+        }
+        return basic;
+    }
 }

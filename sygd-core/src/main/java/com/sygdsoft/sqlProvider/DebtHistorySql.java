@@ -87,20 +87,25 @@ public class DebtHistorySql {
         String userId = (String) parameters.get("userId");
         //以前连checkOut表，团队结算时会丢失押金
         //String basic = "SELECT round(sum(debt_history.deposit), 2) deposit FROM debt_history LEFT JOIN check_in_history_log ON debt_history.self_account = check_in_history_log.self_account LEFT JOIN check_out ON check_in_history_log.check_out_serial = check_out.check_out_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE AND check_out.check_out_serial IS NOT NULL";
-        String basic = "SELECT round(sum(debt_history.deposit), 2) deposit FROM debt_history LEFT JOIN debt_pay ON debt_history.pay_serial = debt_pay.pay_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE";
+        String basic = "SELECT round(sum(debt_history.deposit), 2) deposit FROM debt_history LEFT JOIN (SELECT DISTINCT pay_serial,user_id from debt_pay) dp ON debt_history.pay_serial = dp.pay_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE";
         if (userId != null) {
-            basic += " and debt_pay.user_id = #{userId}";
+            basic += " and dp.user_id = #{userId}";
         }
         return basic;
     }
 
     public String getCancelDeposit(Map<String, Object> parameters) {
         String userId = (String) parameters.get("userId");
-        String basic = "SELECT debt_history.self_account, debt_history.room_id roomId, sum(debt_history.deposit) deposit, debt_pay.user_id, debt_history.currency, '结账退预付' description,debt_history.done_time doneTime FROM debt_history LEFT JOIN debt_pay ON debt_history.pay_serial = debt_pay.pay_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE ";
+        String basic = "SELECT debt_history.self_account, debt_history.room_id roomId, sum(debt_history.deposit) deposit, dp.user_id, debt_history.currency, '结账退预付' description,debt_history.done_time doneTime FROM debt_history LEFT JOIN (SELECT DISTINCT pay_serial,user_id from debt_pay) dp ON debt_history.pay_serial = dp.pay_serial WHERE debt_history.done_time > #{beginTime} AND debt_history.done_time < #{endTime} AND debt_history.currency = #{currency} AND ifnull(back, FALSE) = FALSE ";
         if (userId != null) {
-            basic += " and debt_pay.user_id = #{userId}";
+            basic += " and dp.user_id = #{userId}";
         }
         basic+=" GROUP BY debt_history.self_account,debt_history.currency";
         return basic;
+    }
+
+    public String getListByCompanyPaid(Map<String, Object> parameters){
+        String paySerials = (String) parameters.get("paySerials");
+        return "SELECT id, do_time doTime, point_of_sale pointOfSale, consume, deposit, currency, description, self_account selfAccount, group_account groupAccount, room_id roomId, pay_serial paySerial, protocol, done_time doneTime, user_id userId, bed, vip_number vipNumber, category, remark, from_room fromRoom, guest_source guestSource, company_paid companyPaid, company, guest_name guestName, source_room sourceRoom, back, not_part_in notPartIn, area FROM debt_history WHERE pay_serial IN ("+paySerials+") AND ifnull(company_paid, FALSE ) = FALSE";
     }
 }

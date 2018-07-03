@@ -33,7 +33,7 @@ public class DebtService extends BaseService<Debt> {
     public String tel = "电话费";
     public String allDayPrice = "全日房费";
     public String payMiddle = "中间结算冲账";
-    static Object groupLock=new Object();
+    static Object groupLock = new Object();
     @Autowired
     DebtMapper debtMapper;
     @Autowired
@@ -98,12 +98,7 @@ public class DebtService extends BaseService<Debt> {
         CheckIn checkIn = checkInService.getByRoomId(roomId);
         checkInMapper.updateGuestInMoney(roomId);
         if (checkIn.getGroupAccount() != null) {
-            synchronized (groupLock) {
-                CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(checkIn.getGroupAccount());
-                checkInGroup.setConsume(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(consume) + checkInGroup.getNotNullGroupConsume()));
-                checkInGroup.setDeposit(szMath.formatTwoDecimalReturnDouble(NullJudgement.nullToZero(deposit) + checkInGroup.getNotNullGroupDeposit()));
-                checkInGroupMapper.updateByPrimaryKey(checkInGroup);
-            }
+            checkInGroupService.updateGroupMoney(checkIn.getGroupAccount());
         }
     }
 
@@ -111,7 +106,7 @@ public class DebtService extends BaseService<Debt> {
      * 通过**获得账务数组（排序）
      */
     public List<Debt> getListByRoomId(String roomId) throws Exception {
-        Query query=new Query("room_id=" + util.wrapWithBrackets(roomId));
+        Query query = new Query("room_id=" + util.wrapWithBrackets(roomId));
         query.setOrderByList(new String[]{"pointOfSale", "doTime"});
         query.setOrderByListDesc(new String[]{"deposit"});
         return get(query);
@@ -119,21 +114,21 @@ public class DebtService extends BaseService<Debt> {
 
     /*刨除中间结算的冲账*/
     public List<Debt> getListByRoomIdPure(String roomId) throws Exception {
-        Query query=new Query("room_id=" + util.wrapWithBrackets(roomId) + " and category!= \'中间结算冲账\'");
+        Query query = new Query("room_id=" + util.wrapWithBrackets(roomId) + " and category!= \'中间结算冲账\'");
         query.setOrderByList(new String[]{"pointOfSale", "doTime"});
         query.setOrderByListDesc(new String[]{"deposit"});
         return get(query);
     }
 
     public List<Debt> getListByGroupAccount(String groupAccount) throws Exception {
-        Query query=new Query("group_account=" + util.wrapWithBrackets(groupAccount));
-        query.setOrderByList(new String[]{"roomId","pointOfSale", "doTime"});
+        Query query = new Query("group_account=" + util.wrapWithBrackets(groupAccount));
+        query.setOrderByList(new String[]{"roomId", "pointOfSale", "doTime"});
         query.setOrderByListDesc(new String[]{"deposit"});
         return get(query);
     }
 
     public List<Debt> getListByBed(String bed) throws Exception {
-        Query query=new Query("bed=" + util.wrapWithBrackets(bed));
+        Query query = new Query("bed=" + util.wrapWithBrackets(bed));
         query.setOrderByList(new String[]{"pointOfSale", "doTime"});
         query.setOrderByListDesc(new String[]{"deposit"});
         return get(query);
@@ -155,12 +150,12 @@ public class DebtService extends BaseService<Debt> {
 
 
     public List<Debt> getDepositListByGroupAccount(String groupAccount) throws Exception {
-        Query query=new Query("group_account=\' " + groupAccount+"\' and deposit>0 and remark!=\'已退\'");
+        Query query = new Query("group_account=\' " + groupAccount + "\' and deposit>0 and remark!=\'已退\'");
         return get(query);
     }
 
     public List<Debt> getDepositListByBed(String bed) throws Exception {
-        Query query=new Query("bed= \'"+bed+"\' and deposit>0 and remark!=\'已退\'");
+        Query query = new Query("bed= \'" + bed + "\' and deposit>0 and remark!=\'已退\'");
         return get(query);
     }
 
@@ -236,7 +231,7 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 获取当前消费营业部门聚合
      */
-    public List<Debt> getListGroupByRoomIdPointOfSale(){
+    public List<Debt> getListGroupByRoomIdPointOfSale() {
         return debtMapper.getListGroupByRoomIdPointOfSale();
     }
 
@@ -289,7 +284,14 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 获取押金币种聚合
      */
-    public String getCurrencyGroup(String selfAccount){
+    public String getCurrencyGroup(String selfAccount) {
         return debtMapper.getCurrencyGroup(selfAccount);
+    }
+
+    /**
+     * 获取某个营业部门的消费
+     */
+    public Double getConsumeByPointOfSale(String pointOfSale){
+        return debtMapper.getConsumeByPointOfSale(pointOfSale);
     }
 }

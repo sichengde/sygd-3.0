@@ -8,7 +8,13 @@ import java.util.List;
  * Created by 舒展 on 2016-04-13.
  * 单位账务
  */
-public class CompanyDebt extends BaseEntity{
+public class CompanyDebt extends BaseEntity {
+    @Transient
+    public Double total;
+    @Transient
+    private Boolean tmp;//临时标志，代表定额结算产生的冲账条目，若为true则在单位结算时需要回冲一条
+    @Transient
+    public List<DebtHistory> debtHistoryList;//账务历史
     private String company;//单位代码
     private String lord;//签单人代码
     private String paySerial;//结账序列号
@@ -19,27 +25,37 @@ public class CompanyDebt extends BaseEntity{
     private String description;//备注，描述
     private String pointOfSale;//营业部门
     private String secondPointOfSale;//营业部门
-    @Transient
-    public Double total;
-    @Transient
-    public Boolean tmp;//临时标志，代表定额结算产生的冲账条目，若为true则在单位结算时需要回冲一条
-    @Transient
-    public List<DebtHistory> debtHistoryList;//账务历史
+    private Boolean otherConsume;//代表定额结算产生的冲账条目，若为true则在单位结算时需要回冲一条
 
     public CompanyDebt() {
     }
-    public CompanyDebt(CompanyDebt companyDebt){
-        this.company=companyDebt.getCompany();
-        this.debt=companyDebt.getDebt();
-        this.doTime=companyDebt.getDoTime();
-        this.description=companyDebt.getDescription();
+
+    public CompanyDebt(CompanyDebt companyDebt) {
+        this.company = companyDebt.getCompany();
+        this.lord = companyDebt.getLord();
+        this.paySerial = companyDebt.getPaySerial();
+        this.debt = companyDebt.getDebt();
+        this.currentRemain = companyDebt.getCurrentRemain();
+        this.doTime = companyDebt.getDoTime();
+        this.userId = companyDebt.getUserId();
+        this.description = companyDebt.getDescription();
+        this.pointOfSale = companyDebt.getPointOfSale();
+        this.secondPointOfSale = companyDebt.getSecondPointOfSale();
     }
 
-    public Boolean getNotNullTmp(){
-        if(this.tmp==null){
+    public Boolean getNotNullTmp() {
+        if (this.tmp == null) {
             return false;
-        }else {
+        } else {
             return this.tmp;
+        }
+    }
+
+    public Boolean getNotNullOtherConsume() {
+        if (this.otherConsume == null) {
+            return false;
+        } else {
+            return this.otherConsume;
         }
     }
 
@@ -145,5 +161,13 @@ public class CompanyDebt extends BaseEntity{
 
     public void setDebtHistoryList(List<DebtHistory> debtHistoryList) {
         this.debtHistoryList = debtHistoryList;
+    }
+
+    public Boolean getOtherConsume() {
+        return otherConsume;
+    }
+
+    public void setOtherConsume(Boolean otherConsume) {
+        this.otherConsume = otherConsume;
     }
 }

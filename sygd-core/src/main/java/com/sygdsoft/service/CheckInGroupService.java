@@ -44,4 +44,10 @@ public class CheckInGroupService extends BaseService<CheckInGroup>{
         return checkInGroupMapper.selectOne(checkInGroupQuery);
     }
 
+    /**
+     * 更新团队消费和押金
+     */
+    public void updateGroupMoney(String groupAccount){
+        checkInGroupMapper.updateGroupMoney(groupAccount);
+    }
 }

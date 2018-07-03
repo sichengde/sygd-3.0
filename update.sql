@@ -482,3 +482,134 @@ CREATE INDEX company_debt_company_index ON hotel.company_debt (company);
 CREATE INDEX company_debt_history_company_index ON hotel.company_debt_history (company);
 #2018-06-22 字段扩容
 ALTER TABLE check_out_room MODIFY name TEXT;
+#2018-06-28 保留两位小数
+ALTER TABLE company  MODIFY debt DOUBLE(16,3);
+ALTER TABLE company_debt MODIFY debt DOUBLE(16,3);
+ALTER TABLE company_debt_history MODIFY debt DOUBLE(16,3);
+ALTER TABLE pay_point_of_sale MODIFY money DOUBLE(16,3);
+#2018-06-29 优化单位明细视图
+CREATE OR REPLACE VIEW company_debt_rich AS
+  SELECT
+    id,
+    company,
+    lord,
+    pay_serial,
+    debt,
+    company_do_time,
+    description,
+    point_of_sale,
+    debt_do_time,
+    second_point_of_sale,
+    self_account,
+    group_account,
+    room_id,
+    user_id,
+    category,
+    remark,
+    name,
+    min(company_paid) company_paid
+  FROM (  SELECT DISTINCT
+            ifnull(`dh`.`id`, `cdi`.`id`)                                              AS `id`,
+            `cdi`.`company`                                                            AS `company`,
+            `cdi`.`lord`                                                               AS `lord`,
+            `cdi`.`pay_serial`                                                         AS `pay_serial`,
+            if((`dh`.`consume` > 0), `dh`.`consume`, `cdi`.`debt`)                     AS `debt`,
+            `cdi`.`do_time`                                                            AS `company_do_time`,
+            concat(`cdi`.`description`, ',', ifnull(`dh`.`description`, ''))           AS `description`,
+            `cdi`.`point_of_sale`                                                      AS `point_of_sale`,
+            `dh`.`do_time`                                                             AS `debt_do_time`,
+            `dh`.`point_of_sale`                                                       AS `second_point_of_sale`,
+            `dh`.`self_account`                                                        AS `self_account`,
+            `dh`.`group_account`                                                       AS `group_account`,
+            `dh`.`room_id`                                                             AS `room_id`,
+            `cdi`.`user_id`                                                            AS `user_id`,
+            `dh`.`category`                                                            AS `category`,
+            `dh`.`remark`                                                              AS `remark`,
+            ifnull((`cdi`.`company_paid` | ifnull(`dh`.`company_paid`, FALSE)), FALSE) AS `company_paid`,
+            `name`.`name`                                                              AS `name`
+          FROM ((`hotel`.`company_debt_integration` `cdi` LEFT JOIN `hotel`.`debt_history` `dh`
+              ON ((`cdi`.`pay_serial` = `dh`.`pay_serial`))) LEFT JOIN (SELECT
+                                                                          group_concat(`map`.`name` SEPARATOR ',') AS `name`,
+                                                                          `map`.`self_account`                     AS `self_account`
+                                                                        FROM (SELECT
+                                                                                `hotel`.`check_in_history`.`card_type`      AS `card_type`,
+                                                                                `hotel`.`check_in_history`.`name`           AS `name`,
+                                                                                `hotel`.`check_in_history`.`birthday_time`  AS `birthday_time`,
+                                                                                `hotel`.`check_in_history`.`sex`            AS `sex`,
+                                                                                `hotel`.`check_in_history`.`race`           AS `race`,
+                                                                                `hotel`.`check_in_history`.`address`        AS `address`,
+                                                                                `hotel`.`check_in_history`.`phone`          AS `phone`,
+                                                                                `hotel`.`check_in_history`.`last_time`      AS `last_time`,
+                                                                                `hotel`.`check_in_history`.`door_id`        AS `door_id`,
+                                                                                `hotel`.`check_in_history`.`bed`            AS `bed`,
+                                                                                `hotel`.`check_in_history`.`country`        AS `country`,
+                                                                                `hotel`.`check_in_history`.`num`            AS `num`,
+                                                                                `hotel`.`guest_map_check_in`.`self_account` AS `self_account`
+                                                                              FROM (`hotel`.`check_in_history`
+                                                                                LEFT JOIN `hotel`.`guest_map_check_in`
+                                                                                  ON ((`hotel`.`check_in_history`.`card_id` =
+                                                                                       `hotel`.`guest_map_check_in`.`card_id`)))) `map`
+                                                                        GROUP BY `map`.`self_account`) `name`
+              ON ((`dh`.`self_account` = `name`.`self_account`)))
+          WHERE isnull(`dh`.`deposit`)
+          ORDER BY `cdi`.`company` DESC, `cdi`.`do_time` DESC) a GROUP BY id
+    ,company
+    ,lord
+    ,pay_serial
+    ,debt
+    ,company_do_time
+    ,description
+    ,point_of_sale
+    ,debt_do_time
+    ,second_point_of_sale
+    ,self_account
+    ,group_account
+    ,room_id
+    ,user_id
+    ,category
+    ,remark
+    ,name;
+CREATE TABLE pay_point_of_sale
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  debt_pay_id INT,
+  company_pay_id INT,
+  point_of_sale VARCHAR(100),
+  currency VARCHAR(100),
+  money DOUBLE,
+  do_time DATETIME
+);
+#2018-07-02 增加單位杂单标志
+ALTER TABLE company_debt ADD other_consume BOOLEAN NULL;
+ALTER TABLE company_debt_history ADD other_consume BOOLEAN NULL;
+CREATE OR REPLACE VIEW company_debt_integration AS
+  SELECT
+    `hotel`.`company_debt`.`id`                   AS `id`,
+    `hotel`.`company_debt`.`company`              AS `company`,
+    `hotel`.`company_debt`.`lord`                 AS `lord`,
+    `hotel`.`company_debt`.`pay_serial`           AS `pay_serial`,
+    `hotel`.`company_debt`.`debt`                 AS `debt`,
+    `hotel`.`company_debt`.`do_time`              AS `do_time`,
+    `hotel`.`company_debt`.`user_id`              AS `user_id`,
+    `hotel`.`company_debt`.`description`          AS `description`,
+    `hotel`.`company_debt`.`point_of_sale`        AS `point_of_sale`,
+    `hotel`.`company_debt`.`second_point_of_sale` AS `second_point_of_sale`,
+    `hotel`.`company_debt`.`current_remain`       AS `current_remain`,
+    `hotel`.`company_debt`.`other_consume`       AS `other_consume`,
+    0                                             AS `company_paid`
+  FROM `hotel`.`company_debt`
+  UNION SELECT
+          `hotel`.`company_debt_history`.`id`                   AS `id`,
+          `hotel`.`company_debt_history`.`company`              AS `company`,
+          `hotel`.`company_debt_history`.`lord`                 AS `lord`,
+          `hotel`.`company_debt_history`.`pay_serial`           AS `pay_serial`,
+          `hotel`.`company_debt_history`.`debt`                 AS `debt`,
+          `hotel`.`company_debt_history`.`do_time`              AS `do_time`,
+          `hotel`.`company_debt_history`.`user_id`              AS `user_id`,
+          `hotel`.`company_debt_history`.`description`          AS `description`,
+          `hotel`.`company_debt_history`.`point_of_sale`        AS `point_of_sale`,
+          `hotel`.`company_debt_history`.`second_point_of_sale` AS `second_point_of_sale`,
+          `hotel`.`company_debt_history`.`current_remain`       AS `current_remain`,
+          `hotel`.`company_debt_history`.`other_consume`       AS `other_consume`,
+          1                                                     AS `company_paid`
+        FROM `hotel`.`company_debt_history`;
