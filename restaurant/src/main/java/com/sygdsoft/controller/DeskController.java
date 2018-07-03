@@ -198,6 +198,8 @@ public class DeskController {
             }
         }
         deskPayService.add(deskPayList);
+        /*增加ppos*/
+
         /*餐桌信息转移到历史*/
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         deskIn.setConsume(consume);

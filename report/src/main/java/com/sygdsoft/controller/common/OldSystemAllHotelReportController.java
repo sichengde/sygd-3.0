@@ -35,6 +35,8 @@ public class OldSystemAllHotelReportController {
     CompanyDebtService companyDebtService;
     @Autowired
     DebtHistoryService debtHistoryService;
+    @Autowired
+    DeskPayService deskPayService;
 
     @RequestMapping(value = "oldSystemAllHotelReport")
     public int oldSystemAllHotelReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -53,9 +55,9 @@ public class OldSystemAllHotelReportController {
         fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, true)));
         fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, null, true)));
         fieldTemplate.setField5("0.00");//现金都设置为0
-        fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null)));
-        fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null)));
-        fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, null)));
+        fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null,"接待")));
+        fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null,"接待")));
+        fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, null,"接待")));
         fieldTemplate.setField9(fieldTemplate.getField2());
         /*挂账未结=debt里的和companyDebt里的*/
         fieldTemplate.setField10(szMath.formatTwoDecimal(debtHistoryService.getConsumeNotCompanyPaid()));
@@ -81,9 +83,9 @@ public class OldSystemAllHotelReportController {
             fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, pointOfSale, true)));
             fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, pointOfSale, true)));
             fieldTemplate.setField5("0.00");//现金都设置为0
-            fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, pointOfSale)));
-            fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, pointOfSale)));
-            fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, pointOfSale)));
+            fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, pointOfSale,"接待")));
+            fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, pointOfSale,"接待")));
+            fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, pointOfSale,"接待")));
             fieldTemplate.setField9(fieldTemplate.getField2());
             /*挂账未结=debt里的和companyDebt里的*/
             Double debtConsume = debtService.getConsumeByPointOfSale(pointOfSale);
@@ -103,6 +105,21 @@ public class OldSystemAllHotelReportController {
             fieldTemplate.setField11(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(null, null, pointOfSale, true)));
             fieldTemplateList.add(fieldTemplate);
         }
+        /*------------------------------------------计算餐饮的合计------------------------------------------*/
+        fieldTemplate = new FieldTemplate();
+        fieldTemplate.setField1("餐饮");
+        fieldTemplate.setField2(szMath.formatTwoDecimal(deskPayService.getPay(null,null,null,beginTime1, endTime1)));
+        fieldTemplate.setField3(szMath.formatTwoDecimal(deskPayService.getPay(null,null,null,beginTime2, endTime2)));
+        fieldTemplate.setField4(szMath.formatTwoDecimal(deskPayService.getPay(null,null,null,beginTime3, endTime3)));
+        fieldTemplate.setField5("0.00");//现金都设置为0
+        fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null,"餐饮")));
+        fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null,"餐饮")));
+        fieldTemplate.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, null,"餐饮")));
+        fieldTemplate.setField9(fieldTemplate.getField2());
+        /*挂账未结=debt里的和companyDebt里的*/
+        fieldTemplate.setField10(szMath.formatTwoDecimal(debtHistoryService.getConsumeNotCompanyPaid()));
+        fieldTemplate.setField11(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(null, null, null, true)));
+        fieldTemplateList.add(fieldTemplate);
         return reportService.generateReport(fieldTemplateList, new String[]{}, "oldSystemAllHotel", "pdf");
     }
 }

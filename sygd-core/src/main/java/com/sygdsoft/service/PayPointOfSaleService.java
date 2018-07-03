@@ -16,7 +16,7 @@ public class PayPointOfSaleService extends BaseService<PayPointOfSale> {
     /**
      * 获取除了转哑房，转房客，转单位的结算款
      */
-    public Double getDebtMoney(Date beginTime, Date endTime, String pointOfSale) {
-        return payPointOfSaleMapper.getDebtMoney(pointOfSale, beginTime, endTime);
+    public Double getDebtMoney(Date beginTime, Date endTime, String pointOfSale, String module) {
+        return payPointOfSaleMapper.getDebtMoney(pointOfSale, beginTime, endTime,module);
     }
 }

@@ -12,5 +12,5 @@ import java.util.Date;
 public interface PayPointOfSaleMapper extends MyMapper<PayPointOfSale> {
     @SelectProvider(type = PayPointOfSaleSql.class,method = "getDebtMoney")
     @ResultType(Double.class)
-    Double getDebtMoney(@Param("pointOfSale") String pointOfSale, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+    Double getDebtMoney(@Param("pointOfSale") String pointOfSale, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("module")String module);
 }
