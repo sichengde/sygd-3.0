@@ -69,4 +69,11 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     public Double getSumDebtMoney(Date beginTime,Date endTime ,String pointOfSale){
         return companyDebtMapper.getSumDebtMoney(beginTime,endTime,pointOfSale);
     }
+
+    /**
+     * 获得单位杂单的总金额
+     */
+    public Double getSumOtherConsume(){
+        return companyDebtMapper.getSumOtherConsume();
+    }
 }

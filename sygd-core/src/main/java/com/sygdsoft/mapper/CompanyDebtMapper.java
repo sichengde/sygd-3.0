@@ -59,4 +59,8 @@ public interface CompanyDebtMapper extends MyMapper<CompanyDebt> {
     @SelectProvider(type = CompanyDebtSql.class,method = "getSumDebtMoney")
     @ResultType(Double.class)
     Double getSumDebtMoney(@Param("beginTime")Date beginTime,@Param("endTime")Date endTime,@Param("pointOfSale") String pointOfSale);
+
+    @Select("select round(ifnull(sum(debt),0),2) from company_debt where ifnull(other_consume,false)=true")
+    @ResultType(Double.class)
+    Double getSumOtherConsume();
 }
