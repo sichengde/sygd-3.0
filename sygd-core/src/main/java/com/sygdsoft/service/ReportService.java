@@ -148,7 +148,6 @@ public class ReportService {
                 this.printByPrinterName(printerName, jasperPrint);
             }
         }
-        int i=1/0;
     }
 
     /**
