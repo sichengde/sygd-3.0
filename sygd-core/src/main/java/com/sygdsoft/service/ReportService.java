@@ -130,17 +130,25 @@ public class ReportService {
             List<DeskDetail> dl=new ArrayList<>();
             for (int i = 0; i < deskDetailList.size(); i++) {
                 dl.add(deskDetailList.get(i));
-                if(i%split==split-1){
+                if(i==split-1){
                     JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
                     JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
                     this.printByPrinterName(printerName, jasperPrint);
                     dl=new ArrayList<>();
+                }else if(i%split==split-1){
+                    JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
+                    JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFoodNoTitle.jasper", param, jrDataSource);
+                    this.printByPrinterName(printerName, jasperPrint);
+                    dl=new ArrayList<>();
                 }
             }
-            JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
-            JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
-            this.printByPrinterName(printerName, jasperPrint);
+            if(dl.size()>0) {
+                JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
+                JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFoodNoTitle.jasper", param, jrDataSource);
+                this.printByPrinterName(printerName, jasperPrint);
+            }
         }
+        int i=1/0;
     }
 
     /**
