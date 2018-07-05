@@ -38,6 +38,8 @@ public class ReportService {
     TimeService timeService;
     @Autowired
     UserService userService;
+    @Autowired
+    OtherParamService otherParamService;
 
     public ReportService() {
     }
@@ -110,14 +112,35 @@ public class ReportService {
      * 4.整单备注
      */
     public void printPassFood(String printerName, List<DeskDetail> deskDetailList,DeskIn deskIn) throws Exception {
+        Integer split=0;
+        String splitNum=otherParamService.getValueByName("账单拆分");
+        if(splitNum!=null){
+            split=Integer.parseInt(splitNum);
+        }
         Map<String, Object> param = new HashMap<>();
-        JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
         param.put("parameter1", "传菜:  " + deskIn.getDesk());
         param.put("parameter2", timeService.dateToStringLong(deskIn.getDoTime()));
-        param.put("parameter3",  userService.getCurrentUser());
-        param.put("parameter4",  deskIn.getRemark());
-        JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
-        this.printByPrinterName(printerName, jasperPrint);
+        param.put("parameter3", userService.getCurrentUser());
+        param.put("parameter4", deskIn.getRemark());
+        if(split==0) {
+            JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
+            JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
+            this.printByPrinterName(printerName, jasperPrint);
+        }else {
+            List<DeskDetail> dl=new ArrayList<>();
+            for (int i = 0; i < deskDetailList.size(); i++) {
+                dl.add(deskDetailList.get(i));
+                if(i%split==split-1){
+                    JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
+                    JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
+                    this.printByPrinterName(printerName, jasperPrint);
+                    dl=new ArrayList<>();
+                }
+            }
+            JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
+            JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
+            this.printByPrinterName(printerName, jasperPrint);
+        }
     }
 
     /**
