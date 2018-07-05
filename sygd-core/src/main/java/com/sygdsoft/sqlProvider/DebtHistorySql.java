@@ -2,6 +2,7 @@ package com.sygdsoft.sqlProvider;
 
 import com.sygdsoft.util.Util;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -107,5 +108,17 @@ public class DebtHistorySql {
     public String getListByCompanyPaid(Map<String, Object> parameters){
         String paySerials = (String) parameters.get("paySerials");
         return "SELECT id, do_time doTime, point_of_sale pointOfSale, consume, deposit, currency, description, self_account selfAccount, group_account groupAccount, room_id roomId, pay_serial paySerial, protocol, done_time doneTime, user_id userId, bed, vip_number vipNumber, category, remark, from_room fromRoom, guest_source guestSource, company_paid companyPaid, company, guest_name guestName, source_room sourceRoom, back, not_part_in notPartIn, area FROM debt_history WHERE pay_serial IN ("+paySerials+") AND ifnull(company_paid, FALSE ) = FALSE";
+    }
+    public String getConsumeNotCompanyPaid(Map<String, Object> parameters){
+        Date beginTime = (Date) parameters.get("beginTime");
+        Date endTime = (Date) parameters.get("endTime");
+        String basic="SELECT round(ifnull(sum(consume),0),2) FROM debt_history WHERE ifnull(company_paid,FALSE )=FALSE AND pay_serial in (SELECT pay_serial FROM company_debt) ";
+        if(beginTime!=null){
+            basic+=" and do_time>#{beginTime}";
+        }
+        if(endTime!=null){
+            basic+=" and do_time<#{endTime}";
+        }
+        return basic;
     }
 }

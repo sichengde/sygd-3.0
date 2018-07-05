@@ -62,4 +62,11 @@ public class CompanyDebtService extends BaseService<CompanyDebt> {
     public CompanyDebtReportRow getRoomConsumeByCompanyDate(String company, Date beginTime,  Date endTime){
         return companyDebtMapper.getRoomConsumeByCompanyDate(company,beginTime,endTime);
     }
+
+    /**
+     * 获得某个模块的总金额
+     */
+    public Double getSumDebtMoney(Date beginTime,Date endTime ,String pointOfSale){
+        return companyDebtMapper.getSumDebtMoney(beginTime,endTime,pointOfSale);
+    }
 }

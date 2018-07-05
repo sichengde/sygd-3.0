@@ -291,7 +291,7 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 获取某个营业部门的消费
      */
-    public Double getConsumeByPointOfSale(String pointOfSale){
-        return debtMapper.getConsumeByPointOfSale(pointOfSale);
+    public Double getConsumeByPointOfSale(Date beginTime,Date endTime ,String pointOfSale,boolean excludeChange){
+        return debtMapper.getConsumeByPointOfSale(beginTime,endTime,pointOfSale,excludeChange);
     }
 }

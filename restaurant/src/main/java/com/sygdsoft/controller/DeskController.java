@@ -77,6 +77,8 @@ public class DeskController {
     DeskDetailCancelAllService deskDetailCancelAllService;
     @Autowired
     CurrencyService currencyService;
+    @Autowired
+    PayPointOfSaleService payPointOfSaleService;
 
     @RequestMapping(value = "deskAdd")
     public void deskAdd(@RequestBody Desk desk) throws Exception {
@@ -198,8 +200,14 @@ public class DeskController {
             }
         }
         deskPayService.add(deskPayList);
-        /*增加ppos*/
-
+        for (DeskPay deskPay : deskPayList) {
+            PayPointOfSale payPointOfSale = new PayPointOfSale();
+            payPointOfSale.setCurrency(deskPay.getCurrency());
+            payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setPointOfSale("餐饮");
+            payPointOfSale.setMoney(deskPay.getPayMoney());
+            payPointOfSaleService.add(payPointOfSale);
+        }
         /*餐桌信息转移到历史*/
         DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         deskIn.setConsume(consume);
@@ -426,6 +434,14 @@ public class DeskController {
         String changeDebt = debtPayService.parseCurrency(currency, currencyAdd, money, null, null, "自助餐", serialService.getCkSerial(), "餐饮", "自助餐");
         this.generateDeskPay(pointOfSale, currencyPost, deskPayList);
         deskPayService.add(deskPayList);
+        for (DeskPay deskPay : deskPayList) {
+            PayPointOfSale payPointOfSale = new PayPointOfSale();
+            payPointOfSale.setCurrency(deskPay.getCurrency());
+            payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setPointOfSale("餐饮");
+            payPointOfSale.setMoney(deskPay.getPayMoney());
+            payPointOfSaleService.add(payPointOfSale);
+        }
         /*餐桌信息转移到历史*/
         DeskInHistory deskInHistory = new DeskInHistory();
         deskInHistory.setDesk("自助餐");

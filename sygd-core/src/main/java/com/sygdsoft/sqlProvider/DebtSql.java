@@ -3,6 +3,7 @@ package com.sygdsoft.sqlProvider;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -33,9 +34,21 @@ public class DebtSql {
 
     public String getConsumeByPointOfSale(Map<String, Object> map){
         String pointOfSale = (String) map.get("pointOfSale");
-        String basic="SELECT ifnull(round(sum(consume),2),0) FROM debt ";
+        Boolean excludeChange = (Boolean) map.get("excludeChange");
+        Date beginTime = (Date) map.get("beginTime");
+        Date endTime = (Date) map.get("endTime");
+        String basic="SELECT ifnull(round(sum(consume),2),0) FROM debt where 1=1";
         if(pointOfSale!=null){
-            basic+=" where point_of_sale = #{pointOfSale}";
+            basic+=" and point_of_sale = #{pointOfSale}";
+        }
+        if(beginTime!=null){
+            basic+=" and do_time > #{beginTime}";
+        }
+        if(endTime!=null){
+            basic+=" and do_time < #{endTime}";
+        }
+        if(excludeChange){
+            basic+=" and ifnull(not_part_in,false) =false ";
         }
         return basic;
     }
