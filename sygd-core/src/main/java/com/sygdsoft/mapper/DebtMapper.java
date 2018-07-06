@@ -74,5 +74,5 @@ public interface DebtMapper extends MyMapper<Debt> {
 
     @SelectProvider(type = DebtSql.class,method = "getConsumeByPointOfSale")
     @ResultType(Double.class)
-    Double getConsumeByPointOfSale(@Param("pointOfSale") String pointOfSale);
+    Double getConsumeByPointOfSale(@Param("beginTime")Date beginTime,@Param("endTime") Date endTime,@Param("pointOfSale") String pointOfSale,@Param("excludeChange")Boolean excludeChange);
 }

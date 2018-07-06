@@ -216,7 +216,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     @SelectProvider(type = DebtHistorySql.class,method = "getListByCompanyPaid")
     List<DebtHistory> getListByCompanyPaid(@Param("paySerials") String paySerials);
 
-    @Select("SELECT round(ifnull(sum(consume),0),2) FROM debt_history WHERE ifnull(company_paid,FALSE )=FALSE AND pay_serial in (SELECT pay_serial FROM company_debt_integration)")
+    @SelectProvider(type = DebtHistorySql.class,method = "getConsumeNotCompanyPaid")
     @ResultType(Double.class)
-    Double getConsumeNotCompanyPaid();
+    Double getConsumeNotCompanyPaid(@Param("beginTime")Date beginTime,@Param("endTime")Date endTime);
 }

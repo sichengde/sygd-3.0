@@ -207,7 +207,7 @@ public class DebtHistoryService extends BaseService<DebtHistory> {
     /**
      * 获取没有结算的单位结算总金额
      */
-    public Double getConsumeNotCompanyPaid(){
-        return debtHistoryMapper.getConsumeNotCompanyPaid();
+    public Double getConsumeNotCompanyPaid(Date beginTime,Date endTime){
+        return debtHistoryMapper.getConsumeNotCompanyPaid(beginTime,endTime);
     }
 }

@@ -172,6 +172,15 @@ public class CompanyController {
                 payPointOfSale.setPointOfSale(companyDebt.getSecondPointOfSale());
                 payPointOfSale.setMoney(companyDebt.getDebt());
                 payPointOfSaleService.add(payPointOfSale);
+            }else if("餐饮".equals(companyDebt.getPointOfSale())){
+                /*设置ppos*/
+                PayPointOfSale payPointOfSale = new PayPointOfSale();
+                payPointOfSale.setCurrency(companyPay.getCurrency());
+                payPointOfSale.setCompanyPayId(companyPay.getId());
+                payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setPointOfSale(companyDebt.getPointOfSale());
+                payPointOfSale.setMoney(companyDebt.getDebt());
+                payPointOfSaleService.add(payPointOfSale);
             }
         }
         /*如果杂单有冲账，最后一条需要进行杂单冲账，针对定额结算修补产生的*/
@@ -186,16 +195,25 @@ public class CompanyController {
             }
             /*设置营业部门消费，杂单都设置为房费，偷懒的做法，最好的做法是筛选出最大大于他的营业部门，然后取这个，但是有一定概率没有，又要重新查找companyDebt，太他妈麻烦了*/
             companyDebt.setOtherConsume(true);
-            companyDebt.setSecondPointOfSale("房费");
-            companyDebtLast.setSecondPointOfSale("房费");
             /*根据上一条生成ppos*/
             PayPointOfSale payPointOfSale = new PayPointOfSale();
             payPointOfSale.setCurrency(companyPay.getCurrency());
             payPointOfSale.setCompanyPayId(companyPay.getId());
             payPointOfSale.setDoTime(timeService.getNow());
-            payPointOfSale.setPointOfSale("房费");
+            if(companyDebtLast.getPointOfSale().equals("餐饮")){
+                payPointOfSale.setPointOfSale("餐饮");
+                companyDebt.setSecondPointOfSale("餐饮");
+                companyDebtLast.setSecondPointOfSale("餐饮");
+            }else {
+                payPointOfSale.setPointOfSale("房费");
+                companyDebt.setSecondPointOfSale("房费");
+                companyDebtLast.setSecondPointOfSale("房费");
+            }
             payPointOfSale.setMoney(companyDebtLast.getDebt());
-            payPointOfSaleService.add(payPointOfSale);
+            if(!companyDebtLast.getPointOfSale().equals("餐饮")) {//最后一条如果是餐饮的话就在上边的遍历里加上了，这里不用再加了
+
+                payPointOfSaleService.add(payPointOfSale);
+            }
             companyDebtService.add(companyDebt);
         }
         companyDebtHistoryService.add(companyDebtHistoryList);
@@ -222,7 +240,11 @@ public class CompanyController {
                     payPointOfSale.setCurrency(companyPay.getCurrency());
                     payPointOfSale.setCompanyPayId(companyPay.getId());
                     payPointOfSale.setDoTime(timeService.getNow());
-                    payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                    if(debtHistory.getPaySerial().contains("ck")){
+                        payPointOfSale.setPointOfSale("餐饮");
+                    }else {
+                        payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                    }
                     payPointOfSale.setMoney(debtHistory.getNotNullConsume());
                     payPointOfSaleService.add(payPointOfSale);
                 }
@@ -312,7 +334,11 @@ public class CompanyController {
                 payPointOfSale.setCompanyPayId(companyPay.getId());
                 payPointOfSale.setCurrency(currency);
                 payPointOfSale.setDoTime(timeService.getNow());
-                payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                if(debtHistory.getPaySerial().contains("ck")){
+                    payPointOfSale.setPointOfSale("餐饮");
+                }else {
+                    payPointOfSale.setPointOfSale(debtHistory.getPointOfSale());
+                }
                 payPointOfSale.setMoney(debtHistory.getNotNullConsume());
                 payPointOfSaleService.add(payPointOfSale);
             }
