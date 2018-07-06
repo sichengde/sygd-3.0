@@ -1,12 +1,12 @@
 package com.sygdsoft.service;
 
-import com.sygdsoft.model.*;
+import com.sygdsoft.model.DeskDetail;
+import com.sygdsoft.model.DeskIn;
+import com.sygdsoft.model.FieldTemplate;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,16 +69,16 @@ public class ReportService {
     public void printCook(String printerName, DeskDetail deskDetail,DeskIn deskIn) throws Exception {
         Map<String, Object> param = new HashMap<>();
         /*参数注释
-        * 1.桌号
-        * 2.菜品
-        * 3.数量
-        * 4.备注加上叫起标志
-        * 5.菜品类别
-        * 6.全单备注
-        * 7.单价
-        * 8.单位
-        * 9.等叫叫起信息
-        * */
+         * 1.桌号
+         * 2.菜品
+         * 3.数量
+         * 4.备注加上叫起标志
+         * 5.菜品类别
+         * 6.全单备注
+         * 7.单价
+         * 8.单位
+         * 9.等叫叫起信息
+         * */
         param.put("parameter1", deskDetail.getDesk());
         param.put("parameter2", deskDetail.getFoodName());
         param.put("parameter3", deskDetail.getNum());
@@ -128,10 +128,10 @@ public class ReportService {
         System.out.println(design.getPageHeight());
         design.setPageHeight(4000);
         JasperCompileManager.compileReportToFile(design, "C:/report/passFood.jasper");*/
-        JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
+        /*JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
-        this.printByPrinterName(printerName, jasperPrint);
-        /*if(split==0) {
+        this.printByPrinterName(printerName, jasperPrint);*/
+        if(split==0) {
             JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
             JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
             this.printByPrinterName(printerName, jasperPrint);
@@ -139,7 +139,7 @@ public class ReportService {
             List<DeskDetail> dl=new ArrayList<>();
             for (int i = 0; i < deskDetailList.size(); i++) {
                 dl.add(deskDetailList.get(i));
-                if(i==split-1){
+                if(i==(split-1)){
                     JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
                     JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
                     this.printByPrinterName(printerName, jasperPrint);
@@ -156,7 +156,7 @@ public class ReportService {
                 JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFoodNoTitle.jasper", param, jrDataSource);
                 this.printByPrinterName(printerName, jasperPrint);
             }
-        }*/
+        }
     }
 
     /**
