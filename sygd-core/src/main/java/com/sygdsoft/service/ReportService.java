@@ -124,10 +124,10 @@ public class ReportService {
         param.put("parameter2", timeService.dateToStringLong(deskIn.getDoTime()));
         param.put("parameter3", userService.getCurrentUser());
         param.put("parameter4", deskIn.getRemark());
-        JasperDesign design=JRXmlLoader.load("C:/report/passFood.jrxml");;
+        /*JasperDesign design=JRXmlLoader.load("C:/report/passFood.jrxml");;
         System.out.println(design.getPageHeight());
-        design.setPageHeight(10000);
-        JasperCompileManager.compileReportToFile(design, "C:/report/passFood.jasper");
+        design.setPageHeight(4000);
+        JasperCompileManager.compileReportToFile(design, "C:/report/passFood.jasper");*/
         JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
         this.printByPrinterName(printerName, jasperPrint);
