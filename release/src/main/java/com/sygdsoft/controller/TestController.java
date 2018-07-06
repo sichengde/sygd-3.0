@@ -1,6 +1,5 @@
 package com.sygdsoft.controller;
 
-import com.sygdsoft.conf.dataSource.DynamicDataSourceContextHolder;
 import com.sygdsoft.model.User;
 import com.sygdsoft.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ public class TestController {
 
     @RequestMapping(value = "testDataSource/{ds}")
     public String testDataSource(@PathVariable("ds") String ds) throws Exception {
-        DynamicDataSourceContextHolder.setDataSourceType(ds);
         List<User> userList = userService.get(null);
         StringBuilder user = new StringBuilder();
         for (User user1 : userList) {

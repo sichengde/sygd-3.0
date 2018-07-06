@@ -1,12 +1,12 @@
 package com.sygdsoft.service;
 
-import com.sygdsoft.model.*;
+import com.sygdsoft.model.DeskDetail;
+import com.sygdsoft.model.DeskIn;
+import com.sygdsoft.model.FieldTemplate;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -128,10 +128,10 @@ public class ReportService {
         System.out.println(design.getPageHeight());
         design.setPageHeight(4000);
         JasperCompileManager.compileReportToFile(design, "C:/report/passFood.jasper");*/
-        JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
+        /*JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
-        this.printByPrinterName(printerName, jasperPrint);
-        /*if(split==0) {
+        this.printByPrinterName(printerName, jasperPrint);*/
+        if(split==0) {
             JRDataSource jrDataSource = new JRBeanCollectionDataSource(deskDetailList);
             JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
             this.printByPrinterName(printerName, jasperPrint);
@@ -139,7 +139,7 @@ public class ReportService {
             List<DeskDetail> dl=new ArrayList<>();
             for (int i = 0; i < deskDetailList.size(); i++) {
                 dl.add(deskDetailList.get(i));
-                if(i==split-1){
+                if(i==(split-1)){
                     JRDataSource jrDataSource = new JRBeanCollectionDataSource(dl);
                     JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFood.jasper", param, jrDataSource);
                     this.printByPrinterName(printerName, jasperPrint);
@@ -156,7 +156,7 @@ public class ReportService {
                 JasperPrint jasperPrint = JasperFillManager.fillReport("C:/report/passFoodNoTitle.jasper", param, jrDataSource);
                 this.printByPrinterName(printerName, jasperPrint);
             }
-        }*/
+        }
     }
 
     /**
