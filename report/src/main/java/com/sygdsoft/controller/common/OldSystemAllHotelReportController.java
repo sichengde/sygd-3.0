@@ -144,12 +144,24 @@ public class OldSystemAllHotelReportController {
         fieldTemplateTotal.setField3(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField3())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField3())));
         fieldTemplateTotal.setField4(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField4())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField4())));
         fieldTemplateTotal.setField5(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField5())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField5())));
-        fieldTemplateTotal.setField6(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField6())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField6())));
-        fieldTemplateTotal.setField7(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField7())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField7())));
-        fieldTemplateTotal.setField8(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField8())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField8())));
-        fieldTemplateTotal.setField9(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField9())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField9())));
-        fieldTemplateTotal.setField10(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField10())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField10())));
-        fieldTemplateTotal.setField11(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField11())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField11())));
+        fieldTemplateTotal.setField6(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField6())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField6())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField6())));
+        fieldTemplateTotal.setField7(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField7())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField7())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField7())));
+        fieldTemplateTotal.setField8(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField8())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField8())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField8())));
+        fieldTemplateTotal.setField9(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField9())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField9())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField9())));
+        fieldTemplateTotal.setField10(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField10())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField10())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField10())));
+        fieldTemplateTotal.setField11(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField11())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField11())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField11())));
+        fieldTemplateList.add(fieldTemplateTotal);
+        /*开始输出其他参数
+        * 上日在店押金
+        * 交班审核表不选操作员收预付
+        * 单退
+        * 结算退
+        * 收取-单退-结算
+        * 在店预付
+        * 当日结挂帐款
+        * 本日新增-结挂帐款
+        *
+        * */
         return reportService.generateReport(fieldTemplateList, new String[]{}, "oldSystemAllHotel", "pdf");
     }
 }

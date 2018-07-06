@@ -69,16 +69,16 @@ public class ReportService {
     public void printCook(String printerName, DeskDetail deskDetail,DeskIn deskIn) throws Exception {
         Map<String, Object> param = new HashMap<>();
         /*参数注释
-        * 1.桌号
-        * 2.菜品
-        * 3.数量
-        * 4.备注加上叫起标志
-        * 5.菜品类别
-        * 6.全单备注
-        * 7.单价
-        * 8.单位
-        * 9.等叫叫起信息
-        * */
+         * 1.桌号
+         * 2.菜品
+         * 3.数量
+         * 4.备注加上叫起标志
+         * 5.菜品类别
+         * 6.全单备注
+         * 7.单价
+         * 8.单位
+         * 9.等叫叫起信息
+         * */
         param.put("parameter1", deskDetail.getDesk());
         param.put("parameter2", deskDetail.getFoodName());
         param.put("parameter3", deskDetail.getNum());
