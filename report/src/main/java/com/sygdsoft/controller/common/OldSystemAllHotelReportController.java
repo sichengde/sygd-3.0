@@ -38,6 +38,8 @@ public class OldSystemAllHotelReportController {
     DeskPayService deskPayService;
     @Autowired
     DebtPayService debtPayService;
+    @Autowired
+    CheckInSnapshotService checkInSnapshotService;
 
     @RequestMapping(value = "oldSystemAllHotelReport")
     public int oldSystemAllHotelReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -152,16 +154,20 @@ public class OldSystemAllHotelReportController {
         fieldTemplateTotal.setField11(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField11())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField11())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField11())));
         fieldTemplateList.add(fieldTemplateTotal);
         /*开始输出其他参数
-        * 上日在店押金
-        * 交班审核表不选操作员收预付
-        * 单退
-        * 结算退
-        * 收取-单退-结算
-        * 在店预付
-        * 当日结挂帐款
-        * 本日新增-结挂帐款
-        *
+        * param1 上日预付(上日在店押金)
+        * param2 本日收取(交班审核表不选操作员收预付)
+        * param3 单退预付(单退)
+        * param4 结算退预付(结算退)
+        * param5 当日预付变化(收取-单退-结算)
+        * param6 预付余额(在店预付)
+        * param7 上日消费
+        * param8 本日新增(当日挂账)
+        * param9 结挂账款(当日结挂帐款)
+        * param10 消费纯变化(本日新增-结挂帐款)
+        * param11 消费余额
         * */
+        Double param1=checkInSnapshotService.getSum("deposit",beginTime1);
+
         return reportService.generateReport(fieldTemplateList, new String[]{}, "oldSystemAllHotel", "pdf");
     }
 }
