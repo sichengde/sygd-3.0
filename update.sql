@@ -613,7 +613,7 @@ CREATE OR REPLACE VIEW company_debt_integration AS
           `hotel`.`company_debt_history`.`other_consume`       AS `other_consume`,
           1                                                     AS `company_paid`
         FROM `hotel`.`company_debt_history`;
-#增加报表存储库
+#2018-07-07 增加报表存储库
 CREATE TABLE report_store
 (
   id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
