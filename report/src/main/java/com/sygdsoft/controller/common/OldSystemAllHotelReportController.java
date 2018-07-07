@@ -40,6 +40,8 @@ public class OldSystemAllHotelReportController {
     DebtPayService debtPayService;
     @Autowired
     CheckInSnapshotService checkInSnapshotService;
+    @Autowired
+    ReportStoreService reportStoreService;
 
     @RequestMapping(value = "oldSystemAllHotelReport")
     public int oldSystemAllHotelReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -48,7 +50,9 @@ public class OldSystemAllHotelReportController {
         Date beginTime2 = timeService.getMinMonth(date);
         Date beginTime3 = timeService.getMinYear(date);
         Date endTime1 = timeService.getMaxTime(date);
+        //Date endTime2 = timeService.getMaxMonth(date);//按当前时间为最后一天计算
         Date endTime2 = timeService.getMaxMonth(date);
+        //Date endTime3 = timeService.getMaxYear(date);//按当前时间为最后一天计算
         Date endTime3 = timeService.getMaxYear(date);
         List<FieldTemplate> fieldTemplateList = new ArrayList<>();
         /*先计算客房合计*/
@@ -156,18 +160,34 @@ public class OldSystemAllHotelReportController {
         /*开始输出其他参数
         * param1 上日预付(上日在店押金)
         * param2 本日收取(交班审核表不选操作员收预付)
-        * param3 单退预付(单退)
+        * param3 单退预付(手动退)
         * param4 结算退预付(结算退)
         * param5 当日预付变化(收取-单退-结算)
         * param6 预付余额(在店预付)
-        * param7 上日消费
+        * param7 上日消费(消费余额+结挂帐款-本日新增)
         * param8 本日新增(当日挂账)
         * param9 结挂账款(当日结挂帐款)
         * param10 消费纯变化(本日新增-结挂帐款)
         * param11 消费余额
         * */
-        Double param1=checkInSnapshotService.getSum("deposit",beginTime1);
+        String param1=szMath.formatTwoDecimal(checkInSnapshotService.getSum("deposit",beginTime1));
+        String param2=szMath.formatTwoDecimal(debtIntegrationService.getSum("deposit",beginTime1,endTime1));
+        String param3=szMath.formatTwoDecimal(debtIntegrationService.getSumCancelDeposit(null, null, beginTime1, endTime1));
+        String param4=szMath.formatTwoDecimal(debtHistoryService.getTotalCancelDeposit(null, null, beginTime1, endTime1));
+        String param5=szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param2)-szMath.formatTwoDecimalReturnDouble(param3)-szMath.formatTwoDecimalReturnDouble(param4));
+        String param6=szMath.formatTwoDecimal(debtService.getDepositMoneyAll(null));
+        String param8=fieldTemplateTotal.getField9();
+        String param9=fieldTemplateTotal.getField6();
+        String param10=szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param8)-szMath.formatTwoDecimalReturnDouble(param9));
+        String param11=fieldTemplateTotal.getField11();
+        String param7=szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param11)-szMath.formatTwoDecimalReturnDouble(param10));
 
-        return reportService.generateReport(fieldTemplateList, new String[]{}, "oldSystemAllHotel", "pdf");
+        return reportService.generateReport(fieldTemplateList, new String[]{param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11}, "oldSystemAllHotel", "pdf");
+    }
+
+    @RequestMapping(value = "oldSystemAllHotelReportGet")
+    public int oldSystemAllHotelReportGet(@RequestBody ReportJson reportJson) throws Exception {
+        String identify=timeService.dateToStringShort(reportJson.getBeginTime());
+        return reportStoreService.print("全店收入表",identify,"oldSystemAllHotel");
     }
 }

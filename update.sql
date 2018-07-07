@@ -613,3 +613,34 @@ CREATE OR REPLACE VIEW company_debt_integration AS
           `hotel`.`company_debt_history`.`other_consume`       AS `other_consume`,
           1                                                     AS `company_paid`
         FROM `hotel`.`company_debt_history`;
+#增加报表存储库
+CREATE TABLE report_store
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  type VARCHAR(20) COMMENT 'param或者fieldTemplate',
+  name VARCHAR(100),
+  identify VARCHAR(200) COMMENT '可以是单个时间，也可以是范围',
+  column_1 VARCHAR(100),
+  column_2 VARCHAR(100),
+  column_3 VARCHAR(100),
+  column_4 VARCHAR(100),
+  column_5 VARCHAR(100),
+  column_6 VARCHAR(100),
+  column_7 VARCHAR(100),
+  column_8 VARCHAR(100),
+  column_9 VARCHAR(100),
+  column_10 VARCHAR(100),
+  column_11 VARCHAR(100),
+  column_12 VARCHAR(100),
+  column_13 VARCHAR(100),
+  column_14 VARCHAR(100),
+  column_15 VARCHAR(100),
+  column_16 VARCHAR(100),
+  column_17 VARCHAR(100),
+  column_18 VARCHAR(100),
+  column_19 VARCHAR(100),
+  column_20 VARCHAR(100)
+);
+CREATE INDEX report_store_type_index ON report_store (type);
+CREATE INDEX report_store_name_index ON report_store (name);
+CREATE INDEX report_store_identify_index ON report_store (identify);

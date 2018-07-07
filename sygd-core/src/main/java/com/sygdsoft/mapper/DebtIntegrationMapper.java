@@ -104,4 +104,8 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
     @Select("SELECT round(sum(deposit),2) FROM debt_integration WHERE pay_serial=#{pay_serial}")
     @ResultType(value = Double.class)
     Double getTotalDeposit(String paySerial);
+
+    @SelectProvider(type = DebtIntegrationSql.class,method = "getSum")
+    @ResultType(Double.class)
+    Double getSum(@Param("field") String field, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }
