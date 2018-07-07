@@ -16,4 +16,8 @@ public class CheckInSnapshotService extends BaseService<CheckInSnapshot> {
     public void deleteByDate(Date debtDate) {
         checkInSnapshotMapper.deleteByDate(debtDate);
     }
+
+    public Double getSum(String field,Date date){
+        return checkInSnapshotMapper.getSum(field,date);
+    }
 }

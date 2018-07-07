@@ -11,9 +11,13 @@ public class DebtIntegrationSql {
     }
     public String getDepositByUserCurrencyDate(Map<String, Object> parameters){
         String userId= (String) parameters.get("userId");
-        String basic="SELECT ifnull(abs(sum(deposit)),0) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit<0";
+        String currency= (String) parameters.get("currency");
+        String basic="SELECT ifnull(abs(sum(deposit)),0) FROM debt_integration WHERE do_time > #{beginTime} and do_time< #{endTime} and deposit<0";
         if(userId!=null){
             basic+=" and user_id = #{userId}";
+        }
+        if(userId!=null){
+            basic+=" and currency=#{currency}";
         }
         return basic;
     }
@@ -63,6 +67,10 @@ public class DebtIntegrationSql {
             basic+=" and user_id=#{userId} ";
         }
         return basic;
+    }
+    public String getSum(Map<String, Object> parameters){
+        String field=(String) parameters.get("field");
+        return "SELECT round(ifnull(sum("+field+"),0),2) FROM debt_integration WHERE do_time>#{beginTime} AND do_time<#{endTime}";
     }
 
     public String getDailyCount(){

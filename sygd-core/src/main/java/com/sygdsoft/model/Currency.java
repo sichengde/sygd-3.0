@@ -15,6 +15,7 @@ public class Currency extends BaseEntity{
     private Boolean payTotalDesk;//参与结算款统计
     private Boolean payBackRmb;//退预付转人民币
     private Boolean showInReport;//账单上是否显示(暂时只有餐饮)
+    private Boolean checkRemain;//统计结余时是否参与
 
     public Currency() {
     }
@@ -48,6 +49,14 @@ public class Currency extends BaseEntity{
             return false;
         }else {
             return payTotalDesk;
+        }
+    }
+
+    public boolean getNotNullCheckRemain() {
+        if (checkRemain==null){
+            return false;
+        }else {
+            return checkRemain;
         }
     }
 
@@ -117,5 +126,13 @@ public class Currency extends BaseEntity{
 
     public void setShowInReport(Boolean showInReport) {
         this.showInReport = showInReport;
+    }
+
+    public Boolean getCheckRemain() {
+        return checkRemain;
+    }
+
+    public void setCheckRemain(Boolean checkRemain) {
+        this.checkRemain = checkRemain;
     }
 }

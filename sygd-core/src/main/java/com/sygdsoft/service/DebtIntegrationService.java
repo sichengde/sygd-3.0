@@ -114,4 +114,11 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
         }
         return debtIntegrationMapper.getDailyCount(beginTime,endTime,fixDateInt);
     }
+
+    /**
+     * 获取总和
+     */
+    public Double getSum(String field,Date beginTime,Date endTime){
+        return debtIntegrationMapper.getSum(field,beginTime,endTime);
+    }
 }
