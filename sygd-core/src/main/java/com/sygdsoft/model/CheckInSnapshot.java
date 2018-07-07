@@ -5,6 +5,7 @@ import java.util.Date;
 public class CheckInSnapshot extends CheckIn {
     private Date reportDate;
     private String guestName;
+    private Double partInDeposit;
 
     public CheckInSnapshot() {
     }
@@ -50,5 +51,13 @@ public class CheckInSnapshot extends CheckIn {
 
     public void setGuestName(String guestName) {
         this.guestName = guestName;
+    }
+
+    public Double getPartInDeposit() {
+        return partInDeposit;
+    }
+
+    public void setPartInDeposit(Double partInDeposit) {
+        this.partInDeposit = partInDeposit;
     }
 }

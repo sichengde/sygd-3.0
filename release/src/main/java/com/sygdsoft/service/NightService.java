@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -72,6 +73,8 @@ public class NightService {
     CheckInGuestService checkInGuestService;
     @Autowired
     OldSystemReportService oldSystemReportService;
+    @Autowired
+    CurrencyService currencyService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic() throws Exception {
@@ -278,10 +281,24 @@ public class NightService {
         /*生成在店户籍快照*/
         List<CheckIn> checkInList1 = checkInService.get(null);
         List<CheckInSnapshot> checkInSnapshotList = new ArrayList<>();
+        HashMap<String, Boolean> currencyRealMap = new HashMap<>();//全部的币种和押金map
+        List<Currency> currencyList = currencyService.get();
+        for (Currency currency : currencyList) {
+            currencyRealMap.put(currency.getCurrency(), currency.getNotNullCheckRemain());
+        }
         for (CheckIn checkIn : checkInList1) {
             CheckInSnapshot checkInSnapshot = new CheckInSnapshot(checkIn);
             checkInSnapshot.setReportDate(debtDate);
             checkInSnapshot.setGuestName(checkInGuestService.listToStringName(checkInGuestService.getListByRoomId(checkIn.getRoomId())));
+            /*获取所有押金*/
+            Double realDeposit = 0.0;
+            List<Debt> debtList = debtService.getListByRoomId(checkIn.getRoomId());
+            for (Debt debt : debtList) {
+                if (debt.getNotNullDeposit() != 0.0 && currencyRealMap.getOrDefault(debt.getCurrency(), false)) {
+                    realDeposit += debt.getNotNullDeposit();
+                }
+            }
+            checkInSnapshot.setPartInDeposit(realDeposit);
             checkInSnapshotList.add(checkInSnapshot);
         }
         checkInSnapshotService.add(checkInSnapshotList);

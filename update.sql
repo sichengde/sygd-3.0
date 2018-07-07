@@ -644,3 +644,5 @@ CREATE TABLE report_store
 CREATE INDEX report_store_type_index ON report_store (type);
 CREATE INDEX report_store_name_index ON report_store (name);
 CREATE INDEX report_store_identify_index ON report_store (identify);
+ALTER TABLE currency ADD check_remain BOOLEAN NULL;
+ALTER TABLE check_in_snapshot ADD part_in_deposit DOUBLE NULL;

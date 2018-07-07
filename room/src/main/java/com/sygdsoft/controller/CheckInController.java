@@ -2,10 +2,8 @@ package com.sygdsoft.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.Query;
-import com.sygdsoft.model.CheckIn;
-import com.sygdsoft.model.CheckInGroup;
-import com.sygdsoft.model.Debt;
-import com.sygdsoft.model.Protocol;
+import com.sygdsoft.model.*;
+import com.sygdsoft.model.Currency;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,15 +31,31 @@ public class CheckInController {
     CheckInGuestService checkInGuestService;
     @Autowired
     DebtService debtService;
+    @Autowired
+    CurrencyService currencyService;
 
     /**
      * 获取全部在店户籍
      */
     @RequestMapping(value = "checkInGet")
     public List<CheckIn> checkInGet(@RequestBody Query query) throws Exception {
-        List<CheckIn> checkInList=checkInService.get(query);
+        List<CheckIn> checkInList = checkInService.get(query);
+        HashMap<String, Boolean> currencyRealMap = new HashMap<>();//全部的币种和押金map
+        List<Currency> currencyList = currencyService.get();
+        for (Currency currency : currencyList) {
+            currencyRealMap.put(currency.getCurrency(), currency.getNotNullCheckRemain());
+        }
         for (CheckIn checkIn : checkInList) {
             checkIn.setNameString(checkInGuestService.listToStringName(checkInGuestService.getListByRoomId(checkIn.getRoomId())));
+            /*获取所有押金*/
+            Double realDeposit = 0.0;
+            List<Debt> debtList = debtService.getListByRoomId(checkIn.getRoomId());
+            for (Debt debt : debtList) {
+                if (debt.getNotNullDeposit() != 0.0 && currencyRealMap.getOrDefault(debt.getCurrency(), false)) {
+                    realDeposit += debt.getNotNullDeposit();
+                }
+            }
+            checkIn.setPartInDeposit(realDeposit);
         }
         return checkInList;
     }
@@ -62,16 +76,16 @@ public class CheckInController {
     @Transactional(rollbackFor = Exception.class)
     public void checkInUpdate(@RequestBody CheckIn checkIn) throws Exception {
         /*先获取原来的checkIn便于对比改没改房价*/
-        CheckIn checkIn1=checkInService.get(new Query("id="+checkIn.getId())).get(0);
+        CheckIn checkIn1 = checkInService.get(new Query("id=" + checkIn.getId())).get(0);
         /*修改在店户籍*/
         /*将消费和押金设置为null*/
         checkIn.setConsume(null);
         checkIn.setDeposit(null);
         checkInService.updateSelective(checkIn);
         /*如果是可编辑房价的话，还要修改房价协议*/
-        if(otherParamService.getValueByName("可编辑房价").equals("y") && Objects.equals(checkIn1.getFinalRoomPrice(), checkIn.getFinalRoomPrice())) {
+        if (otherParamService.getValueByName("可编辑房价").equals("y") && Objects.equals(checkIn1.getFinalRoomPrice(), checkIn.getFinalRoomPrice())) {
             Protocol protocol = protocolService.getByNameTemp(checkIn.getProtocol());
-            if(protocol!=null) {
+            if (protocol != null) {
                 protocol.setRoomPrice(checkIn.getFinalRoomPrice());
                 protocolService.update(protocol);
             }
@@ -82,23 +96,37 @@ public class CheckInController {
      * 客账余额
      */
     @RequestMapping(value = "checkInRemainReport")
-    public List<JSONObject> checkInRemainReport()throws Exception{
-        List<CheckIn> checkInList=checkInService.get();
-        List<JSONObject> jsonObjectList=new ArrayList<>();
-        Map<String,JSONObject> roomIdCheckInMap=new HashMap<>();
-        for (CheckIn checkIn : checkInList) {
-            JSONObject jsonObject=new JSONObject();
-            jsonObject.put("roomId",checkIn.getRoomId());
-            jsonObject.put("consume",checkIn.getNotNullConsume());
-            jsonObject.put("deposit",checkIn.getDeposit());
-            jsonObjectList.add(jsonObject);
-            roomIdCheckInMap.put(checkIn.getRoomId(),jsonObject);
+    public List<JSONObject> checkInRemainReport() throws Exception {
+        List<CheckIn> checkInList = checkInService.get();
+        List<JSONObject> jsonObjectList = new ArrayList<>();
+        Map<String, JSONObject> roomIdCheckInMap = new HashMap<>();
+        HashMap<String, Boolean> currencyRealMap = new HashMap<>();//全部的币种和押金map
+        List<Currency> currencyList = currencyService.get();
+        for (Currency currency : currencyList) {
+            currencyRealMap.put(currency.getCurrency(), currency.getNotNullCheckRemain());
         }
-        List<Debt> debtList=debtService.getListGroupByRoomIdPointOfSale();
+        for (CheckIn checkIn : checkInList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("roomId", checkIn.getRoomId());
+            jsonObject.put("consume", checkIn.getNotNullConsume());
+            jsonObject.put("deposit", checkIn.getDeposit());
+            /*获取所有押金*/
+            Double realDeposit = 0.0;
+            List<Debt> debtList = debtService.getListByRoomId(checkIn.getRoomId());
+            for (Debt debt : debtList) {
+                if (debt.getNotNullDeposit() != 0.0 && currencyRealMap.getOrDefault(debt.getCurrency(), false)) {
+                    realDeposit += debt.getNotNullDeposit();
+                }
+            }
+            jsonObject.put("partInDeposit", realDeposit);
+            jsonObjectList.add(jsonObject);
+            roomIdCheckInMap.put(checkIn.getRoomId(), jsonObject);
+        }
+        List<Debt> debtList = debtService.getListGroupByRoomIdPointOfSale();
         for (Debt debt : debtList) {
-            JSONObject row=roomIdCheckInMap.get(debt.getRoomId());
-            if(row!=null){
-                row.put(debt.getPointOfSale(),debt.getConsume());
+            JSONObject row = roomIdCheckInMap.get(debt.getRoomId());
+            if (row != null) {
+                row.put(debt.getPointOfSale(), debt.getConsume());
             }
         }
         return jsonObjectList;
