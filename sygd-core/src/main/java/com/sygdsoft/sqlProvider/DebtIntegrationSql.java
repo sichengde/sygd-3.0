@@ -16,7 +16,7 @@ public class DebtIntegrationSql {
         if(userId!=null){
             basic+=" and user_id = #{userId}";
         }
-        if(userId!=null){
+        if(currency!=null){
             basic+=" and currency=#{currency}";
         }
         return basic;
