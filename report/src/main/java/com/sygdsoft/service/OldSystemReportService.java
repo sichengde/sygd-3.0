@@ -164,6 +164,7 @@ public class OldSystemReportService {
          * param9 结挂账款(当日结挂帐款)
          * param10 消费纯变化(本日新增-结挂帐款)
          * param11 消费余额
+         * param12 报表时间
          * */
         String param1 = szMath.formatTwoDecimal(checkInSnapshotService.getSum("deposit", beginTime1));
         String param2 = szMath.formatTwoDecimal(debtIntegrationService.getSum("deposit", beginTime1, endTime1));
@@ -176,7 +177,8 @@ public class OldSystemReportService {
         String param10 = szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param8) - szMath.formatTwoDecimalReturnDouble(param9));
         String param11 = fieldTemplateTotal.getField11();
         String param7 = szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param11) - szMath.formatTwoDecimalReturnDouble(param10));
-        reportStoreService.create("全店收入表",timeService.dateToStringShort(debtDate),new String[]{param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11},fieldTemplateList);
+        String param12=timeService.dateToStringShort(debtDate);
+        reportStoreService.create("全店收入表",timeService.dateToStringShort(debtDate),new String[]{param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11,param12},fieldTemplateList);
 
     }
 }
