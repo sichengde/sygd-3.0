@@ -60,9 +60,9 @@ public class OldSystemReportService {
         fieldTemplateRoomTotal.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null, "接待")));
         fieldTemplateRoomTotal.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null, "接待")));
         fieldTemplateRoomTotal.setField8(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime3, endTime3, null, "接待")));
-        fieldTemplateRoomTotal.setField9(fieldTemplateRoomTotal.getField2());//因为当日发生额是算的di表，所以必须要排除转账数据,但未结没必要排除，一个账转100次房费未结还是只有一条
-        fieldTemplateRoomTotal.setField10(szMath.formatTwoDecimal(debtService.getConsumeByPointOfSale(beginTime1, endTime1, null, false) + debtHistoryService.getConsumeNotCompanyPaid(beginTime1, endTime1)));
+        fieldTemplateRoomTotal.setField9(fieldTemplateRoomTotal.getField2());
         /*挂账未结=debt里的和companyDebt里的正常账务和杂单,*/
+        fieldTemplateRoomTotal.setField10(szMath.formatTwoDecimal(debtService.getConsumeByPointOfSale(beginTime1, endTime1, null, false) + debtHistoryService.getConsumeNotCompanyPaid(beginTime1, endTime1)));//因为当日发生额是算的di表，所以必须要排除转账数据,但未结没必要排除，一个账转100次房费未结还是只有一条
         fieldTemplateRoomTotal.setField11(szMath.formatTwoDecimal(debtService.getConsumeByPointOfSale(null, null, null, false) + debtHistoryService.getConsumeNotCompanyPaid(null, null) + companyDebtService.getSumOtherConsume()));
         fieldTemplateList.add(fieldTemplateRoomTotal);
         /*------------------------------------------再计算各自的明细------------------------------------------*/
