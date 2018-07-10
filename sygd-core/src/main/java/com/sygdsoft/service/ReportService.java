@@ -184,6 +184,10 @@ public class ReportService {
                 ps = ps1;
             }
         }
+        //没找到就不打印
+        if(ps==null){
+            return;
+        }
         JRAbstractExporter je = new JRPrintServiceExporter();
         je.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
         je.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, ps);
