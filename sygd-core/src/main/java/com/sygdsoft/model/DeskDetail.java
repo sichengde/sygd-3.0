@@ -43,7 +43,7 @@ public class DeskDetail extends BaseEntity {
     @Transient
     private Boolean changeUnit;//改变单位名
     @Transient
-    private String changeAdd;//改变对比，传菜打印用
+    private String changeAdd;//菜品改变对比，传菜打印用
 
 
     public DeskDetail() {

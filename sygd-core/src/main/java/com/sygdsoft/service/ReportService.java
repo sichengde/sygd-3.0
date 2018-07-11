@@ -91,6 +91,7 @@ public class ReportService {
         if(deskDetail.getChangeAdd()!=null){
             remark.append(deskDetail.getChangeAdd());
         }
+        param.put("parameter4", remark);
         param.put("parameter5", deskDetail.getCategory());
         param.put("parameter6", deskIn.getRemark());
         param.put("parameter7", deskDetail.getNotNullPrice());
