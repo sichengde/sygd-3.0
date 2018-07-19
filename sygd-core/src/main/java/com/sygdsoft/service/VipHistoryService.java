@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @SzMapper(id = "vipHistory")
-public class VipHistoryService extends BaseService<VipHistory>{
+public class VipHistoryService extends VipBaserService<VipHistory>{
 }
