@@ -40,17 +40,14 @@ public class DynamicDataSourceAspect {
     private void pointcut() {
     }
 
+    @Before("@annotation(ds)")
+    public void changeDataSource(JoinPoint point, HotelGroup ds) throws Throwable {
+        if(DynamicDataSourceContextHolder.containsDataSource("vip")) {
+            DynamicDataSourceContextHolder.setDataSourceType("vip");
+        }
+    }
 
-
-     @Before("@annotation(ds)")
-     public void changeDataSource(JoinPoint point, HotelGroup ds) throws Throwable {
-
-         if (DynamicDataSourceContextHolder.containsDataSource("vip")){
-             DynamicDataSourceContextHolder.setDataSourceType("vip");
-         }
-     }
-
-     @After("@annotation(ds)")
+    @After("@annotation(ds)")
     public void restoreDataSource(JoinPoint point, HotelGroup ds) throws Exception {
         if (DynamicDataSourceContextHolder.containsDataSource("vip")) {
             DynamicDataSourceContextHolder.clearDataSourceType();
@@ -58,27 +55,28 @@ public class DynamicDataSourceAspect {
     }
 
     /*@Before("pointcut()")
-     public void changeDataSource(JoinPoint point) throws Throwable {
-         String dsId = userService.getCurrentHotel();
-         if (!DynamicDataSourceContextHolder.containsDataSource(dsId)) {
-             //logger.error("数据源[{}]不存在，使用默认数据源 > {}", dsId, point.getSignature());
-         } else {
-             //logger.debug("Use DataSource : {} > {}", dsId, point.getSignature());
-             DynamicDataSourceContextHolder.setDataSourceType(dsId);
-         }
-     }*/
+    public void changeDataSource(JoinPoint point) throws Throwable {
+        String dsId = userService.getCurrentHotel();
+        if (!DynamicDataSourceContextHolder.containsDataSource(dsId)) {
+            //logger.error("数据源[{}]不存在，使用默认数据源 > {}", dsId, point.getSignature());
+        } else {
+            //logger.debug("Use DataSource : {} > {}", dsId, point.getSignature());
+            DynamicDataSourceContextHolder.setDataSourceType(dsId);
+        }
+    }*/
 
-     /*@After("pointcut()")
-     public void restoreDataSource(JoinPoint point) throws Exception{
-         //String dsId = userService.getCurrentHotel();
-         //logger.debug("Revert DataSource : {} > {}", dsId, point.getSignature());
-         DynamicDataSourceContextHolder.clearDataSourceType();}*/
+    /*@After("pointcut()")
+    public void restoreDataSource(JoinPoint point) throws Exception {
+        //String dsId = userService.getCurrentHotel();
+        //logger.debug("Revert DataSource : {} > {}", dsId, point.getSignature());
+        DynamicDataSourceContextHolder.clearDataSourceType();
+    }*/
 
     @AfterThrowing(pointcut = "pointcut()", throwing = "e")
-    public void restoreDataSource(JoinPoint point,Exception e) throws Exception {
+    public void restoreDataSource(JoinPoint point, Exception e) throws Exception {
         Exception exception;
-
-       /*尝试输出mybatis异常*/
+        System.out.println("current datasource :" + DynamicDataSourceContextHolder.getDataSourceType());
+        /*尝试输出mybatis异常*/
         try {
             String message = ((InvocationTargetException) e).getTargetException().getMessage();
             if (((InvocationTargetException) e).getTargetException().getClass() == DuplicateKeyException.class) {
