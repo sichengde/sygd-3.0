@@ -206,6 +206,7 @@ public class DeskController {
             payPointOfSale.setDoTime(timeService.getNow());
             payPointOfSale.setPointOfSale("餐饮");
             payPointOfSale.setMoney(deskPay.getPayMoney());
+            payPointOfSale.setDeskPayId(deskPay.getId());
             payPointOfSaleService.add(payPointOfSale);
         }
         /*餐桌信息转移到历史*/

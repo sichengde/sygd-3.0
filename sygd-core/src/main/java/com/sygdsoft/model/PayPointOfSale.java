@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class PayPointOfSale extends BaseEntity {
     private Integer debtPayId;
+    private Integer deskPayId;
     private Integer companyPayId;
     private String pointOfSale;
     private String currency;
@@ -67,5 +68,13 @@ public class PayPointOfSale extends BaseEntity {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Integer getDeskPayId() {
+        return deskPayId;
+    }
+
+    public void setDeskPayId(Integer deskPayId) {
+        this.deskPayId = deskPayId;
     }
 }
