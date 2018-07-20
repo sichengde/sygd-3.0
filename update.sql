@@ -646,3 +646,7 @@ CREATE INDEX report_store_name_index ON report_store (name);
 CREATE INDEX report_store_identify_index ON report_store (identify);
 ALTER TABLE currency ADD check_remain BOOLEAN NULL;
 ALTER TABLE check_in_snapshot ADD part_in_deposit DOUBLE NULL;
+#2018-07-20 ppos表增加餐饮结算列
+ALTER TABLE pay_point_of_sale ADD desk_pay_id INT NULL;
+ALTER TABLE pay_point_of_sale
+  MODIFY COLUMN desk_pay_id INT AFTER company_pay_id;
