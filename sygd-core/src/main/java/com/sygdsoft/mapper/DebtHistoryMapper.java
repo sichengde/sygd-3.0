@@ -127,7 +127,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     /**
      * 查找除了加收房租和小时房租之外的账务，根据结账序列号，主要用于叫回账单
      */
-    @Select("SELECT * FROM debt_history WHERE category NOT IN ('加收房租','小时房租') and pay_serial=#{paySerial} ifnull(not_part_in,false)=false")
+    @Select("SELECT * FROM debt_history WHERE category NOT IN ('加收房租','小时房租') and pay_serial=#{paySerial} and ifnull(not_part_in,false)=false")
     @Results(value = {
             @Result(property = "doTime", column = "do_time"),
             @Result(property = "pointOfSale", column = "point_of_sale"),
