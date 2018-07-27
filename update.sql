@@ -650,3 +650,7 @@ ALTER TABLE check_in_snapshot ADD part_in_deposit DOUBLE NULL;
 ALTER TABLE pay_point_of_sale ADD desk_pay_id INT NULL;
 ALTER TABLE pay_point_of_sale
   MODIFY COLUMN desk_pay_id INT AFTER company_pay_id;
+#2018-07-25 增加操作员表非空判断
+ALTER TABLE user MODIFY user_id VARCHAR(10) NOT NULL;
+ALTER TABLE user MODIFY permission_array VARCHAR(500) NOT NULL;
+ALTER TABLE user MODIFY module_array VARCHAR(100) NOT NULL;
