@@ -29,7 +29,7 @@ public class VipDetailService extends VipBaserService<VipDetail>{
      * 增加一条充值记录
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
         Vip vip=vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
@@ -49,7 +49,7 @@ public class VipDetailService extends VipBaserService<VipDetail>{
      * 增加一条退款记录
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void addRefundDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
         Vip vip=vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
@@ -69,7 +69,7 @@ public class VipDetailService extends VipBaserService<VipDetail>{
      * 根据结账序列号删除
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void deleteBySerial(String paySerial) throws Exception {
         VipDetail vipDetail=new VipDetail();
         vipDetail.setPaySerial(paySerial);
@@ -80,7 +80,7 @@ public class VipDetailService extends VipBaserService<VipDetail>{
      * 根据卡号获取数组
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public List<VipDetail> getByVipNumber(String vipNumber){
         VipDetail vipDetailQuery=new VipDetail();
         vipDetailQuery.setVipNumber(vipNumber);

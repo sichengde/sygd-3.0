@@ -23,7 +23,7 @@ public class VipIntegrationService extends VipBaserService<VipIntegration> {
      * 获取该时间段内总充值钱数
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public Double getPay(Date beginTime, Date endTime, String userId, String currency, String pointOfSale) {
         return vipIntegrationMapper.getPay(userId, currency, pointOfSale, beginTime, endTime);
     }
@@ -32,7 +32,7 @@ public class VipIntegrationService extends VipBaserService<VipIntegration> {
      * 获取会员抵用金额
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public Double getDeserve(Date beginTime, Date endTime, String userId, String currency, String pointOfSale) {
         return vipIntegrationMapper.getDeserve(beginTime, endTime, userId, pointOfSale, currency);
     }
