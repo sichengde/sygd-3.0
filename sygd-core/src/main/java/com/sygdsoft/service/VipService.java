@@ -41,7 +41,7 @@ public class VipService extends VipBaserService<Vip> {
      * 注销(被弃用)
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void cancel(String vipNumber) {
         vipMapper.cancel(vipNumber);
     }
@@ -57,7 +57,7 @@ public class VipService extends VipBaserService<Vip> {
      * 通过卡号获取对象
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public Vip getByVipNumber(String vipNumber) {
         Vip vipQuery = new Vip();
         vipQuery.setVipNumber(vipNumber);
@@ -68,7 +68,7 @@ public class VipService extends VipBaserService<Vip> {
      * 更新会员余额
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void updateVipRemain(String vipNumber, Double consume) {
         vipMapper.updateVipRemain(vipNumber, consume);
     }
@@ -77,7 +77,7 @@ public class VipService extends VipBaserService<Vip> {
      * 更新会员积分
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void updateVipScore(String vipNumber, Double score) {
         vipMapper.updateVipScore(vipNumber, score);
     }
@@ -86,7 +86,7 @@ public class VipService extends VipBaserService<Vip> {
      * 开房时冻结一部分押金，押金为负则是解冻
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public void depositByVip(String vipNumber, Double deposit) {
         vipMapper.depositByVip(vipNumber, deposit);
     }
@@ -95,7 +95,7 @@ public class VipService extends VipBaserService<Vip> {
      * 结账时使用用会员币种（离店，商品零售）
      */
     @HotelGroup
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+
     public String vipPay(String vipNumber, String payCategory, Double money, String description, String selfAccount, String groupAccount,String paySerial,String pointOfSale) throws Exception {
         Vip vip=getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();

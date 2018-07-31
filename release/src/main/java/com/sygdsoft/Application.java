@@ -16,7 +16,7 @@ import java.net.ServerSocket;
  */
 @SpringBootApplication
 @EnableScheduling
-@Import({DynamicDataSourceRegister.class})
+//@Import({DynamicDataSourceRegister.class})
 public class Application extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {
