@@ -11,6 +11,7 @@ public class Protocol extends BaseEntity {
     private Double roomPrice;//基本房价（日租的房间价格，会议的床位价，小时房基础价）
     private String base;//基本时长
     private String step;//超时时长
+    private String maxLimit;//最大市场
     private Double stepPrice;//超时房费
     private Double maxPrice;//最高房费
     private String breakfast;//早餐
@@ -107,5 +108,13 @@ public class Protocol extends BaseEntity {
 
     public void setTemp(Boolean temp) {
         this.temp = temp;
+    }
+
+    public String getMaxLimit() {
+        return maxLimit;
+    }
+
+    public void setMaxLimit(String maxLimit) {
+        this.maxLimit = maxLimit;
     }
 }

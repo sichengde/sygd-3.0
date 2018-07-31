@@ -654,3 +654,7 @@ ALTER TABLE pay_point_of_sale
 ALTER TABLE user MODIFY user_id VARCHAR(10) NOT NULL;
 ALTER TABLE user MODIFY permission_array VARCHAR(500) NOT NULL;
 ALTER TABLE user MODIFY module_array VARCHAR(100) NOT NULL;
+#2018-07-25 增加小时房超时后直接取最大房租参数
+ALTER TABLE protocol ADD max_limit VARCHAR(20) NULL;
+ALTER TABLE protocol
+  MODIFY COLUMN max_limit VARCHAR(20) AFTER max_price;
