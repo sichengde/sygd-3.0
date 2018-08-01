@@ -658,7 +658,7 @@ ALTER TABLE user MODIFY module_array VARCHAR(100) NOT NULL;
 ALTER TABLE protocol ADD max_limit VARCHAR(20) NULL;
 ALTER TABLE protocol
   MODIFY COLUMN max_limit VARCHAR(20) AFTER max_price;
-#2018-08-01 增加异常保存表
+#2018-08-01 增加异常保存表,增加协议特定加收房租
 CREATE TABLE exception_record
 (
   id        INT AUTO_INCREMENT
@@ -669,3 +669,4 @@ CREATE TABLE exception_record
   param     TEXT         NULL
 )
   ENGINE = InnoDB;
+ALTER TABLE room_price_add ADD protocol_list VARCHAR(100) NULL;
