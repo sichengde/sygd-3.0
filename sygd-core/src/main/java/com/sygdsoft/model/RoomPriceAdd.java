@@ -9,6 +9,7 @@ public class RoomPriceAdd extends BaseEntity {
     private String tiLimit;//时限
     private String roomAddByMultiple;//房租折扣
     private String roomAddStatic;//房租固定
+    private String protocolList;//特定的协议
     private Boolean vip;//会员类别
 
     public RoomPriceAdd() {
@@ -60,5 +61,13 @@ public class RoomPriceAdd extends BaseEntity {
 
     public void setVip(Boolean vip) {
         this.vip = vip;
+    }
+
+    public String getProtocolList() {
+        return protocolList;
+    }
+
+    public void setProtocolList(String protocolList) {
+        this.protocolList = protocolList;
     }
 }
