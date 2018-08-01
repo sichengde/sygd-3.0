@@ -658,3 +658,14 @@ ALTER TABLE user MODIFY module_array VARCHAR(100) NOT NULL;
 ALTER TABLE protocol ADD max_limit VARCHAR(20) NULL;
 ALTER TABLE protocol
   MODIFY COLUMN max_limit VARCHAR(20) AFTER max_price;
+#2018-08-01 增加异常保存表
+CREATE TABLE exception_record
+(
+  id        INT AUTO_INCREMENT
+    PRIMARY KEY,
+  hotel_id  VARCHAR(100) NULL,
+  exception TEXT         NULL,
+  method    VARCHAR(200) NULL,
+  param     TEXT         NULL
+)
+  ENGINE = InnoDB;
