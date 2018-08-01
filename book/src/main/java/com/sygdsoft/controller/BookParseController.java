@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Administrator on 2017/7/24.
@@ -55,27 +54,30 @@ public class BookParseController {
             beginTime = timeService.addDay(beginTime, 1);
         }
         result.put("data", jsonObjectList);
-        String remark= "预离房数:"+leave+" , 可用房数:"+available+" , 在店房间数量:"+ live;
-        if(reportJson.getBeginTime().getTime() == reportJson.getEndTime().getTime() && reportJson.getBeginTime().getTime()==timeService.addDay(timeService.getNowShort(),1).getTime()){
-            Query query=new Query("state=\'维修房\'");
-            Integer repairNum=roomService.get(query).size();
+        String remark = "预离房数:" + leave + " , 可用房数:" + available + " , 在店房间数量:" + live;
+        if (reportJson.getBeginTime().getTime() == reportJson.getEndTime().getTime() && reportJson.getBeginTime().getTime() == timeService.addDay(timeService.getNowShort(), 1).getTime()) {
+            Query query = new Query("state=\'维修房\'");
+            Integer repairNum = roomService.get(query).size();
             query.setCondition("state=\'自用房\'");
-            Integer selfNum=roomService.get(query).size();
-            remark+=" , 维修房数:"+repairNum+" , 自用房数:"+selfNum;
+            Integer selfNum = roomService.get(query).size();
+            remark += " , 维修房数:" + repairNum + " , 自用房数:" + selfNum;
         }
-        result.put("remark",remark);
+        result.put("remark", remark);
         return result;
     }
 
     /**
      * 微信订房用
-     * @param beginTime
-     * @param endTime
+     *
      * @return
      * @throws Exception
      */
     @RequestMapping("getRoomCategoryRemain")
-    public List<RoomCategory> getRoomCategoryRemain(Date beginTime, Date endTime) throws Exception {
+    public List<RoomCategory> getRoomCategoryRemain(@RequestBody ReportJson reportJson) throws Exception {
+        return getRoomCategoryRemain(reportJson.getBeginTime(), reportJson.getEndTime());
+    }
+
+    private List<RoomCategory> getRoomCategoryRemain(Date beginTime, Date endTime) throws Exception {
         /*先获取所有房间种类*/
         List<RoomCategory> roomCategoryList = roomCategoryService.get(null);
         /*每个房间种类的可用房*/
