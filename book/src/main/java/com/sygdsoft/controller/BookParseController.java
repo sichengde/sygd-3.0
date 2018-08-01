@@ -67,7 +67,15 @@ public class BookParseController {
         return result;
     }
 
-    private List<RoomCategory> getRoomCategoryRemain(Date beginTime, Date endTime) throws Exception {
+    /**
+     * 微信订房用
+     * @param beginTime
+     * @param endTime
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("getRoomCategoryRemain")
+    public List<RoomCategory> getRoomCategoryRemain(Date beginTime, Date endTime) throws Exception {
         /*先获取所有房间种类*/
         List<RoomCategory> roomCategoryList = roomCategoryService.get(null);
         /*每个房间种类的可用房*/
