@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class UserLogService extends BaseService<UserLog> {
     /*-----------------------------餐饮-----------------------------*/
     public String deskDetailIn = "点菜";
     public String deskChange = "换台";
-    public String deskMerge= "并台";
+    public String deskMerge = "并台";
     public String deskOut = "结算";
     public String deskOutReverse = "结算叫回";
     public String deskBookUpdate = "订单修改";
@@ -104,8 +103,13 @@ public class UserLogService extends BaseService<UserLog> {
         userLog.setKeyWord(keyWord);
         if (userService.getCurrentUser() != null) {
             User user = userService.getByName(userService.getCurrentUser());
-            userLog.setUserId(user.getUserId());
-            userLog.setGroupBy(user.getGroupBy());
+            /*微信订房的user在库表里没有*/
+            if (user == null) {
+                userLog.setUserId(userService.getCurrentUser());
+            } else {
+                userLog.setUserId(user.getUserId());
+                userLog.setGroupBy(user.getGroupBy());
+            }
         }
         userLogMapper.insert(userLog);
         return userLog.getId();
@@ -160,7 +164,7 @@ public class UserLogService extends BaseService<UserLog> {
         }
         return message;
     }
-/*啊啊啊*/
+    /*啊啊啊*/
 
     /**
      * 根据主键删除
