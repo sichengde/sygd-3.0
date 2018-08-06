@@ -1,3 +1,6 @@
+#补充添加，放在最前边
+ALTER TABLE debt_history ADD area VARCHAR(100) NULL;
+ALTER TABLE debt ADD area VARCHAR(100) NULL;
 #2017-12-07 15:00:00
 CREATE UNIQUE INDEX room_shop_item_uindex ON room_shop (item);#限制房吧品种不可重复，报错的话需要手动删除
 ALTER TABLE debt ADD source_room VARCHAR(100) NULL;#增加一个原始房号列，记录换房前的房号
@@ -670,3 +673,14 @@ CREATE TABLE exception_record
 )
   ENGINE = InnoDB;
 ALTER TABLE room_price_add ADD protocol_list VARCHAR(100) NULL;
+#2018-08-06 增加当日来当日走加收规则
+CREATE TABLE today_leave_add
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  reach_time_begin VARCHAR(20),
+  reach_time_end VARCHAR(20),
+  leave_time_begin VARCHAR(20),
+  leave_time_end VARCHAR(20),
+  multiple DOUBLE,
+  static_money DOUBLE
+);
