@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 import static com.sygdsoft.util.NullJudgement.nullToZero;
@@ -92,6 +95,7 @@ public class GuestOutController {
     String checkOutSerial;
     GuestOut guestOutGlobal;
     List<Debt> debtList;
+    List<DebtHistory> debtHistoryList;
 
     /**
      * 结算分为团队结算和单人结算
@@ -411,11 +415,11 @@ public class GuestOutController {
         for (String s : roomList) {
             debtList.addAll(debtService.getListByRoomIdPure(s));
         }
-        newDebtHistory(debtList);
+        this.debtHistoryList = newDebtHistory(debtList);
         return debtList;
     }
 
-    private void newDebtHistory(List<Debt> debtList) throws Exception {
+    private List<DebtHistory> newDebtHistory(List<Debt> debtList) throws Exception {
         List<DebtHistory> debtHistoryList = new ArrayList<>();
         for (Debt debt : debtList) {
             if (debt.getPaySerial() == null) {
@@ -426,6 +430,7 @@ public class GuestOutController {
             debtHistoryList.add(debtHistory);
         }
         debtHistoryService.add(debtHistoryList);
+        return debtHistoryList;
     }
 
     /**
@@ -575,9 +580,18 @@ public class GuestOutController {
                     debtNeedInsert.setSelfAccount(checkIn.getSelfAccount());
                     debtNeedInsert.setGroupAccount(checkIn.getGroupAccount());
                     debtNeedInsert.setTotalConsume(checkIn.getNotNullConsume() + debtNeedInsert.getNotNullConsume());
-                    debtNeedInsert.setNotPartIn(true);
+                    /*押金在历史里设置为true*/
+                    if (debt.getDeposit() == null) {
+                        debtNeedInsert.setNotPartIn(true);
+                    }
                     debtService.add(debtNeedInsert);
                     debtService.updateGuestInMoney(checkIn.getRoomId(), debtNeedInsert.getConsume(), debtNeedInsert.getDeposit());
+                }
+                for (DebtHistory debtHistory : this.debtHistoryList) {
+                    if (debtHistory.getDeposit() != null) {
+                        debtHistory.setNotPartIn(true);
+                        debtHistoryService.update(debtHistory);
+                    }
                 }
             }
             /*通过币种判断结账类型*/
