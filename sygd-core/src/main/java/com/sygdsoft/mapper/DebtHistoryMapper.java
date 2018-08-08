@@ -19,9 +19,9 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     /*操作员，时间段，币种*/
     @Select("select round(ifnull(sum(a.deposit),0),2) deposit from " +
-            "(select sum(deposit) deposit from debt_history where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0 " +
+            "(select sum(deposit) deposit from debt_history where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0 and ifnull(not_part_in,false)=false" +
             "union all " +
-            "select sum(deposit) deposit from debt where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0) a ")
+            "select sum(deposit) deposit from debt where user_id = #{userId} and do_time > #{beginTime} and do_time< #{endTime} and currency=#{currency} and deposit>0 and ifnull(not_part_in,false)=false) a ")
     @ResultType(Double.class)
     Double getDepositByUserCurrencyDate(@Param("userId") String userId, @Param("currency") String currency, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
