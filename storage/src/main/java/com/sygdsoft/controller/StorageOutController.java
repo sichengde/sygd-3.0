@@ -89,7 +89,7 @@ public class StorageOutController {
         List<StorageOutDetail> storageOutDetailListNormal = new ArrayList<>();//正常出库
         List<StorageOutDetail> storageOutDetailListDirect = new ArrayList<>();//直拨出库
         /*先统计房吧，房吧默认属于接待营业部门所以只有一个仓库，所以不需要联表查询*/
-        PointOfSale pointOfSale = pointOfSaleService.getByFirst("接待");
+        PointOfSale pointOfSale = pointOfSaleService.getReception();
         String house = pointOfSale.getHouse();
         List<RoomShopDetail> roomShopDetailList = roomShopDetailService.getByStorageDone();
         for (RoomShopDetail roomShopDetail : roomShopDetailList) {

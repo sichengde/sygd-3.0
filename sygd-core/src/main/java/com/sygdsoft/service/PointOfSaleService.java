@@ -47,6 +47,15 @@ public class PointOfSaleService extends BaseService<PointOfSale>{
     }
 
     /**
+     * 获得接待对象
+     */
+    public PointOfSale getReception(){
+        PointOfSale pointOfSaleQuery=new PointOfSale();
+        pointOfSaleQuery.setModule("接待");
+        return pointOfSaleMapper.selectOne(pointOfSaleQuery);
+    }
+
+    /**
      * 获得餐饮模块的所有营业部门
      */
     public List<PointOfSale> getCKPointOfSaleList(){
