@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
 import static com.sygdsoft.util.NullJudgement.nullToZero;
@@ -899,6 +896,8 @@ public class GuestOutController {
         for (CurrencyPost currencyPost : currencyPostList) {//先把所有金额置为负
             currencyPost.setMoney(-currencyPost.getMoney());
         }
+        /*押金币种map*/
+        Map<String,Double> depositCurrencyMap=new HashMap<>();
         for (Debt debt : debtList) {//同时更新汇总信息
             FieldTemplate var = new FieldTemplate();
             var.setField1(timeService.dateToStringLong(debt.getDoTime()));
@@ -910,17 +909,27 @@ public class GuestOutController {
             var.setField7(debt.getUserId());
             var.setField8(debt.getSourceRoom());
             templateList.add(var);
-            if (debt.getNotNullDeposit() != 0 && !"已退".equals(debt.getRemark())) {//没有退的押金，准备考虑与结账币种的关系
-                boolean haveSame = false;
-                for (CurrencyPost currencyPost : currencyPostList) {
-                    if (currencyPost.getCurrency().equals(debt.getCurrency())) {//相同的币种结账方式
-                        currencyPost.setMoney(debt.getNotNullDeposit() + currencyPost.getMoney());
-                        haveSame = true;
-                    }
+            if (debt.getNotNullDeposit() != 0 ) {//没有退的押金，准备考虑与结账币种的关系
+                depositCurrencyMap.put(debt.getCurrency(),depositCurrencyMap.getOrDefault(debt.getCurrency(),0.0)+debt.getNotNullDeposit());
+            }
+        }
+        List<String> currencyToRmbList=currencyService.getToRMBList();
+        for (String currency : depositCurrencyMap.keySet()) {
+            boolean haveSame=false;
+            for (CurrencyPost currencyPost : currencyPostList) {
+                if(currencyPost.getCurrency().equals(currency)){
+                    haveSame=true;
+                    currencyPost.setMoney(depositCurrencyMap.get(currency)+currencyPost.getMoney());
                 }
-                if (!haveSame) {//如果结账币种中没有押金币种
-                    cancelMsg += "找回金额：" + debt.getNotNullDeposit() + "(" + debt.getCurrency() + ") ";
+            }
+            if (!haveSame) {
+                String currencyTemp;
+                if (currencyToRmbList.indexOf(currency) > -1) {
+                    currencyTemp = "人民币";
+                } else {
+                    currencyTemp = currency;
                 }
+                cancelMsg += "找回金额：" +szMath.formatTwoDecimal(depositCurrencyMap.get(currency)) + "(" + currencyTemp + ") ";
             }
         }
         for (CurrencyPost currencyPost : currencyPostList) {//看看还有没有剩下的补交信息

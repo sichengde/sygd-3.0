@@ -5,6 +5,8 @@ import com.sygdsoft.model.Currency;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by 舒展 on 2016-05-19.
  * 定义默认币种
@@ -25,5 +27,9 @@ public class CurrencyService extends BaseService<Currency> {
         Currency currencyQuery=new Currency();
         currencyQuery.setCurrency(name);
         return currencyMapper.selectOne(currencyQuery);
+    }
+
+    public List<String> getToRMBList(){
+        return currencyMapper.getToRMBList();
     }
 }
