@@ -294,7 +294,11 @@ public class NightService {
             Double realDeposit = 0.0;
             List<Debt> debtList = debtService.getListByRoomId(checkIn.getRoomId());
             for (Debt debt : debtList) {
-                if (debt.getNotNullDeposit() != 0.0 && currencyRealMap.getOrDefault(debt.getCurrency(), false)) {
+                Boolean currency= currencyRealMap.get(debt.getCurrency());
+                if(currency==null){
+                    currency=false;
+                }
+                if (debt.getNotNullDeposit() != 0.0 && currency) {
                     realDeposit += debt.getNotNullDeposit();
                 }
             }
