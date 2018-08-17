@@ -178,11 +178,7 @@ public class CheckOutDetailReport {
                         String item = roomShopService.getShopItem(debtHistory.getDescription());
                         pointOfSale = roomShopService.getCategoryByName(item);
                     }
-                    Double d=pointOfSaleConsumeMap.get(pointOfSale);
-                    if(d==null){
-                        d=0.0;
-                    }
-                    pointOfSaleConsumeMap.put(pointOfSale, d + szMath.formatTwoDecimalReturnDouble(debtHistory.getNotNullConsume()));
+                    pointOfSaleConsumeMap.put(pointOfSale, pointOfSaleConsumeMap.getOrDefault(pointOfSale, 0.0) + szMath.formatTwoDecimalReturnDouble(debtHistory.getNotNullConsume()));
                 }
             }
             fieldTemplate = new FieldTemplate();//最后一行是结账信息，俗称小计
