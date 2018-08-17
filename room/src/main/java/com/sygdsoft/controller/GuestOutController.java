@@ -910,7 +910,11 @@ public class GuestOutController {
             var.setField8(debt.getSourceRoom());
             templateList.add(var);
             if (debt.getNotNullDeposit() != 0 ) {//没有退的押金，准备考虑与结账币种的关系
-                depositCurrencyMap.put(debt.getCurrency(),depositCurrencyMap.getOrDefault(debt.getCurrency(),0.0)+debt.getNotNullDeposit());
+                Double d=depositCurrencyMap.get(debt.getCurrency());
+                if(d==null){
+                    d=0.0;
+                }
+                depositCurrencyMap.put(debt.getCurrency(),d+debt.getNotNullDeposit());
             }
         }
         List<String> currencyToRmbList=currencyService.getToRMBList();
