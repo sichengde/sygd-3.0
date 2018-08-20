@@ -108,7 +108,7 @@ public class GuestInController {
         List<CheckInGuest> checkInGuests=guestIn.getCheckInGuestList();
         for (CheckInGuest checkInGuest : checkInGuests) {
             CheckInHistory checkInHistory=checkInHistoryService.getByCardId(checkInGuest.getCardId());
-            if(!checkInHistory.getName().equals(checkInGuest.getName())){
+            if(checkInHistory!=null&&!checkInHistory.getName().equals(checkInGuest.getName())){
                 throw new Exception("身份证号:"+checkInGuest.getCardId()+"已存于另一位宾客<"+checkInHistory.getName()+">,与该宾客姓名<"+checkInGuest.getName()+">不符");
             }
         }
