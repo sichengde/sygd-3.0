@@ -70,6 +70,8 @@ public class GuestInController {
     BookRoomCategoryService bookRoomCategoryService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    CheckInHistoryService checkInHistoryService;
 
     /**
      * 散客开房操作步骤
@@ -78,7 +80,8 @@ public class GuestInController {
     @RequestMapping(value = "guestIn", method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
     public Integer guestIn(@RequestBody GuestIn guestIn) throws Exception {
-        /*获取传递进来的两个对象*/
+        /*客人校验*/
+        this.inputCheck(guestIn);
         /*初始化设置*/
         timeService.setNow();
         /*生成房价协议*/
@@ -96,6 +99,19 @@ public class GuestInController {
         /*创建操作员日志*/
         this.userLogProcess(guestIn);
         return this.reportProcess(guestIn);
+    }
+
+    /**
+     * 输入校验
+     */
+    private void inputCheck(GuestIn guestIn)throws Exception{
+        List<CheckInGuest> checkInGuests=guestIn.getCheckInGuestList();
+        for (CheckInGuest checkInGuest : checkInGuests) {
+            CheckInHistory checkInHistory=checkInHistoryService.getByCardId(checkInGuest.getCardId());
+            if(!checkInHistory.getName().equals(checkInGuest.getName())){
+                throw new Exception("身份证号:"+checkInGuest.getCardId()+"已存于另一位宾客<"+checkInHistory.getName()+">,与该宾客姓名<"+checkInGuest.getName()+">不符");
+            }
+        }
     }
 
     /**
