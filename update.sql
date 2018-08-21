@@ -684,3 +684,7 @@ CREATE TABLE today_leave_add
   multiple DOUBLE,
   static_money DOUBLE
 );
+#2018-08-21 增加餐饮销售单位，类似客房，用于统计营业员
+ALTER TABLE desk_in ADD company VARCHAR(100) NULL;
+ALTER TABLE desk_in_cancel_all ADD company VARCHAR(100) NULL;
+ALTER TABLE desk_in_history ADD company VARCHAR(100) NULL;

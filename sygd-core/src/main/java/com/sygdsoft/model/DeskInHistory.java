@@ -17,6 +17,7 @@ public class DeskInHistory extends BaseEntity {
     private String userId;
     private String pointOfSale;
     private String guestSource;
+    private String company;
     private Integer num;//就餐人数
     private Boolean disabled;//该账单作废，自助餐是被冲减，正常桌台是被叫回
     private Integer subDeskNum;
@@ -33,6 +34,7 @@ public class DeskInHistory extends BaseEntity {
         this.pointOfSale=deskIn.getPointOfSale();
         this.guestSource=deskIn.getGuestSource();
         this.subDeskNum=deskIn.getSubDeskNum();
+        this.company=deskIn.getCompany();
     }
 
     public Integer getNotNullNum(){
@@ -145,5 +147,13 @@ public class DeskInHistory extends BaseEntity {
 
     public void setSubDeskNum(Integer subDeskNum) {
         this.subDeskNum = subDeskNum;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }
