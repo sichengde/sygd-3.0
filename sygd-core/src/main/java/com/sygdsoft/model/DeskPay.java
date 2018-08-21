@@ -13,6 +13,7 @@ public class DeskPay extends BaseEntity{
     private String ckSerial;
     private String userId;
     private String pointOfSale;
+    private String company;
     private Boolean disabled;//是否可用状态，例如使用自助餐冲减之后，该值则为true，表示该条记录忽略
 
     public DeskPay() {
@@ -80,5 +81,13 @@ public class DeskPay extends BaseEntity{
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

@@ -186,8 +186,9 @@ public class DeskController {
         }
         /*生成结账信息*/
         StringBuilder changeDebt = new StringBuilder();//转账信息
+        DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         for (CurrencyPost currencyPost : currencyPostList) {
-            this.generateDeskPay(pointOfSale, currencyPost, deskPayList);
+            this.generateDeskPay(pointOfSale, currencyPost,deskIn, deskPayList);
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
@@ -210,7 +211,7 @@ public class DeskController {
             payPointOfSaleService.add(payPointOfSale);
         }
         /*餐桌信息转移到历史*/
-        DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
+        deskIn = deskService.getByDesk(desk, pointOfSale);
         deskIn.setConsume(consume);
         deskIn.setGuestSource(guestSource);
         DeskInHistory deskInHistory = new DeskInHistory(deskIn);
@@ -581,6 +582,9 @@ public class DeskController {
     }
 
     private void generateDeskPay(String pointOfSale, CurrencyPost currencyPost, List<DeskPay> deskPayList) throws Exception {
+        generateDeskPay(pointOfSale, currencyPost, null,deskPayList);
+    }
+    private void generateDeskPay(String pointOfSale, CurrencyPost currencyPost,DeskIn deskIn, List<DeskPay> deskPayList) throws Exception {
         DeskPay deskPay = new DeskPay();
         deskPay.setCkSerial(serialService.getCkSerial());
         deskPay.setDoneTime(timeService.getNow());
@@ -589,6 +593,9 @@ public class DeskController {
         deskPay.setCurrencyAdd(currencyPost.getCurrencyAdd());
         deskPay.setUserId(userService.getCurrentUser());
         deskPay.setPayMoney(currencyPost.getMoney());
+        if(deskIn!=null) {
+            deskPay.setCompany(deskIn.getCompany());
+        }
         deskPayList.add(deskPay);
     }
 }

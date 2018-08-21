@@ -148,6 +148,7 @@ public class DeskDetailController {
             }
             deskIn.setSubDeskNum(deskDetail.getSubDeskNum());
             deskIn.setConsume(consume);
+            deskIn.setCompany(deskDetail.getCompany());
             deskIn.setRemark(deskDetail.getGlobalRemark());
             deskIn.setPointOfSale(deskDetail.getPointOfSale());
             deskIn.setUserId(userService.getCurrentUser());
@@ -155,6 +156,7 @@ public class DeskDetailController {
             deskInService.add(deskIn);
         } else {
             deskIn.setConsume(consume);
+            deskIn.setCompany(deskDetail.getCompany());
             if(deskDetail.getPeople()!=null) {
                 deskIn.setNum(deskDetail.getPeople());
             }

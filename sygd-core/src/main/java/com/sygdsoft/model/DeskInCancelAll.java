@@ -22,6 +22,7 @@ public class DeskInCancelAll extends DeskIn {
         this.setRemark(deskIn.getRemark());
         this.setGuestSource(deskIn.getGuestSource());
         this.setSubDeskNum(deskIn.getSubDeskNum());
+        this.setCompany(deskIn.getCompany());
     }
 
     public Date getDoneTime() {
