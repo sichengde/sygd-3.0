@@ -688,3 +688,4 @@ CREATE TABLE today_leave_add
 ALTER TABLE desk_in ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_in_cancel_all ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_in_history ADD company VARCHAR(100) NULL;
+ALTER TABLE desk_pay ADD company VARCHAR(100) NULL;
