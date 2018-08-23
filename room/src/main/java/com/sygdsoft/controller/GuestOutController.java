@@ -182,143 +182,146 @@ public class GuestOutController {
     @Transactional(rollbackFor = Exception.class)
     public Integer guestOutMiddle(@RequestBody GuestOutMiddle guestOutMiddle) throws Exception {
         //int i=1/0;
-        Boolean real = guestOutMiddle.getNotNullReal();
-        Boolean cancelDeposit = guestOutMiddle.getNotNullCancelDeposit();
-        if (!real) {
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        }
-        timeService.setNow();//当前时间
-        serialService.setPaySerial();//生成结账序列号
-        List<Debt> debtList = guestOutMiddle.getDebtList();
-        List<String> roomIdList = guestOutMiddle.getRoomIdList();
-        String groupAccount = guestOutMiddle.getGroupAccount();
-        Double payMoney = guestOutMiddle.getPayMoney();
-        String remark = guestOutMiddle.getRemark();
-        CheckIn checkIn;
-        CheckInGroup checkInGroup = null;
-        if (groupAccount == null) {
-            checkIn = checkInService.getByRoomId(roomIdList.get(0));
-        } else {
-            checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
-            checkIn = checkInService.getByRoomId(checkInGroup.getLeaderRoom());
-        }
-        String remarkAdd = "";
-        if (debtList != null) {//根据明细来的中间结算
-            /*账务转移到历史账务*/
-            newDebtHistory(debtList);
-            debtService.delete(debtList);
-            remarkAdd += "指定账务";
-        } else {//指定钱数的中间结算
-            /*插入一条负的账务*/
-            Debt debt = new Debt();
-            debt.setDoTime(timeService.getNow());
-            debt.setPointOfSale(pointOfSaleService.FF);
-            debt.setConsume(-payMoney);
-            debt.setCurrency("挂账");
-            debt.setDescription("中间结算:" + remark);
-            debt.setGroupAccount(groupAccount);
-            debt.setUserId(userService.getCurrentUser());
-            debt.setCategory(debtService.payMiddle);
-            debt.setSelfAccount(checkIn.getSelfAccount());
-            debt.setRoomId(checkIn.getRoomId());
-            debt.setCompany(checkIn.getCompany());
-            debtService.add(debt);
-            DebtHistory debtHistory = new DebtHistory(debt);
-            debtHistory.setConsume(payMoney);
-            debtHistoryService.add(debtHistory);
-            remarkAdd += "不指定账务";
-        }
-        /*TODO:在这插入一条退预付*/
-        if (cancelDeposit) {
-            Debt cancelDebt = new Debt();
-            cancelDebt.setDoTime(timeService.getNow());
-            cancelDebt.setPointOfSale(pointOfSaleService.FF);
-            cancelDebt.setDeposit(-payMoney);
-            cancelDebt.setCurrency("人民币");
-            cancelDebt.setDescription("中间结算退预付");
-            cancelDebt.setGroupAccount(groupAccount);
-            cancelDebt.setUserId(userService.getCurrentUser());
-            cancelDebt.setCategory(debtService.cancelDeposit);
-            cancelDebt.setSelfAccount(checkIn.getSelfAccount());
-            cancelDebt.setRoomId(checkIn.getRoomId());
-            cancelDebt.setCompany(checkIn.getCompany());
-            debtService.addDebt(cancelDebt);
-        }
-        /*更新在店户籍余额，按明细结算的话，就更新对应房间的余额，否则直接更新领队房余额*/
-        if (debtList != null) {
-            for (String s : roomIdList) {
-                CheckIn checkIn1 = checkInService.getByRoomId(s);
-                Double totalConsume = 0.0;
-                for (Debt debt : debtList) {
-                    if (checkIn1.getSelfAccount().equals(debt.getSelfAccount())) {
-                        totalConsume += debt.getConsume();
+        synchronized (lock) {
+            Boolean real = guestOutMiddle.getNotNullReal();
+            Boolean cancelDeposit = guestOutMiddle.getNotNullCancelDeposit();
+            if (!real) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+            timeService.setNow();//当前时间
+            serialService.setPaySerial();//生成结账序列号
+            List<Debt> debtList = guestOutMiddle.getDebtList();
+            this.debtList=debtList;
+            List<String> roomIdList = guestOutMiddle.getRoomIdList();
+            String groupAccount = guestOutMiddle.getGroupAccount();
+            Double payMoney = guestOutMiddle.getPayMoney();
+            String remark = guestOutMiddle.getRemark();
+            CheckIn checkIn;
+            CheckInGroup checkInGroup = null;
+            if (groupAccount == null) {
+                checkIn = checkInService.getByRoomId(roomIdList.get(0));
+            } else {
+                checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
+                checkIn = checkInService.getByRoomId(checkInGroup.getLeaderRoom());
+            }
+            String remarkAdd = "";
+            if (debtList != null) {//根据明细来的中间结算
+                /*账务转移到历史账务*/
+                newDebtHistory(debtList);
+                debtService.delete(debtList);
+                remarkAdd += "指定账务";
+            } else {//指定钱数的中间结算
+                /*插入一条负的账务*/
+                Debt debt = new Debt();
+                debt.setDoTime(timeService.getNow());
+                debt.setPointOfSale(pointOfSaleService.FF);
+                debt.setConsume(-payMoney);
+                debt.setCurrency("挂账");
+                debt.setDescription("中间结算:" + remark);
+                debt.setGroupAccount(groupAccount);
+                debt.setUserId(userService.getCurrentUser());
+                debt.setCategory(debtService.payMiddle);
+                debt.setSelfAccount(checkIn.getSelfAccount());
+                debt.setRoomId(checkIn.getRoomId());
+                debt.setCompany(checkIn.getCompany());
+                debtService.add(debt);
+                DebtHistory debtHistory = new DebtHistory(debt);
+                debtHistory.setConsume(payMoney);
+                debtHistoryService.add(debtHistory);
+                remarkAdd += "不指定账务";
+            }
+            /*TODO:在这插入一条退预付*/
+            if (cancelDeposit) {
+                Debt cancelDebt = new Debt();
+                cancelDebt.setDoTime(timeService.getNow());
+                cancelDebt.setPointOfSale(pointOfSaleService.FF);
+                cancelDebt.setDeposit(-payMoney);
+                cancelDebt.setCurrency("人民币");
+                cancelDebt.setDescription("中间结算退预付");
+                cancelDebt.setGroupAccount(groupAccount);
+                cancelDebt.setUserId(userService.getCurrentUser());
+                cancelDebt.setCategory(debtService.cancelDeposit);
+                cancelDebt.setSelfAccount(checkIn.getSelfAccount());
+                cancelDebt.setRoomId(checkIn.getRoomId());
+                cancelDebt.setCompany(checkIn.getCompany());
+                debtService.addDebt(cancelDebt);
+            }
+            /*更新在店户籍余额，按明细结算的话，就更新对应房间的余额，否则直接更新领队房余额*/
+            if (debtList != null) {
+                for (String s : roomIdList) {
+                    CheckIn checkIn1 = checkInService.getByRoomId(s);
+                    Double totalConsume = 0.0;
+                    for (Debt debt : debtList) {
+                        if (checkIn1.getSelfAccount().equals(debt.getSelfAccount())) {
+                            totalConsume += debt.getConsume();
+                        }
                     }
+                    debtService.updateGuestInMoney(checkIn1.getRoomId(), -totalConsume, 0.0);
                 }
-                debtService.updateGuestInMoney(checkIn1.getRoomId(), -totalConsume, 0.0);
+            } else {
+                debtService.updateGuestInMoney(checkIn.getRoomId(), -payMoney, 0.0);
             }
-        } else {
-            debtService.updateGuestInMoney(checkIn.getRoomId(), -payMoney, 0.0);
-        }
-        /*生成结账信息*/
-        String changeDebt = this.debtPayProcess(guestOutMiddle.getCurrencyPayList(), roomIdList, groupAccount, "中间结算" + remarkAdd);
-        /*操作员记录*/
-        String userAction = "中间结算:" + roomService.roomListToString(roomIdList) + changeDebt;
-        userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOutMiddle, serialService.getPaySerial());
-        /*生成报表*/
-        String groupName = null;
-        String account;
-        String firstRoom;
-        String guestInVip;
-        if (checkInGroup != null) {
-            groupName = checkInGroup.getName();
-            account = checkInGroup.getGroupAccount();
-            firstRoom = checkInGroup.getLeaderRoom();
-            guestInVip = checkInGroup.getVipNumber();
-        } else {
-            account = checkIn.getSelfAccount();
-            firstRoom = checkIn.getRoomId();
-            guestInVip = checkIn.getVipNumber();
-        }
-        String[] parameters = new String[]{
-                otherParamService.getValueByName("酒店名称"),
-                checkInGuestService.getListByRoomId(guestOutMiddle.getRoomIdList()),
-                firstRoom,
-                serialService.getPaySerial(),
-                timeService.dateToStringLong(checkIn.getReachTime()),
-                timeService.getNowLong(),
-                checkIn.getCompany(),
-                groupName,
-                userService.getCurrentUser(),
-                timeService.getNowLong(),
-                ifNotNullGetString(payMoney),
-                changeDebt,
-                null,
-                account,
-                util.listToString(roomIdList),
-                ifNotNullGetString(checkIn.getFinalRoomPrice()),
-                null,
-                null,
-                null,
-                null,
-                guestInVip
-        };
-        List<FieldTemplate> templateList;
-        if (debtList != null) {
-            templateList = new ArrayList<>();
-            for (Debt debt : debtList) {
-                FieldTemplate var = new FieldTemplate();
-                var.setField1(timeService.dateToStringLong(debt.getDoTime()));
-                var.setField2(debt.getRoomId());
-                var.setField3(debt.getDescription());
-                var.setField4(String.valueOf(debt.getNotNullConsume()));
-                var.setField6(String.valueOf(debt.getCurrency()));
-                var.setField7(debt.getUserId());
-                templateList.add(var);
+            /*生成结账信息*/
+            String changeDebt = this.debtPayProcess(guestOutMiddle.getCurrencyPayList(), roomIdList, groupAccount, "中间结算" + remarkAdd);
+            /*操作员记录*/
+            String userAction = "中间结算:" + roomService.roomListToString(roomIdList) + changeDebt;
+            userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOutMiddle, serialService.getPaySerial());
+            /*生成报表*/
+            String groupName = null;
+            String account;
+            String firstRoom;
+            String guestInVip;
+            if (checkInGroup != null) {
+                groupName = checkInGroup.getName();
+                account = checkInGroup.getGroupAccount();
+                firstRoom = checkInGroup.getLeaderRoom();
+                guestInVip = checkInGroup.getVipNumber();
+            } else {
+                account = checkIn.getSelfAccount();
+                firstRoom = checkIn.getRoomId();
+                guestInVip = checkIn.getVipNumber();
             }
-        } else {
-            templateList = null;
+            String[] parameters = new String[]{
+                    otherParamService.getValueByName("酒店名称"),
+                    checkInGuestService.getListByRoomId(guestOutMiddle.getRoomIdList()),
+                    firstRoom,
+                    serialService.getPaySerial(),
+                    timeService.dateToStringLong(checkIn.getReachTime()),
+                    timeService.getNowLong(),
+                    checkIn.getCompany(),
+                    groupName,
+                    userService.getCurrentUser(),
+                    timeService.getNowLong(),
+                    ifNotNullGetString(payMoney),
+                    changeDebt,
+                    null,
+                    account,
+                    util.listToString(roomIdList),
+                    ifNotNullGetString(checkIn.getFinalRoomPrice()),
+                    null,
+                    null,
+                    null,
+                    null,
+                    guestInVip
+            };
+            List<FieldTemplate> templateList;
+            if (debtList != null) {
+                templateList = new ArrayList<>();
+                for (Debt debt : debtList) {
+                    FieldTemplate var = new FieldTemplate();
+                    var.setField1(timeService.dateToStringLong(debt.getDoTime()));
+                    var.setField2(debt.getRoomId());
+                    var.setField3(debt.getDescription());
+                    var.setField4(String.valueOf(debt.getNotNullConsume()));
+                    var.setField6(String.valueOf(debt.getCurrency()));
+                    var.setField7(debt.getUserId());
+                    templateList.add(var);
+                }
+            } else {
+                templateList = null;
+            }
+            return reportService.generateReport(templateList, parameters, "guestOutMiddle", "pdf");
         }
-        return reportService.generateReport(templateList, parameters, "guestOutMiddle", "pdf");
     }
 
     /**
