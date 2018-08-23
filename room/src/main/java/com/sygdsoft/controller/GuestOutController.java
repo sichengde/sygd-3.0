@@ -307,7 +307,7 @@ public class GuestOutController {
             templateList = new ArrayList<>();
             for (Debt debt : debtList) {
                 FieldTemplate var = new FieldTemplate();
-                var.setField1(timeService.getNowLong());
+                var.setField1(timeService.dateToStringLong(debt.getDoTime()));
                 var.setField2(debt.getRoomId());
                 var.setField3(debt.getDescription());
                 var.setField4(String.valueOf(debt.getNotNullConsume()));
