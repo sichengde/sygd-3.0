@@ -105,11 +105,13 @@ public class GuestInController {
      * 输入校验
      */
     private void inputCheck(GuestIn guestIn)throws Exception{
-        List<CheckInGuest> checkInGuests=guestIn.getCheckInGuestList();
-        for (CheckInGuest checkInGuest : checkInGuests) {
-            CheckInHistory checkInHistory=checkInHistoryService.getByCardId(checkInGuest.getCardId());
-            if(checkInHistory!=null&&!checkInHistory.getName().equals(checkInGuest.getName())){
-                throw new Exception("身份证号:"+checkInGuest.getCardId()+"已存于另一位宾客<"+checkInHistory.getName()+">,与该宾客姓名<"+checkInGuest.getName()+">不符");
+        if("y".equals(otherParamService.getValueByName("严格身份证"))) {
+            List<CheckInGuest> checkInGuests = guestIn.getCheckInGuestList();
+            for (CheckInGuest checkInGuest : checkInGuests) {
+                CheckInHistory checkInHistory = checkInHistoryService.getByCardId(checkInGuest.getCardId());
+                if (checkInHistory != null && !checkInHistory.getName().equals(checkInGuest.getName())) {
+                    throw new Exception("身份证号:" + checkInGuest.getCardId() + "已存于另一位宾客<" + checkInHistory.getName() + ">,与该宾客姓名<" + checkInGuest.getName() + ">不符");
+                }
             }
         }
     }
