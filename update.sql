@@ -689,3 +689,5 @@ ALTER TABLE desk_in ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_in_cancel_all ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_in_history ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_pay ADD company VARCHAR(100) NULL;
+#2018-08-24 增加一个索引优化
+CREATE INDEX check_in_history_last_time_index ON check_in_history (last_time);

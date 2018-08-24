@@ -40,7 +40,9 @@ public class CheckInHistoryController {
             List<GuestMapCheckIn> guestMapCheckInList = guestMapCheckInService.getByCardId(checkInHistory.getCardId());
             List<CheckInIntegration> checkInIntegrationList = new ArrayList<>();
             for (GuestMapCheckIn guestMapCheckIn : guestMapCheckInList) {
-                checkInIntegrationList.add(checkInIntegrationService.getBySelfAccount(guestMapCheckIn.getSelfAccount()));
+                if(guestMapCheckIn.getSelfAccount()!=null) {
+                    checkInIntegrationList.add(checkInIntegrationService.getBySelfAccount(guestMapCheckIn.getSelfAccount()));
+                }
             }
             checkInHistory.setCheckInIntegrationList(checkInIntegrationList);
         }
