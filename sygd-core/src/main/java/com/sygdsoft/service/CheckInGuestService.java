@@ -56,11 +56,15 @@ public class CheckInGuestService extends BaseService<CheckInGuest>{
      * 获得在店宾客字符串
      */
     public String listToStringName(List<CheckInGuest> checkInGuestList){
-        String out="";
-        for (CheckInGuest checkInGuest : checkInGuestList) {
-            out+=checkInGuest.getName()+",";
+        if(checkInGuestList.size()==0){
+            return "";
+        }else {
+            String out = "";
+            for (CheckInGuest checkInGuest : checkInGuestList) {
+                out += checkInGuest.getName() + ",";
+            }
+            return out.substring(0, out.length() - 1);
         }
-        return out.substring(0,out.length()-1);
     }
 
     /**
