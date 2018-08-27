@@ -275,7 +275,8 @@ public class DeskController {
         * 8.操作员
         * 9.点菜员
         * 10.人数
-        * 11.时间
+        * 11.当前时间
+        * 12.开单时间
         * field
         * 1.菜品
         * 2.单价
@@ -283,7 +284,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow()),timeService.dateToStringLong(deskIn.getDoTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -337,14 +338,15 @@ public class DeskController {
         * 8.操作员
         * 9.点菜员
         * 10.人数
-        * 11.时间
+        * 11.结账时间
+        * 12.开单时间
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(new Date())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(new Date()),timeService.dateToStringLong(deskIn.getDoTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -373,7 +375,7 @@ public class DeskController {
                 }
             }
         }
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime()),timeService.dateToStringLong(deskInHistory.getDoTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 

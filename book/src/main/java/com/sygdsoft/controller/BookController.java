@@ -60,7 +60,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "bookDelete")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void bookDelete(@RequestBody List<Book> bookList) throws Exception {
         String bookLogString=bookService.bookDelete(bookList);
         userLogService.addUserLog("订单删除:" + bookLogString, userLogService.reception, userLogService.deleteBook,bookLogString);
@@ -228,7 +228,7 @@ public class BookController {
      * 重新安排房间
      */
     @RequestMapping(value = "arrangeRoom")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void arrangeRoom(@RequestBody BookInput bookInput) throws Exception {
         List<BookRoom> bookRoomList = bookInput.getBookRoomList();
         List<BookRoomCategory> bookRoomCategoryList = bookInput.getBookRoomCategoryList();
