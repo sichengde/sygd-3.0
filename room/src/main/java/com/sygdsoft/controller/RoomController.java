@@ -49,17 +49,23 @@ public class RoomController {
     @Autowired
     PointOfSaleService pointOfSaleService;
 
+    Pattern patternnumber=Pattern.compile("[0-9]");
+
     @RequestMapping(value = "roomAdd")
     public void roomAdd(@RequestBody Room room) throws Exception {
         /*增加的房间可以通过' - '来指定区间*/
         String[] roomRange = room.getRoomId().split("-");
-        if (roomRange.length > 1) {//这是一个区间
-            String prefix = Pattern.compile("[0-9]").matcher(roomRange[0]).replaceAll("");//前缀
-            String roomIdMinString = Pattern.compile("[^0-9]").matcher(roomRange[0]).replaceAll("");
+        //这是一个区间
+        if (roomRange.length > 1) {
+            //前缀
+            String prefix = patternnumber.matcher(roomRange[0]).replaceAll("");
+            String roomIdMinString = patternnumber.matcher(roomRange[0]).replaceAll("");
             /*计算一下数字位数*/
             Integer length = roomIdMinString.length();
-            Integer roomIdMin = Integer.valueOf(roomIdMinString);//最小数
-            Integer roomIdMax = Integer.valueOf(Pattern.compile("[^0-9]").matcher(roomRange[1]).replaceAll(""));//最大数
+            //最小数
+            Integer roomIdMin = Integer.valueOf(roomIdMinString);
+            //最大数
+            Integer roomIdMax = Integer.valueOf(patternnumber.matcher(roomRange[1]).replaceAll(""));
             List<Room> roomList = new ArrayList<>();
             Integer range = roomIdMax - roomIdMin;
             for (int i = 0; i < range + 1; i++) {

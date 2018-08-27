@@ -82,8 +82,9 @@ public class DynamicDataSourceRegister
     public DataSource buildDataSource(Map<String, Object> dsMap) {
         try {
             Object type = dsMap.get("type");
-            if (type == null)
+            if (type == null) {
                 type = DATASOURCE_TYPE_DEFAULT;// 默认DataSource
+            }
 
             Class<? extends DataSource> dataSourceType;
             dataSourceType = (Class<? extends DataSource>) Class.forName((String) type);

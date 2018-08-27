@@ -53,10 +53,12 @@ public class CheckInSnapshot extends CheckIn {
         this.guestName = guestName;
     }
 
+    @Override
     public Double getPartInDeposit() {
         return partInDeposit;
     }
 
+    @Override
     public void setPartInDeposit(Double partInDeposit) {
         this.partInDeposit = partInDeposit;
     }
