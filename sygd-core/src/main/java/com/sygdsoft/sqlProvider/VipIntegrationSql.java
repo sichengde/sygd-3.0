@@ -13,7 +13,7 @@ public class VipIntegrationSql {
         String basic="update vip set remain=ifnull(remain,0)+#{money}";
         Boolean withScore=(Boolean) parameters.get("withScore");
         if(withScore!=null&&withScore){
-            basic+=",score=ifnull(score,0)+#{money} ";
+            basic+=",score=ifnull(score,0)+#{real} ";
         }
         basic+=" where vip_number=#{vipNumber}";
         return basic;
