@@ -743,7 +743,7 @@ public class GuestOutController {
                 vip.setRace(checkInGuest.getRace());
                 vip.setBirthdayTime(checkInGuest.getBirthdayTime());
                 vip.setPhone(checkInGuest.getPhone());
-                vip.setScore(0);
+                vip.setScore(0.0);
                 vip.setRemain(0.0);
                 vip.setDoTime(timeService.getNow());
                 vip.setUserId(userService.getCurrentUser());

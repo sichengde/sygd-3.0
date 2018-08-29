@@ -691,3 +691,6 @@ ALTER TABLE desk_in_history ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_pay ADD company VARCHAR(100) NULL;
 #2018-08-24 增加一个索引优化
 CREATE INDEX check_in_history_last_time_index ON check_in_history (last_time);
+#2018-08-29 会员积分可以在充值时获取
+ALTER TABLE vip MODIFY score DOUBLE;
+ALTER TABLE vip_history MODIFY score DOUBLE;

@@ -69,8 +69,8 @@ public class VipService extends VipBaserService<Vip> {
      */
     @HotelGroup
 
-    public void updateVipRemain(String vipNumber, Double consume) {
-        vipMapper.updateVipRemain(vipNumber, consume);
+    public void updateVipRemain(String vipNumber, Double consume,boolean withScore) {
+        vipMapper.updateVipRemain(vipNumber, consume,withScore);
     }
 
     /**
@@ -128,7 +128,7 @@ public class VipService extends VipBaserService<Vip> {
                 throw new Exception("余额不足,当前余额:"+vip.getRemain()+" 支付金额:"+money);
             }
             remainMessage+=",余额:" + (vip.getRemain()-money);
-            updateVipRemain(vipNumber, -money);
+            updateVipRemain(vipNumber, -money,false);
         }
         return remainMessage;
     }

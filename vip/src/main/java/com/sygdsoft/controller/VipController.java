@@ -90,6 +90,9 @@ public class VipController {
         if (vip.getDeserve() != null) {
             vip.setRemain(vip.getDeserve());
         }
+        if("y".equals(otherParamService.getValueByName("充值算积分"))){
+            vip.setScore(vip.getRemain());
+        }
         vipService.add(vip);
         if (vip.getRemain() != null) {//有金额的话就增加一条充值记录
             /*增加一条账务明细*/
@@ -140,7 +143,8 @@ public class VipController {
         Double deserve = vipRecharge.getDeserve();
         String currency=vipRecharge.getCurrencyPost().getCurrency();
         String currencyAdd=vipRecharge.getCurrencyPost().getCurrencyAdd();
-        vipService.updateVipRemain(vipNumber, deserve);
+        boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
+        vipService.updateVipRemain(vipNumber, deserve,withScore);
         /*增加一条账务明细*/
         vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
@@ -161,7 +165,8 @@ public class VipController {
         Double deserve = Double.valueOf(params.get(2));
         String currency = params.get(3);
         String pointOfSale = params.get(4);
-        vipService.updateVipRemain(vipNumber, -deserve);
+        boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
+        vipService.updateVipRemain(vipNumber, -deserve,withScore);
         vipDetailService.addRefundDetail(vipNumber, -money,-deserve,currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 退款:" + money+" 抵用: "+deserve+" 币种: "+currency, userLogService.vip, userLogService.refund,vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency};
