@@ -87,11 +87,11 @@ public class VipController {
         String currencyAdd=vip.getCurrencyPost().getCurrencyAdd();
         Double realMoney=vip.getRemain();//实际充值的金额，因为计表后该值将会被抵用金额覆盖，所以在此先保留;
         String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+currencyAdd,timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
-        if (vip.getDeserve() != null) {
-            vip.setRemain(vip.getDeserve());
-        }
         if("y".equals(otherParamService.getValueByName("充值算积分"))){
             vip.setScore(vip.getRemain());
+        }
+        if (vip.getDeserve() != null) {
+            vip.setRemain(vip.getDeserve());
         }
         vipService.add(vip);
         if (vip.getRemain() != null) {//有金额的话就增加一条充值记录
@@ -144,7 +144,7 @@ public class VipController {
         String currency=vipRecharge.getCurrencyPost().getCurrency();
         String currencyAdd=vipRecharge.getCurrencyPost().getCurrencyAdd();
         boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
-        vipService.updateVipRemain(vipNumber, deserve,withScore);
+        vipService.updateVipRemain(vipNumber, deserve,money,withScore);
         /*增加一条账务明细*/
         vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
@@ -166,7 +166,7 @@ public class VipController {
         String currency = params.get(3);
         String pointOfSale = params.get(4);
         boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
-        vipService.updateVipRemain(vipNumber, -deserve,withScore);
+        vipService.updateVipRemain(vipNumber, -deserve,-money,withScore);
         vipDetailService.addRefundDetail(vipNumber, -money,-deserve,currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 退款:" + money+" 抵用: "+deserve+" 币种: "+currency, userLogService.vip, userLogService.refund,vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency};

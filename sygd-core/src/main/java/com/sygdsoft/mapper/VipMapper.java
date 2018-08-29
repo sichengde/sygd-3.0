@@ -21,7 +21,7 @@ public interface VipMapper extends MyMapper<Vip> {
      * 更新会员余额（充值或者消费）
      */
     @UpdateProvider(type = VipIntegrationSql.class,method = "updateVipRemain")
-    void updateVipRemain(@Param("vipNumber") String vipNumber, @Param("money") Double money,@Param("withScore") Boolean withScore);
+    void updateVipRemain(@Param("vipNumber") String vipNumber, @Param("money") Double money,@Param("real") Double real,@Param("withScore") Boolean withScore);
 
     /**
      * 更新会员积分（充值或者消费）
