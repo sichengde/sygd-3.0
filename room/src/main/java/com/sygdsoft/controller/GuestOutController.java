@@ -1034,19 +1034,20 @@ public class GuestOutController {
              * */
             /*分析消费项目*/
             List<FieldTemplate> templateList = new ArrayList<>();
-            DebtHistory debtHistory = null;
+            List<DebtHistory> debtHistoryList = null;
+            double totalConsume=0.0;
             try {
-                debtHistory = debtHistoryService.getListByPaySerial(debtPay.getPaySerial()).get(0);
+                debtHistoryList = debtHistoryService.getListByPaySerial(debtPay.getPaySerial());
             } catch (Exception e) {
                 throw new Exception("结账信息丢失");
             }
-            String[] itemArray = debtHistory.getDescription().split("/");
-            for (String s : itemArray) {
+            for (DebtHistory debtHistory : debtHistoryList) {
                 FieldTemplate var = new FieldTemplate();
-                var.setField1(s);
+                var.setField1(debtHistory.getDescription());
                 templateList.add(var);
+                totalConsume+=debtHistory.getNotNullConsume();
             }
-            return reportService.generateReport(templateList, new String[]{debtPay.getUserId(), String.valueOf(debtHistory.getConsume()), timeService.dateToStringLong(debtHistory.getDoneTime()), debtHistory.getDescription(), debtHistory.getPaySerial(), debtHistory.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
+            return reportService.generateReport(templateList, new String[]{debtPay.getUserId(), String.valueOf(totalConsume), timeService.dateToStringLong(debtPay.getDoneTime()), "", "弃用", debtPay.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
         }
         /*----------------------------商品零售逻辑完成----------------------------*/
         serialService.setPaySerial(debtPay.getPaySerial());
@@ -1128,7 +1129,7 @@ public class GuestOutController {
             for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
                 selfAccountList.add(checkInHistoryLog.getSelfAccount());
             }
-        } else {
+        } else if (debtPay.getSelfAccount()!=null){
             selfAccountList.add(debtPay.getSelfAccount());
         }
         timeService.setNow();
