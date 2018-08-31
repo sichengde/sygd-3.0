@@ -694,3 +694,6 @@ CREATE INDEX check_in_history_last_time_index ON check_in_history (last_time);
 #2018-08-29 会员积分可以在充值时获取
 ALTER TABLE vip MODIFY score DOUBLE;
 ALTER TABLE vip_history MODIFY score DOUBLE;
+#2018-08-31 更改早餐字段类型
+ALTER TABLE check_in MODIFY breakfast INT;
+ALTER TABLE check_in_history_log MODIFY breakfast INT;

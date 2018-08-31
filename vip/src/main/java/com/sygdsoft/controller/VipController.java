@@ -7,6 +7,7 @@ import com.sygdsoft.model.VipDetail;
 import com.sygdsoft.model.VipDetailHistory;
 import com.sygdsoft.model.VipHistory;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,8 @@ public class VipController {
     DebtPayService debtService;
     @Autowired
     RegisterService registerService;
+    @Autowired
+    SzMath szMath;
 
     @RequestMapping(value = "vipUpdate")
     @Transactional(rollbackFor = Exception.class)
@@ -86,7 +89,7 @@ public class VipController {
         String currency=vip.getCurrencyPost().getCurrency();
         String currencyAdd=vip.getCurrencyPost().getCurrencyAdd();
         Double realMoney=vip.getRemain();//实际充值的金额，因为计表后该值将会被抵用金额覆盖，所以在此先保留;
-        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+currencyAdd,timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
+        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+szMath.ifNotNullGetString(currencyAdd),timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
         if("y".equals(otherParamService.getValueByName("充值算积分"))){
             vip.setScore(vip.getRemain());
         }
