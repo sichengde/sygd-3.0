@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "vipDetail")
-public class VipDetailService extends VipBaserService<VipDetail>{
+public class VipDetailService extends BaseService<VipDetail>{
     @Autowired
     VipService vipService;
     @Autowired
