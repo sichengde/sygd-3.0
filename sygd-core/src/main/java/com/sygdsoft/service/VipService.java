@@ -23,6 +23,7 @@ public class VipService extends BaseService<Vip> {
     public String HY = "会员余额结账";//会员余额结账
     public String XJ = "会员现金结账";
     public String CZ = "会员充值";
+    public String KKCZ = "会员开卡充值";
     public String TK = "会员退款";
     public String KS = "客史";
     public String JH = "会员结账叫回";

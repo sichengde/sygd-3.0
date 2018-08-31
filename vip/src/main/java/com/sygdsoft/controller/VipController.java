@@ -99,7 +99,7 @@ public class VipController {
         vipService.add(vip);
         if (vip.getRemain() != null) {//有金额的话就增加一条充值记录
             /*增加一条账务明细*/
-            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency,vip.getPointOfSale());
+            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency,vip.getPointOfSale(),vipService.KKCZ);
         }
         debtService.parseCurrency(currency,currencyAdd,realMoney,null,null,"会员发卡充值",null,null,null );
         /*判断币种，这里允许挂单位账*/

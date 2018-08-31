@@ -42,6 +42,7 @@ public class RealRoomStateReportNew {
     ReportService reportService;
 
     /**
+     * realRoomState.jrxml
      * field1 房号
      * field2 房类
      * field3 状态
