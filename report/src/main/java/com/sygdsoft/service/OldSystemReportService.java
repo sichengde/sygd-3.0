@@ -178,6 +178,19 @@ public class OldSystemReportService {
         String param11 = fieldTemplateTotal.getField11();
         String param7 = szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param11) - szMath.formatTwoDecimalReturnDouble(param10));
         String param12=timeService.dateToStringShort(debtDate);
+        /*最后统一赋值，因为之前还有类型转换，不能直接赋值为带逗号的*/
+        for (FieldTemplate template : fieldTemplateList) {
+            template.setField2(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField2())));
+            template.setField3(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField3())));
+            template.setField4(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField4())));
+            template.setField5(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField5())));
+            template.setField6(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField6())));
+            template.setField7(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField7())));
+            template.setField8(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField8())));
+            template.setField9(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField9())));
+            template.setField10(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField10())));
+            template.setField11(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField11())));
+        }
         reportStoreService.create("全店收入表",timeService.dateToStringShort(debtDate),new String[]{param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11,param12},fieldTemplateList);
 
     }

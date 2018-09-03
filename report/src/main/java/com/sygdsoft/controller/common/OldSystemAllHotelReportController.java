@@ -157,6 +157,19 @@ public class OldSystemAllHotelReportController {
         fieldTemplateTotal.setField10(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField10())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField10())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField10())));
         fieldTemplateTotal.setField11(szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(fieldTemplateRoomTotal.getField11())+szMath.formatTwoDecimalReturnDouble(fieldTemplate.getField11())-szMath.formatTwoDecimalReturnDouble(fieldTemplateDeskHang.getField11())));
         fieldTemplateList.add(fieldTemplateTotal);
+        /*最后统一赋值，因为之前还有类型转换，不能直接赋值为带逗号的*/
+        for (FieldTemplate template : fieldTemplateList) {
+            template.setField2(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField2())));
+            template.setField3(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField3())));
+            template.setField4(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField4())));
+            template.setField5(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField5())));
+            template.setField6(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField6())));
+            template.setField7(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField7())));
+            template.setField8(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField8())));
+            template.setField9(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField9())));
+            template.setField10(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField10())));
+            template.setField11(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField11())));
+        }
         /*开始输出其他参数
         * param1 上日预付(上日在店押金)
         * param2 本日收取(交班审核表不选操作员收预付)
