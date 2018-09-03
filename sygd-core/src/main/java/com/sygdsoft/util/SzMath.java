@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 public class SzMath {
     private DecimalFormat percent = new DecimalFormat("##0.00%");
     private DecimalFormat twoDecimal = new DecimalFormat("##0.00");
+    private DecimalFormat bigDecimal = new DecimalFormat("#,##0.00");
     private NumberFormat nt = NumberFormat.getPercentInstance();
 
     public String formatPercent(Double var1, Double var2) {
@@ -136,6 +137,9 @@ public class SzMath {
         return Double.valueOf(twoDecimal.format(var1 * 1.0 / (var2 * 1.0)));
     }
 
+    public String formatBigDecimal(Double var1) {
+        return bigDecimal.format(var1);
+    }
     public Integer nullToZero(Integer integer){
         return integer==null?0:integer;
     }
