@@ -191,6 +191,16 @@ public class OldSystemReportService {
             template.setField10(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField10())));
             template.setField11(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField11())));
         }
+        param1=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param1));
+        param2=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param2));
+        param3=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param3));
+        param4=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param4));
+        param5=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param5));
+        param6=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param6));
+        param7=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param7));
+        param8=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param8));
+        param9=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param9));
+        param10=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param10));
         reportStoreService.create("全店收入表",timeService.dateToStringShort(debtDate),new String[]{param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11,param12},fieldTemplateList);
 
     }
