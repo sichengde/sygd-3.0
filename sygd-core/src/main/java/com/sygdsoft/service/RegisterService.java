@@ -135,6 +135,7 @@ public class RegisterService {
         logger.info("有效期:"+this.limitTime);
         logger.info("模块/人数:"+module);
         logger.info("提示方式"+this.alertType);
+        logger.info("重新注册需要发送的码:"+this.getLocalSerialShow());
         if (code.equals(getLocalSerial())) {
             logger.info("注册成功");
             this.pass = true;
