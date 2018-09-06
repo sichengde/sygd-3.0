@@ -62,6 +62,7 @@ public class Debt extends BaseEntity {
         this.fromRoom=debt.getFromRoom();
         this.guestSource=debt.getGuestSource();
         this.company=debt.getCompany();
+        this.totalConsume=debt.getTotalConsume();
         this.guestName=debt.getGuestName();
         this.sourceRoom=debt.getSourceRoom();
         this.back=debt.getBack();

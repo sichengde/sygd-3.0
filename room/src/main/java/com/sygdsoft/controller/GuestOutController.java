@@ -228,6 +228,10 @@ public class GuestOutController {
                 DebtHistory debtHistory = new DebtHistory(debt);
                 debtHistory.setConsume(payMoney);
                 debtHistoryService.add(debtHistory);
+                this.debtList=new ArrayList<>();
+                Debt debt1=new Debt(debt);
+                debt1.setConsume(payMoney);
+                this.debtList.add(debt1);
                 remarkAdd += "不指定账务";
             }
             /*TODO:在这插入一条退预付*/
