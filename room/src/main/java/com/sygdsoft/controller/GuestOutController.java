@@ -217,6 +217,7 @@ public class GuestOutController {
                 debt.setPointOfSale(pointOfSaleService.FF);
                 debt.setConsume(-payMoney);
                 debt.setCurrency("挂账");
+                debt.setGuestSource(checkIn.getGuestSource());
                 debt.setDescription("中间结算:" + remark);
                 debt.setGroupAccount(groupAccount);
                 debt.setUserId(userService.getCurrentUser());

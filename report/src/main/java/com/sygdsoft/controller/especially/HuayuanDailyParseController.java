@@ -65,6 +65,21 @@ public class HuayuanDailyParseController {
         fieldTemplate.setField1("房态");
         fieldTemplate.setField2("房间总数");
         fieldTemplateList.add(fieldTemplate);
+        fieldTemplate=new FieldTemplate();
+        fieldTemplate.setField2("房间总数");
+        fieldTemplateList.add(fieldTemplate);
+        fieldTemplate=new FieldTemplate();
+        fieldTemplate.setField2("可用房间");
+        fieldTemplateList.add(fieldTemplate);
+        fieldTemplate=new FieldTemplate();
+        fieldTemplate.setField2("维修房");
+        fieldTemplateList.add(fieldTemplate);
+        fieldTemplate=new FieldTemplate();
+        fieldTemplate.setField2("平均房价");
+        fieldTemplateList.add(fieldTemplate);
+        fieldTemplate=new FieldTemplate();
+        fieldTemplate.setField2("平均出出率");
+        fieldTemplateList.add(fieldTemplate);
         return reportService.generateReport(fieldTemplateList, new String[]{},"huayuanDailyParseReport","pdf");
     }
 }
