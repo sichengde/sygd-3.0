@@ -23,11 +23,18 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
     DebtIntegrationMapper debtIntegrationMapper;
     @Autowired
     TimeService timeService;
+
     /**
      * 根据发生时间获得消费总额
+     * @param beginTime
+     * @param endTime
+     * @param pointOfSale
+     * @param guestSource
+     * @param excludeChange 是否排除挂账
+     * @return
      */
-    public Double getSumConsumeByDoTime(Date beginTime, Date endTime, String pointOfSale,boolean excludeChange){
-        return debtIntegrationMapper.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,excludeChange);
+    public Double getSumConsumeByDoTime(Date beginTime, Date endTime, String pointOfSale,String guestSource,boolean excludeChange){
+        return debtIntegrationMapper.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,guestSource,excludeChange);
     }
 
     /**
@@ -95,24 +102,6 @@ public class DebtIntegrationService extends BaseService<DebtIntegration> {
      */
     public List<RoomCategoryLine> parseRoomCategoryDebtLine(Date beginTime, Date endTime, String category) {
         return debtIntegrationMapper.parseRoomCategoryDebtLine(beginTime, endTime, category);
-    }
-
-    /**
-     * 获得某个时间点前的在店预付
-     */
-    public Double getSumDepositByEndTime(Date beginTime,Date endTime,String userId){
-        return debtIntegrationMapper.getSumDepositByEndTime(beginTime, endTime, userId);
-    }
-
-    /**
-     * 获取每日出租房数
-     */
-    public List<DebtIntegration> getDailyCount(Date beginTime,Date endTime,boolean fixDate)throws Exception{
-        int fixDateInt=0;
-        if(fixDate){
-            fixDateInt=1;
-        }
-        return debtIntegrationMapper.getDailyCount(beginTime,endTime,fixDateInt);
     }
 
     /**

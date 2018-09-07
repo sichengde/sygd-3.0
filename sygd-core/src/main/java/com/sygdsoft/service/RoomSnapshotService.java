@@ -32,6 +32,16 @@ public class RoomSnapshotService extends BaseService<RoomSnapshot> {
         return roomSnapshotMapper.getPaidRoom(beginTime, endTime);
     }
 
+    /**
+     * 获取总数
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    public Integer getCount(Date beginTime, Date endTime,String state,Boolean realRoom) {
+        return roomSnapshotMapper.getCount(beginTime, endTime,state,realRoom);
+    }
+
     public RoomSnapshot getSumByDate(Date beginTime, Date endTime, String state) {
         return roomSnapshotMapper.getSum(beginTime, endTime, state);
     }

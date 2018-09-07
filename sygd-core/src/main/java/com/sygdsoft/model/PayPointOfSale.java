@@ -10,6 +10,7 @@ public class PayPointOfSale extends BaseEntity {
     private String currency;
     private Double money;
     private Date doTime;
+    private Date createTime;
 
     public PayPointOfSale() {
     }
@@ -20,6 +21,7 @@ public class PayPointOfSale extends BaseEntity {
         this.pointOfSale = payPointOfSale.getPointOfSale();
         this.money = payPointOfSale.getMoney();
         this.doTime = payPointOfSale.getDoTime();
+        this.createTime = payPointOfSale.getCreateTime();
     }
 
     public Integer getDebtPayId() {
@@ -76,5 +78,13 @@ public class PayPointOfSale extends BaseEntity {
 
     public void setDeskPayId(Integer deskPayId) {
         this.deskPayId = deskPayId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

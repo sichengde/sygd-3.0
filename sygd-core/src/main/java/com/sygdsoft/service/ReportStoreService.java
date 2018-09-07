@@ -1,48 +1,47 @@
 package com.sygdsoft.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.ReportStoreMapper;
 import com.sygdsoft.model.FieldTemplate;
 import com.sygdsoft.model.ReportStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @SzMapper(id = "reportStore")
-public class ReportStoreService extends BaseService<ReportStore>{
+public class ReportStoreService extends BaseService<ReportStore> {
     @Autowired
     ReportStoreMapper reportStoreMapper;
     @Autowired
     ReportService reportService;
 
-    public void clear(String name,String identify){
-        reportStoreMapper.clear(name,identify);
+    public void clear(String name, String identify) {
+        reportStoreMapper.clear(name, identify);
     }
-    public int print(String name, String identify,String fileName)throws Exception{
-        return print(name, identify, fileName,"pdf");
+
+    public int print(String name, String identify, String fileName) throws Exception {
+        return print(name, identify, fileName, "pdf");
     }
-    public int print(String name, String identify,String fileName,String format)throws Exception{
-        ReportStore reportStoreQuery=new ReportStore();
+
+    public int print(String name, String identify, String fileName, String format) throws Exception {
+        ReportStore reportStoreQuery = new ReportStore();
         reportStoreQuery.setName(name);
         reportStoreQuery.setIdentify(identify);
         reportStoreQuery.setType("param");
-        ReportStore reportStoreParam=reportStoreMapper.selectOne(reportStoreQuery);
-        String[] param=new String[20];
-        if(reportStoreParam!=null) {
+        ReportStore reportStoreParam = reportStoreMapper.selectOne(reportStoreQuery);
+        String[] param = new String[20];
+        if (reportStoreParam != null) {
             for (int i = 0; i < 20; i++) {
                 param[i] = reportStoreParam.getN(i + 1);
             }
         }
-        List<FieldTemplate> fieldTemplateList=new ArrayList<>();
+        List<FieldTemplate> fieldTemplateList = new ArrayList<>();
         reportStoreQuery.setType("fieldTemplate");
-        List<ReportStore> reportStoreList=reportStoreMapper.select(reportStoreQuery);
+        List<ReportStore> reportStoreList = reportStoreMapper.select(reportStoreQuery);
         for (ReportStore reportStore : reportStoreList) {
-            FieldTemplate fieldTemplate=new FieldTemplate();
+            FieldTemplate fieldTemplate = new FieldTemplate();
             for (int i = 1; i < 21; i++) {
                 fieldTemplate.setFieldN(i, reportStore.getN(i));
             }
@@ -51,23 +50,23 @@ public class ReportStoreService extends BaseService<ReportStore>{
         return reportService.generateReport(fieldTemplateList, param, fileName, format);
     }
 
-    public void create(String name, String identify, String[] params, List<FieldTemplate> fieldTemplateList)throws Exception{
-        if(params.length>20){
+    public void create(String name, String identify, String[] params, List<FieldTemplate> fieldTemplateList) throws Exception {
+        if (params.length > 20) {
             throw new Exception("参数太多");
         }
         this.clear(name, identify);
-        ReportStore reportStoreParam=new ReportStore();
+        ReportStore reportStoreParam = new ReportStore();
         reportStoreParam.setName(name);
         reportStoreParam.setIdentify(identify);
         reportStoreParam.setType("param");
         for (int i = 0; i < params.length; i++) {
             String param = params[i];
-            reportStoreParam.setN(i+1,param);
+            reportStoreParam.setN(i + 1, param);
         }
         reportStoreMapper.insert(reportStoreParam);
-        List<ReportStore> reportStoreList=new ArrayList<>();
+        List<ReportStore> reportStoreList = new ArrayList<>();
         for (FieldTemplate fieldTemplate : fieldTemplateList) {
-            ReportStore reportStore=new ReportStore();
+            ReportStore reportStore = new ReportStore();
             reportStore.setName(name);
             reportStore.setIdentify(identify);
             reportStore.setType("fieldTemplate");
@@ -94,5 +93,9 @@ public class ReportStoreService extends BaseService<ReportStore>{
             reportStoreList.add(reportStore);
         }
         super.add(reportStoreList);
+    }
+
+    public List<ReportStore> getList(String type, String name, String identify) {
+        return reportStoreMapper.getList(type, name, identify);
     }
 }
