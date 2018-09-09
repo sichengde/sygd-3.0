@@ -25,7 +25,7 @@ public class CompanyCategoryController {
     }
 
     @RequestMapping(value = "companyCategoryDelete")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void companyCategoryDelete(@RequestBody List<CompanyCategory> companyCategoryList) throws Exception {
         companyCategoryService.delete(companyCategoryList);
     }

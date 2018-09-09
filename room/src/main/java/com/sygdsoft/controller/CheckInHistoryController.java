@@ -40,7 +40,9 @@ public class CheckInHistoryController {
             List<GuestMapCheckIn> guestMapCheckInList = guestMapCheckInService.getByCardId(checkInHistory.getCardId());
             List<CheckInIntegration> checkInIntegrationList = new ArrayList<>();
             for (GuestMapCheckIn guestMapCheckIn : guestMapCheckInList) {
-                checkInIntegrationList.add(checkInIntegrationService.getBySelfAccount(guestMapCheckIn.getSelfAccount()));
+                if(guestMapCheckIn.getSelfAccount()!=null) {
+                    checkInIntegrationList.add(checkInIntegrationService.getBySelfAccount(guestMapCheckIn.getSelfAccount()));
+                }
             }
             checkInHistory.setCheckInIntegrationList(checkInIntegrationList);
         }
@@ -70,8 +72,6 @@ public class CheckInHistoryController {
     public CheckInHistoryLog getHistoryRoomPriceByCardId(@RequestBody List<String> param) {
         String cardId = param.get(0);
         String roomCategory = param.get(1);
-        //List<GuestMapCheckIn> guestMapCheckInList=guestMapCheckInService.getByCardId(cardId);
-        //CheckInHistoryLog checkInHistoryLog=checkInHistoryLogService.getOneBySelfAccount()
         List<CheckInHistoryLog> guestMapCheckInList = guestMapCheckInService.getHistoryRoomPriceByCardId(cardId, roomCategory);
         if (guestMapCheckInList.size() > 0) {
             return guestMapCheckInList.get(0);

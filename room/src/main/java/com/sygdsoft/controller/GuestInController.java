@@ -330,7 +330,7 @@ public class GuestInController {
         * 13.特殊要求           checkIn.getImportant()
         * 14.备注饭店名称       checkIn.getRemark()
         * 15.打印时间           timeService.getNowLong()
-        * 16.接待人员           userService.getCurrentUser()
+        * 16.接待人员           userService.getCurrentUser()up
         * 17.主账号             serialService.getSelfAccount()
         * 18.押金值             String.valueOf(currencyPostMain.getDeposit())
         * 19.公司               checkIn.getCompany()

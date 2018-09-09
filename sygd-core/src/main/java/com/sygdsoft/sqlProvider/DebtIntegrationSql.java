@@ -33,6 +33,7 @@ public class DebtIntegrationSql {
 
     public String getSumConsumeByDoTime(Map<String, Object> parameters){
         String pointOfSale= (String) parameters.get("pointOfSale");
+        String guestSource= (String) parameters.get("guestSource");
         Date beginTime= (Date) parameters.get("beginTime");
         Date endTime= (Date) parameters.get("endTime");
         boolean excludeChange= (boolean) parameters.get("excludeChange");
@@ -45,6 +46,13 @@ public class DebtIntegrationSql {
         }
         if(pointOfSale!=null){
             basic+=" and point_of_sale = #{pointOfSale}";
+        }
+        if(guestSource!=null){
+            if(guestSource.equals("NULL")){
+                basic+=" and guest_source is null";
+            }else {
+                basic += " and guest_source = #{guestSource}";
+            }
         }
         if(excludeChange){
             basic+=" and ifnull(not_part_in,false) =false ";

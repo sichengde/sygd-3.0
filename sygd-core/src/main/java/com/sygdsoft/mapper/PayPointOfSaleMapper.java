@@ -13,4 +13,8 @@ public interface PayPointOfSaleMapper extends MyMapper<PayPointOfSale> {
     @SelectProvider(type = PayPointOfSaleSql.class,method = "getDebtMoney")
     @ResultType(Double.class)
     Double getDebtMoney(@Param("pointOfSale") String pointOfSale, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime,@Param("module")String module);
+
+    @SelectProvider(type = PayPointOfSaleSql.class,method = "getDebtMoneyWithCreate")
+    @ResultType(Double.class)
+    Double getDebtMoneyWithCreate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("currency") String currency, @Param("company") boolean company);
 }

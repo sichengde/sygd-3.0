@@ -60,15 +60,15 @@ public class DebtAndPayReportController {
             DebtAndPayRow debtAndPayRow = new DebtAndPayRow();
             debtAndPayRow.setPointOfSale(pointOfSale);
             /*计算期初未结=期初之前的总账务-结算的*/
-            Double generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, beginTime, pointOfSale,false));
+            Double generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, beginTime, pointOfSale,null,false));
             Double paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, beginTime, pointOfSale,null));
             debtAndPayRow.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(generate - paid));
             roomTotal.setUndoneBefore(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneBefore() + debtAndPayRow.getUndoneBefore()));
             /*计算期间发生*/
-            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,false)));
+            debtAndPayRow.setDebt(szMath.formatTwoDecimalReturnDouble(debtIntegrationService.getSumConsumeByDoTime(beginTime, endTime, pointOfSale,null,false)));
             roomTotal.setDebt(szMath.formatTwoDecimalReturnDouble(roomTotal.getDebt() + debtAndPayRow.getDebt()));
             /*计算期末未结*/
-            generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, endTime, pointOfSale,false));
+            generate = szMath.nullToZero(debtIntegrationService.getSumConsumeByDoTime(beginTimeHistory, endTime, pointOfSale,null,false));
             paid = szMath.nullToZero(debtHistoryService.getHistoryConsume(beginTimeHistory, endTime, pointOfSale,false));
             debtAndPayRow.setUndoneLast(szMath.formatTwoDecimalReturnDouble(generate - paid));
             roomTotal.setUndoneLast(szMath.formatTwoDecimalReturnDouble(roomTotal.getUndoneLast() + debtAndPayRow.getUndoneLast()));

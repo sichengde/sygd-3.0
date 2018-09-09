@@ -689,3 +689,13 @@ ALTER TABLE desk_in ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_in_cancel_all ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_in_history ADD company VARCHAR(100) NULL;
 ALTER TABLE desk_pay ADD company VARCHAR(100) NULL;
+#2018-08-24 增加一个索引优化
+CREATE INDEX check_in_history_last_time_index ON check_in_history (last_time);
+#2018-08-29 会员积分可以在充值时获取
+ALTER TABLE vip MODIFY score DOUBLE;
+ALTER TABLE vip_history MODIFY score DOUBLE;
+#2018-08-31 更改早餐字段类型
+ALTER TABLE check_in MODIFY breakfast INT;
+ALTER TABLE check_in_history_log MODIFY breakfast INT;
+#2018-09-07 ppos表新增发生时间字段
+ALTER TABLE pay_point_of_sale ADD create_time DATETIME NULL;

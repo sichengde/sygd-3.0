@@ -19,7 +19,14 @@ import java.util.Date;
  */
 @Service
 @SzMapper(id = "vip")
-public class VipService extends VipBaserService<Vip> {
+public class VipService extends BaseService<Vip> {
+    public String HY = "会员余额结账";//会员余额结账
+    public String XJ = "会员现金结账";
+    public String CZ = "会员充值";
+    public String KKCZ = "会员开卡充值";
+    public String TK = "会员退款";
+    public String KS = "客史";
+    public String JH = "会员结账叫回";
     @Autowired
     VipMapper vipMapper;
     @Autowired
@@ -40,24 +47,13 @@ public class VipService extends VipBaserService<Vip> {
     /**
      * 注销(被弃用)
      */
-    @HotelGroup
-
     public void cancel(String vipNumber) {
         vipMapper.cancel(vipNumber);
     }
 
-    public String HY = "会员余额结账";//会员余额结账
-    public String XJ = "会员现金结账";
-    public String CZ = "会员充值";
-    public String TK = "会员退款";
-    public String KS = "客史";
-    public String JH = "会员结账叫回";
-
     /**
      * 通过卡号获取对象
      */
-    @HotelGroup
-
     public Vip getByVipNumber(String vipNumber) {
         Vip vipQuery = new Vip();
         vipQuery.setVipNumber(vipNumber);
@@ -67,17 +63,13 @@ public class VipService extends VipBaserService<Vip> {
     /**
      * 更新会员余额
      */
-    @HotelGroup
-
-    public void updateVipRemain(String vipNumber, Double consume) {
-        vipMapper.updateVipRemain(vipNumber, consume);
+    public void updateVipRemain(String vipNumber, Double deserve,Double real,boolean withScore) {
+        vipMapper.updateVipRemain(vipNumber, deserve,real,withScore);
     }
 
     /**
      * 更新会员积分
      */
-    @HotelGroup
-
     public void updateVipScore(String vipNumber, Double score) {
         vipMapper.updateVipScore(vipNumber, score);
     }
@@ -85,8 +77,6 @@ public class VipService extends VipBaserService<Vip> {
     /**
      * 开房时冻结一部分押金，押金为负则是解冻
      */
-    @HotelGroup
-
     public void depositByVip(String vipNumber, Double deposit) {
         vipMapper.depositByVip(vipNumber, deposit);
     }
@@ -94,8 +84,6 @@ public class VipService extends VipBaserService<Vip> {
     /**
      * 结账时使用用会员币种（离店，商品零售）
      */
-    @HotelGroup
-
     public String vipPay(String vipNumber, String payCategory, Double money, String description, String selfAccount, String groupAccount,String paySerial,String pointOfSale) throws Exception {
         Vip vip=getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
@@ -128,7 +116,7 @@ public class VipService extends VipBaserService<Vip> {
                 throw new Exception("余额不足,当前余额:"+vip.getRemain()+" 支付金额:"+money);
             }
             remainMessage+=",余额:" + (vip.getRemain()-money);
-            updateVipRemain(vipNumber, -money);
+            updateVipRemain(vipNumber, -money,-money,false);
         }
         return remainMessage;
     }

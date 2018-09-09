@@ -1,11 +1,9 @@
 package com.sygdsoft.mapper;
 
 import com.sygdsoft.model.Vip;
+import com.sygdsoft.sqlProvider.VipIntegrationSql;
 import com.sygdsoft.util.MyMapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 
@@ -22,8 +20,8 @@ public interface VipMapper extends MyMapper<Vip> {
     /**
      * 更新会员余额（充值或者消费）
      */
-    @Update("update vip set remain=ifnull(remain,0)+#{money} where vip_number=#{vipNumber}")
-    void updateVipRemain(@Param("vipNumber") String vipNumber, @Param("money") Double money);
+    @UpdateProvider(type = VipIntegrationSql.class,method = "updateVipRemain")
+    void updateVipRemain(@Param("vipNumber") String vipNumber, @Param("money") Double money,@Param("real") Double real,@Param("withScore") Boolean withScore);
 
     /**
      * 更新会员积分（充值或者消费）

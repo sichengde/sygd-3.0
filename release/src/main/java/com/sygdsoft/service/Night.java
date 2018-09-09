@@ -80,13 +80,13 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
     @Scheduled(cron = "${night.action}")
     public void autoNightAction() throws Exception {
         logger.info("开始自动夜审");
-        if (userLogService.getRecentDate().getTime() - new Date().getTime() > 24 * 60 * 60 * 1000) {
+        if (userLogService.getRecentDate().getTime() - System.currentTimeMillis() > 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("msg", "服务器时间不准确，无法夜审，请及时处理");
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
             return;
         }
-        if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
+        if (!registerService.getPass() || System.currentTimeMillis() > this.registerService.getLimitTime().getTime()) {
             JSONObject jsonObject = new JSONObject();
             if (registerService.getAlertType() == 1) {
                 jsonObject.put("msg", "系统运行期限已到");
@@ -100,7 +100,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         userLogService.addUserLogWithoutUserIp("自动夜审", userLogService.reception, userLogService.night);
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
-        if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
+        if (this.registerService.getLimitTime().getTime() - System.currentTimeMillis() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
             if (registerService.getAlertType() == 1) {
                 //jsonObject.put("msg", "系统运行期限已到");七天内不进行到期提醒
@@ -127,10 +127,10 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
      * 手动夜审
      */
     public void manualNightAction() throws Exception {
-        if (userLogService.getRecentDate().getTime() - new Date().getTime() > 24 * 60 * 60 * 1000) {
+        if (userLogService.getRecentDate().getTime() - System.currentTimeMillis() > 24 * 60 * 60 * 1000) {
             throw new Exception("服务器时间不准确，无法夜审，请及时处理");
         }
-        if (!registerService.getPass() || new Date().getTime() > this.registerService.getLimitTime().getTime()) {
+        if (!registerService.getPass() || System.currentTimeMillis() > this.registerService.getLimitTime().getTime()) {
             if (registerService.getAlertType() == 1) {
                 throw new Exception("系统运行期限已到");
             } else {
@@ -139,7 +139,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         }
         this.messagingTemplate.convertAndSend("/beginNight", false);
         nightService.nightActionLogic();
-        if (this.registerService.getLimitTime().getTime() - new Date().getTime() < 7 * 24 * 60 * 60 * 1000) {
+        if (this.registerService.getLimitTime().getTime() - System.currentTimeMillis() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
             if (registerService.getAlertType() == 1) {
                 //jsonObject.put("msg", "系统运行期限已到");//七天内不进行到期提醒

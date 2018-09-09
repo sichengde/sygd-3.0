@@ -70,14 +70,16 @@ public class CheckInHistoryService extends BaseService<CheckInHistory>{
      */
     public String listToStringName(List<CheckInHistory> checkInHistoryList){
         int iMax = checkInHistoryList.size() - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "";
+        }
 
         StringBuilder b = new StringBuilder();
         for (int i = 0; ; i++) {
             b.append(checkInHistoryList.get(i).getName());
-            if (i == iMax)
+            if (i == iMax) {
                 return b.toString();
+            }
             b.append(", ");
         }
     }

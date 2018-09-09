@@ -11,7 +11,6 @@ import com.sygdsoft.util.Util;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +41,27 @@ public class RealRoomStateReportNew {
     @Autowired
     ReportService reportService;
 
+    /**
+     * realRoomState.jrxml
+     * field1 房号
+     * field2 房类
+     * field3 状态
+     * field4 价格
+     * field5 早餐数量
+     * parameter1  时间
+     * parameter2  操作员
+     * parameter3  空房
+     * parameter4  入住
+     * parameter5  脏房
+     * parameter6  维修房
+     * parameter7  预定
+     * parameter8  平均房租
+     * parameter9  总平均房租
+     * parameter10  消费合计
+     * parameter11  早餐份数
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "realRoomStateReportNew")
     public Integer realRoomStateReportNew() throws Exception {
         /*报表参数*/
@@ -51,6 +71,7 @@ public class RealRoomStateReportNew {
         Integer repairRoom = 0;
         Integer bookRoom;
         Double totalPrice = 0.0;
+        int totalBreakfast = 0;
         /*中间变量*/
         Integer sumCheckInRoom = 0;
         timeService.setNow();
@@ -66,14 +87,18 @@ public class RealRoomStateReportNew {
             String roomState = room.getState();
             fieldTemplate.setField3(roomState);
             if (roomState.equals(roomService.group) || roomState.equals(roomService.guest)) {
-                CheckIn checkIn=room.getCheckIn();
-                if(checkIn!=null) {
+                CheckIn checkIn = room.getCheckIn();
+                if (checkIn != null) {
                     Double finalRoomPrice = room.getCheckIn().getFinalRoomPrice();
                     fieldTemplate.setField4(String.valueOf(finalRoomPrice));
                     fieldTemplate.setField5(String.valueOf(checkIn.getBreakfast()));
                     totalPrice = totalPrice + finalRoomPrice;
                     sumCheckInRoom++;
                     inRoom++;
+                    String breakfast = checkIn.getBreakfast();
+                    if (breakfast != null) {
+                        totalBreakfast += Integer.valueOf(breakfast);
+                    }
                 }
             } else if (roomState.equals(roomService.empty)) {
                 nullRoom++;
@@ -94,16 +119,19 @@ public class RealRoomStateReportNew {
         bookRoom = bookList.size();
         Integer length = roomList.size();
         // 动态指定报表模板url
-        String[] param = new String[]{timeService.getNowLong(),
-                userService.getCurrentUser(),
-                String.valueOf(nullRoom) + "/" + szMath.formatPercent(nullRoom, length),
-                String.valueOf(inRoom) + "/" + szMath.formatPercent(inRoom, length),
-                String.valueOf(dirtyRoom) + "/" + szMath.formatPercent(dirtyRoom, length),
-                String.valueOf(repairRoom) + "/" + szMath.formatPercent(repairRoom, length),
-                String.valueOf(bookRoom) + "/" + szMath.formatPercent(bookRoom, length),
-                szMath.formatPercent(totalPrice, sumCheckInRoom),
-                szMath.formatPercent(totalPrice, length),
-                szMath.formatTwoDecimal(totalPrice)};
+        String[] param = new String[]{
+                timeService.getNowLong(),//时间
+                userService.getCurrentUser(),//操作员
+                String.valueOf(nullRoom) + "/" + szMath.formatPercent(nullRoom, length),//空房
+                String.valueOf(inRoom) + "/" + szMath.formatPercent(inRoom, length),//入住
+                String.valueOf(dirtyRoom) + "/" + szMath.formatPercent(dirtyRoom, length),//脏房
+                String.valueOf(repairRoom) + "/" + szMath.formatPercent(repairRoom, length),//维修房
+                String.valueOf(bookRoom) + "/" + szMath.formatPercent(bookRoom, length),//预定
+                szMath.formatPercent(totalPrice, sumCheckInRoom),//平均房租
+                szMath.formatPercent(totalPrice, length),//总平均房租
+                szMath.formatTwoDecimal(totalPrice),//消费合计
+                String.valueOf(totalBreakfast)//早餐份数
+        };
         return reportService.generateReport(templateList, param, "realRoomState", "pdf");
     }
 }

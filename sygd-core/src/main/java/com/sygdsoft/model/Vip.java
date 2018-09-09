@@ -20,7 +20,7 @@ public class Vip extends BaseEntity {
     private Date birthdayTime;//生日
     private String phone;//电话
     private String state;//状态
-    private Integer score;//积分
+    private Double score;//积分
     private Double remain;//余额
     private Double deposit;//押金
     private Date doTime;//发卡时间
@@ -50,7 +50,7 @@ public class Vip extends BaseEntity {
         return NullJudgement.nullToZero(remain);
     }
 
-    public Integer getNotNullScore() {
+    public Double getNotNullScore() {
         return NullJudgement.nullToZero(score);
     }
 
@@ -137,11 +137,11 @@ public class Vip extends BaseEntity {
         this.state = state;
     }
 
-    public Integer getScore() {
+    public Double getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Double score) {
         this.score = score;
     }
 

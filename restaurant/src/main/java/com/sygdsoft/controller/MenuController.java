@@ -30,7 +30,7 @@ public class MenuController {
     SaleCountService saleCountService;
 
     @RequestMapping(value = "menuAdd")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void menuAdd(@RequestBody Menu menu) throws Exception {
         /*检查厨房有没有*/
         //checkCookRoom(menu.getCookRoom());

@@ -22,13 +22,13 @@ public class GuestSourceController {
     GuestSourceService guestSourceService;
 
     @RequestMapping(value = "guestSourceAdd")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void guestSourceAdd(@RequestBody GuestSource guestSource) throws Exception {
         guestSourceService.add(guestSource);
     }
 
     @RequestMapping(value = "guestSourceUpdate")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void guestSourceAdd(@RequestBody List<GuestSource> guestSourceList) throws Exception {
         if (guestSourceList.size() > 1) {
             if (guestSourceList.get(0).getId().equals(guestSourceList.get(guestSourceList.size() / 2).getId())) {

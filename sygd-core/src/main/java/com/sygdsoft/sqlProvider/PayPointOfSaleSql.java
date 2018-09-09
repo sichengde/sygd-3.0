@@ -20,4 +20,18 @@ public class PayPointOfSaleSql {
         }
         return basic;
     }
+    public String getDebtMoneyWithCreate(Map<String, Object> parameters) {
+        String currency = (String) parameters.get("currency");
+        boolean company = (boolean) parameters.get("company");
+        String basic = "SELECT round(ifnull(sum(money), 0), 2) FROM pay_point_of_sale WHERE create_time >#{beginTime} AND create_time<#{endTime} ";
+        if (currency != null) {
+            basic += " and currency = #{currency}";
+        }
+        if (company) {
+            basic += " and company_pay_id is not null";
+        } else {
+            basic += " and company_pay_id is null";
+        }
+        return basic;
+    }
 }
