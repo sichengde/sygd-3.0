@@ -107,6 +107,7 @@ public class DebtPayController {
         int currencyIndex=0;//账务索引
         double debtSum=0.0;//账务累计
         String lastPointOfSale=null;
+        Date lastCreateTime=null;
         List<PayPointOfSale> payPointOfSaleList=new ArrayList<>();//先一条一条插，然后统一聚合
         for (; currencyIndex < currencyPostList.size(); currencyIndex++) {
             CurrencyPost currencyPost=currencyPostList.get(currencyIndex);
@@ -130,9 +131,11 @@ public class DebtPayController {
                 payPointOfSale.setCurrency(debtPayInsert.getCurrency());
                 payPointOfSale.setCompanyPayId(null);
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(lastCreateTime);
                 payPointOfSale.setPointOfSale(lastPointOfSale);
                 payPointOfSale.setMoney(debtAdjust);
                 lastPointOfSale=null;
+                lastCreateTime=null;
                 payPointOfSaleList.add(payPointOfSale);
             }
             for (; debtIndex < debtList.size(); debtIndex++) {
@@ -148,6 +151,7 @@ public class DebtPayController {
                 payPointOfSale.setCurrency(debtPayInsert.getCurrency());
                 payPointOfSale.setCompanyPayId(null);
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(debt.getDoTime());
                 payPointOfSale.setPointOfSale(debt.getPointOfSale());
                 payPointOfSale.setMoney(debt.getNotNullConsume());
                 if(debtSum<debtPayInsert.getDebtMoney()){
@@ -170,6 +174,7 @@ public class DebtPayController {
                     debtSum=debtAdjust;
                     debtSum=szMath.formatTwoDecimalReturnDouble(debtSum);
                     lastPointOfSale=debt.getPointOfSale();
+                    lastCreateTime=debt.getDoTime();
                     debtIndex++;
                     break;
                 }

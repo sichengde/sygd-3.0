@@ -205,9 +205,11 @@ public class DeskController {
             PayPointOfSale payPointOfSale = new PayPointOfSale();
             payPointOfSale.setCurrency(deskPay.getCurrency());
             payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setCreateTime(deskPay.getDoneTime());
             payPointOfSale.setPointOfSale("餐饮");
             payPointOfSale.setMoney(deskPay.getPayMoney());
             payPointOfSale.setDeskPayId(deskPay.getId());
+            //餐饮结账时间就是发生时间
             payPointOfSaleService.add(payPointOfSale);
         }
         /*餐桌信息转移到历史*/
@@ -442,6 +444,7 @@ public class DeskController {
             PayPointOfSale payPointOfSale = new PayPointOfSale();
             payPointOfSale.setCurrency(deskPay.getCurrency());
             payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setCreateTime(timeService.getNow());
             payPointOfSale.setPointOfSale("餐饮");
             payPointOfSale.setMoney(deskPay.getPayMoney());
             payPointOfSaleService.add(payPointOfSale);

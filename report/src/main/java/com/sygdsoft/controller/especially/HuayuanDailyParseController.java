@@ -38,6 +38,8 @@ public class HuayuanDailyParseController {
     CheckInIntegrationService checkInIntegrationService;
     @Autowired
     RoomSnapshotService roomSnapshotService;
+    @Autowired
+    PayPointOfSaleService payPointOfSaleService;
 
     @RequestMapping(value = "huayuanDailyParseReport")
     public int huayuanDailyParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -49,7 +51,9 @@ public class HuayuanDailyParseController {
         Date endTime3 = timeService.getMaxYear(endTime1);
         JSONArray jsonArrayAll = new JSONArray();
         JSONObject row;
-        JSONObject rowBack;
+        JSONObject rowBack1;
+        JSONObject rowBack2;
+        JSONObject rowBack3;
         List<GuestSource> guestSourceList = guestSourceService.get();
         List<DeskGuestSource> deskGuestSourceList = deskGuestSourceService.get();
         //------------------------------客源-------------------------------------
@@ -93,8 +97,7 @@ public class HuayuanDailyParseController {
         row.put("11", szMath.formatTwoDecimal(row.getDouble("10"), row.getDouble("9")));
 
         jsonArrayNow.add(row);
-        rowBack = calculateSum("客房小计", jsonArrayNow, jsonArrayAll);
-
+        rowBack1 = calculateSum("客房小计", jsonArrayNow, jsonArrayAll);
         jsonArrayNow = new JSONArray();
         for (DeskGuestSource deskGuestSource : deskGuestSourceList) {
             row = new JSONObject();
@@ -136,9 +139,9 @@ public class HuayuanDailyParseController {
 
         jsonArrayNow = new JSONArray();
         jsonArrayNow.add(row);
-        jsonArrayNow.add(rowBack);
+        jsonArrayNow.add(rowBack1);
 
-        addConsume("合计", jsonArrayNow, jsonArrayAll);
+        rowBack2 = addConsume("合计", jsonArrayNow, jsonArrayAll);
         //------------------------------房态-------------------------------------
         jsonArrayNow = new JSONArray();
         row = new JSONObject();
@@ -202,20 +205,30 @@ public class HuayuanDailyParseController {
             jsonArrayNow.add(row);
         }
         //------------------------------付款方式-------------------------------------
+        jsonArrayAll.addAll(jsonArrayNow);
+        jsonArrayNow = new JSONArray();
         List<Currency> currencyList = currencyService.get();
         row = new JSONObject();
         row.put("1", "付款方式");
         row.put("2", "客账");
         jsonArrayNow.add(row);
+        //客账备份起来最后算=rowBack2-rowBack3
+        rowBack1 = row;
         for (Currency currency : currencyList) {
             row = new JSONObject();
             row.put("2", currency.getCurrency());
+            row.put("4", payPointOfSaleService.getDebtMoneyWithCreate(beginTime1, endTime1,currency.getCurrency(),false));
+            row.put("7", payPointOfSaleService.getDebtMoneyWithCreate(beginTime2, endTime2,currency.getCurrency(),false));
+            row.put("10", payPointOfSaleService.getDebtMoneyWithCreate(beginTime3, endTime3,currency.getCurrency(),false));
+            row.put("5", payPointOfSaleService.getDebtMoneyWithCreate(beginTime1, endTime1,currency.getCurrency(),true));
+            row.put("8", payPointOfSaleService.getDebtMoneyWithCreate(beginTime2, endTime2,currency.getCurrency(),true));
+            row.put("11", payPointOfSaleService.getDebtMoneyWithCreate(beginTime3, endTime3,currency.getCurrency(),true));
             jsonArrayNow.add(row);
         }
-        row = new JSONObject();
-        row.put("2", "小计");
-        jsonArrayNow.add(row);
-        jsonArrayAll.addAll(jsonArrayNow);
+        rowBack3 = calculateSum("小计", jsonArrayNow, jsonArrayAll);
+        rowBack1.put("4",rowBack2.getDoubleValue("4")-rowBack3.getDoubleValue("4"));
+        rowBack1.put("7",rowBack2.getDoubleValue("7")-rowBack3.getDoubleValue("7"));
+        rowBack1.put("10",rowBack2.getDoubleValue("10")-rowBack3.getDoubleValue("10"));
 
         List<FieldTemplate> fieldTemplateList = new ArrayList<>();
         for (Object o : jsonArrayAll) {
@@ -272,7 +285,7 @@ public class HuayuanDailyParseController {
         return row;
     }
 
-    private void addConsume(String title, JSONArray jsonArrayNow, JSONArray jsonArrayAll) {
+    private JSONObject addConsume(String title, JSONArray jsonArrayNow, JSONArray jsonArrayAll) {
         double totalDayConsume = 0.0;
         double totalMonthConsume = 0.0;
         double totalYearConsume = 0.0;
@@ -291,5 +304,6 @@ public class HuayuanDailyParseController {
         row.put("10", totalYearConsume);
 
         jsonArrayAll.add(row);
+        return row;
     }
 }

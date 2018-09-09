@@ -10,7 +10,7 @@ public class PayPointOfSale extends BaseEntity {
     private String currency;
     private Double money;
     private Date doTime;
-    private Date createTime;
+    private Date createTime;//发生时间
 
     public PayPointOfSale() {
     }
