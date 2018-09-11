@@ -58,9 +58,9 @@ public class OldSystemAllHotelReportController {
         /*先计算客房合计*/
         FieldTemplate fieldTemplateRoomTotal = new FieldTemplate();
         fieldTemplateRoomTotal.setField1("客房合计");
-        fieldTemplateRoomTotal.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, true)));
-        fieldTemplateRoomTotal.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, true)));
-        fieldTemplateRoomTotal.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, null, true)));
+        fieldTemplateRoomTotal.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, null, true)));
+        fieldTemplateRoomTotal.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, null, true)));
+        fieldTemplateRoomTotal.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, null, null, true)));
         fieldTemplateRoomTotal.setField5("0.00");//现金都设置为0
         fieldTemplateRoomTotal.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null,"接待")));
         fieldTemplateRoomTotal.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null,"接待")));
@@ -87,9 +87,9 @@ public class OldSystemAllHotelReportController {
         for (String pointOfSale : pointOfSaleList) {
             FieldTemplate fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(pointOfSale);
-            fieldTemplate.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, pointOfSale, true)));//发生额
-            fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, pointOfSale, true)));//发生额
-            fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, pointOfSale, true)));//发生额
+            fieldTemplate.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, pointOfSale,null, true)));//发生额
+            fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, pointOfSale,null, true)));//发生额
+            fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, pointOfSale,null, true)));//发生额
             fieldTemplate.setField5("0.00");//现金都设置为0
             fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, pointOfSale,"接待")));//结挂账款
             fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, pointOfSale,"接待")));//结挂账款

@@ -697,3 +697,5 @@ ALTER TABLE vip_history MODIFY score DOUBLE;
 #2018-08-31 更改早餐字段类型
 ALTER TABLE check_in MODIFY breakfast INT;
 ALTER TABLE check_in_history_log MODIFY breakfast INT;
+#2018-09-07 ppos表新增发生时间字段
+ALTER TABLE pay_point_of_sale ADD create_time DATETIME NULL;

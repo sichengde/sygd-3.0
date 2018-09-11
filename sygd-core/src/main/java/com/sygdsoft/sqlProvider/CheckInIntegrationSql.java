@@ -14,7 +14,11 @@ public class CheckInIntegrationSql {
         String roomCategory = (String) map.get("roomCategory");
         String basic = "select count(*) from check_in_integration where reach_time>#{beginTime} and reach_time<#{endTime}";
         if (guestSource != null) {
-            basic += " and guest_source=#{guestSource}";
+            if (guestSource.equals("NULL")) {
+                basic += " and guest_source is null";
+            } else {
+                basic += " and guest_source = #{guestSource}";
+            }
         }
         if (roomCategory != null) {
             basic += " and room_category=#{roomCategory}";

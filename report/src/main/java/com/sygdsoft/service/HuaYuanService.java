@@ -37,15 +37,23 @@ public class HuaYuanService {
      */
 
     public Double getEatGuestSourceConsume(Date beginTime, Date endTime, String guestSource) {
-        return huaYuanMapper.getEatGuestSourceConsume(beginTime, endTime, guestSource);
+        if ("NULL".equals(guestSource)) {
+            return huaYuanMapper.getEatGuestSourceConsumeNullGuestSource(beginTime, endTime);
+        } else {
+            return huaYuanMapper.getEatGuestSourceConsume(beginTime, endTime, guestSource);
+        }
     }
 
-    public Double getMenuGuestSourceConsume(Date beginTime, Date endTime, String guestSource,String foodSign) {
-        return huaYuanMapper.getMenuGuestSourceConsume(beginTime, endTime, guestSource,foodSign);
+    public Double getMenuGuestSourceConsume(Date beginTime, Date endTime, String guestSource, String foodSign) {
+        return huaYuanMapper.getMenuGuestSourceConsume(beginTime, endTime, guestSource, foodSign);
     }
 
     public Integer getDeskNum(Date beginTime, Date endTime, String guestSource) {
-        return huaYuanMapper.getDeskNum(beginTime, endTime, guestSource);
+        if ("NULL".equals(guestSource)) {
+            return huaYuanMapper.getDeskNumNullGuestSource(beginTime, endTime);
+        } else {
+            return huaYuanMapper.getDeskNum(beginTime, endTime, guestSource);
+        }
     }
 
     public Integer getSubDeskNum(Date beginTime, Date endTime, String guestSource) {

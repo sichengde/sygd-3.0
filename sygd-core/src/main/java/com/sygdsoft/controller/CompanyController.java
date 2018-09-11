@@ -163,12 +163,14 @@ public class CompanyController {
                     paySerial.append("\'").append(companyDebtHistory.getPaySerial()).append("\',");
                 }
             }
+            //单位杂单
             if(companyDebt.getNotNullOtherConsume()){
                 /*设置ppos*/
                 PayPointOfSale payPointOfSale = new PayPointOfSale();
                 payPointOfSale.setCurrency(companyPay.getCurrency());
                 payPointOfSale.setCompanyPayId(companyPay.getId());
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(companyDebt.getDoTime());
                 payPointOfSale.setPointOfSale(companyDebt.getSecondPointOfSale());
                 payPointOfSale.setMoney(companyDebt.getDebt());
                 payPointOfSaleService.add(payPointOfSale);
@@ -178,6 +180,7 @@ public class CompanyController {
                 payPointOfSale.setCurrency(companyPay.getCurrency());
                 payPointOfSale.setCompanyPayId(companyPay.getId());
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(companyDebt.getDoTime());
                 payPointOfSale.setPointOfSale(companyDebt.getPointOfSale());
                 payPointOfSale.setMoney(companyDebt.getDebt());
                 payPointOfSaleService.add(payPointOfSale);
@@ -240,6 +243,7 @@ public class CompanyController {
                     payPointOfSale.setCurrency(companyPay.getCurrency());
                     payPointOfSale.setCompanyPayId(companyPay.getId());
                     payPointOfSale.setDoTime(timeService.getNow());
+                    payPointOfSale.setCreateTime(debtHistory.getDoTime());
                     if(debtHistory.getPaySerial().contains("ck")){
                         payPointOfSale.setPointOfSale("餐饮");
                     }else {
@@ -334,6 +338,7 @@ public class CompanyController {
                 payPointOfSale.setCompanyPayId(companyPay.getId());
                 payPointOfSale.setCurrency(currency);
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(debtHistory.getDoTime());
                 if(debtHistory.getPaySerial().contains("ck")){
                     payPointOfSale.setPointOfSale("餐饮");
                 }else {

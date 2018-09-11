@@ -76,7 +76,7 @@ public interface DebtIntegrationMapper extends MyMapper<DebtIntegration> {
      */
     @SelectProvider(type = DebtIntegrationSql.class,method = "getSumConsumeByDoTime")
     @ResultType(Double.class)
-    Double getSumConsumeByDoTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("excludeChange") boolean excludeChange);
+    Double getSumConsumeByDoTime(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime, @Param("pointOfSale") String pointOfSale, @Param("guestSource") String guestSource, @Param("excludeChange") boolean excludeChange);
 
     /**
      * 通过营业部门进行聚合

@@ -17,9 +17,13 @@ public class RoomSnapshotSql {
     }
     public String getCount(Map<String, Object> parameters){
         Boolean ifRoom=(Boolean) parameters.get("ifRoom");
-        String basic="select count(*) from room_snapshot WHERE report_time>=? and report_time<=?";
+        String state=(String) parameters.get("state");
+        String basic="select count(*) from room_snapshot WHERE report_time>=#{beginTime} and report_time<#{endTime}";
         if(ifRoom!=null){
             basic+=" and real_room = #{ifRoom}";
+        }
+        if(state!=null){
+            basic+=" and state = #{state}";
         }
         return basic;
     }

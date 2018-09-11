@@ -44,6 +44,9 @@ public class SzMath {
     }
 
     public String formatTwoDecimal(Double var1) {
+        if(var1==null){
+            return "";
+        }
         return twoDecimal.format(var1);
     }
 

@@ -217,6 +217,7 @@ public class GuestOutController {
                 debt.setPointOfSale(pointOfSaleService.FF);
                 debt.setConsume(-payMoney);
                 debt.setCurrency("挂账");
+                debt.setGuestSource(checkIn.getGuestSource());
                 debt.setDescription("中间结算:" + remark);
                 debt.setGroupAccount(groupAccount);
                 debt.setUserId(userService.getCurrentUser());
@@ -228,6 +229,10 @@ public class GuestOutController {
                 DebtHistory debtHistory = new DebtHistory(debt);
                 debtHistory.setConsume(payMoney);
                 debtHistoryService.add(debtHistory);
+                this.debtList=new ArrayList<>();
+                Debt debt1=new Debt(debt);
+                debt1.setConsume(payMoney);
+                this.debtList.add(debt1);
                 remarkAdd += "不指定账务";
             }
             /*TODO:在这插入一条退预付*/
@@ -461,6 +466,7 @@ public class GuestOutController {
         int currencyIndex = 0;//账务索引
         double debtSum = 0.0;//账务累计
         String lastPointOfSale = null;
+        Date lastCreateTime = null;
         List<PayPointOfSale> payPointOfSaleList = new ArrayList<>();//先一条一条插，然后统一聚合
         for (; currencyIndex < currencyPayList.size(); currencyIndex++) {
             CurrencyPost currencyPost = currencyPayList.get(currencyIndex);
@@ -521,9 +527,11 @@ public class GuestOutController {
                 payPointOfSale.setCurrency(debtPay.getCurrency());
                 payPointOfSale.setCompanyPayId(null);
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(lastCreateTime);
                 payPointOfSale.setPointOfSale(lastPointOfSale);
                 payPointOfSale.setMoney(debtAdjust);
                 lastPointOfSale = null;
+                lastCreateTime = null;
                 payPointOfSaleList.add(payPointOfSale);
             }
             for (; debtIndex < debtList.size(); debtIndex++) {
@@ -539,6 +547,7 @@ public class GuestOutController {
                 payPointOfSale.setCurrency(debtPay.getCurrency());
                 payPointOfSale.setCompanyPayId(null);
                 payPointOfSale.setDoTime(timeService.getNow());
+                payPointOfSale.setCreateTime(debt.getDoTime());
                 payPointOfSale.setPointOfSale(debt.getPointOfSale());
                 payPointOfSale.setMoney(debt.getNotNullConsume());
                 if (debtSum < debtPay.getDebtMoney()) {
@@ -561,6 +570,7 @@ public class GuestOutController {
                     debtSum = debtAdjust;
                     debtSum = szMath.formatTwoDecimalReturnDouble(debtSum);
                     lastPointOfSale = debt.getPointOfSale();
+                    lastCreateTime=debt.getDoTime();
                     debtIndex++;
                     break;
                 }
@@ -954,7 +964,7 @@ public class GuestOutController {
      * 操作员记录
      */
     private void addUserLog(GuestOut guestOut, String changeDebt) throws Exception {
-        String userAction = "离店结算:" + roomService.roomListToString(guestOut.getRoomIdList()) + changeDebt;
+        String userAction = "离店结算:" + roomService.roomListToString(guestOut.getRoomIdList()) + changeDebt+" 离店序列号:"+serialService.getCheckOutSerial();
         if (guestOut.getGroupAccount() == null) {
             userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOut, serialService.getPaySerial());
         } else {
@@ -1140,11 +1150,13 @@ public class GuestOutController {
         }
         /*当前房间状态检验，通过的话更新房态，同时生成checkIn*/
         List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(checkOutSerial);
+        StringBuilder roomString= new StringBuilder();
         for (CheckOutRoom checkOutRoom : checkOutRoomList) {
             Room room = roomService.getByRoomId(checkOutRoom.getRoomId());
             if (room.getState().equals(roomService.group) || room.getState().equals(roomService.guest) || room.getState().equals(roomService.repair)) {
                 throw new Exception("该房间在住，无法结账");
             }
+            roomString.append(room.getRoomId()).append(",");
             if (groupAccount == null) {
                 room.setState(roomService.guest);
             } else {
@@ -1244,7 +1256,7 @@ public class GuestOutController {
         }
         checkInHistoryLogService.delete(checkInHistoryLogList);
         /*操作员记录*/
-        userLogService.addUserLog("叫回账单:" + checkOutSerial, userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
+        userLogService.addUserLog("叫回账单:" + checkOutSerial+" 房号:"+roomString.toString(), userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
         return 0;
     }
 
