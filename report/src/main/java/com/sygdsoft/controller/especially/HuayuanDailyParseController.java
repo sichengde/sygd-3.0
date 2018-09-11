@@ -199,9 +199,9 @@ public class HuayuanDailyParseController {
                 row.put("1", "营业部门");
             }
             row.put("2", reportStore.getColumn_1());
-            row.put("4", szMath.formatTwoDecimalReturnDouble(reportStore.getColumn_2()));
-            row.put("7", szMath.formatTwoDecimalReturnDouble(reportStore.getColumn_3()));
-            row.put("10", szMath.formatTwoDecimalReturnDouble(reportStore.getColumn_4()));
+            row.put("4", szMath.parseBigDecimal(reportStore.getColumn_2()));
+            row.put("7", szMath.parseBigDecimal(reportStore.getColumn_3()));
+            row.put("10", szMath.parseBigDecimal(reportStore.getColumn_4()));
             jsonArrayNow.add(row);
         }
         //------------------------------付款方式-------------------------------------
