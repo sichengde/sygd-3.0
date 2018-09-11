@@ -40,6 +40,8 @@ public class HuayuanDailyParseController {
     RoomSnapshotService roomSnapshotService;
     @Autowired
     PayPointOfSaleService payPointOfSaleService;
+    @Autowired
+    OtherParamService otherParamService;
 
     @RequestMapping(value = "huayuanDailyParseReport")
     public int huayuanDailyParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -247,6 +249,12 @@ public class HuayuanDailyParseController {
             fieldTemplate.setField11(szMath.formatTwoDecimal(rowItem.getDouble("11")));
             fieldTemplateList.add(fieldTemplate);
         }
+        /**
+         * 参数
+         * parameter1:酒店名称
+         * parameter2:选择的时间
+         */
+        String params[]=new String[]{otherParamService.getValueByName("酒店名称"),timeService.dateToStringLong(reportJson.getBeginTime())};
         return reportService.generateReport(fieldTemplateList, new String[]{}, "huayuanDailyParse", "pdf");
     }
 
