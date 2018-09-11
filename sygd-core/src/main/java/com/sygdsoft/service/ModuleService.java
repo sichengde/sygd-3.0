@@ -42,7 +42,7 @@ public class ModuleService {
                     "库存报表"
             }),
             new Module("经理查询", "manager", new String[]{
-                    "实时状态","宾客信息","会员分析","数据分析","库存记录","每日数据","定制报表"
+                    "实时状态","宾客信息","会员分析","数据分析","库存记录","每日数据","报表导航"
             }),
             new Module("系统维护", "hotelParam", new String[]{
                     "酒店参数"
