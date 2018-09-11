@@ -699,3 +699,38 @@ ALTER TABLE check_in MODIFY breakfast INT;
 ALTER TABLE check_in_history_log MODIFY breakfast INT;
 #2018-09-07 ppos表新增发生时间字段
 ALTER TABLE pay_point_of_sale ADD create_time DATETIME NULL;
+#2018-09-11 增加会员结算转单位表
+CREATE TABLE company_debt_vip
+(
+  id                   INT AUTO_INCREMENT
+    PRIMARY KEY,
+  company              VARCHAR(20)   NULL,
+  lord                 VARCHAR(10)   NULL,
+  vip_number           VARCHAR(20)   NULL,
+  debt                 DOUBLE(16, 3) NULL,
+  do_time              DATETIME      NULL,
+  user_id              VARCHAR(10)   NULL,
+  description          VARCHAR(100)  NULL
+)
+  ENGINE = InnoDB;
+
+CREATE INDEX company_debt_vip_company_index
+  ON company_debt_vip (company);
+
+CREATE TABLE company_debt_vip_history
+(
+  id                   INT AUTO_INCREMENT
+    PRIMARY KEY,
+  company              VARCHAR(20)   NULL,
+  lord                 VARCHAR(10)   NULL,
+  vip_number           VARCHAR(20)   NULL,
+  debt                 DOUBLE(16, 3) NULL,
+  do_time              DATETIME      NULL,
+  done_time            DATETIME      NULL,
+  user_id              VARCHAR(10)   NULL,
+  company_pay_serial   VARCHAR(20)   NULL
+)
+  ENGINE = InnoDB;
+
+CREATE INDEX company_debt_vip_history_company_index
+  ON company_debt_vip_history (company);
