@@ -48,8 +48,9 @@ public class RegisterService {
         String sTemp;
         for (int i = 0; i < bytes.length; i++) {
             sTemp = Integer.toHexString(0xFF & bytes[i]);
-            if (sTemp.length() < 2)
+            if (sTemp.length() < 2) {
                 sb.append(0);
+            }
             sb.append(sTemp.toUpperCase());
         }
         return sb.toString();
@@ -105,7 +106,7 @@ public class RegisterService {
             resultSet.close();
             this.check();
         } catch (Exception e) {
-            logger.error("数据库里的注册码格式不对！99%是复制了回车换行符:"+this.serial,e);
+            logger.error("数据库里的注册码格式不对！99%是复制了回车换行符,如果冒号后边是null，那就是没连上数据库，99%是没加权限！:"+this.serial,e);
             e.printStackTrace();
         }
     }
@@ -134,6 +135,7 @@ public class RegisterService {
         logger.info("有效期:"+this.limitTime);
         logger.info("模块/人数:"+module);
         logger.info("提示方式"+this.alertType);
+        logger.info("重新注册需要发送的码:"+this.getLocalSerialShow());
         if (code.equals(getLocalSerial())) {
             logger.info("注册成功");
             this.pass = true;

@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "vipDetail")
-public class VipDetailService extends VipBaserService<VipDetail>{
+public class VipDetailService extends BaseService<VipDetail>{
     @Autowired
     VipService vipService;
     @Autowired
@@ -31,13 +31,16 @@ public class VipDetailService extends VipBaserService<VipDetail>{
     @HotelGroup
 
     public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
+        addMoneyDetail(vipNumber, money, deserve, currency, pointOfSale,vipService.CZ);
+    }
+    public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale,String category) throws Exception {
         Vip vip=vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
         vipDetail.setVipNumber(vipNumber);
         vipDetail.setPay(money);
         vipDetail.setDeserve(deserve);
         vipDetail.setCurrency(currency);
-        vipDetail.setCategory(vipService.CZ);
+        vipDetail.setCategory(category);
         vipDetail.setUserId(userService.getCurrentUser());
         vipDetail.setDoTime(timeService.getNow());
         vipDetail.setRemain(vip.getRemain());

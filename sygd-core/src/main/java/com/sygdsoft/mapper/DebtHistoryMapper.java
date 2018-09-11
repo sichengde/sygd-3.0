@@ -125,9 +125,9 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     Double getTotalConsumeByPointOfSaleAndSerial(@Param("pointOfSale") String pointOfSale, @Param("serial") String serial);
 
     /**
-     * 查找除了加收房租和小时房租之外的账务，根据结账序列号，主要用于叫回账单
+     * 查找除了加收房租和小时房租之外的账务，根据结账序列号，主要用于叫回账单，防止别的房间的加收房租无法被叫回，因为别的房间的加收房租转房后not_part_in肯定是true
      */
-    @Select("SELECT * FROM debt_history WHERE category NOT IN ('加收房租','小时房租') and pay_serial=#{paySerial} and ifnull(not_part_in,false)=false")
+    @Select("SELECT * FROM debt_history WHERE (category NOT IN ('加收房租','小时房租') or ifnull(not_part_in,0)=1) and pay_serial=#{paySerial}")
     @Results(value = {
             @Result(property = "doTime", column = "do_time"),
             @Result(property = "pointOfSale", column = "point_of_sale"),
@@ -194,7 +194,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
     /**
      * 删除加收房租和小时房租的账务，根据结账序列号，主要用于叫回账单
      */
-    @Delete("delete from debt_history WHERE category IN ('加收房租','小时房费') and pay_serial=#{paySerial}")
+    @Delete("delete from debt_history WHERE category IN ('加收房租','小时房费') and ifnull(not_part_in,0)=0 and pay_serial=#{paySerial}")
     void deleteAddDebt(@Param("paySerial") String paySerial);
 
     @Update("update debt_history set company_paid=true where id=#{id}")

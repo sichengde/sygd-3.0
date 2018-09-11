@@ -53,9 +53,9 @@ public class OldSystemReportService {
         /*先计算客房合计*/
         FieldTemplate fieldTemplateRoomTotal = new FieldTemplate();
         fieldTemplateRoomTotal.setField1("客房合计");
-        fieldTemplateRoomTotal.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, true)));
-        fieldTemplateRoomTotal.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, true)));
-        fieldTemplateRoomTotal.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, null, true)));
+        fieldTemplateRoomTotal.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null,null, true)));
+        fieldTemplateRoomTotal.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null,null, true)));
+        fieldTemplateRoomTotal.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, null,null, true)));
         fieldTemplateRoomTotal.setField5("0.00");//现金都设置为0
         fieldTemplateRoomTotal.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, null, "接待")));
         fieldTemplateRoomTotal.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, null, "接待")));
@@ -82,9 +82,9 @@ public class OldSystemReportService {
         for (String pointOfSale : pointOfSaleList) {
             FieldTemplate fieldTemplate = new FieldTemplate();
             fieldTemplate.setField1(pointOfSale);
-            fieldTemplate.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, pointOfSale, true)));//发生额
-            fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, pointOfSale, true)));//发生额
-            fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, pointOfSale, true)));//发生额
+            fieldTemplate.setField2(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, pointOfSale,null, true)));//发生额
+            fieldTemplate.setField3(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, pointOfSale,null, true)));//发生额
+            fieldTemplate.setField4(szMath.formatTwoDecimal(debtIntegrationService.getSumConsumeByDoTime(beginTime3, endTime3, pointOfSale,null, true)));//发生额
             fieldTemplate.setField5("0.00");//现金都设置为0
             fieldTemplate.setField6(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime1, endTime1, pointOfSale, "接待")));//结挂账款
             fieldTemplate.setField7(szMath.formatTwoDecimal(payPointOfSaleService.getDebtMoney(beginTime2, endTime2, pointOfSale, "接待")));//结挂账款
@@ -178,6 +178,29 @@ public class OldSystemReportService {
         String param11 = fieldTemplateTotal.getField11();
         String param7 = szMath.formatTwoDecimal(szMath.formatTwoDecimalReturnDouble(param11) - szMath.formatTwoDecimalReturnDouble(param10));
         String param12=timeService.dateToStringShort(debtDate);
+        /*最后统一赋值，因为之前还有类型转换，不能直接赋值为带逗号的*/
+        for (FieldTemplate template : fieldTemplateList) {
+            template.setField2(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField2())));
+            template.setField3(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField3())));
+            template.setField4(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField4())));
+            template.setField5(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField5())));
+            template.setField6(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField6())));
+            template.setField7(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField7())));
+            template.setField8(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField8())));
+            template.setField9(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField9())));
+            template.setField10(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField10())));
+            template.setField11(szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(template.getField11())));
+        }
+        param1=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param1));
+        param2=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param2));
+        param3=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param3));
+        param4=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param4));
+        param5=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param5));
+        param6=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param6));
+        param7=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param7));
+        param8=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param8));
+        param9=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param9));
+        param10=szMath.formatBigDecimal(szMath.formatTwoDecimalReturnDouble(param10));
         reportStoreService.create("全店收入表",timeService.dateToStringShort(debtDate),new String[]{param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11,param12},fieldTemplateList);
 
     }

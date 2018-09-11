@@ -186,8 +186,9 @@ public class DeskController {
         }
         /*生成结账信息*/
         StringBuilder changeDebt = new StringBuilder();//转账信息
+        DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
         for (CurrencyPost currencyPost : currencyPostList) {
-            this.generateDeskPay(pointOfSale, currencyPost, deskPayList);
+            this.generateDeskPay(pointOfSale, currencyPost,deskIn, deskPayList);
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
             Double money = currencyPost.getMoney();
@@ -204,13 +205,15 @@ public class DeskController {
             PayPointOfSale payPointOfSale = new PayPointOfSale();
             payPointOfSale.setCurrency(deskPay.getCurrency());
             payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setCreateTime(deskPay.getDoneTime());
             payPointOfSale.setPointOfSale("餐饮");
             payPointOfSale.setMoney(deskPay.getPayMoney());
             payPointOfSale.setDeskPayId(deskPay.getId());
+            //餐饮结账时间就是发生时间
             payPointOfSaleService.add(payPointOfSale);
         }
         /*餐桌信息转移到历史*/
-        DeskIn deskIn = deskService.getByDesk(desk, pointOfSale);
+        deskIn = deskService.getByDesk(desk, pointOfSale);
         deskIn.setConsume(consume);
         deskIn.setGuestSource(guestSource);
         DeskInHistory deskInHistory = new DeskInHistory(deskIn);
@@ -274,7 +277,8 @@ public class DeskController {
         * 8.操作员
         * 9.点菜员
         * 10.人数
-        * 11.时间
+        * 11.当前时间
+        * 12.开单时间
         * field
         * 1.菜品
         * 2.单价
@@ -282,7 +286,7 @@ public class DeskController {
         * 4.小计
         * 5.类别
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), serialService.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(timeService.getNow()),timeService.dateToStringLong(deskIn.getDoTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -336,14 +340,15 @@ public class DeskController {
         * 8.操作员
         * 9.点菜员
         * 10.人数
-        * 11.时间
+        * 11.结账时间
+        * 12.开单时间
         * field
         * 1.菜品
         * 2.单价
         * 3.数量
         * 4.小计
         * */
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(new Date())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), null, null, ifNotNullGetString(deskIn.getConsume()), ifNotNullGetString(discount), ifNotNullGetString(finalPrice), desk,userService.getCurrentUser(),users.toString(),szMath.ifNotNullGetString(deskIn.getNotNullNum()),timeService.dateToStringLong(new Date()),timeService.dateToStringLong(deskIn.getDoTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -372,7 +377,7 @@ public class DeskController {
                 }
             }
         }
-        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime())};
+        String[] parameters = new String[]{otherParamService.getValueByName("酒店名称"), deskInHistory.getCkSerial(), changeDebt.toString(), ifNotNullGetString(deskInHistory.getTotalPrice()), ifNotNullGetString(deskInHistory.getDiscount()), ifNotNullGetString(deskInHistory.getFinalPrice()), deskInHistory.getDesk(),userService.getCurrentUser(),"",szMath.ifNotNullGetString(deskInHistory.getNotNullNum()),timeService.dateToStringLong(deskInHistory.getDoneTime()),timeService.dateToStringLong(deskInHistory.getDoTime())};
         return reportService.generateReport(templateList, parameters, "deskOut", "pdf");
     }
 
@@ -439,6 +444,7 @@ public class DeskController {
             PayPointOfSale payPointOfSale = new PayPointOfSale();
             payPointOfSale.setCurrency(deskPay.getCurrency());
             payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setCreateTime(timeService.getNow());
             payPointOfSale.setPointOfSale("餐饮");
             payPointOfSale.setMoney(deskPay.getPayMoney());
             payPointOfSaleService.add(payPointOfSale);
@@ -581,6 +587,9 @@ public class DeskController {
     }
 
     private void generateDeskPay(String pointOfSale, CurrencyPost currencyPost, List<DeskPay> deskPayList) throws Exception {
+        generateDeskPay(pointOfSale, currencyPost, null,deskPayList);
+    }
+    private void generateDeskPay(String pointOfSale, CurrencyPost currencyPost,DeskIn deskIn, List<DeskPay> deskPayList) throws Exception {
         DeskPay deskPay = new DeskPay();
         deskPay.setCkSerial(serialService.getCkSerial());
         deskPay.setDoneTime(timeService.getNow());
@@ -589,6 +598,9 @@ public class DeskController {
         deskPay.setCurrencyAdd(currencyPost.getCurrencyAdd());
         deskPay.setUserId(userService.getCurrentUser());
         deskPay.setPayMoney(currencyPost.getMoney());
+        if(deskIn!=null) {
+            deskPay.setCompany(deskIn.getCompany());
+        }
         deskPayList.add(deskPay);
     }
 }

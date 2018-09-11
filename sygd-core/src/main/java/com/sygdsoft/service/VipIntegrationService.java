@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Service
 @SzMapper(id = "vipIntegration")
-public class VipIntegrationService extends VipBaserService<VipIntegration> {
+public class VipIntegrationService extends BaseService<VipIntegration> {
     @Autowired
     VipIntegrationMapper vipIntegrationMapper;
 

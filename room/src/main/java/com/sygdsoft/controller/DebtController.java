@@ -319,6 +319,7 @@ public class DebtController {
         payPointOfSale.setDebtPayId(debtPay.getId());
         payPointOfSale.setCompanyPayId(null);
         payPointOfSale.setDoTime(timeService.getNow());
+        payPointOfSale.setCreateTime(debtHistory.getDoTime());
         payPointOfSale.setPointOfSale(debtPay.getPointOfSale());
         payPointOfSale.setMoney(debtPay.getDebtMoney());
         payPointOfSale.setCurrency(debtPay.getCurrency());
@@ -376,6 +377,7 @@ public class DebtController {
             payPointOfSale.setDebtPayId(debtPay.getId());
             payPointOfSale.setCompanyPayId(null);
             payPointOfSale.setDoTime(timeService.getNow());
+            payPointOfSale.setCreateTime(debtPay.getDoneTime());
             payPointOfSale.setPointOfSale(debtPay.getPointOfSale());
             payPointOfSale.setMoney(debtPay.getDebtMoney());
             payPointOfSale.setCurrency(debtPay.getCurrency());

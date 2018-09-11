@@ -7,6 +7,7 @@ import com.sygdsoft.model.VipDetail;
 import com.sygdsoft.model.VipDetailHistory;
 import com.sygdsoft.model.VipHistory;
 import com.sygdsoft.service.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,8 @@ public class VipController {
     DebtPayService debtService;
     @Autowired
     RegisterService registerService;
+    @Autowired
+    SzMath szMath;
 
     @RequestMapping(value = "vipUpdate")
     @Transactional(rollbackFor = Exception.class)
@@ -86,14 +89,17 @@ public class VipController {
         String currency=vip.getCurrencyPost().getCurrency();
         String currencyAdd=vip.getCurrencyPost().getCurrencyAdd();
         Double realMoney=vip.getRemain();//实际充值的金额，因为计表后该值将会被抵用金额覆盖，所以在此先保留;
-        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+currencyAdd,timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
+        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+szMath.ifNotNullGetString(currencyAdd),timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
+        if("y".equals(otherParamService.getValueByName("充值算积分"))){
+            vip.setScore(vip.getRemain());
+        }
         if (vip.getDeserve() != null) {
             vip.setRemain(vip.getDeserve());
         }
         vipService.add(vip);
         if (vip.getRemain() != null) {//有金额的话就增加一条充值记录
             /*增加一条账务明细*/
-            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency,vip.getPointOfSale());
+            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency,vip.getPointOfSale(),vipService.KKCZ);
         }
         debtService.parseCurrency(currency,currencyAdd,realMoney,null,null,"会员发卡充值",null,null,null );
         /*判断币种，这里允许挂单位账*/
@@ -140,7 +146,8 @@ public class VipController {
         Double deserve = vipRecharge.getDeserve();
         String currency=vipRecharge.getCurrencyPost().getCurrency();
         String currencyAdd=vipRecharge.getCurrencyPost().getCurrencyAdd();
-        vipService.updateVipRemain(vipNumber, deserve);
+        boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
+        vipService.updateVipRemain(vipNumber, deserve,money,withScore);
         /*增加一条账务明细*/
         vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
@@ -161,7 +168,8 @@ public class VipController {
         Double deserve = Double.valueOf(params.get(2));
         String currency = params.get(3);
         String pointOfSale = params.get(4);
-        vipService.updateVipRemain(vipNumber, -deserve);
+        boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
+        vipService.updateVipRemain(vipNumber, -deserve,-money,withScore);
         vipDetailService.addRefundDetail(vipNumber, -money,-deserve,currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 退款:" + money+" 抵用: "+deserve+" 币种: "+currency, userLogService.vip, userLogService.refund,vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency};

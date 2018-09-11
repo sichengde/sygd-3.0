@@ -70,6 +70,8 @@ public class GuestInController {
     BookRoomCategoryService bookRoomCategoryService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    CheckInHistoryService checkInHistoryService;
 
     /**
      * 散客开房操作步骤
@@ -78,7 +80,8 @@ public class GuestInController {
     @RequestMapping(value = "guestIn", method = RequestMethod.POST)
     @Transactional(rollbackFor = Exception.class)
     public Integer guestIn(@RequestBody GuestIn guestIn) throws Exception {
-        /*获取传递进来的两个对象*/
+        /*客人校验*/
+        this.inputCheck(guestIn);
         /*初始化设置*/
         timeService.setNow();
         /*生成房价协议*/
@@ -96,6 +99,21 @@ public class GuestInController {
         /*创建操作员日志*/
         this.userLogProcess(guestIn);
         return this.reportProcess(guestIn);
+    }
+
+    /**
+     * 输入校验
+     */
+    private void inputCheck(GuestIn guestIn)throws Exception{
+        if("y".equals(otherParamService.getValueByName("严格身份证"))) {
+            List<CheckInGuest> checkInGuests = guestIn.getCheckInGuestList();
+            for (CheckInGuest checkInGuest : checkInGuests) {
+                CheckInHistory checkInHistory = checkInHistoryService.getByCardId(checkInGuest.getCardId());
+                if (checkInHistory != null && !checkInHistory.getName().equals(checkInGuest.getName())) {
+                    throw new Exception("身份证号:" + checkInGuest.getCardId() + "已存于另一位宾客<" + checkInHistory.getName() + ">,与该宾客姓名<" + checkInGuest.getName() + ">不符");
+                }
+            }
+        }
     }
 
     /**
@@ -312,7 +330,7 @@ public class GuestInController {
         * 13.特殊要求           checkIn.getImportant()
         * 14.备注饭店名称       checkIn.getRemark()
         * 15.打印时间           timeService.getNowLong()
-        * 16.接待人员           userService.getCurrentUser()
+        * 16.接待人员           userService.getCurrentUser()up
         * 17.主账号             serialService.getSelfAccount()
         * 18.押金值             String.valueOf(currencyPostMain.getDeposit())
         * 19.公司               checkIn.getCompany()
