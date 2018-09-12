@@ -255,7 +255,7 @@ public class HuayuanDailyParseController {
          * parameter2:选择的时间
          */
         String params[]=new String[]{otherParamService.getValueByName("酒店名称"),timeService.dateToStringLong(reportJson.getBeginTime())};
-        return reportService.generateReport(fieldTemplateList, new String[]{}, "huayuanDailyParse", "pdf");
+        return reportService.generateReport(fieldTemplateList, params, "huayuanDailyParse", "pdf");
     }
 
     private JSONObject calculateSum(String title, JSONArray jsonArrayNow, JSONArray jsonArrayAll) {
