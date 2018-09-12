@@ -42,6 +42,8 @@ public class HuayuanDailyParseController {
     PayPointOfSaleService payPointOfSaleService;
     @Autowired
     OtherParamService otherParamService;
+    @Autowired
+    CheckInSnapshotService checkInSnapshotService;
 
     @RequestMapping(value = "huayuanDailyParseReport")
     public int huayuanDailyParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -69,9 +71,9 @@ public class HuayuanDailyParseController {
             }
             row.put("2", guestSource.getGuestSource());
 
-            row.put("3", checkInIntegrationService.getSumCount(beginTime1, endTime1, guestSource.getGuestSource(), null));
-            row.put("6", checkInIntegrationService.getSumCount(beginTime2, endTime2, guestSource.getGuestSource(), null));
-            row.put("9", checkInIntegrationService.getSumCount(beginTime3, endTime3, guestSource.getGuestSource(), null));
+            row.put("3", checkInSnapshotService.getCount(beginTime1, endTime1, guestSource.getGuestSource()));
+            row.put("6", checkInSnapshotService.getCount(beginTime2, endTime2, guestSource.getGuestSource()));
+            row.put("9", checkInSnapshotService.getCount(beginTime3, endTime3, guestSource.getGuestSource()));
 
             row.put("4", debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, guestSource.getGuestSource(), true));
             row.put("7", debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, guestSource.getGuestSource(), true));
@@ -86,9 +88,9 @@ public class HuayuanDailyParseController {
         row = new JSONObject();
         row.put("2", "客房未选择客源");
 
-        row.put("3", checkInIntegrationService.getSumCount(beginTime1, endTime1, "NULL", null));
-        row.put("6", checkInIntegrationService.getSumCount(beginTime2, endTime2, "NULL", null));
-        row.put("9", checkInIntegrationService.getSumCount(beginTime3, endTime3, "NULL", null));
+        row.put("3", checkInSnapshotService.getCount(beginTime1, endTime1, "NULL"));
+        row.put("6", checkInSnapshotService.getCount(beginTime2, endTime2, "NULL"));
+        row.put("9", checkInSnapshotService.getCount(beginTime3, endTime3, "NULL"));
 
         row.put("4", debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, "NULL", true));
         row.put("7", debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, "NULL", true));
