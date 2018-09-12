@@ -105,7 +105,7 @@ public class ExchangeUserReport {
             fieldTemplate.setField5(szMath.ifNotNullGetString(debtIntegrationService.getSumCancelDeposit(userId, currencyString, beginTime, endTime)));//手动退预付
             fieldTemplate.setField6(szMath.ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField7(szMath.ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
-            fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime, userId, currencyString, "接待")));//会员充值
+            fieldTemplate.setField8(szMath.ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime, userId, currencyString, null)));//会员充值
             fieldTemplate.setField10(szMath.ifNotNullGetString(checkOutPayBackService.getTotal(userId, currencyString, beginTime, endTime)));//找零信息
             fieldTemplate.setField11(szMath.ifNotNullGetString(debtService.getDepositMoneyAll(currencyString)));//在店预付信息
             CompanyPay companyPayQuery = companyPayService.getSumPay(null, userId, currency.getCurrency(), beginTime, endTime);
@@ -516,7 +516,7 @@ public class ExchangeUserReport {
             }
             fieldTemplate.setField5(ifNotNullGetString(bookMoneyService.getTotalBookSubscription(userId, currencyString, beginTime, endTime)));//订金
             fieldTemplate.setField6(ifNotNullGetString(bookMoneyService.getTotalCancelBookSubscription(userId, currencyString, beginTime, endTime)));//退订金
-            fieldTemplate.setField7(ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime, userId, currencyString, pointOfSale)));//会员充值
+            fieldTemplate.setField7(ifNotNullGetString(vipIntegrationService.getPay(beginTime, endTime, userId, currencyString, null)));//会员充值
             fieldTemplate.setField8(ifNotNullGetString(vipIntegrationService.getDeserve(beginTime, endTime, userId, currencyString, pointOfSale)));//会员抵用
             templateList.add(fieldTemplate);
             /*前端显示json数据赋值*/
