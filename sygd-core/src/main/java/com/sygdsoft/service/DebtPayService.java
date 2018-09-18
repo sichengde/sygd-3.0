@@ -201,6 +201,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                 debtService.updateGuestInMoney(currencyAdd, 0.0, 0.0);
                 break;//不转移账务明细
             case "转哑房"://转哑房
+                debtService.deleteByCheckOutSerial(serial);//删除房账
                 break;
             case "会员"://会员
                 String vipNumber = currencyAdd.split(" ")[0];
