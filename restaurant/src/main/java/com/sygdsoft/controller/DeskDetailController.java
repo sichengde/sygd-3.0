@@ -218,6 +218,7 @@ public class DeskDetailController {
         deskDetail.setDesk(targetDesk);
         List<DeskDetail> deskDetailList=new ArrayList<>();
         deskDetailList.add(deskDetail);
+        userLogService.addUserLog("菜品换台:"+deskDetail.getFoodSign(), userLogService.desk, userLogService.deskDetailChange,deskDetail.getDesk());
         this.deskAction(deskDetailList);
     }
 }
