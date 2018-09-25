@@ -119,6 +119,11 @@ public class DeskController {
         return deskList;
     }
 
+    /**
+     * 换台
+     * @param jsonObject
+     * @throws Exception
+     */
     @RequestMapping(value = "changeDesk")
     public void changeDesk(@RequestBody JSONObject jsonObject) throws Exception {
         String sourceDesk=jsonObject.getString("sourceDesk");
@@ -135,6 +140,11 @@ public class DeskController {
         userLogService.addUserLog(sourceDesk+"->"+targetDesk, userLogService.desk, userLogService.deskChange,deskIn.getDesk());
     }
 
+    /**
+     * 并台
+     * @param jsonObject
+     * @throws Exception
+     */
     @RequestMapping(value = "mergeDesk")
     @Transactional(rollbackFor = Exception.class)
     public void mergeDesk(@RequestBody JSONObject jsonObject) throws Exception {
