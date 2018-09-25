@@ -40,6 +40,10 @@ public class HuayuanDailyParseController {
     RoomSnapshotService roomSnapshotService;
     @Autowired
     PayPointOfSaleService payPointOfSaleService;
+    @Autowired
+    OtherParamService otherParamService;
+    @Autowired
+    CheckInSnapshotService checkInSnapshotService;
 
     @RequestMapping(value = "huayuanDailyParseReport")
     public int huayuanDailyParseReport(@RequestBody ReportJson reportJson) throws Exception {
@@ -67,9 +71,9 @@ public class HuayuanDailyParseController {
             }
             row.put("2", guestSource.getGuestSource());
 
-            row.put("3", checkInIntegrationService.getSumCount(beginTime1, endTime1, guestSource.getGuestSource(), null));
-            row.put("6", checkInIntegrationService.getSumCount(beginTime2, endTime2, guestSource.getGuestSource(), null));
-            row.put("9", checkInIntegrationService.getSumCount(beginTime3, endTime3, guestSource.getGuestSource(), null));
+            row.put("3", checkInSnapshotService.getCount(beginTime1, endTime1, guestSource.getGuestSource()));
+            row.put("6", checkInSnapshotService.getCount(beginTime2, endTime2, guestSource.getGuestSource()));
+            row.put("9", checkInSnapshotService.getCount(beginTime3, endTime3, guestSource.getGuestSource()));
 
             row.put("4", debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, guestSource.getGuestSource(), true));
             row.put("7", debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, guestSource.getGuestSource(), true));
@@ -84,9 +88,9 @@ public class HuayuanDailyParseController {
         row = new JSONObject();
         row.put("2", "客房未选择客源");
 
-        row.put("3", checkInIntegrationService.getSumCount(beginTime1, endTime1, "NULL", null));
-        row.put("6", checkInIntegrationService.getSumCount(beginTime2, endTime2, "NULL", null));
-        row.put("9", checkInIntegrationService.getSumCount(beginTime3, endTime3, "NULL", null));
+        row.put("3", checkInSnapshotService.getCount(beginTime1, endTime1, "NULL"));
+        row.put("6", checkInSnapshotService.getCount(beginTime2, endTime2, "NULL"));
+        row.put("9", checkInSnapshotService.getCount(beginTime3, endTime3, "NULL"));
 
         row.put("4", debtIntegrationService.getSumConsumeByDoTime(beginTime1, endTime1, null, "NULL", true));
         row.put("7", debtIntegrationService.getSumConsumeByDoTime(beginTime2, endTime2, null, "NULL", true));
@@ -199,9 +203,9 @@ public class HuayuanDailyParseController {
                 row.put("1", "营业部门");
             }
             row.put("2", reportStore.getColumn_1());
-            row.put("4", szMath.formatTwoDecimalReturnDouble(reportStore.getColumn_2()));
-            row.put("7", szMath.formatTwoDecimalReturnDouble(reportStore.getColumn_3()));
-            row.put("10", szMath.formatTwoDecimalReturnDouble(reportStore.getColumn_4()));
+            row.put("4", szMath.parseBigDecimal(reportStore.getColumn_2()));
+            row.put("7", szMath.parseBigDecimal(reportStore.getColumn_3()));
+            row.put("10", szMath.parseBigDecimal(reportStore.getColumn_4()));
             jsonArrayNow.add(row);
         }
         //------------------------------付款方式-------------------------------------
@@ -247,7 +251,13 @@ public class HuayuanDailyParseController {
             fieldTemplate.setField11(szMath.formatTwoDecimal(rowItem.getDouble("11")));
             fieldTemplateList.add(fieldTemplate);
         }
-        return reportService.generateReport(fieldTemplateList, new String[]{}, "huayuanDailyParse", "pdf");
+        /**
+         * 参数
+         * parameter1:酒店名称
+         * parameter2:选择的时间
+         */
+        String params[]=new String[]{otherParamService.getValueByName("酒店名称"),timeService.dateToStringLong(reportJson.getBeginTime())};
+        return reportService.generateReport(fieldTemplateList, params, "huayuanDailyParse", "pdf");
     }
 
     private JSONObject calculateSum(String title, JSONArray jsonArrayNow, JSONArray jsonArrayAll) {

@@ -143,6 +143,9 @@ public class SzMath {
     public String formatBigDecimal(Double var1) {
         return bigDecimal.format(var1);
     }
+    public Double parseBigDecimal(String var1) throws Exception{
+        return bigDecimal.parse(var1).doubleValue();
+    }
     public Integer nullToZero(Integer integer){
         return integer==null?0:integer;
     }

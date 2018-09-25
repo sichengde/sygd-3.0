@@ -102,7 +102,7 @@ public class VipService extends BaseService<Vip> {
         vipDetail.setPaySerial(paySerial);
         vipDetail.setUserId(userService.getCurrentUser());
         vipDetail.setDoTime(timeService.getNow());
-        vipDetail.setRemain(vip.getRemain()-money);
+        vipDetail.setRemain(vip.getNotNullVipRemain()-money);
         vipDetailService.add(vipDetail);
         String remainMessage="记会员至:"+vipNumber;
         if (payCategory.contains("积分")) {

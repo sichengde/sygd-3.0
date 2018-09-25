@@ -699,3 +699,5 @@ ALTER TABLE check_in MODIFY breakfast INT;
 ALTER TABLE check_in_history_log MODIFY breakfast INT;
 #2018-09-07 ppos表新增发生时间字段
 ALTER TABLE pay_point_of_sale ADD create_time DATETIME NULL;
+#2018-09-12 去掉账务历史表客源不可为空的限制，因为单位杂单的客源必须是空
+ALTER TABLE debt_history MODIFY guest_source VARCHAR(100) NULL;
