@@ -62,6 +62,7 @@ public class UserLogService extends BaseService<UserLog> {
     public String book = "预定";
     /*-----------------------------会员-----------------------------*/
     public String recharge = "充值";
+    public String addScore = "充积分";
     public String refund = "退款";
     public String cancel = "注销";
     public String vipCreate = "开卡";
