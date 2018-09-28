@@ -315,7 +315,7 @@ public class GuestInController {
     private Integer reportProcess(GuestIn guestIn) throws Exception {
         /*创建散客押金单报表,并返回单据号
         * parameter：
-        * 1.宾客姓名            checkInGuest.getName()
+        * 1.宾客姓名            guestNameString
         * 2.宾客性别            checkInGuest.getSex()
         * 3.生日                timeService.dateToStringShort(checkInGuest.getBirthdayTime())
         * 4.证件类型            checkInGuest.getCardType()
@@ -349,6 +349,7 @@ public class GuestInController {
             List<CurrencyPost> currencyPostList=guestIn.getCurrencyPostList();
             CurrencyPost currencyPostMain=currencyPostList.get(0);//主押金
             CheckInGuest checkInGuest = guestIn.getCheckInGuestList().get(0);
+            String guestNameString=checkInGuestService.listToStringName(guestIn.getCheckInGuestList());
             String otherDeposit="";
             for (CurrencyPost currencyPost : currencyPostList) {
                 if(currencyPost==currencyPostList.get(0)){
@@ -357,7 +358,7 @@ public class GuestInController {
                 otherDeposit+=currencyPost.getCurrency()+":"+currencyPost.getDeposit();
             }
             CheckIn checkIn = guestIn.getCheckInList().get(0);
-            return reportService.generateReport(null, new String[]{checkInGuest.getName(), checkInGuest.getSex(), timeService.dateToStringShort(checkInGuest.getBirthdayTime()), checkInGuest.getCardType(), checkInGuest.getCardId(), timeService.dateToStringLong(checkIn.getReachTime()), timeService.dateToStringLong(checkIn.getLeaveTime()), checkIn.getRoomId(), String.valueOf(checkIn.getFinalRoomPrice()), checkIn.getVipNumber(), checkInGuest.getAddress(), currencyPostMain.getCurrency(), checkIn.getImportant(), checkIn.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getSelfAccount(), String.valueOf(currencyPostMain.getDeposit()), checkIn.getCompany(), checkIn.getRoomPriceCategory(), checkIn.getProtocol(), checkIn.getBreakfast(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getDeposit())), guestIn.getAgain(),otherDeposit,checkIn.getGuestSource(),szMath.formatTwoDecimal(szMath.nullToZero(currencyPostMain.getDeposit())-checkIn.getNotNullFinalRoomPrice())}, "deposit", "pdf");
+            return reportService.generateReport(null, new String[]{guestNameString, checkInGuest.getSex(), timeService.dateToStringShort(checkInGuest.getBirthdayTime()), checkInGuest.getCardType(), checkInGuest.getCardId(), timeService.dateToStringLong(checkIn.getReachTime()), timeService.dateToStringLong(checkIn.getLeaveTime()), checkIn.getRoomId(), String.valueOf(checkIn.getFinalRoomPrice()), checkIn.getVipNumber(), checkInGuest.getAddress(), currencyPostMain.getCurrency(), checkIn.getImportant(), checkIn.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getSelfAccount(), String.valueOf(currencyPostMain.getDeposit()), checkIn.getCompany(), checkIn.getRoomPriceCategory(), checkIn.getProtocol(), checkIn.getBreakfast(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getDeposit())), guestIn.getAgain(),otherDeposit,checkIn.getGuestSource(),szMath.formatTwoDecimal(szMath.nullToZero(currencyPostMain.getDeposit())-checkIn.getNotNullFinalRoomPrice())}, "deposit", "pdf");
         } else {
         /*创建团队押金单报表,并返回单据号
         * parameter：

@@ -34,4 +34,7 @@ public interface VipMapper extends MyMapper<Vip> {
      */
     @Update("update vip set remain=ifnull(remain,0)-#{money},deposit=ifnull(deposit,0)+#{money} where vip_number=#{vipNumber}")
     void depositByVip(@Param("vipNumber") String vipNumber, @Param("money") Double money);
+
+    @Update("UPDATE vip SET score = ifnull(score,0) + #{score} WHERE vip_number=#{vipNumber}")
+    void vipAddScore(@Param("vipNumber") String vipNumber, @Param("score") Double score);
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -75,6 +76,10 @@ public class NightService {
     OldSystemReportService oldSystemReportService;
     @Autowired
     CurrencyService currencyService;
+    @Autowired
+    VipService vipService;
+    @Autowired
+    UserLogService userLogService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic() throws Exception {
@@ -108,6 +113,28 @@ public class NightService {
             debt.setCategory(debtService.allDayPrice);
             debtService.addDebt(debt);
             roomService.dirtyRoom(checkIn.getRoomId());
+        }
+        /*计算会员双倍积分*/
+        String vipDay = otherParamService.getValueByName("双倍积分日");
+        String[] vipDayArray = vipDay.split(",");
+        List<String> dateList=new ArrayList<>();
+        for (String dayString : vipDayArray) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyMM"+dayString);
+            dateList.add(dateFormat.format(new Date()));
+        }
+        if (vipDay != null && !"n".equals(vipDay) && vipDayArray.length > 0) {
+            for (CheckIn checkIn : checkInList) {
+                if(checkIn.getVipNumber()==null){
+                    continue;
+                }
+                for (String dateString : dateList) {
+                    if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime()))) {
+                        vipService.vipAddScore(checkIn.getVipNumber(), checkIn.getFinalRoomPrice());
+                        userLogService.addUserLog("会员日积分,卡号:" + checkIn.getVipNumber() + "积分:" + checkIn.getFinalRoomPrice(), userLogService.vip, userLogService.addScore,checkIn.getVipNumber());
+                    }
+                }
+
+            }
         }
         /*清除团队信息（针对团队房按照单人结算，团队信息会被遗留下来）*/
         List<CheckInGroup> checkInGroupList = checkInGroupService.get(null);

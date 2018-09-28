@@ -1,5 +1,6 @@
 package com.sygdsoft.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.conf.dataSource.HotelGroup;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.VipMapper;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
 
@@ -79,6 +82,13 @@ public class VipService extends BaseService<Vip> {
      */
     public void depositByVip(String vipNumber, Double deposit) {
         vipMapper.depositByVip(vipNumber, deposit);
+    }
+
+    /**
+     * 只加积分
+     */
+    public void vipAddScore(String vipNumber,Double score) throws Exception {
+        vipMapper.vipAddScore(vipNumber,score);
     }
 
     /**
