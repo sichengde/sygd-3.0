@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/6/9 0009.
@@ -46,6 +47,14 @@ public class VipService extends BaseService<Vip> {
     OtherParamService otherParamService;
     @Autowired
     Util util;
+
+    /**
+     * 同时获得协议
+     */
+    @Override
+    public List<Vip> get(Query query) throws Exception {
+        return vipMapper.get(query);
+    }
 
     /**
      * 注销(被弃用)
