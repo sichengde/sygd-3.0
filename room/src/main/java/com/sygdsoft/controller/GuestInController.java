@@ -343,6 +343,7 @@ public class GuestInController {
         * 26.其余押金           otherDeposit
         * 27.客源               checkIn.getGuestSource()
         * 28.押金值-房价        szMath.formatTwoDecimal(szMath.nullToZero(currencyPostMain.getMoney())-checkIn.getNotNullFinalRoomPrice())
+        * 29.房间类型        szMath.formatTwoDecimal(szMath.nullToZero(currencyPostMain.getMoney())-checkIn.getNotNullFinalRoomPrice())
         * */
         if (guestIn.getCheckInGroup() == null) {
             /*散客要考虑多重押金*/
@@ -358,7 +359,7 @@ public class GuestInController {
                 otherDeposit+=currencyPost.getCurrency()+":"+currencyPost.getDeposit();
             }
             CheckIn checkIn = guestIn.getCheckInList().get(0);
-            return reportService.generateReport(null, new String[]{guestNameString, checkInGuest.getSex(), timeService.dateToStringShort(checkInGuest.getBirthdayTime()), checkInGuest.getCardType(), checkInGuest.getCardId(), timeService.dateToStringLong(checkIn.getReachTime()), timeService.dateToStringLong(checkIn.getLeaveTime()), checkIn.getRoomId(), String.valueOf(checkIn.getFinalRoomPrice()), checkIn.getVipNumber(), checkInGuest.getAddress(), currencyPostMain.getCurrency(), checkIn.getImportant(), checkIn.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getSelfAccount(), String.valueOf(currencyPostMain.getDeposit()), checkIn.getCompany(), checkIn.getRoomPriceCategory(), checkIn.getProtocol(), checkIn.getBreakfast(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getDeposit())), guestIn.getAgain(),otherDeposit,checkIn.getGuestSource(),szMath.formatTwoDecimal(szMath.nullToZero(currencyPostMain.getDeposit())-checkIn.getNotNullFinalRoomPrice())}, "deposit", "pdf");
+            return reportService.generateReport(null, new String[]{guestNameString, checkInGuest.getSex(), timeService.dateToStringShort(checkInGuest.getBirthdayTime()), checkInGuest.getCardType(), checkInGuest.getCardId(), timeService.dateToStringLong(checkIn.getReachTime()), timeService.dateToStringLong(checkIn.getLeaveTime()), checkIn.getRoomId(), String.valueOf(checkIn.getFinalRoomPrice()), checkIn.getVipNumber(), checkInGuest.getAddress(), currencyPostMain.getCurrency(), checkIn.getImportant(), checkIn.getRemark(), timeService.getNowLong(), userService.getCurrentUser(), serialService.getSelfAccount(), String.valueOf(currencyPostMain.getDeposit()), checkIn.getCompany(), checkIn.getRoomPriceCategory(), checkIn.getProtocol(), checkIn.getBreakfast(), otherParamService.getValueByName("酒店名称"), util.number2CNMontrayUnit(BigDecimal.valueOf(currencyPostMain.getDeposit())), guestIn.getAgain(),otherDeposit,checkIn.getGuestSource(),szMath.formatTwoDecimal(szMath.nullToZero(currencyPostMain.getDeposit())-checkIn.getNotNullFinalRoomPrice()),checkIn.getRoomCategory()}, "deposit", "pdf");
         } else {
         /*创建团队押金单报表,并返回单据号
         * parameter：

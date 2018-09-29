@@ -182,7 +182,11 @@ public class VipController {
         List<Vip> vipList = vipService.get(query);
         /*设置房价协议*/
         for (Vip vip : vipList) {
-            vip.setProtocol(vipCategoryService.get(new Query("category=" + util.wrapWithBrackets(vip.getCategory()))).get(0).getProtocol());
+            try {
+                vip.setProtocol(vipCategoryService.get(new Query("category=" + util.wrapWithBrackets(vip.getCategory()))).get(0).getProtocol());
+            } catch (Exception e) {
+                throw new Exception("vip卡号+"+vip.getVipNumber()+"定义的类别<"+vip.getCategory()+">在会员类别定义表里没有配置");
+            }
         }
         return vipList;
     }
