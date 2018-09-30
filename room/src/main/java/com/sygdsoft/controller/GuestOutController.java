@@ -682,6 +682,7 @@ public class GuestOutController {
             List<CheckInHistory> checkInHistoryList = new ArrayList<>();
             List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
             CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);
+            checkInHistoryLog.setGuestName(checkInGuestService.listToStringName(checkInGuestService.getListByRoomId(checkIn.getRoomId())));
             checkInHistoryLog.setLeaveTime(timeService.getNow());
             checkInHistoryLog.setCheckOutSerial(checkOutSerial);
             guestInfo.addAll(this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList));
