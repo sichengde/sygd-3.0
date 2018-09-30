@@ -701,3 +701,5 @@ ALTER TABLE check_in_history_log MODIFY breakfast INT;
 ALTER TABLE pay_point_of_sale ADD create_time DATETIME NULL;
 #2018-09-12 去掉账务历史表客源不可为空的限制，因为单位杂单的客源必须是空
 ALTER TABLE debt_history MODIFY guest_source VARCHAR(100) NULL;
+#2018-09-30 增强check_in_history_log
+ALTER TABLE check_in_history_log ADD guest_name TEXT NULL;
