@@ -515,9 +515,18 @@ public class GuestOutController {
                 for (Debt debt : debtList) {
                     Debt debtNeedInsert = new Debt(debt);
                     debtNeedInsert.setRoomId("哑房");
-                    debtNeedInsert.setNotPartIn(true);
                     debtNeedInsert.setFromRoom(serialService.getPaySerial());
+                    /*押金在历史里设置为true*/
+                    if (debt.getDeposit() == null) {
+                        debtNeedInsert.setNotPartIn(true);
+                    }
                     debtService.add(debtNeedInsert);
+                }
+                for (DebtHistory debtHistory : this.debtHistoryList) {
+                    if (debtHistory.getDeposit() != null) {
+                        debtHistory.setNotPartIn(true);
+                        debtHistoryService.update(debtHistory);
+                    }
                 }
             }
             debtPayService.add(debtPay);
