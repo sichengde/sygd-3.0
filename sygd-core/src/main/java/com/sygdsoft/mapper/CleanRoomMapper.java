@@ -1,9 +1,11 @@
 package com.sygdsoft.mapper;
 
 import com.sygdsoft.model.CleanRoom;
+import com.sygdsoft.sqlProvider.CleanRoomSql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.Date;
 import java.util.List;
@@ -17,4 +19,7 @@ public interface CleanRoomMapper extends MyMapper<CleanRoom> {
      */
     @Select("SELECT ifnull(sum(num),0) num,ifnull(user_id,'未指定') userId,category FROM clean_room where do_time>#{beginTime} and do_time<#{endTime} GROUP BY userId,category")
     List<CleanRoom> getSumNumByDate(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
+
+    @SelectProvider(type = CleanRoomSql.class,method = "cleanRoomGetWithCategory")
+    List<CleanRoom> cleanRoomGetWithCategory(@Param("userId") String userId);
 }

@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.CleanRoom;
 import com.sygdsoft.service.CleanRoomService;
@@ -22,4 +23,11 @@ public class CleanRoomController {
     public List<CleanRoom> cleanRoomGet(@RequestBody Query query) throws Exception {
         return cleanRoomService.get(query);
     }
+
+    @RequestMapping(value = "cleanRoomGetWithCategory")
+    public List<CleanRoom> cleanRoomGetWithCategory(@RequestBody JSONObject jsonObject) throws Exception {
+        String userId=jsonObject.getString("userId");
+        return cleanRoomService.cleanRoomGetWithCategory(userId);
+    }
+
 }

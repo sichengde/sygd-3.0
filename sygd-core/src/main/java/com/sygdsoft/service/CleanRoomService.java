@@ -20,10 +20,16 @@ public class CleanRoomService extends BaseService<CleanRoom> {
 
     @Autowired
     CleanRoomMapper cleanRoomMapper;
+
     /**
      * 统计各个房扫工作情况
      */
     public List<CleanRoom> getSumNumByDate(Date beginTime, Date endTime) {
         return cleanRoomMapper.getSumNumByDate(beginTime, endTime);
+    }
+
+
+    public List<CleanRoom> cleanRoomGetWithCategory(String userId) {
+        return cleanRoomMapper.cleanRoomGetWithCategory(userId);
     }
 }

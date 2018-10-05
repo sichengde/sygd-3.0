@@ -1,5 +1,6 @@
 package com.sygdsoft.model;
 
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -11,6 +12,8 @@ public class CleanRoom extends BaseEntity{
     private String room;
     private String userId;
     private Date doTime;
+    @Transient
+    private String roomCategory;
 
     public CleanRoom() {
     }
@@ -53,5 +56,13 @@ public class CleanRoom extends BaseEntity{
 
     public void setDoTime(Date doTime) {
         this.doTime = doTime;
+    }
+
+    public String getRoomCategory() {
+        return roomCategory;
+    }
+
+    public void setRoomCategory(String roomCategory) {
+        this.roomCategory = roomCategory;
     }
 }
