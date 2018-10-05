@@ -703,3 +703,4 @@ ALTER TABLE pay_point_of_sale ADD create_time DATETIME NULL;
 ALTER TABLE debt_history MODIFY guest_source VARCHAR(100) NULL;
 #2018-09-30 增强check_in_history_log
 ALTER TABLE check_in_history_log ADD guest_name TEXT NULL;
+#2018-10-05 积分比率改为会员类别控制
