@@ -7,6 +7,7 @@ public class VipCategory extends BaseEntity{
     private String category;//会员类别
     private String protocol;//房价协议
     private String availablePos;//可用的营业部门
+    private Double scoreRate;//积分比率
 
     public VipCategory() {
     }
@@ -33,5 +34,13 @@ public class VipCategory extends BaseEntity{
 
     public void setAvailablePos(String availablePos) {
         this.availablePos = availablePos;
+    }
+
+    public Double getScoreRate() {
+        return scoreRate;
+    }
+
+    public void setScoreRate(Double scoreRate) {
+        this.scoreRate = scoreRate;
     }
 }
