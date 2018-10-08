@@ -4,16 +4,13 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.CheckInGroupMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.mapper.DebtMapper;
-import com.sygdsoft.model.*;
-import com.sygdsoft.util.NullJudgement;
+import com.sygdsoft.model.CheckIn;
+import com.sygdsoft.model.Debt;
+import com.sygdsoft.model.DebtHistory;
 import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +22,7 @@ import java.util.List;
 @Service
 @SzMapper(id = "debt")
 public class DebtService extends BaseService<Debt> {
+    static Object groupLock = new Object();
     public String deposit = "付押金";
     public String cancelDeposit = "退押金";
     public String otherConsumeIn = "杂单";
@@ -33,7 +31,6 @@ public class DebtService extends BaseService<Debt> {
     public String tel = "电话费";
     public String allDayPrice = "全日房费";
     public String payMiddle = "中间结算冲账";
-    static Object groupLock = new Object();
     @Autowired
     DebtMapper debtMapper;
     @Autowired
@@ -170,7 +167,8 @@ public class DebtService extends BaseService<Debt> {
      * 根据房号合并房费房吧条目
      */
     public List<Debt> mergeDebt(List<Debt> debtList) {
-        if (otherParamService.getValueByName("房间账单合并").equals("y")) {
+        Boolean mergeShop = "y".equals(otherParamService.getValueByName("结账房吧合并"));
+        if ("y".equals(otherParamService.getValueByName("房间账单合并"))) {
             List<Debt> compressDebtList = new ArrayList<>();
             List<String> roomIdListCheck = new ArrayList<>();//用来检测哪些房间加入了
             Integer liveDay = 2;//统计房费天数
@@ -181,7 +179,7 @@ public class DebtService extends BaseService<Debt> {
                         debt1.setConsume(debtAll.getNotNullConsume() + debt1.getNotNullConsume());
                         debt1.setDescription("过夜审加收房费:" + String.valueOf(liveDay) + "天");
                         liveDay++;
-                    } else if ("房吧".equals(debtAll.getCategory()) && "房吧".equals(compressDebtList.get(compressDebtList.size() - 1).getCategory())) {
+                    } else if (mergeShop && "房吧".equals(debtAll.getCategory()) && "房吧".equals(compressDebtList.get(compressDebtList.size() - 1).getCategory())) {
                         Debt debtCompressed = compressDebtList.get(compressDebtList.size() - 1);
                         debtCompressed.setConsume(debtAll.getNotNullConsume() + debtCompressed.getNotNullConsume());
                         String[] itemAndMoneyCompressed = debtCompressed.getDescription().split("/");//分析消费品种
@@ -291,7 +289,7 @@ public class DebtService extends BaseService<Debt> {
     /**
      * 获取某个营业部门的消费
      */
-    public Double getConsumeByPointOfSale(Date beginTime,Date endTime ,String pointOfSale,boolean excludeChange){
-        return debtMapper.getConsumeByPointOfSale(beginTime,endTime,pointOfSale,excludeChange);
+    public Double getConsumeByPointOfSale(Date beginTime, Date endTime, String pointOfSale, boolean excludeChange) {
+        return debtMapper.getConsumeByPointOfSale(beginTime, endTime, pointOfSale, excludeChange);
     }
 }
