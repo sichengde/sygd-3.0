@@ -128,13 +128,13 @@ public class VipService extends BaseService<Vip> {
         vipDetailService.add(vipDetail);
         String remainMessage="记会员至:"+vipNumber;
         VipCategory vipCategory=vipCategoryService.getByCategory(vip.getCategory());
-        Double scoreRate;
-        if(vipCategory==null||vipCategory.getScoreRate()==null){
-            throw new Exception("选择积分结算，但没有在系统维护中定义积分比率");
-        }else {
-            scoreRate=vipCategory.getScoreRate();
-        }
         if (payCategory.contains("积分")) {
+            Double scoreRate;
+            if(vipCategory==null||vipCategory.getScoreRate()==null){
+                throw new Exception("选择积分结算，但没有在系统维护中定义积分比率");
+            }else {
+                scoreRate=vipCategory.getScoreRate();
+            }
             if(vip.getNotNullScore()<money / scoreRate){
                 throw new Exception("积分不足,当前积分："+vip.getScore()+" 所需积分:"+money / scoreRate);
             }
