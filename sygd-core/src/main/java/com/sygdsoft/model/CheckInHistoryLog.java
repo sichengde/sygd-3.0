@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class CheckInHistoryLog extends BaseEntity {
     private String roomId;//房号
-    private String guestName;//房号
+    private String guestName;//姓名
     private String roomCategory;//房类
     private String selfAccount;//自付帐号
     private String groupAccount;//公付帐号
