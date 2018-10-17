@@ -124,6 +124,7 @@ public class DebtPayController {
             debtPayInsert.setGroupAccount(null);
             debtPayInsert.setUserId(userService.getCurrentUser());
             debtPayInsert.setDebtCategory("哑房结算");
+            debtPayInsert.setGuestName(debtPay.getGuestName());
             debtPayService.add(debtPayInsert);
             if(lastPointOfSale!=null){
                 PayPointOfSale payPointOfSale=new PayPointOfSale();
