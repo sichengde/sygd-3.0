@@ -24,6 +24,7 @@ public class DebtPay extends BaseEntity {
     private String roomId;//房间列表，没有就是空
     private Boolean lostDone;//哑房结算完成
     private String guestName;//客人姓名
+    private String guestSource;//客源
 
     public DebtPay() {
     }
@@ -44,6 +45,8 @@ public class DebtPay extends BaseEntity {
         this.vipNumber = debtPay.getVipNumber();
         this.userId = debtPay.getUserId();
         this.roomId = debtPay.getRoomId();
+        this.guestName=debtPay.getGuestName();
+        this.guestSource=debtPay.getGuestSource();
     }
 
     public String getPaySerial() {
@@ -180,5 +183,13 @@ public class DebtPay extends BaseEntity {
 
     public void setGuestName(String guestName) {
         this.guestName = guestName;
+    }
+
+    public String getGuestSource() {
+        return guestSource;
+    }
+
+    public void setGuestSource(String guestSource) {
+        this.guestSource = guestSource;
     }
 }

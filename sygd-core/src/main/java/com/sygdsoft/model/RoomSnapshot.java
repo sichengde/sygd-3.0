@@ -29,6 +29,7 @@ public class RoomSnapshot extends BaseEntity {
     private Double hourRoomConsume;
     private Double addRoomConsume;
     private Double nightRoomConsume;
+    private Integer repeatRent;//重复出租，针对于非房间，例如会议室
     @Transient
     private Integer sumRealRoom;
     @Transient
@@ -371,5 +372,13 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setCountCategory(String countCategory) {
         this.countCategory = countCategory;
+    }
+
+    public Integer getRepeatRent() {
+        return repeatRent;
+    }
+
+    public void setRepeatRent(Integer repeatRent) {
+        this.repeatRent = repeatRent;
     }
 }

@@ -502,11 +502,13 @@ public class GuestOutController {
                 debtPay.setSelfAccount(checkIn.getSelfAccount());
                 debtPay.setGroupAccount(checkIn.getGroupAccount());
                 debtPay.setVipNumber(checkIn.getVipNumber());
+                debtPay.setGuestSource(checkIn.getGuestSource());
             } else {
                 CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
                 debtPay.setCompany(checkInGroup.getCompany());
                 debtPay.setGroupAccount(checkInGroup.getGroupAccount());
                 debtPay.setVipNumber(checkInGroup.getVipNumber());
+                debtPay.setGuestSource(checkInGroup.getGuestSource());
             }
             debtPay.setPointOfSale(pointOfSaleService.JQ);
             debtPay.setUserId(userService.getCurrentUser());

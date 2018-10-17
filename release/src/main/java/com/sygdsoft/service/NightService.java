@@ -80,6 +80,8 @@ public class NightService {
     VipService vipService;
     @Autowired
     UserLogService userLogService;
+    @Autowired
+    CheckInHistoryLogService checkInHistoryLogService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic() throws Exception {
@@ -266,6 +268,9 @@ public class NightService {
             if (room.getNotNullIfRoom()) {
                 totalReal++;
                 roomSnapshot.setRealRoom(true);
+            }else {
+                List<CheckInHistoryLog> checkInHistoryLogList= checkInHistoryLogService.get(new Query(" and room_id=" + util.wrapWithBrackets(room.getRoomId()) + " and reach_time > " + util.wrapWithBrackets(timeService.dateToStringLong(beginDateTime)) + " and reach_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endDateTime))));
+                roomSnapshot.setRepeatRent(checkInHistoryLogList.size());
             }
             total++;
             List<DebtIntegration> debtIntegrationList;
