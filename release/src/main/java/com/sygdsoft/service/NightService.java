@@ -4,6 +4,7 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.CheckInGuestMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -83,6 +84,8 @@ public class NightService {
     UserLogService userLogService;
     @Autowired
     CheckInHistoryLogService checkInHistoryLogService;
+    @Autowired
+    SzMath szMath;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic(MessageSendingOperations<String> messagingTemplate) throws Exception {
@@ -117,7 +120,7 @@ public class NightService {
             debt.setCategory(debtService.allDayPrice);
             debtService.addDebt(debt);
             roomService.dirtyRoom(checkIn.getRoomId());
-        }/*10*/
+        }
         /*计算会员双倍积分*/
         String vipDay = otherParamService.getValueByName("双倍积分日");
         if (vipDay != null && !"n".equals(vipDay)) {
@@ -188,6 +191,8 @@ public class NightService {
         Double hourRoomConsume = 0.0;
         Double addRoomConsume = 0.0;
         Double nightRoomConsume = 0.0;
+        Integer processTotal = roomList.size();
+        Integer processNow = 0;
         for (Room room : roomList) {//roomList在之前已经根据房类排列好了
             RoomSnapshot roomSnapshot = new RoomSnapshot();
             /*新建一行*/
@@ -302,6 +307,8 @@ public class NightService {
                 roomSnapshot.setNightRoomConsume(debtIntegration.getConsume());
             }
             roomSnapshotList.add(roomSnapshot);
+            processNow++;
+            messagingTemplate.convertAndSend("/beginNight", szMath.formatTwoDecimalReturnDouble(processNow ,processTotal )*100);
         }
         /*最后一个插入*/
         RoomStateReport roomStateReport = new RoomStateReport(oldCategory, total, totalReal, empty, repair, self, backUp, rent, allDayRoom, hourRoom, addRoom, nightRoom, allDayRoomConsume, hourRoomConsume, addRoomConsume, nightRoomConsume, debtDate);
