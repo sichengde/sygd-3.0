@@ -37,6 +37,6 @@ public interface RoomSnapshotMapper extends MyMapper<RoomSnapshot> {
     @ResultType(Integer.class)
     Integer getNotRoomAvailableCount(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
-    @Select("SELECT sum(ifnull(all_day_room,0)+ifnull(night_room,0)) sumRent,ifnull(sum(real_room),0) sumRealRoom,category,report_time reportTime FROM room_snapshot WHERE report_time>=#{beginTime} AND report_time<=#{endTime} GROUP BY category,report_time order by report_time")
+    @Select("SELECT sum(ifnull(all_day_room,0)+ifnull(night_room,0)) sumRent,sum(repeat_rent) repeatRent,ifnull(sum(real_room),0) sumRealRoom,category,report_time reportTime FROM room_snapshot WHERE report_time>=#{beginTime} AND report_time<=#{endTime} GROUP BY category,report_time order by report_time")
     List<RoomSnapshot> getListGroupByCategory(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 }

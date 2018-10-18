@@ -501,10 +501,14 @@ public class GuestOutController {
                 debtPay.setCompany(checkIn.getCompany());
                 debtPay.setSelfAccount(checkIn.getSelfAccount());
                 debtPay.setGroupAccount(checkIn.getGroupAccount());
+                debtPay.setVipNumber(checkIn.getVipNumber());
+                debtPay.setGuestSource(checkIn.getGuestSource());
             } else {
                 CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
                 debtPay.setCompany(checkInGroup.getCompany());
                 debtPay.setGroupAccount(checkInGroup.getGroupAccount());
+                debtPay.setVipNumber(checkInGroup.getVipNumber());
+                debtPay.setGuestSource(checkInGroup.getGuestSource());
             }
             debtPay.setPointOfSale(pointOfSaleService.JQ);
             debtPay.setUserId(userService.getCurrentUser());
@@ -515,9 +519,18 @@ public class GuestOutController {
                 for (Debt debt : debtList) {
                     Debt debtNeedInsert = new Debt(debt);
                     debtNeedInsert.setRoomId("哑房");
-                    debtNeedInsert.setNotPartIn(true);
                     debtNeedInsert.setFromRoom(serialService.getPaySerial());
+                    /*押金在历史里设置为true*/
+                    if (debt.getDeposit() == null) {
+                        debtNeedInsert.setNotPartIn(true);
+                    }
                     debtService.add(debtNeedInsert);
+                }
+                for (DebtHistory debtHistory : this.debtHistoryList) {
+                    if (debtHistory.getDeposit() != null) {
+                        debtHistory.setNotPartIn(true);
+                        debtHistoryService.update(debtHistory);
+                    }
                 }
             }
             debtPayService.add(debtPay);
@@ -682,6 +695,7 @@ public class GuestOutController {
             List<CheckInHistory> checkInHistoryList = new ArrayList<>();
             List<CheckInHistory> checkInHistoryUpdateList = new ArrayList<>();
             CheckInHistoryLog checkInHistoryLog = new CheckInHistoryLog(checkIn);
+            checkInHistoryLog.setGuestName(checkInGuestService.listToStringName(checkInGuestService.getListByRoomId(checkIn.getRoomId())));
             checkInHistoryLog.setLeaveTime(timeService.getNow());
             checkInHistoryLog.setCheckOutSerial(checkOutSerial);
             guestInfo.addAll(this.guestToHistory(checkInGuestList, checkInHistoryList, checkInHistoryUpdateList, checkInGuestCardIdList));

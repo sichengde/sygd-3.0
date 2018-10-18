@@ -1,11 +1,14 @@
 package com.sygdsoft.mapper;
 
+import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.Vip;
 import com.sygdsoft.sqlProvider.VipIntegrationSql;
+import com.sygdsoft.sqlProvider.VipSql;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 舒展 on 2016-05-09.
@@ -34,4 +37,10 @@ public interface VipMapper extends MyMapper<Vip> {
      */
     @Update("update vip set remain=ifnull(remain,0)-#{money},deposit=ifnull(deposit,0)+#{money} where vip_number=#{vipNumber}")
     void depositByVip(@Param("vipNumber") String vipNumber, @Param("money") Double money);
+
+    @Update("UPDATE vip SET score = ifnull(score,0) + #{score} WHERE vip_number=#{vipNumber}")
+    void vipAddScore(@Param("vipNumber") String vipNumber, @Param("score") Double score);
+
+    @SelectProvider(type = VipSql.class,method = "get")
+    List<Vip> get(@Param("query") Query query);
 }

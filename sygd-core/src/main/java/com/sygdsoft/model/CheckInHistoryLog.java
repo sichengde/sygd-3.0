@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class CheckInHistoryLog extends BaseEntity {
     private String roomId;//房号
+    private String guestName;//姓名
     private String roomCategory;//房类
     private String selfAccount;//自付帐号
     private String groupAccount;//公付帐号
@@ -250,5 +251,13 @@ public class CheckInHistoryLog extends BaseEntity {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getGuestName() {
+        return guestName;
+    }
+
+    public void setGuestName(String guestName) {
+        this.guestName = guestName;
     }
 }

@@ -174,7 +174,7 @@ public class DeskController {
      */
     @RequestMapping(value = "deskOut")
     @Transactional(rollbackFor = Exception.class)
-    public Integer deskOut(@RequestBody DeskOut deskOut) throws Exception {
+    public synchronized Integer deskOut(@RequestBody DeskOut deskOut) throws Exception {
         timeService.setNow();
         serialService.setCkSerial();
         String desk = deskOut.getDesk();
@@ -432,8 +432,8 @@ public class DeskController {
      * 自助餐直接入账
      */
     @RequestMapping(value = "buffetPay")
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
-    public Integer buffetPay(@RequestBody BuffetPost buffetPost) throws Exception {
+    @Transactional(rollbackFor = Exception.class)
+    public synchronized Integer buffetPay(@RequestBody BuffetPost buffetPost) throws Exception {
         timeService.setNow();
         serialService.setCkSerial();
         String pointOfSale = buffetPost.getPointOfSale();

@@ -1,5 +1,6 @@
 package com.sygdsoft.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sygdsoft.json.VipRecharge;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.Vip;
@@ -134,7 +135,7 @@ public class VipController {
      */
     @RequestMapping(value = "vipRecharge")
     @Transactional(rollbackFor = Exception.class)
-    public Integer vipRecharge(@RequestBody VipRecharge vipRecharge) throws Exception {
+    public JSONObject vipRecharge(@RequestBody VipRecharge vipRecharge) throws Exception {
         /*安全校验*/
         if(!this.registerService.securityStr.remove(vipRecharge.getToken())){
             throw new Exception("充值失败");
@@ -153,7 +154,10 @@ public class VipController {
         userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency+"/"+currencyAdd};
         debtService.parseCurrency(currency,currencyAdd,money,null,null,"会员充值",null,null ,null);
-        return reportService.generateReport(null, param, "vipRecharge", "pdf");
+        JSONObject jsonObjectR=new JSONObject();
+        jsonObjectR.put("report",reportService.generateReport(null, param, "vipRecharge", "pdf"));
+        jsonObjectR.put("vip",vipService.getByVipNumber(vipNumber));
+        return jsonObjectR;
     }
 
     /**
@@ -161,7 +165,7 @@ public class VipController {
      */
     @RequestMapping(value = "vipRefund")
     @Transactional(rollbackFor = Exception.class)
-    public Integer vipRefund(@RequestBody List<String> params) throws Exception {
+    public JSONObject vipRefund(@RequestBody List<String> params) throws Exception {
         timeService.setNow();
         String vipNumber = params.get(0);
         Double money = Double.valueOf(params.get(1));
@@ -173,16 +177,19 @@ public class VipController {
         vipDetailService.addRefundDetail(vipNumber, -money,-deserve,currency,pointOfSale);
         userLogService.addUserLog("卡号:" + vipNumber + " 退款:" + money+" 抵用: "+deserve+" 币种: "+currency, userLogService.vip, userLogService.refund,vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency};
-        return reportService.generateReport(null, param, "vipRefund", "pdf");
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("report",reportService.generateReport(null, param, "vipRefund", "pdf"));
+        jsonObject.put("vip",vipService.getByVipNumber(vipNumber));
+        return jsonObject;
     }
 
     @RequestMapping(value = "vipGet")
     public List<Vip> vipGet(@RequestBody Query query) throws Exception {
-        List<Vip> vipList = vipService.get(query);
-        /*设置房价协议*/
-        for (Vip vip : vipList) {
-            vip.setProtocol(vipCategoryService.get(new Query("category=" + util.wrapWithBrackets(vip.getCategory()))).get(0).getProtocol());
-        }
-        return vipList;
+        return vipService.get(query);
     }
+    @RequestMapping(value = "vipScoreAdjustment")
+    public void vipScoreAdjustment(@RequestBody JSONObject jsonObject) throws Exception {
+        vipService.updateVipScore(jsonObject.getString("vipNumber"),jsonObject.getDouble("score"));
+    }
+
 }

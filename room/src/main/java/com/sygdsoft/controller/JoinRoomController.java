@@ -51,15 +51,23 @@ public class JoinRoomController {
         List<String> roomList=joinRoomPost.getRoomAddList();
         String remark=joinRoomPost.getRemark();
         Date firstTime=null;
+        String lastCompany="NULL";
+        boolean sameCompany=true;
         for (String roomId : roomList) {
             /*更新房间状态*/
             roomService.updateRoomState(roomId,roomService.group);
             /*为每一条在店户籍设置公付账号*/
             CheckIn checkIn = checkInService.getByRoomId(roomId);
+            /*检查所有散客是否是一个单位*/
+            if(lastCompany==null||(!lastCompany.equals(checkIn.getCompany())&&!lastCompany.equals("NULL"))){
+                sameCompany=false;
+            }else {
+                lastCompany=checkIn.getCompany();
+            }
             if(firstTime==null){
                 firstTime=checkIn.getReachTime();
             }else {
-                if(firstTime.compareTo(checkIn.getReachTime())==1){
+                if(firstTime.compareTo(checkIn.getReachTime()) > 0){
                     firstTime=checkIn.getReachTime();
                 }
             }
@@ -77,6 +85,9 @@ public class JoinRoomController {
         }
         /*新建一个团队开房信息*/
         CheckInGroup checkInGroup=new CheckInGroup();
+        if(sameCompany){
+            checkInGroup.setCompany(lastCompany);
+        }
         checkInGroup.setGroupAccount(groupAccount);
         checkInGroup.setName("联房" + groupAccount);
         checkInGroup.setLeader("联房");
