@@ -6,6 +6,7 @@ import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.*;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +85,7 @@ public class NightService {
     CheckInHistoryLogService checkInHistoryLogService;
 
     @Transactional(rollbackFor = Exception.class)
-    public void nightActionLogic() throws Exception {
+    public void nightActionLogic(MessageSendingOperations<String> messagingTemplate) throws Exception {
         timeService.setNow();
         Date debtDate = timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
         /*清除所有的当日锁房*/
@@ -116,7 +117,7 @@ public class NightService {
             debt.setCategory(debtService.allDayPrice);
             debtService.addDebt(debt);
             roomService.dirtyRoom(checkIn.getRoomId());
-        }
+        }/*10*/
         /*计算会员双倍积分*/
         String vipDay = otherParamService.getValueByName("双倍积分日");
         if (vipDay != null && !"n".equals(vipDay)) {
