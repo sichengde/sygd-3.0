@@ -705,3 +705,6 @@ ALTER TABLE debt_history MODIFY guest_source VARCHAR(100) NULL;
 ALTER TABLE check_in_history_log ADD guest_name TEXT NULL;
 #2018-10-05 积分比率改为会员类别控制
 ALTER TABLE vip_category ADD score_rate DOUBLE NULL;
+#2018-10-17 结账明细增加客源
+ALTER TABLE debt_pay ADD guest_source varchar(100) NULL;
+ALTER TABLE room_snapshot ADD repeat_rent int NULL;
