@@ -86,6 +86,7 @@ public class NightService {
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic() throws Exception {
         timeService.setNow();
+        Date debtDate = timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
         /*清除所有的当日锁房*/
         Query query = new Query();
         query.setOrderByList(new String[]{"category"});
@@ -131,7 +132,7 @@ public class NightService {
                         continue;
                     }
                     for (String dateString : dateList) {
-                        if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime()))) {
+                        if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime())) && dateString.equals(timeService.numberShortFormat.format(debtDate))) {
                             vipService.vipAddScore(checkIn.getVipNumber(), checkIn.getFinalRoomPrice());
                             userLogService.addUserLog("会员日积分,卡号:" + checkIn.getVipNumber() + "积分:" + checkIn.getFinalRoomPrice(), userLogService.vip, userLogService.addScore, checkIn.getVipNumber());
                         }
@@ -161,7 +162,6 @@ public class NightService {
         deskBookService.delete(deskBookList);
         deskBookHistoryService.add(deskBookHistoryList);
         /*生成房类统计报表*/
-        Date debtDate = timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
         Date beginDateTime = nightDateService.getByDate(debtDate);
         Date endDateTime = timeService.getNow();
         roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
