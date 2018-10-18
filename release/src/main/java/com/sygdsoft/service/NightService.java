@@ -118,7 +118,7 @@ public class NightService {
         }
         /*计算会员双倍积分*/
         String vipDay = otherParamService.getValueByName("双倍积分日");
-        if(vipDay != null && !"n".equals(vipDay) ) {
+        if (vipDay != null && !"n".equals(vipDay)) {
             String[] vipDayArray = vipDay.split(",");
             List<String> dateList = new ArrayList<>();
             for (String dayString : vipDayArray) {
@@ -268,10 +268,11 @@ public class NightService {
             if (room.getNotNullIfRoom()) {
                 totalReal++;
                 roomSnapshot.setRealRoom(true);
-            }else {
-                List<CheckInHistoryLog> checkInHistoryLogList= checkInHistoryLogService.get(new Query(" and room_id=" + util.wrapWithBrackets(room.getRoomId()) + " and reach_time > " + util.wrapWithBrackets(timeService.dateToStringLong(beginDateTime)) + " and reach_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endDateTime))));
-                roomSnapshot.setRepeatRent(checkInHistoryLogList.size());
             }
+            /*时间段内来的并且已经离店说明是当日来当日走*/
+            List<CheckInHistoryLog> checkInHistoryLogList = checkInHistoryLogService.get(new Query("room_id=" + util.wrapWithBrackets(room.getRoomId()) + " and reach_time > " + util.wrapWithBrackets(timeService.dateToStringLong(beginDateTime)) + " and reach_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endDateTime))));
+            roomSnapshot.setRepeatRent(checkInHistoryLogList.size());
+
             total++;
             List<DebtIntegration> debtIntegrationList;
             String dateAndRoomCondition = " and room_id=" + util.wrapWithBrackets(room.getRoomId()) + " and do_time > " + util.wrapWithBrackets(timeService.dateToStringLong(beginDateTime)) + " and do_time < " + util.wrapWithBrackets(timeService.dateToStringLong(endDateTime));
