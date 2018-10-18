@@ -308,7 +308,7 @@ public class NightService {
             }
             roomSnapshotList.add(roomSnapshot);
             processNow++;
-            messagingTemplate.convertAndSend("/beginNight", szMath.formatTwoDecimalReturnDouble(processNow ,processTotal )*100);
+            messagingTemplate.convertAndSend("/beginNight", szMath.formatTwoDecimalReturnDouble(processNow*100 ,processTotal ));
         }
         /*最后一个插入*/
         RoomStateReport roomStateReport = new RoomStateReport(oldCategory, total, totalReal, empty, repair, self, backUp, rent, allDayRoom, hourRoom, addRoom, nightRoom, allDayRoomConsume, hourRoomConsume, addRoomConsume, nightRoomConsume, debtDate);
