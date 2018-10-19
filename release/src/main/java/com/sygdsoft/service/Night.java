@@ -98,8 +98,8 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
         }
         timeService.setNow();
         userLogService.addUserLogWithoutUserIp("自动夜审", userLogService.reception, userLogService.night);
-        this.messagingTemplate.convertAndSend("/beginNight", false);
-        nightService.nightActionLogic();
+        this.messagingTemplate.convertAndSend("/beginNight", 0);
+        nightService.nightActionLogic(this.messagingTemplate);
         if (this.registerService.getLimitTime().getTime() - System.currentTimeMillis() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
             if (registerService.getAlertType() == 1) {
@@ -109,7 +109,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
             }
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
         } else {
-            this.messagingTemplate.convertAndSend("/beginNight", true);
+            this.messagingTemplate.convertAndSend("/beginNight", 100);
         }
     }
 
@@ -137,8 +137,8 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
                 throw new Exception("数据空间不够，无法夜审，请及时处理");
             }
         }
-        this.messagingTemplate.convertAndSend("/beginNight", false);
-        nightService.nightActionLogic();
+        this.messagingTemplate.convertAndSend("/beginNight", 0);
+        nightService.nightActionLogic(this.messagingTemplate);
         if (this.registerService.getLimitTime().getTime() - System.currentTimeMillis() < 7 * 24 * 60 * 60 * 1000) {
             JSONObject jsonObject = new JSONObject();
             if (registerService.getAlertType() == 1) {
@@ -148,7 +148,7 @@ public class Night implements ApplicationListener<BrokerAvailabilityEvent> {
             }
             this.messagingTemplate.convertAndSend("/beginNight", jsonObject);
         } else {
-            this.messagingTemplate.convertAndSend("/beginNight", true);
+            this.messagingTemplate.convertAndSend("/beginNight", 100);
         }
     }
 

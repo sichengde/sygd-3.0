@@ -94,6 +94,16 @@ public class CheckInController {
                 protocolService.update(protocol);
             }
         }
+        /*如果是团队主账房并且修改备注的话，要同步checkInGroup*/
+        if (checkIn.getGroupAccount() != null && checkIn.getRemark() != null && !checkIn.getRemark().equals(checkIn1.getRemark())) {
+            CheckInGroup checkInGroup=checkInGroupService.getByGroupAccount(checkIn.getGroupAccount());
+            if(checkInGroup.getLeaderRoom().equals(checkIn.getRoomId())) {
+                CheckInGroup checkInGroupUpdate=new CheckInGroup();
+                checkInGroupUpdate.setId(checkInGroup.getId());
+                checkInGroupUpdate.setRemark(checkIn.getRemark());
+                checkInGroupService.updateSelective(checkInGroupUpdate);
+            }
+        }
     }
 
     /**

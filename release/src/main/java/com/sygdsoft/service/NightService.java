@@ -4,8 +4,10 @@ import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.CheckInGuestMapper;
 import com.sygdsoft.mapper.CheckInMapper;
 import com.sygdsoft.model.*;
+import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,10 +84,13 @@ public class NightService {
     UserLogService userLogService;
     @Autowired
     CheckInHistoryLogService checkInHistoryLogService;
+    @Autowired
+    SzMath szMath;
 
     @Transactional(rollbackFor = Exception.class)
-    public void nightActionLogic() throws Exception {
+    public void nightActionLogic(MessageSendingOperations<String> messagingTemplate) throws Exception {
         timeService.setNow();
+        Date debtDate = timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
         /*清除所有的当日锁房*/
         Query query = new Query();
         query.setOrderByList(new String[]{"category"});
@@ -131,7 +136,7 @@ public class NightService {
                         continue;
                     }
                     for (String dateString : dateList) {
-                        if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime()))) {
+                        if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime())) && dateString.equals(timeService.numberShortFormat.format(debtDate))) {
                             vipService.vipAddScore(checkIn.getVipNumber(), checkIn.getFinalRoomPrice());
                             userLogService.addUserLog("会员日积分,卡号:" + checkIn.getVipNumber() + "积分:" + checkIn.getFinalRoomPrice(), userLogService.vip, userLogService.addScore, checkIn.getVipNumber());
                         }
@@ -161,7 +166,6 @@ public class NightService {
         deskBookService.delete(deskBookList);
         deskBookHistoryService.add(deskBookHistoryList);
         /*生成房类统计报表*/
-        Date debtDate = timeService.stringToDateShort(otherParamService.getValueByName("账务日期"));
         Date beginDateTime = nightDateService.getByDate(debtDate);
         Date endDateTime = timeService.getNow();
         roomStateReportService.deleteByDate(debtDate);//先删除该日期的（如果有的话）
@@ -187,6 +191,8 @@ public class NightService {
         Double hourRoomConsume = 0.0;
         Double addRoomConsume = 0.0;
         Double nightRoomConsume = 0.0;
+        Integer processTotal = roomList.size();
+        Integer processNow = 0;
         for (Room room : roomList) {//roomList在之前已经根据房类排列好了
             RoomSnapshot roomSnapshot = new RoomSnapshot();
             /*新建一行*/
@@ -301,6 +307,8 @@ public class NightService {
                 roomSnapshot.setNightRoomConsume(debtIntegration.getConsume());
             }
             roomSnapshotList.add(roomSnapshot);
+            processNow++;
+            messagingTemplate.convertAndSend("/beginNight", szMath.formatTwoDecimalReturnDouble(processNow*100 ,processTotal ));
         }
         /*最后一个插入*/
         RoomStateReport roomStateReport = new RoomStateReport(oldCategory, total, totalReal, empty, repair, self, backUp, rent, allDayRoom, hourRoom, addRoom, nightRoom, allDayRoomConsume, hourRoomConsume, addRoomConsume, nightRoomConsume, debtDate);
