@@ -137,7 +137,7 @@ public class NightService {
                     }
                     for (String dateString : dateList) {
                         if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime())) && dateString.equals(timeService.numberShortFormat.format(debtDate))) {
-                            vipService.vipAddScore(checkIn.getVipNumber(), checkIn.getFinalRoomPrice());
+                            vipService.updateVipScore(checkIn.getVipNumber(), checkIn.getFinalRoomPrice());
                             userLogService.addUserLog("会员日积分,卡号:" + checkIn.getVipNumber() + "积分:" + checkIn.getFinalRoomPrice(), userLogService.vip, userLogService.addScore, checkIn.getVipNumber());
                         }
                     }

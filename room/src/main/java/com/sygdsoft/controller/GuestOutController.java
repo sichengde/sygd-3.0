@@ -151,6 +151,8 @@ public class GuestOutController {
             debtList = this.debtToHistory(guestOut);
             /*查找中间结算，没有离店序列号的都是中间结算，找到后更新结账序列号，因为中间结算的结账明细没有结账序列号*/
             this.debtPayMiddle(guestOut);
+            /*检查会员积分*/
+            //this.checkVip(groupAccount, roomIdList, currency, currencyAdd, money);
             /*结账记录，循环分单，记录操作员挂账信息*/
             String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
             /*判断押金币种，如果是会员则需要把钱还回去*/
@@ -621,8 +623,6 @@ public class GuestOutController {
             if (!noNeedParse) {
                 changeDebt += debtPayService.parseCurrency(currency, currencyAdd, money, roomIdList, groupAccount, category, serialService.getPaySerial(), "接待", "接待");
             }
-            /*检查会员*/
-            this.checkVip(groupAccount, roomIdList, currency, currencyAdd, money);
         }
         payPointOfSaleService.add(payPointOfSaleList);
         return changeDebt;
@@ -677,6 +677,11 @@ public class GuestOutController {
             vipNumber = checkInGroup.getVipNumber();
         }
         if (vipNumber != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
+            /*计算哪些消费可以加积分*/
+            double totalConsume=0.0;
+            for (Debt debt : debtList) {
+
+            }
             vipService.updateVipScore(vipNumber, money);
         }
     }

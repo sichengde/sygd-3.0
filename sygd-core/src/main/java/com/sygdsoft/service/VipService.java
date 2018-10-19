@@ -96,12 +96,6 @@ public class VipService extends BaseService<Vip> {
         vipMapper.depositByVip(vipNumber, deposit);
     }
 
-    /**
-     * 只加积分
-     */
-    public void vipAddScore(String vipNumber,Double score) throws Exception {
-        vipMapper.vipAddScore(vipNumber,score);
-    }
 
     /**
      * 结账时使用用会员币种（离店，商品零售）
