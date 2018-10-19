@@ -41,11 +41,11 @@ public class TimeService {
         return now;
     }
 
-    public Date stringToDateLong(String s) throws Exception {
+    public synchronized Date stringToDateLong(String s) throws Exception {
         return longFormat.parse(s);
     }
 
-    public Date stringToDateShort(String s) throws Exception {
+    public synchronized Date stringToDateShort(String s) throws Exception {
         return shortFormat.parse(s);
     }
 
@@ -106,19 +106,19 @@ public class TimeService {
         return c.getTime();
     }
 
-    public String getNowLong() {
+    public synchronized String getNowLong() {
         return longFormat.format(now);
     }
 
-    public String getNowShort() {
+    public synchronized String getNowShort() {
         return shortFormat.format(now);
     }
 
-    public String getNowNumberLong() {
+    public synchronized String getNowNumberLong() {
         return numberLongFormat.format(now);
     }
 
-    public String getNowNumberShort() {
+    public synchronized String getNowNumberShort() {
         if (now != null) {
             return numberShortFormat.format(now);
         } else {
@@ -126,7 +126,7 @@ public class TimeService {
         }
     }
 
-    public String getSerialShort() {
+    public synchronized String getSerialShort() {
         if (now != null) {
             return serialFormat.format(now);
         } else {
@@ -137,7 +137,7 @@ public class TimeService {
     /**
      * 只获取时间，当前时间
      */
-    public String getNowTimeString() {
+    public synchronized String getNowTimeString() {
         if (now != null) {
             return timeFormat.format(now);
         } else {
@@ -150,7 +150,7 @@ public class TimeService {
      * @param date
      * @return
      */
-    public String getTimeString(Date date){
+    public synchronized String getTimeString(Date date){
         return timeFormat.format(date);
     }
 
@@ -168,21 +168,21 @@ public class TimeService {
         return shortFormat.format(date);
     }
 
-    public String stringLongToShort(String date) throws ParseException {
+    public synchronized String stringLongToShort(String date) throws ParseException {
         return shortFormat.format(shortFormat.parse(date));
     }
 
     /**
      * 获得最小时间(时间部分设置为0)
      */
-    public Date getMinTime(Date date) throws ParseException {
+    public synchronized Date getMinTime(Date date) throws ParseException {
         return longFormat.parse(shortFormat.format(date)+" 00:00:00");
     }
 
     /**
      * 获得最大时间(日期部分设置为第二天，时间设置为0)
      */
-    public Date getMaxTime(Date date) throws ParseException {
+    public synchronized Date getMaxTime(Date date) throws ParseException {
         return longFormat.parse(shortFormat.format(date)+" 24:00:00");
     }
 
@@ -311,7 +311,7 @@ public class TimeService {
         }
         return date;
     }
-    public String getReportFormat(Date date){
+    public synchronized String getReportFormat(Date date){
         return reportFormat.format(date);
     }
 }
