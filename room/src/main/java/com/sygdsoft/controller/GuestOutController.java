@@ -89,6 +89,9 @@ public class GuestOutController {
     GuestIntegrationService guestIntegrationService;
     @Autowired
     PayPointOfSaleService payPointOfSaleService;
+    @Autowired
+    VipCategoryService vipCategoryService;
+
     String checkOutSerial;
     GuestOut guestOutGlobal;
     List<Debt> debtList;
@@ -152,7 +155,7 @@ public class GuestOutController {
             /*查找中间结算，没有离店序列号的都是中间结算，找到后更新结账序列号，因为中间结算的结账明细没有结账序列号*/
             this.debtPayMiddle(guestOut);
             /*检查会员积分*/
-            //this.checkVip(groupAccount, roomIdList, currency, currencyAdd, money);
+            this.checkVip(guestOut);
             /*结账记录，循环分单，记录操作员挂账信息*/
             String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
             /*判断押金币种，如果是会员则需要把钱还回去*/
@@ -193,7 +196,7 @@ public class GuestOutController {
             timeService.setNow();//当前时间
             serialService.setPaySerial();//生成结账序列号
             List<Debt> debtList = guestOutMiddle.getDebtList();
-            this.debtList=debtList;
+            this.debtList = debtList;
             List<String> roomIdList = guestOutMiddle.getRoomIdList();
             String groupAccount = guestOutMiddle.getGroupAccount();
             Double payMoney = guestOutMiddle.getPayMoney();
@@ -231,8 +234,8 @@ public class GuestOutController {
                 DebtHistory debtHistory = new DebtHistory(debt);
                 debtHistory.setConsume(payMoney);
                 debtHistoryService.add(debtHistory);
-                this.debtList=new ArrayList<>();
-                Debt debt1=new Debt(debt);
+                this.debtList = new ArrayList<>();
+                Debt debt1 = new Debt(debt);
                 debt1.setConsume(payMoney);
                 this.debtList.add(debt1);
                 remarkAdd += "不指定账务";
@@ -585,7 +588,7 @@ public class GuestOutController {
                     debtSum = debtAdjust;
                     debtSum = szMath.formatTwoDecimalReturnDouble(debtSum);
                     lastPointOfSale = debt.getPointOfSale();
-                    lastCreateTime=debt.getDoTime();
+                    lastCreateTime = debt.getDoTime();
                     debtIndex++;
                     break;
                 }
@@ -660,29 +663,55 @@ public class GuestOutController {
     /**
      * 如果有会员号，并且结算的时候没有用会员余额或者积分计算的话，累计积分
      */
-    private void checkVip(String groupAccount, List<String> roomIdList, String currency, String currencyAdd, Double money) throws Exception {
-        /*转哑房不判断*/
-        if ("转哑房".equals(currency)) {
-            return;
-        }
-        String vipNumber = null;
-        /*如果是会员结账，则积分记录到结账账户*/
-        if ("会员".equals(currency)) {
-            vipNumber = currencyAdd.split(" ")[0];
-        } else if (groupAccount == null) {
-            CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));
-            vipNumber = checkIn.getVipNumber();
-        } else {
-            CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
-            vipNumber = checkInGroup.getVipNumber();
-        }
-        if (vipNumber != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
-            /*计算哪些消费可以加积分*/
-            double totalConsume=0.0;
-            for (Debt debt : debtList) {
-
+    private void checkVip(GuestOut guestOut) throws Exception {
+        String groupAccount = guestOut.getGroupAccount();
+        List<String> roomIdList = guestOut.getRoomIdList();
+        List<CurrencyPost> currencyPostList = guestOut.getCurrencyPayList();
+        HashMap<String, Double> availableMap = new HashMap<>();//<每个销售点的金额>
+        for (Debt debt : debtList) {
+            if (debt.getConsume() != null) {
+                availableMap.put(debt.getPointOfSale(), availableMap.getOrDefault(debt.getPointOfSale(), 0.0) + debt.getNotNullConsume());
             }
-            vipService.updateVipScore(vipNumber, money);
+        }
+        for (CurrencyPost currencyPost : currencyPostList) {
+            String currency = currencyPost.getCurrency();
+            String currencyAdd = currencyPost.getCurrencyAdd();
+            Double money = currencyPost.getMoney();
+            /*转哑房不判断*/
+            if ("转哑房".equals(currency)) {
+                return;
+            }
+            String vipNumber = null;
+            /*如果是会员结账，则积分记录到结账账户*/
+            if ("会员".equals(currency)) {
+                vipNumber = currencyAdd.split(" ")[0];
+            } else if (groupAccount == null) {
+                CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));
+                vipNumber = checkIn.getVipNumber();
+            } else {
+                CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
+                vipNumber = checkInGroup.getVipNumber();
+            }
+            if (vipNumber != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
+                Vip vip = vipService.getByVipNumber(vipNumber);
+                VipCategory vipCategory = vipCategoryService.getByCategory(vip.getCategory());
+                String[] vipAvailablePosArray = vipCategory.getAvailablePos().split(",");
+                for (int i = 0; i < vipAvailablePosArray.length; i++) {
+                    String vipAvailablePos = vipAvailablePosArray[i];
+                    Double remain = availableMap.getOrDefault(vipAvailablePos, 0.0);
+                    //余额充足直接扣
+                    if (remain - money >= 0) {
+                        vipService.updateVipScore(vipNumber, money);
+                        availableMap.put(vipAvailablePos, remain - money);
+                        break;
+                    } else if (remain > 0) {
+                        //余额不足能扣多少扣多少
+                        vipService.updateVipScore(vipNumber, remain);
+                        availableMap.put(vipAvailablePos, 0.0);
+                        money = money - remain;
+                    }
+                }
+            }
         }
     }
 
@@ -929,7 +958,7 @@ public class GuestOutController {
             currencyPost.setMoney(-currencyPost.getMoney());
         }
         /*押金币种map*/
-        Map<String,Double> depositCurrencyMap=new HashMap<>();
+        Map<String, Double> depositCurrencyMap = new HashMap<>();
         for (Debt debt : debtList) {//同时更新汇总信息
             FieldTemplate var = new FieldTemplate();
             var.setField1(timeService.dateToStringLong(debt.getDoTime()));
@@ -941,17 +970,17 @@ public class GuestOutController {
             var.setField7(debt.getUserId());
             var.setField8(debt.getSourceRoom());
             templateList.add(var);
-            if (debt.getNotNullDeposit() != 0 ) {//没有退的押金，准备考虑与结账币种的关系
-                depositCurrencyMap.put(debt.getCurrency(),depositCurrencyMap.getOrDefault(debt.getCurrency(),0.0)+debt.getNotNullDeposit());
+            if (debt.getNotNullDeposit() != 0) {//没有退的押金，准备考虑与结账币种的关系
+                depositCurrencyMap.put(debt.getCurrency(), depositCurrencyMap.getOrDefault(debt.getCurrency(), 0.0) + debt.getNotNullDeposit());
             }
         }
-        List<String> currencyToRmbList=currencyService.getToRMBList();
+        List<String> currencyToRmbList = currencyService.getToRMBList();
         for (String currency : depositCurrencyMap.keySet()) {
-            boolean haveSame=false;
+            boolean haveSame = false;
             for (CurrencyPost currencyPost : currencyPostList) {
-                if(currencyPost.getCurrency().equals(currency)){
-                    haveSame=true;
-                    currencyPost.setMoney(depositCurrencyMap.get(currency)+currencyPost.getMoney());
+                if (currencyPost.getCurrency().equals(currency)) {
+                    haveSame = true;
+                    currencyPost.setMoney(depositCurrencyMap.get(currency) + currencyPost.getMoney());
                 }
             }
             if (!haveSame) {
@@ -961,7 +990,7 @@ public class GuestOutController {
                 } else {
                     currencyTemp = currency;
                 }
-                cancelMsg += "找回金额：" +szMath.formatTwoDecimal(depositCurrencyMap.get(currency)) + "(" + currencyTemp + ") ";
+                cancelMsg += "找回金额：" + szMath.formatTwoDecimal(depositCurrencyMap.get(currency)) + "(" + currencyTemp + ") ";
             }
         }
         for (CurrencyPost currencyPost : currencyPostList) {//看看还有没有剩下的补交信息
@@ -983,7 +1012,7 @@ public class GuestOutController {
      * 操作员记录
      */
     private void addUserLog(GuestOut guestOut, String changeDebt) throws Exception {
-        String userAction = "离店结算:" + roomService.roomListToString(guestOut.getRoomIdList()) + changeDebt+" 离店序列号:"+serialService.getCheckOutSerial();
+        String userAction = "离店结算:" + roomService.roomListToString(guestOut.getRoomIdList()) + changeDebt + " 离店序列号:" + serialService.getCheckOutSerial();
         if (guestOut.getGroupAccount() == null) {
             userLogService.addUserLog(userAction, userLogService.reception, userLogService.guestOut, serialService.getPaySerial());
         } else {
@@ -1064,7 +1093,7 @@ public class GuestOutController {
             /*分析消费项目*/
             List<FieldTemplate> templateList = new ArrayList<>();
             List<DebtHistory> debtHistoryList = null;
-            double totalConsume=0.0;
+            double totalConsume = 0.0;
             try {
                 debtHistoryList = debtHistoryService.getListByPaySerial(debtPay.getPaySerial());
             } catch (Exception e) {
@@ -1074,7 +1103,7 @@ public class GuestOutController {
                 FieldTemplate var = new FieldTemplate();
                 var.setField1(debtHistory.getDescription());
                 templateList.add(var);
-                totalConsume+=debtHistory.getNotNullConsume();
+                totalConsume += debtHistory.getNotNullConsume();
             }
             return reportService.generateReport(templateList, new String[]{debtPay.getUserId(), String.valueOf(totalConsume), timeService.dateToStringLong(debtPay.getDoneTime()), "", "弃用", debtPay.getCurrency(), otherParamService.getValueByName("酒店名称")}, "retail", "pdf");
         }
@@ -1158,7 +1187,7 @@ public class GuestOutController {
             for (CheckInHistoryLog checkInHistoryLog : checkInHistoryLogList) {
                 selfAccountList.add(checkInHistoryLog.getSelfAccount());
             }
-        } else if (debtPay.getSelfAccount()!=null){
+        } else if (debtPay.getSelfAccount() != null) {
             selfAccountList.add(debtPay.getSelfAccount());
         }
         timeService.setNow();
@@ -1169,7 +1198,7 @@ public class GuestOutController {
         }
         /*当前房间状态检验，通过的话更新房态，同时生成checkIn*/
         List<CheckOutRoom> checkOutRoomList = checkOutRoomService.getByCheckOutSerial(checkOutSerial);
-        StringBuilder roomString= new StringBuilder();
+        StringBuilder roomString = new StringBuilder();
         for (CheckOutRoom checkOutRoom : checkOutRoomList) {
             Room room = roomService.getByRoomId(checkOutRoom.getRoomId());
             if (room.getState().equals(roomService.group) || room.getState().equals(roomService.guest) || room.getState().equals(roomService.repair)) {
@@ -1275,7 +1304,7 @@ public class GuestOutController {
         }
         checkInHistoryLogService.delete(checkInHistoryLogList);
         /*操作员记录*/
-        userLogService.addUserLog("叫回账单:" + checkOutSerial+" 房号:"+roomString.toString(), userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
+        userLogService.addUserLog("叫回账单:" + checkOutSerial + " 房号:" + roomString.toString(), userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
         return 0;
     }
 
