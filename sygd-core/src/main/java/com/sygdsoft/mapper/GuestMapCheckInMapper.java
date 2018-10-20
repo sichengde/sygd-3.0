@@ -5,10 +5,8 @@ import com.sygdsoft.model.GuestMapCheckIn;
 import com.sygdsoft.util.MyMapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 /**

@@ -46,18 +46,28 @@ public class SaleManReportController {
         List<SaleManRich> saleManList = saleManMapper.getSaleManGroup(beginTime, endTime);
         Map<String, Map<String, Map<String, Double>>> saleManCompanyCurrencyMoneyMap = new HashMap<>();
         for (SaleManRich saleManRich : saleManList) {
-            Map<String, Map<String, Double>> companyCurrencyMoneyMap = saleManCompanyCurrencyMoneyMap.computeIfAbsent(saleManRich.getSaleMan(), s -> new HashMap<>());
+            Map<String, Map<String, Double>> companyCurrencyMoneyMap = saleManCompanyCurrencyMoneyMap.get(saleManRich.getSaleMan());
+            if(companyCurrencyMoneyMap==null){
+                companyCurrencyMoneyMap=new HashMap<>();
+            }
             if (saleManRich.getCompany() == null) {
                 saleManCompanyCurrencyMoneyMap.put(saleManRich.getSaleMan(), null);
             } else {
-                Map<String, Double> currencyMoneyMap = companyCurrencyMoneyMap.computeIfAbsent(saleManRich.getCompany(), s -> new HashMap<>());
+                Map<String, Double> currencyMoneyMap = companyCurrencyMoneyMap.get(saleManRich.getCompany());
+                if(currencyMoneyMap==null){
+                    currencyMoneyMap=new HashMap<>();
+                }
                 String currency;
                 if (saleManRich.getCurrency().equals("转单位") || saleManRich.getCurrency().equals("转哑房") || saleManRich.getCurrency().equals("转房客")) {
                     currency = "挂账";
                 } else {
                     currency = "付现";
                 }
-                currencyMoneyMap.put(currency, currencyMoneyMap.getOrDefault(currency, 0.0) + saleManRich.getMoney());
+                Double money=currencyMoneyMap.get(currency);
+                if(money==null){
+                    money=0.0;
+                }
+                currencyMoneyMap.put(currency, money + saleManRich.getMoney());
             }
         }
         for (String saleMan : saleManCompanyCurrencyMoneyMap.keySet()) {
@@ -86,8 +96,14 @@ public class SaleManReportController {
                     if(companyCurrencyMoneyMap.size()==1){//只有一个人的话增加销售员名称
                         row.put("saleMan", saleMan);
                     }
-                    Double payNow=currencyMap.getOrDefault("付现", 0.0);
-                    Double payNextTime=currencyMap.getOrDefault("挂账", 0.0);
+                    Double payNow=currencyMap.get("付现");
+                    if(payNow==null){
+                        payNow=0.0;
+                    }
+                    Double payNextTime=currencyMap.get("挂账");
+                    if(payNextTime==null){
+                        payNextTime=0.0;
+                    }
                     row.put("payNow", payNow);
                     row.put("payNextTime", payNextTime);
                     row.put("payTotal", payNow+payNextTime);
