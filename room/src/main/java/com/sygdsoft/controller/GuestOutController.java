@@ -695,7 +695,11 @@ public class GuestOutController {
             if (vipNumber != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
                 Vip vip = vipService.getByVipNumber(vipNumber);
                 VipCategory vipCategory = vipCategoryService.getByCategory(vip.getCategory());
-                String[] vipAvailablePosArray = vipCategory.getScorePos().split(",");
+                String scorePos=vipCategory.getScorePos();
+                if(scorePos==null){
+                    scorePos="";
+                }
+                String[] vipAvailablePosArray = scorePos.split(",");
                 for (int i = 0; i < vipAvailablePosArray.length; i++) {
                     String vipAvailablePos = vipAvailablePosArray[i];
                     Double remain = availableMap.getOrDefault(vipAvailablePos, 0.0);
