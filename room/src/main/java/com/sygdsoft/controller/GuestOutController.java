@@ -847,6 +847,7 @@ public class GuestOutController {
          * 25.性别                             guestInfo.getSex()
          * 26.单位分隔1                        debtPayService.companySplit1
          * 27.单位分隔2                        debtPayService.companySplit2
+         * 28.客源                             guestSource
          * field
          * 1.日期
          * 2.房号
@@ -860,6 +861,7 @@ public class GuestOutController {
         String reachTime;
         String leaveTime = timeService.getNowLong();
         String company;
+        String guestSource=null;
         Double consume;
         Double deposit;
         String groupName = null;
@@ -886,6 +888,7 @@ public class GuestOutController {
                 CheckIn checkIn = checkInService.getByRoomId(guestOut.getRoomIdList().get(0));//在店户籍
                 reachTime = timeService.dateToStringLong(checkIn.getReachTime());
                 company = checkIn.getCompany();
+                guestSource = checkIn.getGuestSource();
                 consume = checkInService.getNeedPay(checkIn);
                 deposit = checkIn.getDeposit();
                 roomID = checkIn.getRoomId();
@@ -899,6 +902,7 @@ public class GuestOutController {
                 roomID = checkInGroup.getLeaderRoom();
                 reachTime = timeService.dateToStringLong(checkInGroup.getReachTime());
                 company = checkInGroup.getCompany();
+                guestSource = checkInGroup.getGuestSource();
                 Double totalConsume = 0.0;
                 for (String s : roomList) {
                     CheckIn checkIn = checkInService.getByRoomId(s);
@@ -934,6 +938,7 @@ public class GuestOutController {
                 CheckInHistoryLog checkInHistoryLog = checkInHistoryLogService.getByCheckOutSerial(checkOut.getCheckOutSerial()).get(0);
                 account = checkOut.getSelfAccount();
                 guestInVip = checkInHistoryLog.getVipNumber();
+                guestSource = checkInHistoryLog.getGuestSource();
                 finalRoomPrice = checkOutRoomService.getByCheckOutSerial(guestOut.getCheckOutSerial()).get(0).getFinalRoomPrice();
                 totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getSelfAccount());
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getSelfAccount());
@@ -948,6 +953,7 @@ public class GuestOutController {
                 account = checkOut.getGroupAccount();
                 groupName = checkOut.getGroupName();
                 roomID = checkOutGroup.getLeaderRoom();
+                guestSource = checkOutGroup.getGuestSource();
                 roomIdAll = roomService.roomListToString(roomList);
                 totalRoomConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房费", checkOut.getGroupAccount());
                 totalRoomShopConsume = debtHistoryService.getTotalConsumeByPointOfSaleAndSerial("房吧", checkOut.getGroupAccount());
@@ -1005,7 +1011,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2};
+        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2,guestSource};
         debtPayService.companySplit1 = null;
         debtPayService.companySplit2 = null;
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
