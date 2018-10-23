@@ -40,6 +40,8 @@ public class RoomCategorySaleReport {
     RoomStateReportService roomStateReportService;
     @Autowired
     GuestIntegrationService guestIntegrationService;
+    @Autowired
+    RoomSnapshotService roomSnapshotService;
 
     /**
      * 结束日期时间要设置为24:00:00
@@ -48,16 +50,22 @@ public class RoomCategorySaleReport {
     public RoomCategoryParse roomCategorySaleReport(@RequestBody ReportJson reportJson) throws Exception {
         Date beginTime = timeService.getMinTime(reportJson.getBeginTime());
         Date endTime = timeService.getMinTime(reportJson.getEndTime());
-        /*效验roomStateReport表中有没有数据*/
-        List<RoomStateReport> roomCategoryRowList=roomStateReportService.getSumByDateCategory(beginTime, endTime);
-        RoomStateReport roomStateReport=roomStateReportService.getSumByDate(beginTime, endTime);
-        roomCategoryRowList.add(roomStateReport);
+        String type = reportJson.getParam1();
         RoomCategoryParse roomCategoryParse = new RoomCategoryParse();
-        roomCategoryParse.setRoomStateReportList(roomCategoryRowList);
+        List<RoomSnapshot> roomSnapshotList = new ArrayList<>();
+        if ("category".equals(type)) {
+            roomSnapshotList = roomSnapshotService.getSumList(beginTime, endTime, "category");
+        } else if ("room_id".equals(type)) {
+            roomSnapshotList = roomSnapshotService.getSumList(beginTime, endTime, "room_id");
+        }
+        RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime, null);
+        roomSnapshot.setRoomId("合计");
+        roomSnapshotList.add(roomSnapshot);
+        roomCategoryParse.setRoomSnapshotList(roomSnapshotList);
         /*设置备注信息*/
-        String remark="接待人数"+guestIntegrationService.getSumNumByDate(beginTime, endTime,null);
-        remark+=",接待团队"+groupIntegrationService.getSumByDate(beginTime, endTime);
-        remark+=",接待外宾"+guestIntegrationService.getSumForeignerNumByDate(beginTime, endTime);
+        String remark = "接待人数" + guestIntegrationService.getSumNumByDate(beginTime, endTime, null);
+        remark += ",接待团队" + groupIntegrationService.getSumByDate(beginTime, endTime);
+        remark += ",接待外宾" + guestIntegrationService.getSumForeignerNumByDate(beginTime, endTime);
         roomCategoryParse.setRemark(remark);
         return roomCategoryParse;
     }
@@ -102,7 +110,7 @@ public class RoomCategorySaleReport {
             if (!lastCategory.equals("")) {//不等于空的话，把上一条的金额算了
                 roomStateSale.setAveragePrice(szMath.formatTwoDecimal(totalConsumeRowWithOutAdd, roomStateSale.getRent()));
                 roomStateSale.setRevper(szMath.formatTwoDecimal(totalConsumeRowWithOutAdd, roomStateSale.getTotal()));
-                totalConsumeRowWithOutAdd=0.0;
+                totalConsumeRowWithOutAdd = 0.0;
                 roomStateSale.setAverageRent(szMath.formatTwoDecimal(roomStateSale.getRent(), roomStateSale.getTotal()));
                 roomStateSale.setTotalConsume(szMath.formatTwoDecimalReturnDouble(totalConsumeRow));
             }

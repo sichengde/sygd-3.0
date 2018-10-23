@@ -43,6 +43,8 @@ public class RoomSnapshot extends BaseEntity {
     @Transient
     private Integer sumRent;
     @Transient
+    private Integer sumRepeatRent;
+    @Transient
     private Integer sumFree;
     @Transient
     private Integer sumAllDayRoom;
@@ -58,6 +60,10 @@ public class RoomSnapshot extends BaseEntity {
     private String currency;
     @Transient
     private String countCategory;
+    @Transient
+    private Integer total;
+    @Transient
+    private Integer totalReal;
 
     public RoomSnapshot() {
     }
@@ -380,5 +386,29 @@ public class RoomSnapshot extends BaseEntity {
 
     public void setRepeatRent(Integer repeatRent) {
         this.repeatRent = repeatRent;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    public Integer getTotalReal() {
+        return totalReal;
+    }
+
+    public void setTotalReal(Integer totalReal) {
+        this.totalReal = totalReal;
+    }
+
+    public Integer getSumRepeatRent() {
+        return sumRepeatRent;
+    }
+
+    public void setSumRepeatRent(Integer sumRepeatRent) {
+        this.sumRepeatRent = sumRepeatRent;
     }
 }
