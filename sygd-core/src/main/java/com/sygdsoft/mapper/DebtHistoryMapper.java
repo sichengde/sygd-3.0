@@ -84,17 +84,17 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     /*操作员，时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where category=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false " +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where category=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'冲账\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false) a")
     @ResultType(Double.class)
     Double getTotalDiscountByUserTimeZone(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where category=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false " +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where category=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'冲账\' and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false ) a")
     @ResultType(Double.class)
     Double getTotalDiscountByTimeZone(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
@@ -103,17 +103,17 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
      */
     /*操作员，时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where category=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false " +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where category=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'杂单\' and user_id=#{userId} and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false) a")
     @ResultType(Double.class)
     Double getTotalAddByUserTimeZone(@Param("userId") String userId, @Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
     /*时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where category=\'杂单\'  and do_time>#{beginTime} and do_time<#{endTime}" +
+            "(select sum(consume) consume from debt where category=\'杂单\'  and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false" +
             "UNION\n" +
-            " select sum(consume) consume from debt_history where category=\'杂单\' and do_time>#{beginTime} and do_time<#{endTime}) a")
+            " select sum(consume) consume from debt_history where category=\'杂单\' and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false) a")
     @ResultType(Double.class)
     Double getTotalAddByTimeZone(@Param("beginTime") Date beginTime, @Param("endTime") Date endTime);
 
