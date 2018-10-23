@@ -132,7 +132,7 @@ public class VipService extends BaseService<Vip> {
             if(vip.getNotNullScore()<money / scoreRate){
                 throw new Exception("积分不足,当前积分："+vip.getScore()+" 所需积分:"+money / scoreRate);
             }
-            remainMessage+=",积分:" + (vip.getScore()-money);
+            remainMessage+=",积分:" + (vip.getScore()-money/scoreRate);
             updateVipScore(vipNumber, -money / scoreRate);
         } else {
             if(vip.getRemain()<money){
