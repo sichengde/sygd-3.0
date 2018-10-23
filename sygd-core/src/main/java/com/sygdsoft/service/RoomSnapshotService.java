@@ -15,6 +15,13 @@ public class RoomSnapshotService extends BaseService<RoomSnapshot> {
     RoomSnapshotMapper roomSnapshotMapper;
 
     /**
+     * 获取数组
+     */
+    public List<RoomSnapshot> getSumList(Date beginTime,Date endTime,String field){
+        return roomSnapshotMapper.getSumList(beginTime,endTime,field);
+    }
+
+    /**
      * 通过日期删除该天的数据（夜审前）
      */
     public void deleteByDate(Date date) {
