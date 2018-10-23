@@ -111,7 +111,7 @@ public interface DebtHistoryMapper extends MyMapper<DebtHistory> {
 
     /*时间段*/
     @Select("select ifnull(sum(a.consume),0) consume from\n" +
-            "(select sum(consume) consume from debt where category=\'杂单\'  and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false" +
+            "(select sum(consume) consume from debt where category=\'杂单\'  and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false " +
             "UNION\n" +
             " select sum(consume) consume from debt_history where category=\'杂单\' and do_time>#{beginTime} and do_time<#{endTime} and ifnull(not_part_in,false) is false) a")
     @ResultType(Double.class)
