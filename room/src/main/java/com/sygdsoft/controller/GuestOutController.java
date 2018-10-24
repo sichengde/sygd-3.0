@@ -926,6 +926,7 @@ public class GuestOutController {
                 title += "/查询单";
             }
         } else {//补打结账单
+            title += "/补打单";
             debtList = debtService.getByHistory(debtHistoryService.getListByPaySerial(guestOut.getPaySerial()));
             CheckOut checkOut = checkOutService.get(new Query("check_out_serial=" + util.wrapWithBrackets(guestOut.getCheckOutSerial()))).get(0);
             reachTime = timeService.dateToStringLong(checkOut.getReachTime());
