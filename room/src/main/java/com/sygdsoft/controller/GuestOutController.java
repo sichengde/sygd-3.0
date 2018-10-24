@@ -695,9 +695,9 @@ public class GuestOutController {
             if (vipNumber != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
                 Vip vip = vipService.getByVipNumber(vipNumber);
                 VipCategory vipCategory = vipCategoryService.getByCategory(vip.getCategory());
-                String scorePos=vipCategory.getScorePos();
-                if(scorePos==null){
-                    scorePos="";
+                String scorePos = vipCategory.getScorePos();
+                if (scorePos == null) {
+                    scorePos = "";
                 }
                 String[] vipAvailablePosArray = scorePos.split(",");
                 for (int i = 0; i < vipAvailablePosArray.length; i++) {
@@ -861,7 +861,7 @@ public class GuestOutController {
         String reachTime;
         String leaveTime = timeService.getNowLong();
         String company;
-        String guestSource=null;
+        String guestSource = null;
         Double consume;
         Double deposit;
         String groupName = null;
@@ -1011,7 +1011,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2,guestSource};
+        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2, guestSource};
         debtPayService.companySplit1 = null;
         debtPayService.companySplit2 = null;
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
@@ -1258,6 +1258,7 @@ public class GuestOutController {
         debtHistoryService.delete(debtHistoryList);
         /*处理结账币种信息*/
         List<DebtPay> debtPayList = debtPayService.getListByPaySerial(debtPay.getPaySerial());
+        StringBuilder paySerialList = new StringBuilder();
         for (DebtPay pay : debtPayList) {
             String currency = pay.getCurrency();
             String currencyAdd = pay.getCurrencyAdd();
@@ -1266,6 +1267,7 @@ public class GuestOutController {
             if (debtPay.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
                 vipService.updateVipScore(debtPay.getVipNumber(), money);
             }
+            paySerialList.append(pay.getPaySerial()).append(",");
         }
         debtPayService.delete(debtPayList);
         /*判断单位协议，去掉协议消费*/
@@ -1314,7 +1316,7 @@ public class GuestOutController {
         }
         checkInHistoryLogService.delete(checkInHistoryLogList);
         /*操作员记录*/
-        userLogService.addUserLog("叫回账单:" + checkOutSerial + " 房号:" + roomString.toString(), userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
+        userLogService.addUserLog("叫回账单:" + checkOutSerial + " 房号:" + roomString.toString() + "结账流水号:" + paySerialList.toString(), userLogService.reception, userLogService.guestOutReverse, checkOutSerial);
         return 0;
     }
 
