@@ -710,3 +710,7 @@ ALTER TABLE debt_pay ADD guest_source varchar(100) NULL;
 ALTER TABLE room_snapshot ADD repeat_rent int NULL;
 #2018-10-19 增加算积分的消费点
 ALTER TABLE vip_category ADD score_pos VARCHAR(200) NULL COMMENT '算积分的消费';
+#2018-10-25 会员明细增加积分
+ALTER TABLE vip_detail ADD score DOUBLE NULL;
+ALTER TABLE vip_detail ADD remain_score DOUBLE NULL;
+ALTER TABLE vip_detail_history ADD score DOUBLE NULL;

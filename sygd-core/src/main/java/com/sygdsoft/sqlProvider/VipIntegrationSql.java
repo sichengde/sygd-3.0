@@ -9,15 +9,6 @@ public class VipIntegrationSql {
     public VipIntegrationSql() {
     }
 
-    public String updateVipRemain(Map<String, Object> parameters){
-        String basic="update vip set remain=ifnull(remain,0)+#{money}";
-        Boolean withScore=(Boolean) parameters.get("withScore");
-        if(withScore!=null&&withScore){
-            basic+=",score=ifnull(score,0)+#{real} ";
-        }
-        basic+=" where vip_number=#{vipNumber}";
-        return basic;
-    }
     public String getPay(Map<String, Object> parameters){
         String userId = (String) parameters.get("userId");
         String currency = (String) parameters.get("currency");

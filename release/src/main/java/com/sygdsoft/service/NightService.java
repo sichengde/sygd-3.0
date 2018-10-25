@@ -86,6 +86,8 @@ public class NightService {
     CheckInHistoryLogService checkInHistoryLogService;
     @Autowired
     SzMath szMath;
+    @Autowired
+    VipDetailService vipDetailService;
 
     @Transactional(rollbackFor = Exception.class)
     public void nightActionLogic(MessageSendingOperations<String> messagingTemplate) throws Exception {
@@ -138,6 +140,7 @@ public class NightService {
                     for (String dateString : dateList) {
                         if (dateString.equals(timeService.numberShortFormat.format(checkIn.getReachTime())) && dateString.equals(timeService.numberShortFormat.format(debtDate))) {
                             vipService.updateVipScore(checkIn.getVipNumber(), checkIn.getFinalRoomPrice());
+                            vipDetailService.addMoneyDetail(checkIn.getVipNumber(), null, null, checkIn.getFinalRoomPrice(),null, "接待",vipService.JF,vipService.HYR,checkIn.getSelfAccount(),checkIn.getGroupAccount(),null);
                             userLogService.addUserLog("会员日积分,卡号:" + checkIn.getVipNumber() + "积分:" + checkIn.getFinalRoomPrice(), userLogService.vip, userLogService.addScore, checkIn.getVipNumber());
                         }
                     }

@@ -1,7 +1,5 @@
 package com.sygdsoft.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.sygdsoft.conf.dataSource.HotelGroup;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.mapper.VipMapper;
 import com.sygdsoft.model.Vip;
@@ -10,12 +8,7 @@ import com.sygdsoft.model.VipDetail;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,11 +18,16 @@ import java.util.List;
 @Service
 @SzMapper(id = "vip")
 public class VipService extends BaseService<Vip> {
+    public String JF = "积分变更";
+    public String YE = "余额变更";
     public String HY = "会员余额结账";//会员余额结账
     public String XJ = "会员现金结账";
     public String CZ = "会员充值";
     public String KKCZ = "会员开卡充值";
     public String TK = "会员退款";
+    public String JFBD = "手动变更积分";
+    public String LJJF = "消费积分累计";
+    public String HYR = "会员日积分";
     public String KS = "客史";
     public String JH = "会员结账叫回";
     @Autowired
@@ -78,8 +76,8 @@ public class VipService extends BaseService<Vip> {
     /**
      * 更新会员余额
      */
-    public void updateVipRemain(String vipNumber, Double deserve,Double real,boolean withScore) {
-        vipMapper.updateVipRemain(vipNumber, deserve,real,withScore);
+    public void updateVipRemain(String vipNumber, Double deserve, Double real) {
+        vipMapper.updateVipRemain(vipNumber, deserve, real);
     }
 
     /**
@@ -100,16 +98,16 @@ public class VipService extends BaseService<Vip> {
     /**
      * 结账时使用用会员币种（离店，商品零售）
      */
-    public String vipPay(String vipNumber, String payCategory, Double money, String description, String selfAccount, String groupAccount,String paySerial,String pointOfSale) throws Exception {
-        Vip vip=getByVipNumber(vipNumber);
+    public String vipPay(String vipNumber, String payCategory, Double money, String description, String selfAccount, String groupAccount, String paySerial, String pointOfSale) throws Exception {
+        Vip vip = getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
         vipDetail.setVipNumber(vipNumber);
         vipDetail.setPointOfSale(pointOfSale);
         vipDetail.setConsume(money);
-        if(money>0) {
-            vipDetail.setCategory(HY);
-        }else {
-            vipDetail.setCategory(JH);
+        if (money > 0) {
+            vipDetail.setDescription(HY);
+        } else {
+            vipDetail.setDescription(JH);
         }
         vipDetail.setDescription("会员" + payCategory + description);
         vipDetail.setCurrency("会员");
@@ -118,29 +116,37 @@ public class VipService extends BaseService<Vip> {
         vipDetail.setPaySerial(paySerial);
         vipDetail.setUserId(userService.getCurrentUser());
         vipDetail.setDoTime(timeService.getNow());
-        vipDetail.setRemain(vip.getNotNullVipRemain()-money);
-        vipDetailService.add(vipDetail);
-        String remainMessage="记会员至:"+vipNumber;
-        VipCategory vipCategory=vipCategoryService.getByCategory(vip.getCategory());
+        vipDetail.setRemain(vip.getNotNullVipRemain() - money);
+        String remainMessage = "记会员至:" + vipNumber;
+        VipCategory vipCategory = vipCategoryService.getByCategory(vip.getCategory());
         if (payCategory.contains("积分")) {
             Double scoreRate;
-            if(vipCategory==null||vipCategory.getScoreRate()==null){
+            if (vipCategory == null || vipCategory.getScoreRate() == null) {
                 throw new Exception("选择积分结算，但没有在系统维护中定义积分比率");
-            }else {
-                scoreRate=vipCategory.getScoreRate();
+            } else {
+                scoreRate = vipCategory.getScoreRate();
             }
-            if(vip.getNotNullScore()<money / scoreRate){
-                throw new Exception("积分不足,当前积分："+vip.getScore()+" 所需积分:"+money / scoreRate);
+            if (vip.getNotNullScore() < money / scoreRate) {
+                throw new Exception("积分不足,当前积分：" + vip.getScore() + " 所需积分:" + money / scoreRate);
             }
-            remainMessage+=",积分:" + (vip.getScore()-money/scoreRate);
+            remainMessage += ",积分:" + (vip.getScore() - money / scoreRate);
             updateVipScore(vipNumber, -money / scoreRate);
+            vipDetail.setCategory(JF);
+            vipDetail.setScore(-money / scoreRate);
+            vipDetail.setRemain(vip.getNotNullVipRemain());
+            vipDetail.setRemainScore(vip.getScore() - money / scoreRate);
         } else {
-            if(vip.getRemain()<money){
-                throw new Exception("余额不足,当前余额:"+vip.getRemain()+" 支付金额:"+money);
+            vipDetail.setCategory(YE);
+            vipDetail.setPay(-money);
+            vipDetail.setRemain(vip.getNotNullVipRemain() - money);
+            vipDetail.setRemainScore(vip.getNotNullScore());
+            if (vip.getRemain() < money) {
+                throw new Exception("余额不足,当前余额:" + vip.getRemain() + " 支付金额:" + money);
             }
-            remainMessage+=",余额:" + (vip.getRemain()-money);
-            updateVipRemain(vipNumber, -money,-money,false);
+            remainMessage += ",余额:" + (vip.getRemain() - money);
+            updateVipRemain(vipNumber, -money, -money);
         }
+        vipDetailService.add(vipDetail);
         return remainMessage;
     }
 }

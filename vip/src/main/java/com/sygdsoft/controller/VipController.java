@@ -12,13 +12,14 @@ import com.sygdsoft.util.SzMath;
 import com.sygdsoft.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.sygdsoft.util.NullJudgement.ifNotNullGetString;
-import static com.sygdsoft.util.NullJudgement.nullToZero;
 
 /**
  * Created by 舒展 on 2016-05-09.
@@ -61,7 +62,7 @@ public class VipController {
             if (vipList.get(0).getId().equals(vipList.get(vipList.size() / 2).getId())) {
                 timeService.setNow();
                 String s = userLogService.parseListDeference(vipList);
-                userLogService.addUserLog(s, userLogService.vip, userLogService.update,null);
+                userLogService.addUserLog(s, userLogService.vip, userLogService.update, null);
                 vipService.update(vipList.subList(0, vipList.size() / 2));
                 return;
             }
@@ -79,30 +80,27 @@ public class VipController {
     @Transactional(rollbackFor = Exception.class)
     public Integer vipAdd(@RequestBody Vip vip) throws Exception {
         timeService.setNow();
-        userLogService.addUserLog("卡号:" + vip.getVipNumber() + "金额:" + vip.getRemain(), userLogService.vip, userLogService.vipCreate,vip.getVipNumber());
+        userLogService.addUserLog("卡号:" + vip.getVipNumber() + "金额:" + vip.getRemain(), userLogService.vip, userLogService.vipCreate, vip.getVipNumber());
         /*身份证转生日*/
-        String idCard=vip.getCardId();
-        if(idCard!=null) {
+        String idCard = vip.getCardId();
+        if (idCard != null) {
             if (idCard.length() == 18) {
                 vip.setBirthdayTime(timeService.stringToDateShort(idCard.substring(6, 10) + "-" + idCard.substring(10, 12) + "-" + idCard.substring(12, 14)));
             }
         }
-        String currency=vip.getCurrencyPost().getCurrency();
-        String currencyAdd=vip.getCurrencyPost().getCurrencyAdd();
-        Double realMoney=vip.getRemain();//实际充值的金额，因为计表后该值将会被抵用金额覆盖，所以在此先保留;
-        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency+"/"+szMath.ifNotNullGetString(currencyAdd),timeService.dateToStringShort(vip.getRemainTime()),vip.getWorkCompany(),vip.getRemark()};
-        if("y".equals(otherParamService.getValueByName("充值算积分"))){
-            vip.setScore(vip.getRemain());
-        }
+        String currency = vip.getCurrencyPost().getCurrency();
+        String currencyAdd = vip.getCurrencyPost().getCurrencyAdd();
+        Double realMoney = vip.getRemain();//实际充值的金额，因为计表后该值将会被抵用金额覆盖，所以在此先保留;
+        String[] params = new String[]{otherParamService.getValueByName("酒店名称"), vip.getVipNumber(), vip.getCategory(), vip.getCardId(), vip.getName(), vip.getPhone(), String.valueOf(vip.getRemain()), ifNotNullGetString(vip.getDeserve()), currency + "/" + szMath.ifNotNullGetString(currencyAdd), timeService.dateToStringShort(vip.getRemainTime()), vip.getWorkCompany(), vip.getRemark()};
         if (vip.getDeserve() != null) {
             vip.setRemain(vip.getDeserve());
         }
         vipService.add(vip);
         if (vip.getRemain() != null) {//有金额的话就增加一条充值记录
             /*增加一条账务明细*/
-            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(), currency,vip.getPointOfSale(),vipService.KKCZ);
+            vipDetailService.addMoneyDetail(vip.getVipNumber(), realMoney, vip.getDeserve(),null, currency, vip.getPointOfSale(),vipService.YE, vipService.KKCZ);
         }
-        debtService.parseCurrency(currency,currencyAdd,realMoney,null,null,"会员发卡充值",null,null,null );
+        debtService.parseCurrency(currency, currencyAdd, realMoney, null, null, "会员发卡充值", null, null, null);
         /*判断币种，这里允许挂单位账*/
         return reportService.generateReport(null, params, "vipAdd", "pdf");
     }
@@ -126,18 +124,19 @@ public class VipController {
             vipDetailHistoryList.add(new VipDetailHistory(vipDetail, vipHistory.getId()));
         }
         vipDetailHistoryService.add(vipDetailHistoryList);
-        userLogService.addUserLog("注销:" + vipNumber, userLogService.vip, userLogService.cancel,vipNumber);
+        userLogService.addUserLog("注销:" + vipNumber, userLogService.vip, userLogService.cancel, vipNumber);
     }
 
     /**
      * 充值
+     *
      * @return
      */
     @RequestMapping(value = "vipRecharge")
     @Transactional(rollbackFor = Exception.class)
     public JSONObject vipRecharge(@RequestBody VipRecharge vipRecharge) throws Exception {
         /*安全校验*/
-        if(!this.registerService.securityStr.remove(vipRecharge.getToken())){
+        if (!this.registerService.securityStr.remove(vipRecharge.getToken())) {
             throw new Exception("充值失败");
         }
         timeService.setNow();
@@ -145,18 +144,17 @@ public class VipController {
         String pointOfSale = vipRecharge.getPointOfSale();
         Double money = vipRecharge.getMoney();
         Double deserve = vipRecharge.getDeserve();
-        String currency=vipRecharge.getCurrencyPost().getCurrency();
-        String currencyAdd=vipRecharge.getCurrencyPost().getCurrencyAdd();
-        boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
-        vipService.updateVipRemain(vipNumber, deserve,money,withScore);
+        String currency = vipRecharge.getCurrencyPost().getCurrency();
+        String currencyAdd = vipRecharge.getCurrencyPost().getCurrencyAdd();
+        vipService.updateVipRemain(vipNumber, deserve, money);
         /*增加一条账务明细*/
-        vipDetailService.addMoneyDetail(vipNumber, money, deserve, currency,pointOfSale);
-        userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money+" 抵用: "+deserve+" 币种: "+currency+"/"+currencyAdd, userLogService.vip, userLogService.recharge,vipNumber);
-        String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency+"/"+currencyAdd};
-        debtService.parseCurrency(currency,currencyAdd,money,null,null,"会员充值",null,null ,null);
-        JSONObject jsonObjectR=new JSONObject();
-        jsonObjectR.put("report",reportService.generateReport(null, param, "vipRecharge", "pdf"));
-        jsonObjectR.put("vip",vipService.getByVipNumber(vipNumber));
+        vipDetailService.addMoneyDetail(vipNumber, money, deserve,null, currency, pointOfSale,vipService.YE,vipService.CZ);
+        userLogService.addUserLog("卡号:" + vipNumber + " 充值:" + money + " 抵用: " + deserve + " 币种: " + currency + "/" + currencyAdd, userLogService.vip, userLogService.recharge, vipNumber);
+        String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency + "/" + currencyAdd};
+        debtService.parseCurrency(currency, currencyAdd, money, null, null, "会员充值", null, null, null);
+        JSONObject jsonObjectR = new JSONObject();
+        jsonObjectR.put("report", reportService.generateReport(null, param, "vipRecharge", "pdf"));
+        jsonObjectR.put("vip", vipService.getByVipNumber(vipNumber));
         return jsonObjectR;
     }
 
@@ -172,14 +170,13 @@ public class VipController {
         Double deserve = Double.valueOf(params.get(2));
         String currency = params.get(3);
         String pointOfSale = params.get(4);
-        boolean withScore="y".equals(otherParamService.getValueByName("充值算积分"));
-        vipService.updateVipRemain(vipNumber, -deserve,-money,withScore);
-        vipDetailService.addRefundDetail(vipNumber, -money,-deserve,currency,pointOfSale);
-        userLogService.addUserLog("卡号:" + vipNumber + " 退款:" + money+" 抵用: "+deserve+" 币种: "+currency, userLogService.vip, userLogService.refund,vipNumber);
+        vipService.updateVipRemain(vipNumber, -deserve, -money);
+        vipDetailService.addMoneyDetail(vipNumber, -money, -deserve, null,currency, pointOfSale,vipService.YE,vipService.TK);
+        userLogService.addUserLog("卡号:" + vipNumber + " 退款:" + money + " 抵用: " + deserve + " 币种: " + currency, userLogService.vip, userLogService.refund, vipNumber);
         String[] param = new String[]{otherParamService.getValueByName("酒店名称"), vipNumber, String.valueOf(money), ifNotNullGetString(deserve), currency};
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put("report",reportService.generateReport(null, param, "vipRefund", "pdf"));
-        jsonObject.put("vip",vipService.getByVipNumber(vipNumber));
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("report", reportService.generateReport(null, param, "vipRefund", "pdf"));
+        jsonObject.put("vip", vipService.getByVipNumber(vipNumber));
         return jsonObject;
     }
 
@@ -187,9 +184,14 @@ public class VipController {
     public List<Vip> vipGet(@RequestBody Query query) throws Exception {
         return vipService.get(query);
     }
+
     @RequestMapping(value = "vipScoreAdjustment")
     public void vipScoreAdjustment(@RequestBody JSONObject jsonObject) throws Exception {
-        vipService.updateVipScore(jsonObject.getString("vipNumber"),jsonObject.getDouble("score"));
+        String vipNumber=jsonObject.getString("vipNumber");
+        String pointOfSale=jsonObject.getString("pointOfSale");
+        Double score=jsonObject.getDouble("score");
+        vipService.updateVipScore(vipNumber,score );
+        vipDetailService.addMoneyDetail(vipNumber, null, null, score,null, pointOfSale,vipService.JF,vipService.JFBD);
     }
 
 }

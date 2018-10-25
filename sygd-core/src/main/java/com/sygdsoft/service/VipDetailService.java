@@ -6,8 +6,6 @@ import com.sygdsoft.model.Vip;
 import com.sygdsoft.model.VipDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +14,7 @@ import java.util.List;
  */
 @Service
 @SzMapper(id = "vipDetail")
-public class VipDetailService extends BaseService<VipDetail>{
+public class VipDetailService extends BaseService<VipDetail> {
     @Autowired
     VipService vipService;
     @Autowired
@@ -25,58 +23,36 @@ public class VipDetailService extends BaseService<VipDetail>{
     TimeService timeService;
     @Autowired
     VipDetailMapper vipDetailMapper;
+
     /**
      * 增加一条充值记录
      */
     @HotelGroup
 
-    public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
-        addMoneyDetail(vipNumber, money, deserve, currency, pointOfSale,vipService.CZ);
+    public void addMoneyDetail(String vipNumber, Double money, Double deserve, Double score, String currency, String pointOfSale, String category,String description) throws Exception {
+        addMoneyDetail(vipNumber, money, deserve, score, currency, pointOfSale, category, description, null, null, null);
     }
-    public void addMoneyDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale,String category) throws Exception {
-        Vip vip=vipService.getByVipNumber(vipNumber);
+
+    public void addMoneyDetail(String vipNumber, Double money, Double deserve, Double score, String currency, String pointOfSale, String category, String description, String selfAccount, String groupAccount, String paySerial) throws Exception {
+        Vip vip = vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
         vipDetail.setVipNumber(vipNumber);
         vipDetail.setPay(money);
+        vipDetail.setScore(score);
         vipDetail.setDeserve(deserve);
         vipDetail.setCurrency(currency);
         vipDetail.setCategory(category);
         vipDetail.setUserId(userService.getCurrentUser());
         vipDetail.setDoTime(timeService.getNow());
         vipDetail.setRemain(vip.getRemain());
+        vipDetail.setRemainScore(vip.getScore());
         vipDetail.setPointOfSale(pointOfSale);
-        this.add(vipDetail);
-    }
 
-    /**
-     * 增加一条退款记录
-     */
-    @HotelGroup
-
-    public void addRefundDetail(String vipNumber,Double money,Double deserve,String currency,String pointOfSale) throws Exception {
-        Vip vip=vipService.getByVipNumber(vipNumber);
-        VipDetail vipDetail = new VipDetail();
-        vipDetail.setVipNumber(vipNumber);
-        vipDetail.setPay(money);
-        vipDetail.setDeserve(deserve);
-        vipDetail.setCurrency(currency);
-        vipDetail.setCategory(vipService.TK);
-        vipDetail.setUserId(userService.getCurrentUser());
-        vipDetail.setDoTime(timeService.getNow());
-        vipDetail.setRemain(vip.getRemain());
-        vipDetail.setPointOfSale(pointOfSale);
-        this.add(vipDetail);
-    }
-
-    /**
-     * 根据结账序列号删除
-     */
-    @HotelGroup
-
-    public void deleteBySerial(String paySerial) throws Exception {
-        VipDetail vipDetail=new VipDetail();
+        vipDetail.setDescription(description);
+        vipDetail.setSelfAccount(selfAccount);
+        vipDetail.setGroupAccount(groupAccount);
         vipDetail.setPaySerial(paySerial);
-        this.delete(vipDetail);
+        this.add(vipDetail);
     }
 
     /**
@@ -84,8 +60,8 @@ public class VipDetailService extends BaseService<VipDetail>{
      */
     @HotelGroup
 
-    public List<VipDetail> getByVipNumber(String vipNumber){
-        VipDetail vipDetailQuery=new VipDetail();
+    public List<VipDetail> getByVipNumber(String vipNumber) {
+        VipDetail vipDetailQuery = new VipDetail();
         vipDetailQuery.setVipNumber(vipNumber);
         return vipDetailMapper.select(vipDetailQuery);
     }

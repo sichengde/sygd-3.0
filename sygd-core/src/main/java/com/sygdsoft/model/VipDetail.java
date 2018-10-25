@@ -10,8 +10,9 @@ public class VipDetail extends BaseEntity {
     private String vipNumber;//会员卡号
     private String pointOfSale;//销售点
     private Double consume;//消费
-    private String currency;//消费
+    private String currency;//币种
     private Double pay;//充值
+    private Double score;//积分
     private Double deserve;//抵用金额（例如冲500抵用600）
     private String category;//支付方式?余额还是现金
     private String description;//描述
@@ -21,6 +22,7 @@ public class VipDetail extends BaseEntity {
     private String userId;//操作员号
     private Date doTime;//操作时间
     private Double remain;//余额
+    private Double remainScore;//余额
 
     public VipDetail() {
     }
@@ -135,5 +137,21 @@ public class VipDetail extends BaseEntity {
 
     public void setRemain(Double remain) {
         this.remain = remain;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
+    public Double getRemainScore() {
+        return remainScore;
+    }
+
+    public void setRemainScore(Double remainScore) {
+        this.remainScore = remainScore;
     }
 }
