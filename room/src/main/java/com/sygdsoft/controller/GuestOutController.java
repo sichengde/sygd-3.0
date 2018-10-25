@@ -91,6 +91,8 @@ public class GuestOutController {
     PayPointOfSaleService payPointOfSaleService;
     @Autowired
     VipCategoryService vipCategoryService;
+    @Autowired
+    VipDetailService vipDetailService;
 
     String checkOutSerial;
     GuestOut guestOutGlobal;
@@ -673,6 +675,7 @@ public class GuestOutController {
                 availableMap.put(debt.getPointOfSale(), availableMap.getOrDefault(debt.getPointOfSale(), 0.0) + debt.getNotNullConsume());
             }
         }
+        String selfAccount=null;
         for (CurrencyPost currencyPost : currencyPostList) {
             String currency = currencyPost.getCurrency();
             String currencyAdd = currencyPost.getCurrencyAdd();
@@ -687,6 +690,7 @@ public class GuestOutController {
                 vipNumber = currencyAdd.split(" ")[0];
             } else if (groupAccount == null) {
                 CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));
+                selfAccount=checkIn.getSelfAccount();
                 vipNumber = checkIn.getVipNumber();
             } else {
                 CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
@@ -706,11 +710,13 @@ public class GuestOutController {
                     //余额充足直接扣
                     if (remain - money >= 0) {
                         vipService.updateVipScore(vipNumber, money);
+                        vipDetailService.addMoneyDetail(vipNumber, null, null, remain,currency, "接待",vipService.JF,vipService.LJJF,selfAccount,groupAccount,serialService.getPaySerial());
                         availableMap.put(vipAvailablePos, remain - money);
                         break;
                     } else if (remain > 0) {
                         //余额不足能扣多少扣多少
                         vipService.updateVipScore(vipNumber, remain);
+                        vipDetailService.addMoneyDetail(vipNumber, null, null, remain,currency, "接待",vipService.JF,vipService.LJJF,selfAccount,groupAccount,serialService.getPaySerial());
                         availableMap.put(vipAvailablePos, 0.0);
                         money = money - remain;
                     }
@@ -1266,7 +1272,8 @@ public class GuestOutController {
             Double money = pay.getDebtMoney();
             debtPayService.cancelPay(currency, currencyAdd, money, pay.getPaySerial(), "接待", "接待");
             if (debtPay.getVipNumber() != null && currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {//有会员卡号并且币种是积分币种
-                vipService.updateVipScore(debtPay.getVipNumber(), money);
+                vipService.updateVipScore(debtPay.getVipNumber(), -money);
+                vipDetailService.addMoneyDetail(debtPay.getVipNumber(), null, null, -money,debtPay.getCurrency(), "接待",vipService.JF,vipService.JH,pay.getSelfAccount(),pay.getGroupAccount(),pay.getPaySerial());
             }
             paySerialList.append(pay.getPaySerial()).append(",");
         }

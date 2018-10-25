@@ -13,6 +13,7 @@ public class VipDetailHistory extends BaseEntity{
     private Double consume;//消费
     private String currency;//消费
     private Double pay;//充值
+    private Double score;//积分
     private Double deserve;//抵用金额（例如冲500抵用600）
     private String category;//支付方式?余额还是现金
     private String description;//描述
@@ -40,6 +41,7 @@ public class VipDetailHistory extends BaseEntity{
         this.paySerial = vipDetail.getPaySerial();
         this.userId = vipDetail.getUserId();
         this.doTime = vipDetail.getDoTime();
+        this.score = vipDetail.getScore();
     }
 
     public Integer getFatherId() {
@@ -152,5 +154,13 @@ public class VipDetailHistory extends BaseEntity{
 
     public void setDoTime(Date doTime) {
         this.doTime = doTime;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 }
