@@ -686,9 +686,7 @@ public class GuestOutController {
             }
             String vipNumber = null;
             /*如果是会员结账，则积分记录到结账账户*/
-            if ("会员".equals(currency)) {
-                vipNumber = currencyAdd.split(" ")[0];
-            } else if (groupAccount == null) {
+            if (groupAccount == null) {
                 CheckIn checkIn = checkInService.getByRoomId(roomIdList.get(0));
                 selfAccount=checkIn.getSelfAccount();
                 vipNumber = checkIn.getVipNumber();

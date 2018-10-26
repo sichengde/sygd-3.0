@@ -84,6 +84,7 @@ public class JoinRoomController {
             checkInService.updateSelective(checkIn);
         }
         /*新建一个团队开房信息*/
+        CheckIn checkInLeader = checkInService.getByRoomId(roomList.get(0));
         CheckInGroup checkInGroup=new CheckInGroup();
         if(sameCompany){
             checkInGroup.setCompany(lastCompany);
@@ -92,6 +93,7 @@ public class JoinRoomController {
         checkInGroup.setName("联房" + groupAccount);
         checkInGroup.setLeader("联房");
         checkInGroup.setLeaderRoom(roomList.get(0));
+        checkInGroup.setVipNumber(checkInLeader.getVipNumber());
         checkInGroup.setDeposit(totalDeposit);
         checkInGroup.setConsume(totalConsume);
         checkInGroup.setPay(totalPay);
