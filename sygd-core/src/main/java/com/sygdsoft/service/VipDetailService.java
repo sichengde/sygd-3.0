@@ -33,7 +33,11 @@ public class VipDetailService extends BaseService<VipDetail> {
         addMoneyDetail(vipNumber, money, deserve, score, currency, pointOfSale, category, description, null, null, null);
     }
 
+
     public void addMoneyDetail(String vipNumber, Double money, Double deserve, Double score, String currency, String pointOfSale, String category, String description, String selfAccount, String groupAccount, String paySerial) throws Exception {
+        addMoneyDetail(vipNumber, money, deserve, score, currency, pointOfSale, category, description, selfAccount, groupAccount, paySerial,userService.getCurrentUser());
+    }
+    public void addMoneyDetail(String vipNumber, Double money, Double deserve, Double score, String currency, String pointOfSale, String category, String description, String selfAccount, String groupAccount, String paySerial,String userId) throws Exception {
         Vip vip = vipService.getByVipNumber(vipNumber);
         VipDetail vipDetail = new VipDetail();
         vipDetail.setVipNumber(vipNumber);
@@ -42,7 +46,7 @@ public class VipDetailService extends BaseService<VipDetail> {
         vipDetail.setDeserve(deserve);
         vipDetail.setCurrency(currency);
         vipDetail.setCategory(category);
-        vipDetail.setUserId(userService.getCurrentUser());
+        vipDetail.setUserId(userId);
         vipDetail.setDoTime(timeService.getNow());
         vipDetail.setRemain(vip.getRemain());
         vipDetail.setRemainScore(vip.getScore());
