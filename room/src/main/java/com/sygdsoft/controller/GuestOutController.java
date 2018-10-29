@@ -707,7 +707,7 @@ public class GuestOutController {
                     //余额充足直接扣
                     if (remain - money >= 0) {
                         vipService.updateVipScore(vipNumber, money);
-                        vipDetailService.addMoneyDetail(vipNumber, null, null, remain,currency, "接待",vipService.JF,vipService.LJJF,selfAccount,groupAccount,serialService.getPaySerial());
+                        vipDetailService.addMoneyDetail(vipNumber, null, null, money,currency, "接待",vipService.JF,vipService.LJJF,selfAccount,groupAccount,serialService.getPaySerial());
                         availableMap.put(vipAvailablePos, remain - money);
                         break;
                     } else if (remain > 0) {
