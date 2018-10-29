@@ -157,7 +157,7 @@ public class GuestOutController {
             /*查找中间结算，没有离店序列号的都是中间结算，找到后更新结账序列号，因为中间结算的结账明细没有结账序列号*/
             this.debtPayMiddle(guestOut);
             /*检查会员积分*/
-            this.checkVip(guestOut);
+            this.checkVip(guestOut.getGroupAccount(),guestOut.getRoomIdList(),guestOut.getCurrencyPayList());
             /*结账记录，循环分单，记录操作员挂账信息*/
             String changeDebt = this.debtPayProcess(guestOut.getCurrencyPayList(), guestOut.getRoomIdList(), guestOut.getGroupAccount(), "离店结算");
             /*判断押金币种，如果是会员则需要把钱还回去*/
@@ -203,6 +203,8 @@ public class GuestOutController {
             String groupAccount = guestOutMiddle.getGroupAccount();
             Double payMoney = guestOutMiddle.getPayMoney();
             String remark = guestOutMiddle.getRemark();
+            /*检查会员积分*/
+            this.checkVip(groupAccount, roomIdList, guestOutMiddle.getCurrencyPayList());
             CheckIn checkIn;
             CheckInGroup checkInGroup = null;
             if (groupAccount == null) {
@@ -665,10 +667,7 @@ public class GuestOutController {
     /**
      * 如果有会员号，并且结算的时候没有用会员余额或者积分计算的话，累计积分
      */
-    private void checkVip(GuestOut guestOut) throws Exception {
-        String groupAccount = guestOut.getGroupAccount();
-        List<String> roomIdList = guestOut.getRoomIdList();
-        List<CurrencyPost> currencyPostList = guestOut.getCurrencyPayList();
+    private void checkVip(String groupAccount,List<String> roomIdList ,List<CurrencyPost> currencyPostList ) throws Exception {
         HashMap<String, Double> availableMap = new HashMap<>();//<每个销售点的金额>
         for (Debt debt : debtList) {
             if (debt.getConsume() != null) {
