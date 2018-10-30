@@ -1015,7 +1015,7 @@ public class GuestOutController {
                 cancelMsg += "补交金额：" + -currencyPost.getMoney() + "(" + currencyPost.getCurrency() + ")";
             }
         }
-        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), ifNotNullGetString(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, ifNotNullGetString(deposit), ifNotNullGetString(totalRoomConsume), ifNotNullGetString(totalRoomShopConsume), ifNotNullGetString(otherConsume), guestInVip, ifNotNullGetString(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2, guestSource};
+        String[] parameters = new String[]{title, guestInfo.guestName, roomID, serialService.getPaySerial(), reachTime, leaveTime, company, groupName, userService.getCurrentUser(), timeService.getNowLong(), szMath.formatTwoDecimal(consume), changeDebt, cancelMsg, account, roomIdAll, finalRoomPrice, szMath.formatTwoDecimal(deposit), szMath.formatTwoDecimal(totalRoomConsume), szMath.formatTwoDecimal(totalRoomShopConsume), szMath.formatTwoDecimal(otherConsume), guestInVip, szMath.formatTwoDecimal(fpMoney), guestOut.getRemark(), guestInfo.phone, guestInfo.sex, debtPayService.companySplit1, debtPayService.companySplit2, guestSource};
         debtPayService.companySplit1 = null;
         debtPayService.companySplit2 = null;
         return reportService.generateReport(templateList, parameters, "guestOut", "pdf");
