@@ -155,8 +155,7 @@ public class DebtPayService extends BaseService<DebtPay> {
                         }
                     }
                 } else {
-                    CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
-                    changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, checkInGroup.getGroupAccount(), paySerial, pointOfSale);
+                    changeDebt += vipService.vipPay(vipNumber, payCategory, money, description, null, groupAccount, paySerial, pointOfSale);
                 }
                 break;
             case "转单位"://转单位
