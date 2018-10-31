@@ -126,7 +126,7 @@ public class GuestOutController {
             for (Debt debt : guestOut.getDebtAddList()) {
                 totalTest += debt.getConsume();
             }
-            if (!Objects.equals(totalCurrency, (double) (Math.round(totalTest * 100) / 100.0))) {
+            if (!Objects.equals(szMath.formatTwoDecimalReturnDouble(totalCurrency), szMath.formatTwoDecimalReturnDouble(totalTest))) {
                 throw new Exception("结账金额有变动，请重新进入结账页面");
             }
             //离店数据校验,发现bug之后就可以删了--完毕
