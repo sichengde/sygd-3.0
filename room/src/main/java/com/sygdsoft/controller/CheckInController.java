@@ -96,13 +96,18 @@ public class CheckInController {
             if (checkInGroup.getLeaderRoom().equals(checkIn.getRoomId())) {
                 CheckInGroup checkInGroupUpdate = new CheckInGroup();
                 checkInGroupUpdate.setId(checkInGroup.getId());
+                boolean changed=false;
                 if (checkIn.getRemark() != null && !checkIn.getRemark().equals(checkIn1.getRemark())) {
+                    changed=true;
                     checkInGroupUpdate.setRemark(checkIn.getRemark());
                 }
                 if (checkIn.getVipNumber() != null && !checkIn.getVipNumber().equals(checkIn1.getVipNumber())) {
+                    changed=true;
                     checkInGroupUpdate.setVipNumber(checkIn.getVipNumber());
                 }
-                checkInGroupService.updateSelective(checkInGroupUpdate);
+                if(changed) {
+                    checkInGroupService.updateSelective(checkInGroupUpdate);
+                }
             }
         }
     }
