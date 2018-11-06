@@ -55,12 +55,15 @@ public class RoomCategorySaleReport {
         List<RoomSnapshot> roomSnapshotList = new ArrayList<>();
         if ("category".equals(type)) {
             roomSnapshotList = roomSnapshotService.getSumList(beginTime, endTime, "category");
+            RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime, null);
+            roomSnapshot.setCategory("合计");
+            roomSnapshotList.add(roomSnapshot);
         } else if ("room_id".equals(type)) {
             roomSnapshotList = roomSnapshotService.getSumList(beginTime, endTime, "room_id");
+            RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime, null);
+            roomSnapshot.setRoomId("合计");
+            roomSnapshotList.add(roomSnapshot);
         }
-        RoomSnapshot roomSnapshot=roomSnapshotService.getSumByDate(beginTime, endTime, null);
-        roomSnapshot.setRoomId("合计");
-        roomSnapshotList.add(roomSnapshot);
         roomCategoryParse.setRoomSnapshotList(roomSnapshotList);
         /*设置备注信息*/
         String remark = "接待人数" + guestIntegrationService.getSumNumByDate(beginTime, endTime, null);
