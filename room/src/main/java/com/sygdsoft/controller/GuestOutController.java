@@ -684,6 +684,9 @@ public class GuestOutController {
             CheckInGroup checkInGroup = checkInGroupService.getByGroupAccount(groupAccount);
             vipNumber = checkInGroup.getVipNumber();
         }
+        if (vipNumber == null) {
+            return;
+        }
         Vip vip = vipService.getByVipNumber(vipNumber);
         VipCategory vipCategory = vipCategoryService.getByCategory(vip.getCategory());
         String scorePos = vipCategory.getScorePos();
@@ -691,43 +694,41 @@ public class GuestOutController {
             scorePos = "";
         }
         String[] vipAvailablePosArray = scorePos.split(",");
-        if (vipNumber != null) {
-            for (CurrencyPost currencyPost : currencyPostList) {
-                String currency = currencyPost.getCurrency();
-                /*如果是会员结账，在vipService里处理*/
-                String currencyAdd = currencyPost.getCurrencyAdd();
-                Double money = currencyPost.getMoney();
-                /*转哑房不判断*/
-                if ("转哑房".equals(currency)) {
-                    return;
-                }
-                if (currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
-                    for (int i = 0; i < vipAvailablePosArray.length; i++) {
-                        String vipAvailablePos = vipAvailablePosArray[i];
-                        Double remain = availableMap.getOrDefault(vipAvailablePos, 0.0);
-                        //余额充足直接扣
-                        if (remain - money >= 0) {
-                            vipService.updateVipScore(vipNumber, money);
-                            vipDetailService.addMoneyDetail(vipNumber, null, null, money, currency, "接待", vipService.JF, vipService.LJJF, selfAccount, groupAccount, serialService.getPaySerial());
-                            availableMap.put(vipAvailablePos, remain - money);
-                            break;
-                        } else if (remain > 0) {
-                            //余额不足能扣多少扣多少
-                            vipService.updateVipScore(vipNumber, remain);
-                            vipDetailService.addMoneyDetail(vipNumber, null, null, remain, currency, "接待", vipService.JF, vipService.LJJF, selfAccount, groupAccount, serialService.getPaySerial());
-                            availableMap.put(vipAvailablePos, 0.0);
-                            money = money - remain;
-                        }
+        for (CurrencyPost currencyPost : currencyPostList) {
+            String currency = currencyPost.getCurrency();
+            /*如果是会员结账，在vipService里处理*/
+            String currencyAdd = currencyPost.getCurrencyAdd();
+            Double money = currencyPost.getMoney();
+            /*转哑房不判断*/
+            if ("转哑房".equals(currency)) {
+                return;
+            }
+            if (currencyService.get(new Query("currency=" + util.wrapWithBrackets(currency))).get(0).getNotNullScore()) {
+                for (int i = 0; i < vipAvailablePosArray.length; i++) {
+                    String vipAvailablePos = vipAvailablePosArray[i];
+                    Double remain = availableMap.getOrDefault(vipAvailablePos, 0.0);
+                    //余额充足直接扣
+                    if (remain - money >= 0) {
+                        vipService.updateVipScore(vipNumber, money);
+                        vipDetailService.addMoneyDetail(vipNumber, null, null, money, currency, "接待", vipService.JF, vipService.LJJF, selfAccount, groupAccount, serialService.getPaySerial());
+                        availableMap.put(vipAvailablePos, remain - money);
+                        break;
+                    } else if (remain > 0) {
+                        //余额不足能扣多少扣多少
+                        vipService.updateVipScore(vipNumber, remain);
+                        vipDetailService.addMoneyDetail(vipNumber, null, null, remain, currency, "接待", vipService.JF, vipService.LJJF, selfAccount, groupAccount, serialService.getPaySerial());
+                        availableMap.put(vipAvailablePos, 0.0);
+                        money = money - remain;
                     }
                 }
             }
-            /*如果有剩下的，在这里结算*/
-            for (String vipAvailablePos : vipAvailablePosArray) {
-                Double remain = availableMap.getOrDefault(vipAvailablePos, 0.0);
-                if (remain > 0) {
-                    vipService.updateVipScore(vipNumber, remain);
-                    vipDetailService.addMoneyDetail(vipNumber, null, null, remain, null, "接待", vipService.JF, vipService.LJJF, selfAccount, groupAccount, serialService.getPaySerial());
-                }
+        }
+        /*如果有剩下的，在这里结算*/
+        for (String vipAvailablePos : vipAvailablePosArray) {
+            Double remain = availableMap.getOrDefault(vipAvailablePos, 0.0);
+            if (remain > 0) {
+                vipService.updateVipScore(vipNumber, remain);
+                vipDetailService.addMoneyDetail(vipNumber, null, null, remain, null, "接待", vipService.JF, vipService.LJJF, selfAccount, groupAccount, serialService.getPaySerial());
             }
         }
     }
