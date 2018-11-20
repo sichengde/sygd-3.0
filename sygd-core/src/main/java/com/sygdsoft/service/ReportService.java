@@ -6,7 +6,8 @@ import com.sygdsoft.model.FieldTemplate;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPrintServiceExporter;
-import net.sf.jasperreports.engine.export.JRPrintServiceExporterParameter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -189,11 +190,13 @@ public class ReportService {
         if(ps==null){
             return;
         }
-        JRAbstractExporter je = new JRPrintServiceExporter();
-        je.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        je.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, ps);
-        je.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, false);
-        je.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, false);
+        JRPrintServiceExporter je = new JRPrintServiceExporter();
+        SimplePrintServiceExporterConfiguration configuration = new SimplePrintServiceExporterConfiguration();
+        configuration.setPrintService(ps);
+        configuration.setDisplayPageDialog(false);
+        configuration.setDisplayPrintDialog(false);
+        je.setExporterInput(new SimpleExporterInput(jasperPrint));
+        je.setConfiguration(configuration);
         try {
             je.exportReport();
         } catch (JRException e) {

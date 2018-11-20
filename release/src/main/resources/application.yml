@@ -1,7 +1,5 @@
 server:
     port: 8080
-    session:
-      timeout: 0
 logging:
     level:
         com.sygdsoft: INFO
@@ -11,7 +9,7 @@ night:
 spring:
     datasource:
         name: hotel
-        url: jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=true
+        url: jdbc:mysql://localhost:3306/hotel?characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
         username: hotel
         password: q123
         # 使用druid数据源
@@ -30,26 +28,3 @@ spring:
         testOnReturn: false
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
-    mvc:
-        view:
-            suffix: .html
-#以下属性不可用
-#mybatis:
-#    pagehelper:
-#        dialect: mysql
-#        reasonable: true
-#        supportMethodsArguments: true
-#        returnPageInfo: check
-#        params: count=countSql
-#    mapper:
-#        mappers: tk.mybatis.springboot.util.MyMapper
-#        notEmpty: true
-#        style: camelhump
-#    sqlSessionFactoryBean:
-#        mapperLocations:
-#            - classpath:mapper/*.xml
-#            - classpath:mapper2/*.xml
-#        typeAliasesPackage: tk.mybatis.springboot.model
-#    mapperScanner:
-#        basePackage: tk.mybatis.springboot.mapper
-# ctrl+shift+f9=热部署

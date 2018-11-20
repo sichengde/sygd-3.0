@@ -1,7 +1,7 @@
 package com.sygdsoft;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
  * Created by 舒展 on 2017-05-31.

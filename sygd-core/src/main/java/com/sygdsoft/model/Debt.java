@@ -1,7 +1,6 @@
 package com.sygdsoft.model;
 
 import com.sygdsoft.util.NullJudgement;
-import org.bouncycastle.jce.provider.JCEECDHKeyAgreement;
 
 import javax.persistence.Transient;
 import java.util.Date;

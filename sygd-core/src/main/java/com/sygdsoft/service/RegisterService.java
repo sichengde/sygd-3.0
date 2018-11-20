@@ -1,6 +1,5 @@
 package com.sygdsoft.service;
 
-import com.mysql.jdbc.Connection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,6 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.Key;
 import java.security.SecureRandom;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,12 +1,10 @@
 package com.sygdsoft.controller;
 
-import com.sygdsoft.conf.dataSource.DynamicDataSourceContextHolder;
 import com.sygdsoft.jsonModel.OnlyString;
 import com.sygdsoft.jsonModel.Query;
 import com.sygdsoft.model.User;
 import com.sygdsoft.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mobile.device.Device;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +58,7 @@ public class UserController {
 
     /*查*/
     @RequestMapping(value = "userGet")
-    public List<User> userGet(HttpServletRequest request, Device device, @RequestBody Query query) throws Exception {
+    public List<User> userGet(HttpServletRequest request,  @RequestBody Query query) throws Exception {
         if(this.registerService.getPass()||this.registerService.getPassCK()||this.registerService.getPassSN()) {
             return userService.get(query);
         }else {
